@@ -1853,6 +1853,9 @@
             const btnUbicacion = document.getElementById('btnUbicacion');
             const btnMaps = document.getElementById('btnMaps');
 
+            // Bandera para saber si la ubicación fue compartida automáticamente
+            let ubicacionCompartida = false;
+
             servicioSelect.addEventListener('change', function() {
                 if (this.value === 'emergencia') {
                     ubicacionGroup.classList.add('visible');
@@ -1860,27 +1863,26 @@
                     ubicacionGroup.classList.remove('visible');
                     ubicacionInput.value = '';
                     btnMaps.classList.add('hidden');
+                    ubicacionCompartida = false;
                 }
             });
 
-            // --- Mostrar/ocultar botón "Abrir en Maps" según contenido del campo ---
+            // --- Mostrar/ocultar botón "Abrir en Maps" según contenido y origen ---
             ubicacionInput.addEventListener('input', function() {
-                // Solo mostrar el botón si el campo tiene contenido y NO es una ubicación compartida automáticamente
-                // Para simplificar, mostramos el botón si el campo tiene texto (aunque sea compartido)
-                // Pero si queremos que NO se muestre cuando se comparte, podemos usar una variable flag.
-                // Para mantener la lógica anterior (que el usuario quería que NO aparezca al compartir),
-                // usaremos la bandera ubicacionCompartida.
-                if (this.value.trim().length > 0 && !window.ubicacionCompartida) {
+                // Si el usuario está escribiendo manualmente, consideramos que ya no es una ubicación compartida
+                if (ubicacionCompartida) {
+                    // El usuario modificó el campo después de compartir, así que reseteamos la bandera
+                    ubicacionCompartida = false;
+                }
+                // Mostrar el botón solo si hay texto y NO es una ubicación compartida
+                if (this.value.trim().length > 0 && !ubicacionCompartida) {
                     btnMaps.classList.remove('hidden');
                 } else {
                     btnMaps.classList.add('hidden');
                 }
             });
 
-            // --- Variable para saber si la ubicación fue compartida ---
-            window.ubicacionCompartida = false;
-
-            // --- Abrir Google Maps con la ubicación ingresada ---
+            // --- Abrir Google Maps con la ubicación ingresada (solo para cuando el usuario escribe manualmente) ---
             btnMaps.addEventListener('click', function() {
                 const direccion = ubicacionInput.value.trim();
                 if (!direccion) return;
@@ -1899,7 +1901,7 @@
                 window.open(url, '_blank');
             });
 
-            // --- Compartir ubicación con geolocalización ---
+            // --- Compartir ubicación (SOLO carga el campo, sin abrir Maps, y oculta el botón "Abrir en Maps") ---
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
@@ -1914,16 +1916,12 @@
                         const lng = position.coords.longitude;
                         const texto = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                         ubicacionInput.value = texto;
-                        // Marcamos que la ubicación fue compartida automáticamente
-                        window.ubicacionCompartida = true;
-                        // Ocultamos el botón "Abrir en Maps"
+                        // Marcar como compartida para que el botón "Abrir en Maps" no aparezca
+                        ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                        // Abrir mapa automáticamente
-                        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
-                        // Restablecer la bandera después de un tiempo o cuando el usuario edite manualmente
-                        // La bandera se restablece en el evento input si el usuario modifica el campo.
+                        // NO se abre Google Maps automáticamente
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
@@ -1936,14 +1934,6 @@
                         maximumAge: 0
                     }
                 );
-            });
-
-            // --- Restablecer bandera de ubicación compartida cuando el usuario edita manualmente ---
-            ubicacionInput.addEventListener('input', function() {
-                // Si el usuario escribe o pega algo, consideramos que ya no es una ubicación compartida automática
-                // (a menos que sea exactamente el mismo texto, pero es mejor asumir que es manual)
-                window.ubicacionCompartida = false;
-                // El botón se mostrará/ocultará según la lógica del evento input anterior
             });
 
             // --- Formulario: Enviar por WhatsApp ---
