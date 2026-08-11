@@ -340,7 +340,6 @@
             z-index: 2;
         }
 
-        /* --- EFECTO SHIMMER (brillo deslizante) --- */
         .btn-primary::before {
             content: '';
             position: absolute;
@@ -360,12 +359,8 @@
         }
 
         @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
-            }
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .btn-primary:hover {
@@ -398,7 +393,6 @@
             transform: translateY(-4px);
         }
 
-        /* Hero image con logomarca - SIN RECUADRO Y SIN SOMBRA */
         .hero-image {
             display: flex;
             justify-content: center;
@@ -906,6 +900,52 @@
             min-height: 120px;
         }
 
+        /* Campos ocultos para ubicación (emergencia) */
+        .ubicacion-group {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ubicacion-group.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ubicacion-group .btn-ubicacion {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .ubicacion-group .btn-ubicacion:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .ubicacion-group .btn-ubicacion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ubicacion-group input {
+            margin-top: 10px;
+        }
+
         .btn-submit {
             background: var(--primary-dark);
             color: white;
@@ -1374,18 +1414,18 @@
     </a>
 
     <!-- ==================== HEADER ==================== -->
-    <header class="header" id="inicio">
+    <header class="header" id="header">
         <div class="container">
             <div class="logo">
                 <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="logo-img">
                 <h1>REF <span>Electrotecnia</span> <span class="badge">Matrícula</span></h1>
             </div>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#testimonios">Testimonios</a></li>
-                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
                 <li><a href="#contacto" class="nav-cta"><i class="fas fa-paper-plane"></i> Presupuesto</a></li>
             </ul>
             <div class="header-matricula">
@@ -1603,10 +1643,25 @@
                             <option>Tableros / Puesta a tierra</option>
                             <option>Iluminación</option>
                             <option>Certificación / Habilitación</option>
-                            <option>Emergencia 24/7</option>
+                            <option value="emergencia">Emergencia 24/7</option>
                             <option>Otro</option>
                         </select>
                     </div>
+
+                    <!-- Campo de ubicación (oculto por defecto) -->
+                    <div class="form-group ubicacion-group" id="ubicacionGroup">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; color:var(--primary-dark);">
+                            <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i> Ubicación de la emergencia
+                        </label>
+                        <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
+                        <button type="button" class="btn-ubicacion" id="btnUbicacion">
+                            <i class="fas fa-location-dot"></i> Compartir ubicación actual
+                        </button>
+                        <small style="display:block; margin-top:6px; color:var(--gray-text); font-size:0.8rem;">
+                            Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.
+                        </small>
+                    </div>
+
                     <div class="form-group">
                         <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
                     </div>
@@ -1647,11 +1702,11 @@
                 </div>
                 <div class="footer-col">
                     <h5>Enlaces</h5>
-                    <ul><li><a href="#inicio">Inicio</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#nosotros">Nosotros</a></li><li><a href="#testimonios">Testimonios</a></li><li><a href="#contacto">Contacto</a></li></ul>
+                    <ul><li><a href="#inicio" class="nav-link">Inicio</a></li><li><a href="#servicios" class="nav-link">Servicios</a></li><li><a href="#nosotros" class="nav-link">Nosotros</a></li><li><a href="#testimonios" class="nav-link">Testimonios</a></li><li><a href="#contacto" class="nav-link">Contacto</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Servicios</h5>
-                    <ul><li><a href="#servicios">Instalaciones</a></li><li><a href="#servicios">Reparaciones</a></li><li><a href="#servicios">Domótica</a></li><li><a href="#servicios">Emergencias</a></li></ul>
+                    <ul><li><a href="#servicios" class="nav-link">Instalaciones</a></li><li><a href="#servicios" class="nav-link">Reparaciones</a></li><li><a href="#servicios" class="nav-link">Domótica</a></li><li><a href="#servicios" class="nav-link">Emergencias</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Legal</h5>
@@ -1682,7 +1737,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Hamburguesa ---
+            // --- Menú Hamburguesa ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
@@ -1694,13 +1749,35 @@
             }
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
-            document.querySelectorAll('.nav-menu a').forEach(link => {
+
+            // Cerrar menú al hacer clic en un enlace
+            document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('active')) toggleMenu();
                 });
             });
 
-            // --- FAQs ---
+            // --- Scroll suave para enlaces internos (incluye "Inicio") ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        const headerOffset = 80; // altura del header fijo
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset;
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                        // Cerrar menú si está abierto (ya se maneja con .nav-link)
+                    }
+                });
+            });
+
+            // --- FAQs (Acordeón) ---
             const faqItems = document.querySelectorAll('.faq-item');
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
@@ -1712,25 +1789,84 @@
                 });
             });
 
-            // --- Formulario WhatsApp ---
+            // --- Mostrar campo de ubicación al seleccionar "Emergencia 24/7" ---
+            const servicioSelect = document.getElementById('servicio');
+            const ubicacionGroup = document.getElementById('ubicacionGroup');
+            const ubicacionInput = document.getElementById('ubicacion');
+            const btnUbicacion = document.getElementById('btnUbicacion');
+
+            servicioSelect.addEventListener('change', function() {
+                if (this.value === 'emergencia') {
+                    ubicacionGroup.classList.add('visible');
+                } else {
+                    ubicacionGroup.classList.remove('visible');
+                    ubicacionInput.value = ''; // limpiar al ocultar
+                }
+            });
+
+            // --- Compartir ubicación con geolocalización ---
+            btnUbicacion.addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
+                    return;
+                }
+                btnUbicacion.disabled = true;
+                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo ubicación...';
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        // Crear enlace a Google Maps
+                        const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                        ubicacionInput.value = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} - ${mapsLink}`;
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                        // Opcional: mostrar un mensaje de éxito
+                        // alert('Ubicación obtenida correctamente.');
+                    },
+                    function(error) {
+                        alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // --- Formulario: Enviar por WhatsApp con todos los datos ---
             const contactForm = document.getElementById('contactForm');
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+
                 const nombre = document.getElementById('nombre').value.trim();
                 const telefono = document.getElementById('telefono').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const servicio = document.getElementById('servicio').value;
                 const mensaje = document.getElementById('mensaje').value.trim();
+                const ubicacion = document.getElementById('ubicacion').value.trim();
+
                 if (!nombre || !telefono) {
                     alert('Por favor, completa tu nombre y teléfono.');
                     return;
                 }
+
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
                 if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
-                if (servicio) whatsappMessage += `🔧 *Servicio:* ${servicio}\n`;
+                if (servicio) {
+                    let servicioLabel = servicio;
+                    if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
+                    whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
+                }
+                if (ubicacion) whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
                 if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
+
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
