@@ -900,7 +900,7 @@
             min-height: 120px;
         }
 
-        /* Campos de ubicación */
+        /* Campos ocultos para ubicación (emergencia) */
         .ubicacion-group {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -915,19 +915,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .ubicacion-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .ubicacion-wrapper input {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .btn-ubicacion {
+        .ubicacion-group .btn-ubicacion {
             background: var(--primary-cyan);
             color: white;
             border: none;
@@ -940,50 +928,22 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            white-space: nowrap;
+            margin-top: 8px;
         }
 
-        .btn-ubicacion:hover {
+        .ubicacion-group .btn-ubicacion:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
         }
 
-        .btn-ubicacion:disabled {
+        .ubicacion-group .btn-ubicacion:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        .btn-maps {
-            background: #34A853;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .btn-maps:hover {
-            background: #2D8F47;
-            transform: translateY(-2px);
-        }
-
-        .btn-maps.hidden {
-            display: none;
-        }
-
-        .ubicacion-group small {
-            display: block;
-            margin-top: 6px;
-            color: var(--gray-text);
-            font-size: 0.8rem;
+        .ubicacion-group input {
+            margin-top: 10px;
         }
 
         .btn-submit {
@@ -1428,13 +1388,6 @@
             .btn-primary::before {
                 animation-duration: 5s;
             }
-            .ubicacion-wrapper {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .btn-maps, .btn-ubicacion {
-                justify-content: center;
-            }
         }
 
         .overlay {
@@ -1700,12 +1653,7 @@
                         <label style="display:block; margin-bottom:6px; font-weight:600; color:var(--primary-dark);">
                             <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i> Ubicación de la emergencia
                         </label>
-                        <div class="ubicacion-wrapper">
-                            <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
-                            <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
-                                <i class="fas fa-map"></i> Abrir en Maps
-                            </button>
-                        </div>
+                        <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
                         <button type="button" class="btn-ubicacion" id="btnUbicacion">
                             <i class="fas fa-location-dot"></i> Compartir ubicación actual
                         </button>
@@ -1802,13 +1750,14 @@
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
+            // Cerrar menú al hacer clic en un enlace
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('active')) toggleMenu();
                 });
             });
 
-            // --- Scroll suave para enlaces internos ---
+            // --- Scroll suave para enlaces internos (incluye "Inicio") ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1816,18 +1765,19 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        const headerOffset = 80;
+                        const headerOffset = 80; // altura del header fijo
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
                             top: offsetPosition,
                             behavior: 'smooth'
                         });
+                        // Cerrar menú si está abierto (ya se maneja con .nav-link)
                     }
                 });
             });
 
-            // --- FAQs ---
+            // --- FAQs (Acordeón) ---
             const faqItems = document.querySelectorAll('.faq-item');
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
@@ -1844,46 +1794,14 @@
             const ubicacionGroup = document.getElementById('ubicacionGroup');
             const ubicacionInput = document.getElementById('ubicacion');
             const btnUbicacion = document.getElementById('btnUbicacion');
-            const btnMaps = document.getElementById('btnMaps');
 
             servicioSelect.addEventListener('change', function() {
                 if (this.value === 'emergencia') {
                     ubicacionGroup.classList.add('visible');
                 } else {
                     ubicacionGroup.classList.remove('visible');
-                    ubicacionInput.value = '';
-                    btnMaps.classList.add('hidden');
+                    ubicacionInput.value = ''; // limpiar al ocultar
                 }
-            });
-
-            // --- Actualizar botón de Maps según contenido del campo ---
-            ubicacionInput.addEventListener('input', function() {
-                if (this.value.trim().length > 0) {
-                    btnMaps.classList.remove('hidden');
-                } else {
-                    btnMaps.classList.add('hidden');
-                }
-            });
-
-            // --- Abrir Google Maps con la ubicación ingresada ---
-            btnMaps.addEventListener('click', function() {
-                const direccion = ubicacionInput.value.trim();
-                if (!direccion) return;
-                // Detecta si son coordenadas (contiene números con coma y punto)
-                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
-                let url;
-                if (esCoordenada) {
-                    // Extraer latitud y longitud
-                    const coords = direccion.match(/-?\d+\.\d+/g);
-                    if (coords && coords.length >= 2) {
-                        url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
-                    } else {
-                        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
-                    }
-                } else {
-                    url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
-                }
-                window.open(url, '_blank');
             });
 
             // --- Compartir ubicación con geolocalización ---
@@ -1899,13 +1817,13 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        const texto = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                        ubicacionInput.value = texto;
-                        btnMaps.classList.remove('hidden');
+                        // Crear enlace a Google Maps
+                        const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                        ubicacionInput.value = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} - ${mapsLink}`;
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                        // Abrir directamente el mapa para que vea su ubicación
-                        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+                        // Opcional: mostrar un mensaje de éxito
+                        // alert('Ubicación obtenida correctamente.');
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
