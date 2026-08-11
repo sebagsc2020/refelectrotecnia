@@ -196,7 +196,6 @@
             font-weight: 700;
             transition: var(--transition);
             border: 2px solid var(--primary-cyan);
-            /* Se eliminó position:relative, overflow:hidden, z-index:2 y el pseudo-elemento ::before */
         }
 
         .nav-cta::after {
@@ -1674,14 +1673,14 @@
                     </div>
                     <div class="form-group">
                         <select id="servicio" name="servicio" autocomplete="off">
-                            <option value="">Selecciona el servicio que necesitas</option>
+                            <option value="">Que servicio precisa ?</option>
                             <option>Instalación eléctrica</option>
                             <option>Reparación / Mantenimiento</option>
                             <option>Domótica / Automatización</option>
                             <option>Tableros / Puesta a tierra</option>
                             <option>Iluminación</option>
                             <option>Certificación / Habilitación</option>
-                            <option value="emergencia">Emergencia 24/7</option>
+                            <option value="emergencia">!! Emergencia 24/7 !!</option>
                             <option>Otro</option>
                         </select>
                     </div>
@@ -1872,6 +1871,7 @@
                 window.open(url, '_blank');
             });
 
+            // --- Compartir ubicación (solo carga coordenadas, sin abrir Maps) ---
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
@@ -1884,12 +1884,14 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        const texto = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                        // Solo coordenadas, sin emoji ni texto adicional
+                        const texto = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                         ubicacionInput.value = texto;
                         ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                        // No se abre Google Maps automáticamente
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
@@ -1930,7 +1932,21 @@
                     if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
                     whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
                 }
-                if (ubicacion) whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                if (ubicacion) {
+                    // Si la ubicación parece coordenadas (contiene coma y puntos), generamos un enlace de Maps
+                    const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
+                    if (esCoordenada) {
+                        const coords = ubicacion.match(/-?\d+\.\d+/g);
+                        if (coords && coords.length >= 2) {
+                            const mapsUrl = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                            whatsappMessage += `📍 *Ubicación:* ${mapsUrl}\n`;
+                        } else {
+                            whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                        }
+                    } else {
+                        whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                    }
+                }
                 if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
 
                 const phoneNumber = '5493518692251';
