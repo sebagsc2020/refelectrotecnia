@@ -141,8 +141,6 @@
             color: var(--primary-cyan);
         }
 
-        /* Se eliminó la etiqueta .badge */
-
         .nav-menu {
             display: flex;
             align-items: center;
@@ -177,7 +175,6 @@
             width: 100%;
         }
 
-        /* --- Botón "Presupuesto" en el menú (SIN efecto shimmer) --- */
         .nav-cta {
             background: var(--primary-cyan);
             color: white !important;
@@ -318,7 +315,6 @@
             gap: 16px;
         }
 
-        /* --- Botón "Solicitar presupuesto" (CON efecto shimmer) --- */
         .btn-primary {
             background: var(--accent-yellow);
             color: var(--primary-dark);
@@ -369,26 +365,6 @@
         }
         .btn-primary:hover::before {
             animation-duration: 2s;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: white;
-            transform: translateY(-4px);
         }
 
         .hero-image {
@@ -1467,7 +1443,7 @@
     </header>
     <div class="overlay" id="overlay"></div>
 
-    <!-- ==================== HERO ==================== -->
+    <!-- ==================== HERO (SECCIÓN INICIO) ==================== -->
     <section class="hero" id="inicio">
         <div class="container">
             <div class="hero-image">
@@ -1476,14 +1452,13 @@
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
+                <!-- Solo se mantiene el badge de Atención 24/7 -->
                 <div class="hero-badges">
-                    <span><i class="fas fa-check-circle"></i> Presupuesto sin cargo</span>
-                    <span><i class="fas fa-shield-alt"></i> Trabajos con garantía</span>
                     <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
                 </div>
+                <!-- Solo se mantiene el botón "Solicitar presupuesto" -->
                 <div class="hero-buttons">
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
-                    <a href="tel:+5493518692251" class="btn-secondary"><i class="fas fa-phone-alt"></i> Llamar ahora</a>
                 </div>
             </div>
         </div>
@@ -1861,7 +1836,6 @@
                 window.open(url, '_blank');
             });
 
-            // --- Compartir ubicación (solo carga coordenadas, sin abrir Maps) ---
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
