@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
+    
+    <!-- ========== FAVICON ========== -->
+    <link rel="icon" type="image/png" href="/images/72x72.png">
+    <link rel="shortcut icon" href="/images/72x72.png">
+    
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -190,6 +195,28 @@
             font-weight: 700;
             transition: var(--transition);
             border: 2px solid var(--primary-cyan);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .nav-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 250%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.45) 40%, 
+                rgba(255, 255, 255, 0.45) 60%, 
+                transparent 100%
+            );
+            transform: skewX(-25deg);
+            animation: shimmerButton 4s infinite ease-in-out;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .nav-cta::after {
@@ -202,6 +229,9 @@
             color: white !important;
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
+        }
+        .nav-cta:hover::before {
+            animation-duration: 2s;
         }
 
         .header-matricula {
@@ -344,23 +374,24 @@
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 200%;
+            left: -150%;
+            width: 250%;
             height: 100%;
             background: linear-gradient(90deg, 
                 transparent 0%, 
-                rgba(255, 255, 255, 0.25) 50%, 
+                rgba(255, 255, 255, 0.5) 35%, 
+                rgba(255, 255, 255, 0.5) 65%, 
                 transparent 100%
             );
-            transform: skewX(-30deg);
-            animation: shimmer 4s infinite ease-in-out;
+            transform: skewX(-25deg);
+            animation: shimmerButton 4s infinite ease-in-out;
             z-index: 1;
             pointer-events: none;
         }
 
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        @keyframes shimmerButton {
+            0% { left: -150%; }
+            100% { left: 150%; }
         }
 
         .btn-primary:hover {
@@ -900,7 +931,6 @@
             min-height: 120px;
         }
 
-        /* Campos ocultos para ubicación (emergencia) */
         .ubicacion-group {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -915,7 +945,19 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .ubicacion-group .btn-ubicacion {
+        .ubicacion-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .ubicacion-wrapper input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-ubicacion {
             background: var(--primary-cyan);
             color: white;
             border: none;
@@ -928,22 +970,50 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-top: 8px;
+            white-space: nowrap;
         }
 
-        .ubicacion-group .btn-ubicacion:hover {
+        .btn-ubicacion:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
         }
 
-        .ubicacion-group .btn-ubicacion:disabled {
+        .btn-ubicacion:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        .ubicacion-group input {
-            margin-top: 10px;
+        .btn-maps {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-maps:hover {
+            background: #2D8F47;
+            transform: translateY(-2px);
+        }
+
+        .btn-maps.hidden {
+            display: none;
+        }
+
+        .ubicacion-group small {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
         }
 
         .btn-submit {
@@ -1245,28 +1315,6 @@
             color: var(--accent-yellow);
         }
 
-        .footer-socials {
-            display: flex;
-            gap: 16px;
-        }
-
-        .footer-socials a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .footer-socials a:hover {
-            background: var(--primary-cyan);
-            color: white;
-            transform: translateY(-3px);
-        }
-
         /* ========================================
                    RESPONSIVE
                 ======================================== */
@@ -1385,8 +1433,16 @@
             .modal-content h2 {
                 font-size: 1.4rem;
             }
-            .btn-primary::before {
+            .btn-primary::before,
+            .nav-cta::before {
                 animation-duration: 5s;
+            }
+            .ubicacion-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-maps, .btn-ubicacion {
+                justify-content: center;
             }
         }
 
@@ -1648,12 +1704,16 @@
                         </select>
                     </div>
 
-                    <!-- Campo de ubicación (oculto por defecto) -->
                     <div class="form-group ubicacion-group" id="ubicacionGroup">
                         <label style="display:block; margin-bottom:6px; font-weight:600; color:var(--primary-dark);">
                             <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i> Ubicación de la emergencia
                         </label>
-                        <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
+                        <div class="ubicacion-wrapper">
+                            <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
+                            <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
+                                <i class="fas fa-map"></i> Abrir en Maps
+                            </button>
+                        </div>
                         <button type="button" class="btn-ubicacion" id="btnUbicacion">
                             <i class="fas fa-location-dot"></i> Compartir ubicación actual
                         </button>
@@ -1724,12 +1784,6 @@
                         Diseño SC Photo
                     </a>
                 </span>
-                <div class="footer-socials">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://www.instagram.com/sc_photo_br/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
             </div>
         </div>
     </footer>
@@ -1750,14 +1804,13 @@
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            // Cerrar menú al hacer clic en un enlace
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('active')) toggleMenu();
                 });
             });
 
-            // --- Scroll suave para enlaces internos (incluye "Inicio") ---
+            // --- Scroll suave para enlaces internos ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1765,19 +1818,18 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        const headerOffset = 80; // altura del header fijo
+                        const headerOffset = 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
                             top: offsetPosition,
                             behavior: 'smooth'
                         });
-                        // Cerrar menú si está abierto (ya se maneja con .nav-link)
                     }
                 });
             });
 
-            // --- FAQs (Acordeón) ---
+            // --- FAQs ---
             const faqItems = document.querySelectorAll('.faq-item');
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
@@ -1794,17 +1846,44 @@
             const ubicacionGroup = document.getElementById('ubicacionGroup');
             const ubicacionInput = document.getElementById('ubicacion');
             const btnUbicacion = document.getElementById('btnUbicacion');
+            const btnMaps = document.getElementById('btnMaps');
 
             servicioSelect.addEventListener('change', function() {
                 if (this.value === 'emergencia') {
                     ubicacionGroup.classList.add('visible');
                 } else {
                     ubicacionGroup.classList.remove('visible');
-                    ubicacionInput.value = ''; // limpiar al ocultar
+                    ubicacionInput.value = '';
+                    btnMaps.classList.add('hidden');
                 }
             });
 
-            // --- Compartir ubicación con geolocalización ---
+            ubicacionInput.addEventListener('input', function() {
+                if (this.value.trim().length > 0) {
+                    btnMaps.classList.remove('hidden');
+                } else {
+                    btnMaps.classList.add('hidden');
+                }
+            });
+
+            btnMaps.addEventListener('click', function() {
+                const direccion = ubicacionInput.value.trim();
+                if (!direccion) return;
+                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
+                let url;
+                if (esCoordenada) {
+                    const coords = direccion.match(/-?\d+\.\d+/g);
+                    if (coords && coords.length >= 2) {
+                        url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                    } else {
+                        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                    }
+                } else {
+                    url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                }
+                window.open(url, '_blank');
+            });
+
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
@@ -1817,13 +1896,12 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        // Crear enlace a Google Maps
-                        const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                        ubicacionInput.value = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} - ${mapsLink}`;
+                        const texto = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                        ubicacionInput.value = texto;
+                        btnMaps.classList.remove('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                        // Opcional: mostrar un mensaje de éxito
-                        // alert('Ubicación obtenida correctamente.');
+                        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
@@ -1838,7 +1916,7 @@
                 );
             });
 
-            // --- Formulario: Enviar por WhatsApp con todos los datos ---
+            // --- Formulario: Enviar por WhatsApp ---
             const contactForm = document.getElementById('contactForm');
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
