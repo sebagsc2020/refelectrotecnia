@@ -187,6 +187,7 @@
             width: 100%;
         }
 
+        /* --- Botón "Presupuesto" en el menú (SIN efecto shimmer) --- */
         .nav-cta {
             background: var(--primary-cyan);
             color: white !important;
@@ -195,28 +196,7 @@
             font-weight: 700;
             transition: var(--transition);
             border: 2px solid var(--primary-cyan);
-            position: relative;
-            overflow: hidden;
-            z-index: 2;
-        }
-
-        .nav-cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 250%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.45) 40%, 
-                rgba(255, 255, 255, 0.45) 60%, 
-                transparent 100%
-            );
-            transform: skewX(-25deg);
-            animation: shimmerButton 4s infinite ease-in-out;
-            z-index: 1;
-            pointer-events: none;
+            /* Se eliminó position:relative, overflow:hidden, z-index:2 y el pseudo-elemento ::before */
         }
 
         .nav-cta::after {
@@ -229,9 +209,6 @@
             color: white !important;
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
-        }
-        .nav-cta:hover::before {
-            animation-duration: 2s;
         }
 
         .header-matricula {
@@ -352,6 +329,7 @@
             gap: 16px;
         }
 
+        /* --- Botón "Solicitar presupuesto" (CON efecto shimmer) --- */
         .btn-primary {
             background: var(--accent-yellow);
             color: var(--primary-dark);
@@ -1432,8 +1410,7 @@
             .modal-content h2 {
                 font-size: 1.4rem;
             }
-            .btn-primary::before,
-            .nav-cta::before {
+            .btn-primary::before {
                 animation-duration: 5s;
             }
             .ubicacion-wrapper {
@@ -1853,7 +1830,6 @@
             const btnUbicacion = document.getElementById('btnUbicacion');
             const btnMaps = document.getElementById('btnMaps');
 
-            // Bandera para saber si la ubicación fue compartida automáticamente
             let ubicacionCompartida = false;
 
             servicioSelect.addEventListener('change', function() {
@@ -1867,14 +1843,10 @@
                 }
             });
 
-            // --- Mostrar/ocultar botón "Abrir en Maps" según contenido y origen ---
             ubicacionInput.addEventListener('input', function() {
-                // Si el usuario está escribiendo manualmente, consideramos que ya no es una ubicación compartida
                 if (ubicacionCompartida) {
-                    // El usuario modificó el campo después de compartir, así que reseteamos la bandera
                     ubicacionCompartida = false;
                 }
-                // Mostrar el botón solo si hay texto y NO es una ubicación compartida
                 if (this.value.trim().length > 0 && !ubicacionCompartida) {
                     btnMaps.classList.remove('hidden');
                 } else {
@@ -1882,7 +1854,6 @@
                 }
             });
 
-            // --- Abrir Google Maps con la ubicación ingresada (solo para cuando el usuario escribe manualmente) ---
             btnMaps.addEventListener('click', function() {
                 const direccion = ubicacionInput.value.trim();
                 if (!direccion) return;
@@ -1901,7 +1872,6 @@
                 window.open(url, '_blank');
             });
 
-            // --- Compartir ubicación (SOLO carga el campo, sin abrir Maps, y oculta el botón "Abrir en Maps") ---
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
                     alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
@@ -1916,12 +1886,10 @@
                         const lng = position.coords.longitude;
                         const texto = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
                         ubicacionInput.value = texto;
-                        // Marcar como compartida para que el botón "Abrir en Maps" no aparezca
                         ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                        // NO se abre Google Maps automáticamente
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
