@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAF Electrotécnica | Instalaciones y Mantenimiento</title>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (Iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========================================
+                   RESET Y VARIABLES
+                ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0A2E5C;
+            --primary-medium: #1A4B7A;
+            --primary-blue: #0099E8;
+            --primary-cyan: #00A8FF;
+            --accent-yellow: #FFB800;
+            --accent-orange: #FF7A00;
+            --light-bg: #F8F9FA;
+            --gray-text: #4A4A4A;
+            --white: #FFFFFF;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            color: #1E1E1E;
+            background: var(--white);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========================================
+                   BOTÓN FLOTANTE WHATSAPP (ConteGroup)
+                ======================================== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.6);
+            color: white;
+        }
+
+        .whatsapp-float i {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        /* ========================================
+                   HEADER / NAVEGACIÓN (ConteGroup + dtehijos)
+                ======================================== */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--primary-cyan);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ---- NUEVO ESTILO PARA EL LOGO IMAGEN ---- */
+        .logo-img {
+            height: 48px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--primary-dark);
+        }
+
+        .logo h1 span {
+            color: var(--primary-cyan);
+        }
+
+        .logo .badge {
+            font-size: 0.65rem;
+            background: var(--accent-yellow);
+            color: var(--primary-dark);
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-left: 4px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--gray-text);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-cyan);
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--primary-cyan);
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+            border: 2px solid var(--primary-cyan);
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Matrícula en header (dtehijos) */
+        .header-matricula {
+            background: var(--light-bg);
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .header-matricula i {
+            color: var(--accent-yellow);
+            margin-right: 6px;
+        }
+
+        /* Hamburguesa */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: var(--primary-dark);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        /* ========================================
+                   HERO (gwfelectrical + jlserviciointegral)
+                ======================================== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #0D3B66 100%);
+            padding: 80px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 168, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h2 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-content h2 span {
+            color: var(--accent-yellow);
+            position: relative;
+        }
+
+        .hero-content h2 span::after {
+            content: '⚡';
+            font-size: 2rem;
+            margin-left: 8px;
+        }
+
+        .hero-content p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 30px;
+            margin-bottom: 36px;
+        }
+
+        .hero-badges span {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-badges i {
+            color: var(--accent-yellow);
+            font-size: 1.2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            background: var(--accent-yellow);
+            color: var(--primary-dark);
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            border: 2px solid var(--accent-yellow);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(255, 184, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-yellow);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(255, 184, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-4px);
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            background: #1A3B6B;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            /* Placeholder visual */ display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.2rem;
+        }
+
+        .hero-image-placeholder {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 4/3;
+            background: linear-gradient(145deg, #1A4B7A, #0A2E5C);
+            border-radius: var(--radius);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            gap: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-image-placeholder i {
+            font-size: 4rem;
+            color: var(--accent-yellow);
+            opacity: 0.6;
+        }
+
+        /* ========================================
+                   BARRAS DE CONFIANZA (jlserviciointegral + dtehijos)
+                ======================================== */
+        .trust-bar {
+            background: var(--white);
+            padding: 30px 0;
+            border-bottom: 1px solid #E9ECEF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .trust-item i {
+            font-size: 1.8rem;
+            color: var(--primary-cyan);
+            background: var(--light-bg);
+            padding: 12px;
+            border-radius: 50%;
+        }
+
+        .trust-item .highlight {
+            color: var(--accent-orange);
+        }
+
+        /* ========================================
+                   SERVICIOS (electricistasmatriculados)
+                ======================================== */
+        .services {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary-cyan);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-header h2 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            color: var(--gray-text);
+            max-width: 600px;
+            margin: 12px auto 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--white);
+            padding: 35px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-bottom: 4px solid transparent;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-bottom-color: var(--primary-cyan);
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: var(--primary-cyan);
+            background: #E8F4FD;
+            padding: 20px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .service-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+        }
+
+        /* ========================================
+                   SOBRE NOSOTROS (contegroup)
+                ======================================== */
+        .about {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
+            border-radius: var(--radius);
+            aspect-ratio: 4/3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            gap: 16px;
+            font-size: 1.1rem;
+        }
+
+        .about-image i {
+            font-size: 5rem;
+            color: var(--accent-yellow);
+            opacity: 0.5;
+        }
+
+        .about-content h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .about-content h3 span {
+            color: var(--primary-cyan);
+        }
+
+        .about-content p {
+            color: var(--gray-text);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .about-stats div {
+            text-align: left;
+        }
+
+        .about-stats .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-cyan);
+        }
+
+        .about-stats .label {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            font-weight: 500;
+        }
+
+        /* ========================================
+                   TESTIMONIOS (electricistasmatriculados + contegroup)
+                ======================================== */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--accent-yellow);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: scale(1.02);
+        }
+
+        .testimonial-card .stars {
+            color: var(--accent-yellow);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-card blockquote {
+            font-size: 1rem;
+            color: var(--gray-text);
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .testimonial-card .client {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .testimonial-card .client img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .testimonial-card .client .name {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .testimonial-card .client .location {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+        }
+
+        /* ========================================
+                   FAQS (electricistasmatriculados)
+                ======================================== */
+        .faq {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid #E9ECEF;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-cyan);
+        }
+
+        .faq-question {
+            padding: 20px 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05rem;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+
+        .faq-question i {
+            transition: var(--transition);
+            color: var(--primary-cyan);
+            font-size: 1.2rem;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 28px;
+            color: var(--gray-text);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 28px 24px;
+        }
+
+        /* ========================================
+                   COBERTURA (dtehijos)
+                ======================================== */
+        .coverage {
+            padding: 60px 0;
+            background: var(--primary-dark);
+            color: white;
+            text-align: center;
+        }
+
+        .coverage h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .coverage h2 span {
+            color: var(--accent-yellow);
+        }
+
+        .coverage p {
+            opacity: 0.8;
+            margin-bottom: 24px;
+        }
+
+        .coverage-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .coverage-tags span {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+
+        .coverage-tags span:hover {
+            background: var(--accent-yellow);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ========================================
+                   CONTACTO / PRESUPUESTO (contegroup)
+                ======================================== */
+        .contact {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .contact-info p {
+            color: var(--gray-text);
+            margin-bottom: 30px;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .contact-detail i {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-cyan);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .contact-detail span {
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .contact-form h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
+        }
+
+        /* ========================================
+                   FOOTER (contegroup)
+                ======================================== */
+        .footer {
+            background: #0A1E2E;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 50px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h4 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand h4 span {
+            color: var(--primary-cyan);
+        }
+
+        .footer-brand p {
+            max-width: 300px;
+            font-size: 0.95rem;
+        }
+
+        .footer-col h5 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            transition: var(--transition);
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary-cyan);
+            padding-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-socials a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            background: var(--primary-cyan);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* ========================================
+                   RESPONSIVE (Mobile First)
+                ======================================== */
+        @media (max-width: 992px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-badges {
+                justify-content: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-matricula {
+                display: none;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--white);
+                flex-direction: column;
+                padding: 80px 30px 30px;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                gap: 20px;
+                align-items: flex-start;
+                z-index: 1001;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+                z-index: 1002;
+            }
+
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .hero-content h2 {
+                font-size: 2.4rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .about-stats {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .whatsapp-float {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .contact-form {
+                padding: 24px;
+            }
+        }
+
+        /* Overlay para móvil */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== BOTÓN WHATSAPP FLOTANTE (ConteGroup) ==================== -->
+    <a href="https://wa.me/5493510000000?text=Hola!%20Quiero%20solicitar%20un%20presupuesto" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- ==================== HEADER (ConteGroup + dtehijos) ==================== -->
+    <header class="header" id="inicio">
+        <div class="container">
+            <div class="logo">
+                <!-- LOGO REEMPLAZADO: Ícono por imagen /images/logoref.jpg -->
+                <img src="/images/logoref.jpg" alt="RAF Electrotécnica" class="logo-img">
+                <h1>RAF <span>Electrotécnica</span> <span class="badge">Matrícula</span></h1>
+            </div>
+
+            <!-- Menú de navegación -->
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contacto" class="nav-cta"><i class="fas fa-paper-plane"></i> Presupuesto</a></li>
+            </ul>
+
+            <!-- Matrícula visible en escritorio (dtehijos) -->
+            <div class="header-matricula">
+                <i class="fas fa-id-card"></i> Matrícula ERSEP N° 12.345
+            </div>
+
+            <!-- Hamburguesa móvil -->
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Overlay para móvil -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ==================== HERO (gwfelectrical + jlserviciointegral) ==================== -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Seguridad y confianza <span>eléctrica</span></h2>
+                <p>Más de 10 años garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
+
+                <!-- Badges de propuesta de valor (jlserviciointegral) -->
+                <div class="hero-badges">
+                    <span><i class="fas fa-check-circle"></i> Presupuesto sin cargo</span>
+                    <span><i class="fas fa-shield-alt"></i> Trabajos con garantía</span>
+                    <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
+                    <a href="tel:+5493510000000" class="btn-secondary"><i class="fas fa-phone-alt"></i> Llamar ahora</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-image-placeholder">
+                    <i class="fas fa-bolt"></i>
+                    <span>Tu proyecto aquí <br> <small style="font-weight:300; opacity:0.7;">(Fotografía real del equipo)</small></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BARRA DE CONFIANZA (dtehijos + jlserviciointegral) ==================== -->
+    <section class="trust-bar">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item"><i class="fas fa-certificate"></i> Matrícula ERSEP N° 12.345</div>
+                <div class="trust-item"><i class="fas fa-calendar-alt"></i> <span class="highlight">+10</span> años de experiencia</div>
+                <div class="trust-item"><i class="fas fa-handshake"></i> Garantía en todos los trabajos</div>
+                <div class="trust-item"><i class="fas fa-map-marked-alt"></i> Cobertura en toda Córdoba</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SERVICIOS (electricistasmatriculados) ==================== -->
+    <section class="services" id="servicios">
+        <div class="container">
+            <div class="section-header">
+                <h3>Nuestro trabajo</h3>
+                <h2>Servicios eléctricos profesionales</h2>
+                <p>Soluciones integrales para hogares, comercios e industrias. Siempre con la máxima seguridad y calidad.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-home"></i>
+                    <h4>Instalaciones eléctricas</h4>
+                    <p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-tools"></i>
+                    <h4>Reparaciones y mantenimiento</h4>
+                    <p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-microchip"></i>
+                    <h4>Domótica y automatización</h4>
+                    <p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Tableros y puestas a tierra</h4>
+                    <p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>Iluminación interior y exterior</h4>
+                    <p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-file-signature"></i>
+                    <h4>Certificaciones y habilitaciones</h4>
+                    <p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SOBRE NOSOTROS (contegroup) ==================== -->
+    <section class="about" id="nosotros">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <i class="fas fa-users"></i>
+                    <span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span>
+                </div>
+                <div class="about-content">
+                    <h3>Más de <span>10 años</span> iluminando Córdoba</h3>
+                    <p>En <strong>RAF Electrotécnica</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
+                    <p>Somos una empresa familiar con matrícula habilitante, comprometida con la excelencia y la satisfacción del cliente. Nuestro objetivo es ofrecer soluciones duraderas, no parches temporales.</p>
+                    <div class="about-stats">
+                        <div><span class="number">+10</span> <span class="label">Años de trayectoria</span></div>
+                        <div><span class="number">+500</span> <span class="label">Proyectos realizados</span></div>
+                        <div><span class="number">98%</span> <span class="label">Clientes satisfechos</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TESTIMONIOS (electricistasmatriculados + contegroup) ==================== -->
+    <section class="testimonials" id="testimonios">
+        <div class="container">
+            <div class="section-header">
+                <h3>Lo que dicen nuestros clientes</h3>
+                <h2>Testimonios reales</h2>
+                <p>La opinión de quienes confiaron en nosotros es nuestra mejor carta de presentación.</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
+                    <div class="client">
+                        <div style="background:#0A2E5C; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">MF</div>
+                        <div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Contraté a RAF Electrotécnica para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
+                    <div class="client">
+                        <div style="background:#1A4B7A; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">CR</div>
+                        <div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
+                    <div class="client">
+                        <div style="background:#0A2E5C; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">LG</div>
+                        <div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FAQs (electricistasmatriculados) ==================== -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h3>Preguntas frecuentes</h3>
+                <h2>Resolvemos tus dudas</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item active">
+                    <button class="faq-question">
+                        <span>¿Realizan presupuestos sin cargo?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Sí, absolutamente. Realizamos una visita técnica para evaluar el trabajo y te entregamos un presupuesto detallado y sin ningún costo.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>¿Cuentan con matrícula habilitante?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Sí, contamos con matrícula ERSEP N° 12.345 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>¿Atienden urgencias fuera del horario laboral?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Por supuesto. Disponemos de un servicio de emergencias 24/7 los 365 días del año. Ante cualquier problema eléctrico grave, puedes contactarnos de inmediato.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>¿Qué tipo de garantía ofrecen en los trabajos?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Todos nuestros trabajos cuentan con una garantía escrita por materiales y mano de obra. La duración varía según el tipo de instalación, pero siempre la especificamos en el presupuesto.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COBERTURA (dtehijos) ==================== -->
+    <section class="coverage">
+        <div class="container">
+            <h2>Zonas de <span>cobertura</span></h2>
+            <p>Trabajamos en toda la ciudad de Córdoba y alrededores.</p>
+            <div class="coverage-tags">
+                <span>Centro</span>
+                <span>Nueva Córdoba</span>
+                <span>Cerro de las Rosas</span>
+                <span>Alta Córdoba</span>
+                <span>General Paz</span>
+                <span>Villa Belgrano</span>
+                <span>Argüello</span>
+                <span>Ruta 20</span>
+                <span>Villa Allende</span>
+                <span>Río Ceballos</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTACTO / PRESUPUESTO (contegroup) ==================== -->
+    <section class="contact" id="contacto">
+        <div class="container">
+            <div class="section-header">
+                <h3>Ponte en contacto</h3>
+                <h2>Solicita tu presupuesto</h2>
+                <p>Llena el formulario o escríbenos directamente por WhatsApp. Te responderemos a la brevedad.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Estamos para ayudarte</h3>
+                    <p>Si prefieres hablar directamente, estos son nuestros canales de atención. Respondemos en menos de 1 hora en horario laboral.</p>
+                    <div class="contact-detail">
+                        <i class="fas fa-phone-alt"></i>
+                        <div><span>Teléfono</span><br> <a href="tel:+5493510000000">+54 9 351 000-0000</a></div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fab fa-whatsapp"></i>
+                        <div><span>WhatsApp</span><br> <a href="https://wa.me/5493510000000" target="_blank">+54 9 351 000-0000</a></div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-envelope"></i>
+                        <div><span>Email</span><br> <a href="mailto:info@rafelectrotecnica.com">info@rafelectrotecnica.com</a></div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-clock"></i>
+                        <div><span>Horarios</span><br> Lunes a Viernes: 8:00 - 19:00 | Emergencias 24/7</div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <h4>Completa tus datos</h4>
+                    <div class="form-group">
+                        <input type="text" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="Teléfono / WhatsApp" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Correo electrónico">
+                    </div>
+                    <div class="form-group">
+                        <select>
+                            <option value="">Selecciona el servicio que necesitas</option>
+                            <option>Instalación eléctrica</option>
+                            <option>Reparación / Mantenimiento</option>
+                            <option>Domótica / Automatización</option>
+                            <option>Tableros / Puesta a tierra</option>
+                            <option>Iluminación</option>
+                            <option>Certificación / Habilitación</option>
+                            <option>Emergencia 24/7</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Describe brevemente el trabajo a realizar..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER (contegroup) ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h4>RAF <span>Electrotécnica</span></h4>
+                    <p>Tu electricista de confianza en Córdoba. Seguridad, calidad y experiencia en cada proyecto.</p>
+                    <p style="margin-top: 12px; font-size: 0.85rem;"><i class="fas fa-id-card"></i> Matrícula ERSEP N° 12.345</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Enlaces</h5>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#testimonios">Testimonios</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Servicios</h5>
+                    <ul>
+                        <li><a href="#servicios">Instalaciones</a></li>
+                        <li><a href="#servicios">Reparaciones</a></li>
+                        <li><a href="#servicios">Domótica</a></li>
+                        <li><a href="#servicios">Emergencias</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Aviso legal</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 RAF Electrotécnica. Todos los derechos reservados. Diseñado con <i class="fas fa-heart" style="color: #FFB800;"></i></span>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://wa.me/5493510000000" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- Menú Hamburguesa ---
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const overlay = document.getElementById('overlay');
+
+            function toggleMenu() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+            }
+
+            hamburger.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            // Cerrar menú al hacer click en un enlace
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // --- FAQs (Acordeón) ---
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function() {
+                    // Cierra otros items abiertos
+                    faqItems.forEach(other => {
+                        if (other !== item && other.classList.contains('active')) {
+                            other.classList.remove('active');
+                        }
+                    });
+                    item.classList.toggle('active');
+                });
+            });
+
+            // --- Formulario de contacto (prevención de envío por ahora) ---
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('✅ ¡Gracias por tu mensaje! Nos pondremos en contacto contigo a la brevedad.');
+                    this.reset();
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>
