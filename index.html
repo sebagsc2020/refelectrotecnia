@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REF Electrotécnia | Instalaciones y Mantenimiento</title>
+    <title>RAF Electrotecnia | Instalaciones y Mantenimiento</title>
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -117,7 +117,6 @@
             gap: 12px;
         }
 
-        /* ---- NUEVO ESTILO PARA EL LOGO IMAGEN ---- */
         .logo-img {
             height: 48px;
             width: auto;
@@ -371,22 +370,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .hero-image img {
-            width: 100%;
-            max-width: 500px;
-            border-radius: var(--radius);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            background: #1A3B6B;
-            aspect-ratio: 4/3;
-            object-fit: cover;
-            /* Placeholder visual */ display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 1.2rem;
         }
 
         .hero-image-placeholder {
@@ -653,7 +636,7 @@
             gap: 14px;
         }
 
-        .testimonial-card .client img {
+        .testimonial-card .client .avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -910,6 +893,89 @@
         }
 
         /* ========================================
+                   COOKIE CONSENT (ESQUINA INFERIOR IZQUIERDA)
+                ======================================== */
+        .cookie-consent {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--white);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            z-index: 9999;
+            border-left: 6px solid var(--primary-cyan);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .cookie-consent.hidden {
+            transform: translateY(30px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cookie-consent p {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .cookie-consent p a {
+            color: var(--primary-cyan);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .cookie-consent .cookie-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .cookie-consent .btn-cookie-accept {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .cookie-consent .btn-cookie-accept:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .cookie-consent .btn-cookie-decline {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .cookie-consent .btn-cookie-decline:hover {
+            background: #F1F3F5;
+            border-color: #CED4DA;
+        }
+
+        /* ========================================
                    FOOTER (contegroup)
                 ======================================== */
         .footer {
@@ -1110,6 +1176,14 @@
             .contact-form {
                 padding: 24px;
             }
+
+            .cookie-consent {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                padding: 16px 20px;
+            }
         }
 
         /* Overlay para móvil */
@@ -1131,21 +1205,19 @@
 </head>
 <body>
 
-    <!-- ==================== BOTÓN WHATSAPP FLOTANTE (ConteGroup) ==================== -->
+    <!-- ==================== BOTÓN WHATSAPP FLOTANTE ==================== -->
     <a href="https://wa.me/5493510000000?text=Hola!%20Quiero%20solicitar%20un%20presupuesto" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- ==================== HEADER (ConteGroup + dtehijos) ==================== -->
+    <!-- ==================== HEADER ==================== -->
     <header class="header" id="inicio">
         <div class="container">
             <div class="logo">
-                <!-- LOGO REEMPLAZADO: Ícono por imagen /images/logoref.png -->
-                <img src="images/logoref.jpg" alt="REF Electrotécnia" class="logo-img">
-                <h1>REF <span>Electrotécnia</span> <span class="badge">Matrícula</span></h1>
+                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="RAF Electrotecnia" class="logo-img">
+                <h1>RAF <span>Electrotecnia</span> <span class="badge">Matrícula</span></h1>
             </div>
 
-            <!-- Menú de navegación -->
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#servicios">Servicios</a></li>
@@ -1155,12 +1227,11 @@
                 <li><a href="#contacto" class="nav-cta"><i class="fas fa-paper-plane"></i> Presupuesto</a></li>
             </ul>
 
-            <!-- Matrícula visible en escritorio (dtehijos) -->
+            <!-- Matrícula actualizada -->
             <div class="header-matricula">
-                <i class="fas fa-id-card"></i> Matrícula ERSEP N° 5617/1
+                <i class="fas fa-id-card"></i> Matrícula 5617/1
             </div>
 
-            <!-- Hamburguesa móvil -->
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -1169,17 +1240,15 @@
         </div>
     </header>
 
-    <!-- Overlay para móvil -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- ==================== HERO (gwfelectrical + jlserviciointegral) ==================== -->
+    <!-- ==================== HERO ==================== -->
     <section class="hero" id="inicio">
         <div class="container">
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
-                <p>Más de 20 años garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
+                <p>Más de 10 años garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
 
-                <!-- Badges de propuesta de valor (jlserviciointegral) -->
                 <div class="hero-badges">
                     <span><i class="fas fa-check-circle"></i> Presupuesto sin cargo</span>
                     <span><i class="fas fa-shield-alt"></i> Trabajos con garantía</span>
@@ -1200,11 +1269,11 @@
         </div>
     </section>
 
-    <!-- ==================== BARRA DE CONFIANZA (dtehijos + jlserviciointegral) ==================== -->
+    <!-- ==================== BARRA DE CONFIANZA ==================== -->
     <section class="trust-bar">
         <div class="container">
             <div class="trust-grid">
-                <div class="trust-item"><i class="fas fa-certificate"></i> Matrícula ERSEP N° 12.345</div>
+                <div class="trust-item"><i class="fas fa-certificate"></i> Matrícula 5617/1</div>
                 <div class="trust-item"><i class="fas fa-calendar-alt"></i> <span class="highlight">+10</span> años de experiencia</div>
                 <div class="trust-item"><i class="fas fa-handshake"></i> Garantía en todos los trabajos</div>
                 <div class="trust-item"><i class="fas fa-map-marked-alt"></i> Cobertura en toda Córdoba</div>
@@ -1212,7 +1281,7 @@
         </div>
     </section>
 
-    <!-- ==================== SERVICIOS (electricistasmatriculados) ==================== -->
+    <!-- ==================== SERVICIOS ==================== -->
     <section class="services" id="servicios">
         <div class="container">
             <div class="section-header">
@@ -1255,7 +1324,7 @@
         </div>
     </section>
 
-    <!-- ==================== SOBRE NOSOTROS (contegroup) ==================== -->
+    <!-- ==================== SOBRE NOSOTROS ==================== -->
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
@@ -1265,7 +1334,7 @@
                 </div>
                 <div class="about-content">
                     <h3>Más de <span>10 años</span> iluminando Córdoba</h3>
-                    <p>En <strong>REF Electrotécnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
+                    <p>En <strong>RAF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
                     <p>Somos una empresa familiar con matrícula habilitante, comprometida con la excelencia y la satisfacción del cliente. Nuestro objetivo es ofrecer soluciones duraderas, no parches temporales.</p>
                     <div class="about-stats">
                         <div><span class="number">+10</span> <span class="label">Años de trayectoria</span></div>
@@ -1277,7 +1346,7 @@
         </div>
     </section>
 
-    <!-- ==================== TESTIMONIOS (electricistasmatriculados + contegroup) ==================== -->
+    <!-- ==================== TESTIMONIOS ==================== -->
     <section class="testimonials" id="testimonios">
         <div class="container">
             <div class="section-header">
@@ -1290,15 +1359,15 @@
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
                     <div class="client">
-                        <div style="background:#0A2E5C; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">MF</div>
+                        <div class="avatar">MF</div>
                         <div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“Contraté a REF Electrotécnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
+                    <blockquote>“Contraté a RAF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
                     <div class="client">
-                        <div style="background:#1A4B7A; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">CR</div>
+                        <div class="avatar">CR</div>
                         <div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div>
                     </div>
                 </div>
@@ -1306,7 +1375,7 @@
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
                     <div class="client">
-                        <div style="background:#0A2E5C; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem;">LG</div>
+                        <div class="avatar">LG</div>
                         <div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div>
                     </div>
                 </div>
@@ -1314,7 +1383,7 @@
         </div>
     </section>
 
-    <!-- ==================== FAQs (electricistasmatriculados) ==================== -->
+    <!-- ==================== FAQs ==================== -->
     <section class="faq" id="faq">
         <div class="container">
             <div class="section-header">
@@ -1337,7 +1406,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        Sí, contamos con matrícula ERSEP N° 12.345 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.
+                        Sí, contamos con matrícula 5617/1 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.
                     </div>
                 </div>
                 <div class="faq-item">
@@ -1362,7 +1431,7 @@
         </div>
     </section>
 
-    <!-- ==================== COBERTURA (dtehijos) ==================== -->
+    <!-- ==================== COBERTURA ==================== -->
     <section class="coverage">
         <div class="container">
             <h2>Zonas de <span>cobertura</span></h2>
@@ -1382,7 +1451,7 @@
         </div>
     </section>
 
-    <!-- ==================== CONTACTO / PRESUPUESTO (contegroup) ==================== -->
+    <!-- ==================== CONTACTO / PRESUPUESTO ==================== -->
     <section class="contact" id="contacto">
         <div class="container">
             <div class="section-header">
@@ -1404,7 +1473,7 @@
                     </div>
                     <div class="contact-detail">
                         <i class="fas fa-envelope"></i>
-                        <div><span>Email</span><br> <a href="mailto:refelectrotecnica@.google.com">refelectrotecnica@.google.com</a></div>
+                        <div><span>Email</span><br> <a href="mailto:info@rafelectrotecnia.com">info@rafelectrotecnia.com</a></div>
                     </div>
                     <div class="contact-detail">
                         <i class="fas fa-clock"></i>
@@ -1414,16 +1483,16 @@
                 <form class="contact-form" id="contactForm">
                     <h4>Completa tus datos</h4>
                     <div class="form-group">
-                        <input type="text" placeholder="Nombre completo" required>
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" placeholder="Teléfono / WhatsApp" required>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono / WhatsApp" autocomplete="tel" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Correo electrónico">
+                        <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email">
                     </div>
                     <div class="form-group">
-                        <select>
+                        <select id="servicio" name="servicio" autocomplete="off">
                             <option value="">Selecciona el servicio que necesitas</option>
                             <option>Instalación eléctrica</option>
                             <option>Reparación / Mantenimiento</option>
@@ -1436,7 +1505,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <textarea placeholder="Describe brevemente el trabajo a realizar..."></textarea>
+                        <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
                     </div>
                     <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
                 </form>
@@ -1444,14 +1513,27 @@
         </div>
     </section>
 
-    <!-- ==================== FOOTER (contegroup) ==================== -->
+    <!-- ==================== COOKIE CONSENT (POPUP) ==================== -->
+    <div class="cookie-consent" id="cookieConsent">
+        <p>
+            <i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>
+            Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web.
+            <a href="#">Política de cookies</a>
+        </p>
+        <div class="cookie-buttons">
+            <button class="btn-cookie-accept" id="acceptCookies">Aceptar</button>
+            <button class="btn-cookie-decline" id="declineCookies">Rechazar</button>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <h4>REF <span>Electrotécnia</span></h4>
+                    <h4>RAF <span>Electrotecnia</span></h4>
                     <p>Tu electricista de confianza en Córdoba. Seguridad, calidad y experiencia en cada proyecto.</p>
-                    <p style="margin-top: 12px; font-size: 0.85rem;"><i class="fas fa-id-card"></i> Matrícula ERSEP N° 12.345</p>
+                    <p style="margin-top: 12px; font-size: 0.85rem;"><i class="fas fa-id-card"></i> Matrícula 5617/1</p>
                 </div>
                 <div class="footer-col">
                     <h5>Enlaces</h5>
@@ -1482,7 +1564,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>&copy; 2026 REF Electrotécnia. Todos los derechos reservados. Diseñado con <i class="fas fa-heart" style="color: #FFB800;"></i></span>
+                <span>&copy; 2026 RAF Electrotecnia. Todos los derechos reservados. Diseñado con <i class="fas fa-heart" style="color: #FFB800;"></i></span>
                 <div class="footer-socials">
                     <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1512,7 +1594,6 @@
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            // Cerrar menú al hacer click en un enlace
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('active')) {
@@ -1527,7 +1608,6 @@
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
                 question.addEventListener('click', function() {
-                    // Cierra otros items abiertos
                     faqItems.forEach(other => {
                         if (other !== item && other.classList.contains('active')) {
                             other.classList.remove('active');
@@ -1537,7 +1617,7 @@
                 });
             });
 
-            // --- Formulario de contacto (prevención de envío por ahora) ---
+            // --- Formulario de contacto ---
             const contactForm = document.getElementById('contactForm');
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
@@ -1546,6 +1626,34 @@
                     this.reset();
                 });
             }
+
+            // --- COOKIE CONSENT ---
+            const cookieConsent = document.getElementById('cookieConsent');
+
+            // Función para ocultar el popup y guardar la preferencia
+            function setCookieConsent(choice) {
+                // Guardar en localStorage para que no vuelva a aparecer
+                localStorage.setItem('cookieConsent', choice);
+                // Ocultar el popup con animación
+                cookieConsent.classList.add('hidden');
+                // Opcional: guardar una cookie real con la preferencia
+                document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`; // 1 año
+            }
+
+            // Comprobar si ya se ha dado consentimiento
+            const savedConsent = localStorage.getItem('cookieConsent');
+            if (savedConsent) {
+                cookieConsent.classList.add('hidden');
+            }
+
+            // Event listeners para los botones
+            document.getElementById('acceptCookies').addEventListener('click', function() {
+                setCookieConsent('accepted');
+            });
+
+            document.getElementById('declineCookies').addEventListener('click', function() {
+                setCookieConsent('declined');
+            });
 
         });
     </script>
