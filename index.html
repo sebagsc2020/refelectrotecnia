@@ -407,9 +407,8 @@
 
         .hero-image img {
             width: 100%;
-            max-width: 600px; /* Aumentado un 20% (antes 500px) */
+            max-width: 600px;
             border-radius: var(--radius);
-            /* Eliminadas todas las sombras y bordes */
             box-shadow: none;
             border: none;
             background: none;
@@ -1194,6 +1193,18 @@
             font-size: 0.9rem;
         }
 
+        .footer-bottom a {
+            color: var(--primary-cyan);
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--accent-yellow);
+        }
+
         .footer-socials {
             display: flex;
             gap: 16px;
@@ -1243,7 +1254,6 @@
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            /* En móvil, la imagen del hero (logo) se muestra arriba del texto */
             .hero .container {
                 display: flex;
                 flex-direction: column;
@@ -1252,7 +1262,7 @@
                 order: -1;
             }
             .hero-image img {
-                max-width: 360px; /* Aumentado 20% (antes 300px) */
+                max-width: 360px;
             }
         }
 
@@ -1390,14 +1400,12 @@
     </header>
     <div class="overlay" id="overlay"></div>
 
-    <!-- ==================== HERO (logotipo a la izquierda, texto a la derecha) ==================== -->
+    <!-- ==================== HERO ==================== -->
     <section class="hero" id="inicio">
         <div class="container">
-            <!-- Primero la imagen (logotipo) -->
             <div class="hero-image">
                 <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia - Logotipo">
             </div>
-            <!-- Luego el contenido textual -->
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
@@ -1655,7 +1663,12 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>&copy; 2026 REF Electrotecnia. Todos los derechos reservados. Diseñado con <i class="fas fa-heart" style="color: #FFB800;"></i></span>
+                <span>
+                    &copy; 2026 REF Electrotecnia. Todos los derechos reservados. | 
+                    <a href="https://wa.me/5493518692251?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
+                        Diseño SC Photo
+                    </a>
+                </span>
                 <div class="footer-socials">
                     <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
