@@ -1217,6 +1217,18 @@
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            /* En móvil, la imagen del hero (logo) se muestra arriba del texto */
+            .hero .container {
+                display: flex;
+                flex-direction: column;
+            }
+            .hero-image {
+                order: -1; /* Para que la imagen aparezca antes que el texto */
+            }
+            .hero-image img {
+                max-width: 300px;
+                padding: 10px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1298,10 +1310,6 @@
             .modal-content h2 {
                 font-size: 1.4rem;
             }
-            .hero-image img {
-                max-width: 300px;
-                padding: 10px;
-            }
         }
 
         .overlay {
@@ -1354,9 +1362,14 @@
     </header>
     <div class="overlay" id="overlay"></div>
 
-    <!-- ==================== HERO ==================== -->
+    <!-- ==================== HERO (logotipo a la izquierda, texto a la derecha) ==================== -->
     <section class="hero" id="inicio">
         <div class="container">
+            <!-- Primero la imagen (logotipo) -->
+            <div class="hero-image">
+                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia - Logotipo">
+            </div>
+            <!-- Luego el contenido textual -->
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
@@ -1369,10 +1382,6 @@
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
                     <a href="tel:+5493518692251" class="btn-secondary"><i class="fas fa-phone-alt"></i> Llamar ahora</a>
                 </div>
-            </div>
-            <div class="hero-image">
-                <!-- Logomarca en lugar del placeholder -->
-                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia - Logotipo">
             </div>
         </div>
     </section>
