@@ -364,28 +364,24 @@
             transform: translateY(-4px);
         }
 
-        .hero-image-placeholder {
-            width: 100%;
-            max-width: 500px;
-            aspect-ratio: 4/3;
-            background: linear-gradient(145deg, #1A4B7A, #0A2E5C);
-            border-radius: var(--radius);
-            border: 2px dashed rgba(255, 255, 255, 0.15);
+        /* Hero image con logomarca */
+        .hero-image {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 500;
-            gap: 16px;
-            text-align: center;
-            padding: 20px;
+            align-items: center;
         }
 
-        .hero-image-placeholder i {
-            font-size: 4rem;
-            color: var(--accent-yellow);
-            opacity: 0.6;
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            aspect-ratio: 4/3;
+            object-fit: contain;
+            display: block;
         }
 
         /* ========================================
@@ -1003,7 +999,6 @@
             margin-bottom: 8px;
         }
 
-        /* Scroll personalizado */
         .modal-content::-webkit-scrollbar {
             width: 6px;
         }
@@ -1303,6 +1298,10 @@
             .modal-content h2 {
                 font-size: 1.4rem;
             }
+            .hero-image img {
+                max-width: 300px;
+                padding: 10px;
+            }
         }
 
         .overlay {
@@ -1372,10 +1371,8 @@
                 </div>
             </div>
             <div class="hero-image">
-                <div class="hero-image-placeholder">
-                    <i class="fas fa-bolt"></i>
-                    <span>Tu proyecto aquí <br> <small style="font-weight:300; opacity:0.7;">(Fotografía real del equipo)</small></span>
-                </div>
+                <!-- Logomarca en lugar del placeholder -->
+                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia - Logotipo">
             </div>
         </div>
     </section>
@@ -1716,7 +1713,6 @@
             const modalBody = document.getElementById('modalBody');
             const modalClose = document.getElementById('modalClose');
 
-            // Contenidos de cada política
             const legalContent = {
                 privacidad: {
                     title: 'Política de privacidad',
@@ -1755,7 +1751,6 @@
                 }
             };
 
-            // Función para abrir el modal
             function openModal(type) {
                 const content = legalContent[type];
                 if (!content) return;
@@ -1763,20 +1758,16 @@
                 modalBody.innerHTML = content.body;
                 modalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                // Enfoque al modal para accesibilidad
                 modalOverlay.setAttribute('aria-hidden', 'false');
                 modalClose.focus();
             }
 
-            // Función para cerrar el modal
             function closeModal() {
                 modalOverlay.classList.remove('active');
                 document.body.style.overflow = '';
                 modalOverlay.setAttribute('aria-hidden', 'true');
-                // Devolver foco al elemento que abrió el modal (opcional)
             }
 
-            // Event listeners para los enlaces legales en el footer
             document.querySelectorAll('[data-modal]').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1785,27 +1776,18 @@
                 });
             });
 
-            // Cerrar modal con la X
             modalClose.addEventListener('click', closeModal);
-
-            // Cerrar modal al hacer clic en el overlay (fuera del contenido)
             modalOverlay.addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal();
                 }
             });
-
-            // Cerrar modal con tecla ESC
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                     closeModal();
                 }
             });
 
-            // Prevenir scroll del body cuando el modal está abierto (ya controlado)
-            // También manejamos el foco para accesibilidad (opcional)
-
-            // Enlace de "Política de cookies" en el aviso de cookies (opcional, abre el modal de privacidad)
             document.getElementById('cookiePolicyLink').addEventListener('click', function(e) {
                 e.preventDefault();
                 openModal('privacidad');
