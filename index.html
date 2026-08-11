@@ -375,7 +375,7 @@
             box-shadow: 0 12px 35px rgba(255, 184, 0, 0.2);
         }
         .btn-primary:hover::before {
-            animation-duration: 2s; /* se acelera un poco al pasar el mouse */
+            animation-duration: 2s;
         }
 
         .btn-secondary {
@@ -398,7 +398,7 @@
             transform: translateY(-4px);
         }
 
-        /* Hero image con logomarca */
+        /* Hero image con logomarca - SIN RECUADRO Y SIN SOMBRA */
         .hero-image {
             display: flex;
             justify-content: center;
@@ -407,15 +407,21 @@
 
         .hero-image img {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px; /* Aumentado un 20% (antes 500px) */
             border-radius: var(--radius);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
+            /* Eliminadas todas las sombras y bordes */
+            box-shadow: none;
+            border: none;
+            background: none;
+            padding: 0;
             aspect-ratio: 4/3;
             object-fit: contain;
             display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.02);
         }
 
         /* ========================================
@@ -774,26 +780,12 @@
             margin-bottom: 24px;
         }
 
-        .coverage-tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .coverage-tags span {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 24px;
-            border-radius: 50px;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: var(--transition);
-        }
-
-        .coverage-tags span:hover {
-            background: var(--accent-yellow);
-            color: var(--primary-dark);
-            transform: translateY(-2px);
+        .coverage .nota {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 12px;
+            font-style: italic;
+            letter-spacing: 0.3px;
         }
 
         /* ========================================
@@ -1257,11 +1249,10 @@
                 flex-direction: column;
             }
             .hero-image {
-                order: -1; /* Para que la imagen aparezca antes que el texto */
+                order: -1;
             }
             .hero-image img {
-                max-width: 300px;
-                padding: 10px;
+                max-width: 360px; /* Aumentado 20% (antes 300px) */
             }
         }
 
@@ -1345,7 +1336,7 @@
                 font-size: 1.4rem;
             }
             .btn-primary::before {
-                animation-duration: 5s; /* más lento en móvil */
+                animation-duration: 5s;
             }
         }
 
@@ -1538,11 +1529,7 @@
         <div class="container">
             <h2>Zonas de <span>cobertura</span></h2>
             <p>Trabajamos en toda la ciudad de Córdoba y alrededores.</p>
-            <div class="coverage-tags">
-                <span>Centro</span><span>Nueva Córdoba</span><span>Cerro de las Rosas</span><span>Alta Córdoba</span>
-                <span>General Paz</span><span>Villa Belgrano</span><span>Argüello</span><span>Ruta 20</span>
-                <span>Villa Allende</span><span>Río Ceballos</span>
-            </div>
+            <div class="nota">* Consulte disponibilidad para servicios fuera de la provincia</div>
         </div>
     </section>
 
