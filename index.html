@@ -92,7 +92,7 @@
         }
 
         /* ========================================
-                   HEADER / NAVEGACIÓN (ConteGroup + dtehijos)
+                   HEADER / NAVEGACIÓN
                 ======================================== */
         .header {
             background: var(--white);
@@ -204,7 +204,6 @@
             box-shadow: var(--shadow-hover);
         }
 
-        /* Matrícula en header (dtehijos) */
         .header-matricula {
             background: var(--light-bg);
             padding: 4px 16px;
@@ -220,7 +219,6 @@
             margin-right: 6px;
         }
 
-        /* Hamburguesa */
         .hamburger {
             display: none;
             flex-direction: column;
@@ -240,7 +238,7 @@
         }
 
         /* ========================================
-                   HERO (gwfelectrical + jlserviciointegral)
+                   HERO
                 ======================================== */
         .hero {
             background: linear-gradient(135deg, var(--primary-dark) 0%, #0D3B66 100%);
@@ -366,12 +364,6 @@
             transform: translateY(-4px);
         }
 
-        .hero-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
         .hero-image-placeholder {
             width: 100%;
             max-width: 500px;
@@ -397,7 +389,7 @@
         }
 
         /* ========================================
-                   BARRAS DE CONFIANZA (jlserviciointegral + dtehijos)
+                   BARRAS DE CONFIANZA
                 ======================================== */
         .trust-bar {
             background: var(--white);
@@ -436,7 +428,7 @@
         }
 
         /* ========================================
-                   SERVICIOS (electricistasmatriculados)
+                   SERVICIOS
                 ======================================== */
         .services {
             padding: 80px 0;
@@ -515,7 +507,7 @@
         }
 
         /* ========================================
-                   SOBRE NOSOTROS (contegroup)
+                   SOBRE NOSOTROS
                 ======================================== */
         .about {
             padding: 80px 0;
@@ -589,7 +581,7 @@
         }
 
         /* ========================================
-                   TESTIMONIOS (electricistasmatriculados + contegroup)
+                   TESTIMONIOS
                 ======================================== */
         .testimonials {
             padding: 80px 0;
@@ -660,7 +652,7 @@
         }
 
         /* ========================================
-                   FAQS (electricistasmatriculados)
+                   FAQS
                 ======================================== */
         .faq {
             padding: 80px 0;
@@ -728,7 +720,7 @@
         }
 
         /* ========================================
-                   COBERTURA (dtehijos)
+                   COBERTURA
                 ======================================== */
         .coverage {
             padding: 60px 0;
@@ -775,7 +767,7 @@
         }
 
         /* ========================================
-                   CONTACTO / PRESUPUESTO (contegroup)
+                   CONTACTO / PRESUPUESTO
                 ======================================== */
         .contact {
             padding: 80px 0;
@@ -817,11 +809,37 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
-        .contact-detail span {
+        .contact-detail .info-text {
             font-weight: 500;
+            color: var(--gray-text);
+            /* Deshabilitar selección y copia */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        .contact-detail .info-text strong {
+            font-weight: 600;
             color: var(--primary-dark);
+            display: block;
+        }
+
+        .contact-detail .info-text .data {
+            color: #333;
+        }
+
+        /* Para el bloque de horarios */
+        .contact-detail .info-text .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
         }
 
         .contact-form {
@@ -893,7 +911,7 @@
         }
 
         /* ========================================
-                   COOKIE CONSENT (ESQUINA INFERIOR IZQUIERDA)
+                   COOKIE CONSENT
                 ======================================== */
         .cookie-consent {
             position: fixed;
@@ -976,7 +994,7 @@
         }
 
         /* ========================================
-                   FOOTER (contegroup)
+                   FOOTER
                 ======================================== */
         .footer {
             background: #0A1E2E;
@@ -1064,35 +1082,29 @@
         }
 
         /* ========================================
-                   RESPONSIVE (Mobile First)
+                   RESPONSIVE
                 ======================================== */
         @media (max-width: 992px) {
             .hero .container {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-
             .hero-content p {
                 margin-left: auto;
                 margin-right: auto;
             }
-
             .hero-badges {
                 justify-content: center;
             }
-
             .hero-buttons {
                 justify-content: center;
             }
-
             .about-grid {
                 grid-template-columns: 1fr;
             }
-
             .contact-grid {
                 grid-template-columns: 1fr;
             }
-
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -1102,7 +1114,6 @@
             .header-matricula {
                 display: none;
             }
-
             .nav-menu {
                 position: fixed;
                 top: 0;
@@ -1119,52 +1130,41 @@
                 align-items: flex-start;
                 z-index: 1001;
             }
-
             .nav-menu.active {
                 left: 0;
             }
-
             .hamburger {
                 display: flex;
                 z-index: 1002;
             }
-
             .hamburger.active span:nth-child(1) {
                 transform: rotate(45deg) translate(5px, 5px);
             }
-
             .hamburger.active span:nth-child(2) {
                 opacity: 0;
             }
-
             .hamburger.active span:nth-child(3) {
                 transform: rotate(-45deg) translate(5px, -5px);
             }
-
             .hero-content h2 {
                 font-size: 2.4rem;
             }
-
             .section-header h2 {
                 font-size: 2rem;
             }
-
             .about-stats {
                 gap: 20px;
                 flex-wrap: wrap;
             }
-
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-
             .footer-bottom {
                 flex-direction: column;
                 gap: 16px;
                 text-align: center;
             }
-
             .instagram-float {
                 width: 56px;
                 height: 56px;
@@ -1172,11 +1172,9 @@
                 bottom: 20px;
                 right: 20px;
             }
-
             .contact-form {
                 padding: 24px;
             }
-
             .cookie-consent {
                 bottom: 10px;
                 left: 10px;
@@ -1186,7 +1184,6 @@
             }
         }
 
-        /* Overlay para móvil */
         .overlay {
             display: none;
             position: fixed;
@@ -1217,7 +1214,6 @@
                 <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="logo-img">
                 <h1>REF <span>Electrotecnia</span> <span class="badge">Matrícula</span></h1>
             </div>
-
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#servicios">Servicios</a></li>
@@ -1226,12 +1222,9 @@
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="#contacto" class="nav-cta"><i class="fas fa-paper-plane"></i> Presupuesto</a></li>
             </ul>
-
-            <!-- Matrícula actualizada -->
             <div class="header-matricula">
                 <i class="fas fa-id-card"></i> Matrícula 5617/1
             </div>
-
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -1239,7 +1232,6 @@
             </button>
         </div>
     </header>
-
     <div class="overlay" id="overlay"></div>
 
     <!-- ==================== HERO ==================== -->
@@ -1248,13 +1240,11 @@
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
-
                 <div class="hero-badges">
                     <span><i class="fas fa-check-circle"></i> Presupuesto sin cargo</span>
                     <span><i class="fas fa-shield-alt"></i> Trabajos con garantía</span>
                     <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
                 </div>
-
                 <div class="hero-buttons">
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
                     <a href="tel:+5493518692251" class="btn-secondary"><i class="fas fa-phone-alt"></i> Llamar ahora</a>
@@ -1290,36 +1280,12 @@
                 <p>Soluciones integrales para hogares, comercios e industrias. Siempre con la máxima seguridad y calidad.</p>
             </div>
             <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-home"></i>
-                    <h4>Instalaciones eléctricas</h4>
-                    <p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-tools"></i>
-                    <h4>Reparaciones y mantenimiento</h4>
-                    <p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-microchip"></i>
-                    <h4>Domótica y automatización</h4>
-                    <p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-bolt"></i>
-                    <h4>Tableros y puestas a tierra</h4>
-                    <p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-lightbulb"></i>
-                    <h4>Iluminación interior y exterior</h4>
-                    <p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-file-signature"></i>
-                    <h4>Certificaciones y habilitaciones</h4>
-                    <p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p>
-                </div>
+                <div class="service-card"><i class="fas fa-home"></i><h4>Instalaciones eléctricas</h4><p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h4>Reparaciones y mantenimiento</h4><p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p></div>
+                <div class="service-card"><i class="fas fa-microchip"></i><h4>Domótica y automatización</h4><p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p></div>
+                <div class="service-card"><i class="fas fa-bolt"></i><h4>Tableros y puestas a tierra</h4><p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p></div>
+                <div class="service-card"><i class="fas fa-lightbulb"></i><h4>Iluminación interior y exterior</h4><p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p></div>
+                <div class="service-card"><i class="fas fa-file-signature"></i><h4>Certificaciones y habilitaciones</h4><p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p></div>
             </div>
         </div>
     </section>
@@ -1328,10 +1294,7 @@
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
-                <div class="about-image">
-                    <i class="fas fa-users"></i>
-                    <span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span>
-                </div>
+                <div class="about-image"><i class="fas fa-users"></i><span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span></div>
                 <div class="about-content">
                     <h3>Más de <span>20 años</span> iluminando Córdoba</h3>
                     <p>En <strong>REF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
@@ -1358,26 +1321,17 @@
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">MF</div>
-                        <div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div>
-                    </div>
+                    <div class="client"><div class="avatar">MF</div><div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Contraté a REF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">CR</div>
-                        <div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div>
-                    </div>
+                    <div class="client"><div class="avatar">CR</div><div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">LG</div>
-                        <div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div>
-                    </div>
+                    <div class="client"><div class="avatar">LG</div><div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div></div>
                 </div>
             </div>
         </div>
@@ -1392,50 +1346,24 @@
             </div>
             <div class="faq-list">
                 <div class="faq-item active">
-                    <button class="faq-question">
-                        <span>¿Realizan presupuestos sin cargo?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        Sí, absolutamente. Realizamos una visita técnica para evaluar el trabajo y te entregamos un presupuesto detallado y sin ningún costo.
-                    </div>
+                    <button class="faq-question"><span>¿Realizan presupuestos sin cargo?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Sí, absolutamente. Realizamos una visita técnica para evaluar el trabajo y te entregamos un presupuesto detallado y sin ningún costo.</div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question">
-                        <span>¿Cuentan con matrícula habilitante?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        Sí, contamos con matrícula 5617/1 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.
-                    </div>
+                    <button class="faq-question"><span>¿Cuentan con matrícula habilitante?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Sí, contamos con matrícula 5617/1 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.</div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question">
-                        <span>¿Atienden urgencias fuera del horario laboral?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        Por supuesto. Disponemos de un servicio de emergencias 24/7 los 365 días del año. Ante cualquier problema eléctrico grave, puedes contactarnos de inmediato.
-                    </div>
+                    <button class="faq-question"><span>¿Atienden urgencias fuera del horario laboral?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Por supuesto. Disponemos de un servicio de emergencias 24/7 los 365 días del año. Ante cualquier problema eléctrico grave, puedes contactarnos de inmediato.</div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question">
-                        <span>¿Qué tipo de garantía ofrecen en los trabajos?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        Todos nuestros trabajos cuentan con una garantía escrita por materiales y mano de obra. La duración varía según el tipo de instalación, pero siempre la especificamos en el presupuesto.
-                    </div>
+                    <button class="faq-question"><span>¿Qué tipo de garantía ofrecen en los trabajos?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Todos nuestros trabajos cuentan con una garantía escrita por materiales y mano de obra. La duración varía según el tipo de instalación, pero siempre la especificamos en el presupuesto.</div>
                 </div>
-                <!-- NUEVA PREGUNTA DESTACADA -->
                 <div class="faq-item" style="border-left: 4px solid var(--accent-yellow);">
-                    <button class="faq-question">
-                        <span><i class="fas fa-reply" style="color: var(--accent-yellow); margin-right: 10px;"></i> ¿Cómo recibo la respuesta a mi solicitud de presupuesto?</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <p><strong>¡Por el mismo medio que nos contactaste!</strong> Si completaste el formulario de contacto, te responderemos al correo electrónico o al número de WhatsApp que hayas indicado en el formulario. De esta forma, la comunicación es ágil y directa, sin que tengas que buscar nuestros datos nuevamente.</p>
-                    </div>
+                    <button class="faq-question"><span><i class="fas fa-reply" style="color: var(--accent-yellow); margin-right: 10px;"></i> ¿Cómo recibo la respuesta a mi solicitud de presupuesto?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p><strong>¡Por el mismo medio que nos contactaste!</strong> Si completaste el formulario de contacto, te responderemos al correo electrónico o al número de WhatsApp que hayas indicado en el formulario. De esta forma, la comunicación es ágil y directa, sin que tengas que buscar nuestros datos nuevamente.</p></div>
                 </div>
             </div>
         </div>
@@ -1447,16 +1375,9 @@
             <h2>Zonas de <span>cobertura</span></h2>
             <p>Trabajamos en toda la ciudad de Córdoba y alrededores.</p>
             <div class="coverage-tags">
-                <span>Centro</span>
-                <span>Nueva Córdoba</span>
-                <span>Cerro de las Rosas</span>
-                <span>Alta Córdoba</span>
-                <span>General Paz</span>
-                <span>Villa Belgrano</span>
-                <span>Argüello</span>
-                <span>Ruta 20</span>
-                <span>Villa Allende</span>
-                <span>Río Ceballos</span>
+                <span>Centro</span><span>Nueva Córdoba</span><span>Cerro de las Rosas</span><span>Alta Córdoba</span>
+                <span>General Paz</span><span>Villa Belgrano</span><span>Argüello</span><span>Ruta 20</span>
+                <span>Villa Allende</span><span>Río Ceballos</span>
             </div>
         </div>
     </section>
@@ -1473,21 +1394,38 @@
                 <div class="contact-info">
                     <h3>Estamos para ayudarte</h3>
                     <p>Si prefieres hablar directamente, estos son nuestros canales de atención. Respondemos en menos de 1 hora en horario laboral.</p>
+                    
+                    <!-- Teléfono (texto plano, no seleccionable) -->
                     <div class="contact-detail">
                         <i class="fas fa-phone-alt"></i>
-                        <div><span>Teléfono</span><br> <a href="tel:+5493518692251">+54 9 351 869-2251</a></div>
+                        <div class="info-text">
+                            <strong>Teléfono</strong>
+                            <span class="data">+54 9 351 869-2251</span>
+                        </div>
                     </div>
+                    <!-- WhatsApp (texto plano, no seleccionable) -->
                     <div class="contact-detail">
                         <i class="fab fa-whatsapp"></i>
-                        <div><span>WhatsApp</span><br> <a href="https://wa.me/5493518692251" target="_blank">+54 9 351 869-2251</a></div>
+                        <div class="info-text">
+                            <strong>WhatsApp</strong>
+                            <span class="data">+54 9 351 869-2251</span>
+                        </div>
                     </div>
+                    <!-- Email (texto plano, no seleccionable) -->
                     <div class="contact-detail">
                         <i class="fas fa-envelope"></i>
-                        <div><span>Email</span><br> <a href="mailto:info@refelectrotecnia.com">info@refelectrotecnia.com</a></div>
+                        <div class="info-text">
+                            <strong>Email</strong>
+                            <span class="data">info@refelectrotecnia.com</span>
+                        </div>
                     </div>
+                    <!-- Horarios (texto plano, no seleccionable) -->
                     <div class="contact-detail">
                         <i class="fas fa-clock"></i>
-                        <div><span>Horarios</span><br> Lunes a Viernes: 8:00 - 19:00 | Emergencias 24/7</div>
+                        <div class="info-text">
+                            <strong>Horarios</strong>
+                            <span class="data no-select">Lunes a Viernes: 8:00 - 19:00 | Emergencias 24/7</span>
+                        </div>
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
@@ -1523,13 +1461,9 @@
         </div>
     </section>
 
-    <!-- ==================== COOKIE CONSENT (POPUP) ==================== -->
+    <!-- ==================== COOKIE CONSENT ==================== -->
     <div class="cookie-consent" id="cookieConsent">
-        <p>
-            <i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>
-            Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web.
-            <a href="#">Política de cookies</a>
-        </p>
+        <p><i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web. <a href="#">Política de cookies</a></p>
         <div class="cookie-buttons">
             <button class="btn-cookie-accept" id="acceptCookies">Aceptar</button>
             <button class="btn-cookie-decline" id="declineCookies">Rechazar</button>
@@ -1547,30 +1481,15 @@
                 </div>
                 <div class="footer-col">
                     <h5>Enlaces</h5>
-                    <ul>
-                        <li><a href="#inicio">Inicio</a></li>
-                        <li><a href="#servicios">Servicios</a></li>
-                        <li><a href="#nosotros">Nosotros</a></li>
-                        <li><a href="#testimonios">Testimonios</a></li>
-                        <li><a href="#contacto">Contacto</a></li>
-                    </ul>
+                    <ul><li><a href="#inicio">Inicio</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#nosotros">Nosotros</a></li><li><a href="#testimonios">Testimonios</a></li><li><a href="#contacto">Contacto</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Servicios</h5>
-                    <ul>
-                        <li><a href="#servicios">Instalaciones</a></li>
-                        <li><a href="#servicios">Reparaciones</a></li>
-                        <li><a href="#servicios">Domótica</a></li>
-                        <li><a href="#servicios">Emergencias</a></li>
-                    </ul>
+                    <ul><li><a href="#servicios">Instalaciones</a></li><li><a href="#servicios">Reparaciones</a></li><li><a href="#servicios">Domótica</a></li><li><a href="#servicios">Emergencias</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Legal</h5>
-                    <ul>
-                        <li><a href="#">Política de privacidad</a></li>
-                        <li><a href="#">Términos y condiciones</a></li>
-                        <li><a href="#">Aviso legal</a></li>
-                    </ul>
+                    <ul><li><a href="#">Política de privacidad</a></li><li><a href="#">Términos y condiciones</a></li><li><a href="#">Aviso legal</a></li></ul>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -1585,116 +1504,78 @@
         </div>
     </footer>
 
-    <!-- ==================== JAVASCRIPT ==================== -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // --- Menú Hamburguesa ---
+            // Hamburguesa
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
-
             function toggleMenu() {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
                 document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
             }
-
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
-
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) {
-                        toggleMenu();
-                    }
+                    if (navMenu.classList.contains('active')) toggleMenu();
                 });
             });
 
-            // --- FAQs (Acordeón) ---
+            // FAQs
             const faqItems = document.querySelectorAll('.faq-item');
-
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
                 question.addEventListener('click', function() {
                     faqItems.forEach(other => {
-                        if (other !== item && other.classList.contains('active')) {
-                            other.classList.remove('active');
-                        }
+                        if (other !== item && other.classList.contains('active')) other.classList.remove('active');
                     });
                     item.classList.toggle('active');
                 });
             });
 
-            // --- FORMULARIO: Enviar por WhatsApp ---
+            // Formulario WhatsApp
             const contactForm = document.getElementById('contactForm');
-
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-
-                // Obtener valores del formulario
                 const nombre = document.getElementById('nombre').value.trim();
                 const telefono = document.getElementById('telefono').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const servicio = document.getElementById('servicio').value;
                 const mensaje = document.getElementById('mensaje').value.trim();
-
-                // Validar campos obligatorios
                 if (!nombre || !telefono) {
                     alert('Por favor, completa tu nombre y teléfono.');
                     return;
                 }
-
-                // Construir el mensaje para WhatsApp con los datos en lista
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
-                if (email) {
-                    whatsappMessage += `📧 *Email:* ${email}\n`;
-                }
-                if (servicio) {
-                    whatsappMessage += `🔧 *Servicio:* ${servicio}\n`;
-                }
-                if (mensaje) {
-                    whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
-                }
-
-                // Número de WhatsApp actualizado
+                if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
+                if (servicio) whatsappMessage += `🔧 *Servicio:* ${servicio}\n`;
+                if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
                 const phoneNumber = '5493518692251';
-
-                // Codificar el mensaje para URL
                 const encodedMessage = encodeURIComponent(whatsappMessage);
-
-                // Abrir WhatsApp
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-
-                // Opcional: limpiar el formulario o mostrar un mensaje
-                // this.reset();
             });
 
-            // --- COOKIE CONSENT ---
+            // Cookies
             const cookieConsent = document.getElementById('cookieConsent');
-
             function setCookieConsent(choice) {
                 localStorage.setItem('cookieConsent', choice);
                 cookieConsent.classList.add('hidden');
                 document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`;
             }
-
-            const savedConsent = localStorage.getItem('cookieConsent');
-            if (savedConsent) {
+            if (localStorage.getItem('cookieConsent')) {
                 cookieConsent.classList.add('hidden');
             }
-
             document.getElementById('acceptCookies').addEventListener('click', function() {
                 setCookieConsent('accepted');
             });
-
             document.getElementById('declineCookies').addEventListener('click', function() {
                 setCookieConsent('declined');
             });
-
         });
     </script>
 </body>
