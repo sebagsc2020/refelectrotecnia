@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Google Fonts (Inter) -->
@@ -940,7 +940,7 @@
                 </div>
                 <div class="form-group">
                     <label>Precio ($)</label>
-                    <input type="number" id="presupuestoPrecio" placeholder="0.00" step="0.01">
+                    <input type="number" id="presupuestoPrecio" placeholder="0" step="0.01">
                 </div>
                 <div class="form-group">
                     <label>Validez (días)</label>
@@ -987,14 +987,14 @@
                 </div>
                 <div class="detalle-item">
                     <span class="desc" id="previewDescripcion">-</span>
-                    <span class="precio" id="previewSubtotal">$0.00</span>
+                    <span class="precio" id="previewSubtotal">$0</span>
                 </div>
                 <div class="detalle-item" style="font-size:0.9rem; color:var(--gray-text); border-bottom: 2px solid #E9ECEF;">
                     <span class="desc">IVA 21%</span>
-                    <span class="precio" id="previewIva">$0.00</span>
+                    <span class="precio" id="previewIva">$0</span>
                 </div>
                 <div class="totales">
-                    <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$0.00</span></div>
+                    <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$0</span></div>
                 </div>
 
                 <div class="validez">
@@ -1023,6 +1023,17 @@
         let chartInstance = null;
         let datosCache = [];
         let contadorPresupuesto = 0;
+
+        // =============================================
+        // FUNCIÓN PARA FORMATEAR PRECIOS (SIN CENTAVOS, CON PUNTOS DE MILES)
+        // =============================================
+        function formatearPrecio(valor) {
+            if (isNaN(valor)) return '0';
+            // Redondear a entero
+            const entero = Math.round(valor);
+            // Agregar separador de miles con puntos (formato argentino)
+            return entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
 
         // =============================================
         // LOGIN
@@ -1417,9 +1428,10 @@
             document.getElementById('previewDescripcion').textContent = descripcion;
             document.getElementById('previewMateriales').textContent = materiales;
 
-            document.getElementById('previewSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('previewIva').textContent = `$${iva.toFixed(2)}`;
-            document.getElementById('previewTotal').textContent = `$${total.toFixed(2)}`;
+            // Aplicar formato sin centavos y con puntos de miles
+            document.getElementById('previewSubtotal').textContent = '$' + formatearPrecio(subtotal);
+            document.getElementById('previewIva').textContent = '$' + formatearPrecio(iva);
+            document.getElementById('previewTotal').textContent = '$' + formatearPrecio(total);
             document.getElementById('previewCondMateriales').textContent = materiales;
 
             const hoy = new Date();
@@ -1449,17 +1461,15 @@
             const total = subtotal * 1.21;
             const numero = document.getElementById('previewNumero').textContent;
 
-            // Mostrar mensaje de éxito
-            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: $${total.toFixed(2)}`);
+            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: $${formatearPrecio(total)}`);
 
-            // Opcional: guardar en consola para depuración
             console.log('Presupuesto guardado:', {
                 numero,
                 nombre,
                 servicio,
-                subtotal,
-                iva: subtotal * 0.21,
-                total,
+                subtotal: formatearPrecio(subtotal),
+                iva: formatearPrecio(subtotal * 0.21),
+                total: formatearPrecio(total),
                 validez: document.getElementById('presupuestoValidez').value,
                 materiales: document.getElementById('presupuestoMateriales').value
             });
