@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2pdf.js para generar PDF directamente -->
@@ -801,6 +801,7 @@
                 <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
             </div>
             <button class="btn-login" id="loginBtn"><i class="fas fa-lock"></i> Ingresar</button>
+            <button class="btn-login" id="testConexionBtn" style="margin-top:8px; background:#6c757d; width:100%; padding:10px; border:none; border-radius:50px; color:white; font-weight:600; cursor:pointer;">Probar conexión</button>
             <div class="login-error" id="loginError"></div>
         </div>
     </div>
@@ -1047,6 +1048,7 @@
         const dashboard = document.getElementById('dashboard');
         const passwordInput = document.getElementById('passwordInput');
         const loginBtn = document.getElementById('loginBtn');
+        const testBtn = document.getElementById('testConexionBtn');
         const loginError = document.getElementById('loginError');
 
         async function doLogin() {
@@ -1064,12 +1066,10 @@
                     body: JSON.stringify({ action: 'login', password: pass })
                 });
 
-                // Intentar parsear como JSON
                 let data;
                 try {
                     data = await response.json();
                 } catch (parseError) {
-                    // Si no es JSON, leer como texto para mostrar el error real
                     const text = await response.text();
                     throw new Error('El servidor devolvió: ' + text);
                 }
@@ -1096,6 +1096,35 @@
         loginBtn.addEventListener('click', doLogin);
         passwordInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') doLogin();
+        });
+
+        // Botón de prueba de conexión
+        testBtn.addEventListener('click', async function() {
+            loginError.classList.remove('show');
+            loginError.textContent = 'Probando conexión...';
+            loginError.style.color = '#007bff';
+            loginError.classList.add('show');
+
+            try {
+                const response = await fetch(URL_SCRIPT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', password: 'REF2409' })
+                });
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                    loginError.textContent = '✅ Conexión exitosa. Respuesta: ' + JSON.stringify(data);
+                    loginError.style.color = '#28a745';
+                } catch (e) {
+                    loginError.textContent = '❌ El servidor devolvió: ' + text;
+                    loginError.style.color = '#e74c3c';
+                }
+            } catch (error) {
+                loginError.textContent = '❌ Error de red: ' + error.message + ' | Verifica la URL y la publicación del script.';
+                loginError.style.color = '#e74c3c';
+            }
         });
 
         // Verificar sesión al cargar
