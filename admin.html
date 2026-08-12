@@ -940,7 +940,7 @@
         }
 
         // =============================================
-        // TABLA COMPLETA (CON BOTONES EDITAR / ELIMINAR)
+        // TABLA COMPLETA (CON BOTONES EDITAR / ELIMINAR y MENSAJE COMPLETO)
         // =============================================
         function renderizarTabla(data, headers) {
             const container = document.getElementById('tablaContainer');
@@ -965,7 +965,6 @@
             });
 
             sorted.forEach((row, idx) => {
-                // Encontrar el índice original en datosCache para las operaciones
                 const originalIndex = data.indexOf(row);
                 
                 const fecha = row.Fecha ? new Date(row.Fecha).toLocaleString('es-AR') : '';
@@ -985,7 +984,7 @@
                     <td>${email}</td>
                     <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
                     <td>${ubicacion}</td>
-                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${mensaje}">${mensaje}</td>
+                    <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td>
                     <td style="text-align:center; white-space:nowrap;">
                         <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
                         <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})"><i class="fas fa-trash"></i> Eliminar</button>
