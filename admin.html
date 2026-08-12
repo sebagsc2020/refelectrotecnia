@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2pdf.js para generar PDF directamente -->
@@ -42,87 +42,11 @@
             min-height: 100vh;
         }
 
-        /* ========== LOGIN ========== */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary-dark), #0D3B66);
-            padding: 20px;
-        }
-
-        .login-box {
-            background: white;
-            padding: 40px 35px;
-            border-radius: var(--radius);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 380px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .login-box .logo-img {
-            max-width: 180px;
-            display: block;
-            margin: 0 auto 25px;
-        }
-
-        .login-box .form-group {
-            margin-bottom: 18px;
-        }
-        .login-box input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: var(--font);
-            transition: 0.2s;
-        }
-        .login-box input:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
-        }
-
-        .login-box .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .login-box .btn-login:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 168, 255, 0.3);
-        }
-
-        .login-error {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 12px;
-            display: none;
-            text-align: center;
-        }
-        .login-error.show {
-            display: block;
-        }
-
         /* ========== DASHBOARD ========== */
         .dashboard {
-            display: none;
             padding: 20px;
             max-width: 1400px;
             margin: 0 auto;
-        }
-        .dashboard.active {
             display: block;
         }
 
@@ -758,12 +682,6 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-            .login-box {
-                padding: 30px 20px;
-            }
-            .login-box .logo-img {
-                max-width: 140px;
-            }
         }
 
         /* Estilos para impresión (se mantienen por si se usa) */
@@ -792,19 +710,6 @@
     </style>
 </head>
 <body>
-
-    <!-- ========== LOGIN ========== -->
-    <div class="login-container" id="loginContainer">
-        <div class="login-box">
-            <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="logo-img">
-            <div class="form-group">
-                <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
-            </div>
-            <button class="btn-login" id="loginBtn"><i class="fas fa-lock"></i> Ingresar</button>
-            <button class="btn-login" id="testConexionBtn" style="margin-top:8px; background:#6c757d; width:100%; padding:10px; border:none; border-radius:50px; color:white; font-weight:600; cursor:pointer;">Probar conexión</button>
-            <div class="login-error" id="loginError"></div>
-        </div>
-    </div>
 
     <!-- ========== DASHBOARD ========== -->
     <div class="dashboard" id="dashboard">
@@ -1029,7 +934,6 @@
         let chartInstance = null;
         let datosCache = { contactos: [], presupuestos: [] };
         let contadorPresupuesto = 0;
-        let sesionActiva = false;
 
         // =============================================
         // FUNCIÓN PARA FORMATEAR PRECIOS
@@ -1039,145 +943,6 @@
             const entero = Math.round(valor);
             const conPuntos = entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             return '$ ' + conPuntos;
-        }
-
-        // =============================================
-        // LOGIN (clave fija en el HTML y en el script)
-        // =============================================
-        const loginContainer = document.getElementById('loginContainer');
-        const dashboard = document.getElementById('dashboard');
-        const passwordInput = document.getElementById('passwordInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const testBtn = document.getElementById('testConexionBtn');
-        const loginError = document.getElementById('loginError');
-
-        const PASSWORD = 'REF2409'; // <--- CLAVE FIJA EN EL HTML
-
-        async function doLogin() {
-            const pass = passwordInput.value.trim();
-            if (!pass) {
-                loginError.textContent = 'Ingresa la contraseña.';
-                loginError.classList.add('show');
-                return;
-            }
-
-            try {
-                const response = await fetch(URL_SCRIPT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'login', password: pass })
-                });
-
-                let data;
-                try {
-                    data = await response.json();
-                } catch (parseError) {
-                    const text = await response.text();
-                    throw new Error('El servidor devolvió: ' + text);
-                }
-
-                if (data.result === 'success') {
-                    sesionActiva = true;
-                    localStorage.setItem('adminSession', 'true');
-                    loginContainer.style.display = 'none';
-                    dashboard.classList.add('active');
-                    cargarDatos();
-                } else {
-                    loginError.textContent = data.message || 'Contraseña incorrecta. Intenta de nuevo.';
-                    loginError.classList.add('show');
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                }
-            } catch (error) {
-                console.error('Error en login:', error);
-                loginError.textContent = 'Error: ' + error.message;
-                loginError.classList.add('show');
-            }
-        }
-
-        loginBtn.addEventListener('click', doLogin);
-        passwordInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') doLogin();
-        });
-
-        // Botón de prueba de conexión (para diagnosticar CORS)
-        testBtn.addEventListener('click', async function() {
-            loginError.classList.remove('show');
-            loginError.textContent = 'Probando conexión...';
-            loginError.style.color = '#007bff';
-            loginError.classList.add('show');
-
-            try {
-                const response = await fetch(URL_SCRIPT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'login', password: 'REF2409' })
-                });
-                const text = await response.text();
-                let data;
-                try {
-                    data = JSON.parse(text);
-                    loginError.textContent = '✅ Conexión exitosa. Respuesta: ' + JSON.stringify(data);
-                    loginError.style.color = '#28a745';
-                } catch (e) {
-                    loginError.textContent = '❌ El servidor devolvió: ' + text;
-                    loginError.style.color = '#e74c3c';
-                }
-            } catch (error) {
-                loginError.textContent = '❌ Error de red: ' + error.message + ' | Verifica la URL y la publicación del script.';
-                loginError.style.color = '#e74c3c';
-            }
-        });
-
-        // Verificar sesión al cargar
-        if (localStorage.getItem('adminSession') === 'true') {
-            (async () => {
-                try {
-                    const response = await fetch(URL_SCRIPT);
-                    if (response.ok) {
-                        sesionActiva = true;
-                        loginContainer.style.display = 'none';
-                        dashboard.classList.add('active');
-                        cargarDatos();
-                    } else {
-                        localStorage.removeItem('adminSession');
-                    }
-                } catch {
-                    localStorage.removeItem('adminSession');
-                }
-            })();
-        }
-
-        // =============================================
-        // LOGOUT
-        // =============================================
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            sesionActiva = false;
-            localStorage.removeItem('adminSession');
-            dashboard.classList.remove('active');
-            loginContainer.style.display = 'flex';
-            passwordInput.value = '';
-            loginError.classList.remove('show');
-        });
-
-        // =============================================
-        // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (excepto login)
-        // =============================================
-        async function enviarAccion(datos) {
-            try {
-                const response = await fetch(URL_SCRIPT, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                setTimeout(cargarDatos, 500);
-                return true;
-            } catch (error) {
-                console.error('Error al enviar acción:', error);
-                alert('Hubo un error al procesar la solicitud. Revisa la consola.');
-                return false;
-            }
         }
 
         // =============================================
@@ -1694,6 +1459,26 @@
         document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
 
         // =============================================
+        // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (excepto login)
+        // =============================================
+        async function enviarAccion(datos) {
+            try {
+                const response = await fetch(URL_SCRIPT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                setTimeout(cargarDatos, 500);
+                return true;
+            } catch (error) {
+                console.error('Error al enviar acción:', error);
+                alert('Hubo un error al procesar la solicitud. Revisa la consola.');
+                return false;
+            }
+        }
+
+        // =============================================
         // CERRAR MODALES
         // =============================================
         function cerrarModal(id) {
@@ -1785,6 +1570,11 @@
         // REFRESCAR
         // =============================================
         document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
+
+        // =============================================
+        // INICIALIZAR: cargar datos al abrir la página
+        // =============================================
+        cargarDatos();
     </script>
 </body>
 </html>
