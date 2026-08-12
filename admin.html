@@ -6,8 +6,9 @@
     <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- html2pdf.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- html2canvas y jsPDF (se usan directamente) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -722,7 +723,6 @@
         </div>
 
         <div class="presupuesto-actions">
-            <!-- Botón Guardar (antes Imprimir) -->
             <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar</button>
             <!-- Botón Cerrar eliminado -->
         </div>
@@ -994,7 +994,6 @@
         if (!confirmar) return;
         const datos = { action: 'delete_budget', index };
         await enviarAccion(datos);
-        // Refresco automático al eliminar
         cargarDatos();
     }
 
@@ -1027,7 +1026,7 @@
         const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
         await enviarAccion(datos);
         cerrarModal('editModal');
-        cargarDatos(); // Refresco inmediato
+        cargarDatos();
     }
 
     // =============================================
@@ -1040,7 +1039,7 @@
         if (!confirmar) return;
         const datos = { action: 'delete', index };
         await enviarAccion(datos);
-        cargarDatos(); // Refresco inmediato
+        cargarDatos();
     }
 
     // =============================================
@@ -1108,7 +1107,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (Guardar en Sheets + PDF + cerrar modal)
+    // GUARDAR PRESUPUESTO (guarda en Sheets + genera PDF con html2canvas + jsPDF)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1129,38 +1128,59 @@
         };
         await enviarAccion(datos);
 
-        // 2. Generar PDF mejorado
-        const element = document.getElementById('presupuestoPreview');
-        // Clonar el elemento para evitar interferencias
-        const clon = element.cloneNode(true);
-        clon.style.width = '100%';
-        clon.style.padding = '20px';
-        clon.style.background = 'white';
-        // Asegurar que las imágenes se carguen
-        const img = clon.querySelector('img');
-        if (img) img.crossOrigin = 'anonymous';
-
-        const opt = {
-            margin:       0.5,
-            filename:     `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 3, useCORS: true, logging: false, dpi: 192 },
-            jsPDF:        { unit: 'cm', format: 'a4', orientation: 'portrait' }
-        };
-
-        // Mostrar mensaje de éxito y cerrar modal después de un breve retraso
+        // 2. Generar PDF usando html2canvas + jsPDF (más confiable)
         try {
-            await html2pdf().set(opt).from(clon).save();
-            // El PDF se descarga automáticamente
+            const element = document.getElementById('presupuestoPreview');
+            // Esperar un momento para que se rendericen las imágenes
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // Capturar con html2canvas
+            const canvas = await html2canvas(element, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: element.scrollWidth,
+                height: element.scrollHeight
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+            // Crear PDF con jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            let heightLeft = pdfHeight;
+            let position = 0;
+
+            // Primera página
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            // Páginas adicionales si el contenido es más largo que una página
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            // Descargar el PDF
+            const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
+            pdf.save(filename);
+
             alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
+
         } catch (error) {
-            console.error('Error al generar PDF:', error);
-            alert('Hubo un error al generar el PDF. Los datos se guardaron en la hoja de cálculo.');
+            console.error('Error al generar el PDF:', error);
+            alert('El presupuesto se guardó en la hoja, pero hubo un error al generar el PDF. Por favor, revisa la consola.');
         }
 
-        // Cerrar modal
+        // Cerrar modal y refrescar
         cerrarModal('presupuestoModal');
-        // Refrescar datos (para ver el nuevo presupuesto en la tabla)
         cargarDatos();
     }
 
@@ -1197,7 +1217,6 @@
     document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
     document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
     document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
-    // Ya no hay botón Cerrar en el modal de presupuesto
 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
@@ -1274,7 +1293,7 @@
     // =============================================
     function iniciarAutoRefresh() {
         if (intervaloAuto) clearInterval(intervaloAuto);
-        intervaloAuto = setInterval(cargarDatos, 300000); // 5 minutos = 300.000 ms
+        intervaloAuto = setInterval(cargarDatos, 300000); // 5 min
         console.log('Auto-refresh cada 5 minutos activado.');
     }
 
