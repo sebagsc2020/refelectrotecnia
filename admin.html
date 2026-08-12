@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | REF Electrotecnia</title>
+    <!-- Chart.js CDN para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== RESET Y VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0A2E5C;
+            --primary-medium: #1A4B7A;
+            --primary-cyan: #00A8FF;
+            --accent-yellow: #FFB800;
+            --light-bg: #F4F6F9;
+            --card-bg: #FFFFFF;
+            --gray-text: #4A4A4A;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --font: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--light-bg);
+            color: #1E1E1E;
+            min-height: 100vh;
+        }
+
+        /* ========== LOGIN ========== */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark), #0D3B66);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px 35px;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .login-box h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+        }
+        .login-box h1 span {
+            color: var(--primary-cyan);
+        }
+        .login-box p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .login-box .form-group {
+            margin-bottom: 18px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: var(--font);
+            transition: 0.2s;
+        }
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
+        }
+
+        .login-box .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-box .btn-login:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 168, 255, 0.3);
+        }
+
+        .login-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            display: none;
+            text-align: center;
+        }
+        .login-error.show {
+            display: block;
+        }
+
+        /* ========== DASHBOARD (oculto por defecto) ========== */
+        .dashboard {
+            display: none;
+            padding: 20px;
+        }
+        .dashboard.active {
+            display: block;
+        }
+
+        /* Header del dashboard */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: white;
+            padding: 16px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .dashboard-header h2 span {
+            color: var(--primary-cyan);
+        }
+
+        .dashboard-header .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .dashboard-header .btn-refresh {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dashboard-header .btn-refresh:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-header .btn-logout {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .dashboard-header .btn-logout:hover {
+            background: #f1f1f1;
+            border-color: #ccc;
+        }
+
+        /* Tarjetas de estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px 22px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-cyan);
+        }
+        .stat-card .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon {
+            float: right;
+            font-size: 2rem;
+            color: var(--primary-cyan);
+            opacity: 0.4;
+        }
+
+        .stat-card.emergencia {
+            border-left-color: #e74c3c;
+        }
+        .stat-card.emergencia .stat-icon {
+            color: #e74c3c;
+        }
+
+        /* Gráfico + tabla */
+        .chart-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-box {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .chart-box h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+        .chart-box canvas {
+            max-height: 220px;
+            max-width: 100%;
+        }
+
+        /* Tabla */
+        .table-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            padding: 0 0 12px 0;
+        }
+        .table-container h4 {
+            padding: 18px 24px 10px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            padding: 0 16px 16px 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        table thead {
+            background: var(--light-bg);
+        }
+        table th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            border-bottom: 2px solid #E9ECEF;
+            white-space: nowrap;
+        }
+        table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #E9ECEF;
+            color: var(--gray-text);
+            vertical-align: middle;
+        }
+        table tbody tr:hover {
+            background: #F8FAFC;
+        }
+        table td .badge-emergencia {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Cargando */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-text);
+        }
+        .loading i {
+            font-size: 2rem;
+            color: var(--primary-cyan);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Sin datos */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-text);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .dashboard-header .header-actions {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== LOGIN ========== -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h1>REF <span>Admin</span></h1>
+            <p>Ingresa tu contraseña para acceder al panel</p>
+            <div class="form-group">
+                <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
+            </div>
+            <button class="btn-login" id="loginBtn"><i class="fas fa-lock"></i> Ingresar</button>
+            <div class="login-error" id="loginError">Contraseña incorrecta. Intenta de nuevo.</div>
+        </div>
+    </div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h2><span>📊</span> Panel de Administración</h2>
+            <div class="header-actions">
+                <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-users"></i></span>
+                <div class="stat-number" id="totalContactos">0</div>
+                <div class="stat-label">Total de contactos</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
+                <div class="stat-number" id="contactosSemana">0</div>
+                <div class="stat-label">Últimos 7 días</div>
+            </div>
+            <div class="stat-card emergencia">
+                <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <div class="stat-number" id="emergencias">0</div>
+                <div class="stat-label">Emergencias 24/7</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-calendar-day"></i></span>
+                <div class="stat-number" id="hoy">0</div>
+                <div class="stat-label">Contactos hoy</div>
+            </div>
+        </div>
+
+        <!-- Gráfico + tabla -->
+        <div class="chart-section">
+            <div class="chart-box">
+                <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
+                <canvas id="serviciosChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
+                <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);">
+                    <p>Cargando...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla completa -->
+        <div class="table-container">
+            <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
+            <div class="table-scroll" id="tablaContainer">
+                <div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN
+        // =============================================
+        const CONTRASENA = 'admin123'; // Cambia esto por la contraseña que quieras
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec'; // <-- REEMPLAZA CON TU URL
+
+        let chartInstance = null;
+        let datosCache = [];
+
+        // =============================================
+        // LOGIN
+        // =============================================
+        const loginContainer = document.getElementById('loginContainer');
+        const dashboard = document.getElementById('dashboard');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+
+        function doLogin() {
+            const pass = passwordInput.value.trim();
+            if (pass === CONTRASENA) {
+                loginContainer.style.display = 'none';
+                dashboard.classList.add('active');
+                cargarDatos();
+            } else {
+                loginError.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        loginBtn.addEventListener('click', doLogin);
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doLogin();
+        });
+
+        // =============================================
+        // LOGOUT
+        // =============================================
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            dashboard.classList.remove('active');
+            loginContainer.style.display = 'flex';
+            passwordInput.value = '';
+            loginError.classList.remove('show');
+        });
+
+        // =============================================
+        // CARGAR DATOS DESDE SHEETS
+        // =============================================
+        async function cargarDatos() {
+            const tablaContainer = document.getElementById('tablaContainer');
+            tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
+
+            try {
+                const response = await fetch(URL_SCRIPT);
+                if (!response.ok) throw new Error('Error al obtener datos');
+                const json = await response.json();
+                if (json.error) throw new Error(json.error);
+
+                const { data, headers } = json;
+                datosCache = data || [];
+
+                // Actualizar stats
+                actualizarStats(datosCache);
+
+                // Actualizar gráfico
+                actualizarGrafico(datosCache);
+
+                // Últimos 5 registros
+                actualizarUltimos(datosCache);
+
+                // Tabla completa
+                renderizarTabla(datosCache, headers);
+
+            } catch (error) {
+                console.error(error);
+                tablaContainer.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
+                        <p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p>
+                        <button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button>
+                    </div>
+                `;
+            }
+        }
+
+        // =============================================
+        // ESTADÍSTICAS
+        // =============================================
+        function actualizarStats(data) {
+            const total = data.length;
+            document.getElementById('totalContactos').textContent = total;
+
+            // Últimos 7 días
+            const hoy = new Date();
+            const semana = new Date(hoy);
+            semana.setDate(hoy.getDate() - 7);
+            const contactosSemana = data.filter(item => {
+                if (!item.Fecha) return false;
+                const fecha = new Date(item.Fecha);
+                return fecha >= semana && fecha <= hoy;
+            });
+            document.getElementById('contactosSemana').textContent = contactosSemana.length;
+
+            // Emergencias
+            const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
+            document.getElementById('emergencias').textContent = emergencias.length;
+
+            // Hoy
+            const hoyInicio = new Date(hoy);
+            hoyInicio.setHours(0, 0, 0, 0);
+            const hoyFin = new Date(hoy);
+            hoyFin.setHours(23, 59, 59, 999);
+            const contactosHoy = data.filter(item => {
+                if (!item.Fecha) return false;
+                const fecha = new Date(item.Fecha);
+                return fecha >= hoyInicio && fecha <= hoyFin;
+            });
+            document.getElementById('hoy').textContent = contactosHoy.length;
+        }
+
+        // =============================================
+        // GRÁFICO (Chart.js)
+        // =============================================
+        function actualizarGrafico(data) {
+            // Contar servicios
+            const servicioCount = {};
+            data.forEach(item => {
+                let servicio = item.Servicio || 'No especificado';
+                if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
+                servicioCount[servicio] = (servicioCount[servicio] || 0) + 1;
+            });
+
+            // Ordenar por cantidad descendente
+            const sorted = Object.entries(servicioCount).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(item => item[0]);
+            const values = sorted.map(item => item[1]);
+
+            const ctx = document.getElementById('serviciosChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            if (labels.length === 0) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Sin datos'],
+                        datasets: [{
+                            label: 'Solicitudes',
+                            data: [0],
+                            backgroundColor: ['#E9ECEF'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+                return;
+            }
+
+            const colores = [
+                '#00A8FF', '#0A2E5C', '#FFB800', '#FF7A00', '#34A853',
+                '#E4405F', '#9B59B6', '#1ABC9C', '#F39C12', '#E74C3C'
+            ];
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Solicitudes',
+                        data: values,
+                        backgroundColor: colores.slice(0, labels.length),
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // =============================================
+        // ÚLTIMOS 5 REGISTROS
+        // =============================================
+        function actualizarUltimos(data) {
+            const container = document.getElementById('ultimosRegistros');
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
+                return;
+            }
+
+            const ultimos = data.slice(-5).reverse();
+            let html = '<ul style="list-style:none; padding:0; margin:0;">';
+            ultimos.forEach(item => {
+                const nombre = item.Nombre || 'Anónimo';
+                const servicio = item.Servicio || 'No especificado';
+                const fecha = item.Fecha ? new Date(item.Fecha).toLocaleDateString('es-AR') : '';
+                const esEmergencia = servicio.toLowerCase().includes('emergencia');
+                html += `
+                    <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
+                        <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
+                        <span style="font-size:0.8rem; color:var(--gray-text);">
+                            ${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}
+                        </span>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // TABLA COMPLETA
+        // =============================================
+        function renderizarTabla(data, headers) {
+            const container = document.getElementById('tablaContainer');
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
+                        <p style="margin-top:10px;">No hay registros en la base de datos.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Definir columnas a mostrar (ordenadas)
+            const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje'];
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            ${columnas.map(col => `<th>${col}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Ordenar por fecha descendente (más reciente primero)
+            const sorted = [...data].sort((a, b) => {
+                if (!a.Fecha) return 1;
+                if (!b.Fecha) return -1;
+                return new Date(b.Fecha) - new Date(a.Fecha);
+            });
+
+            sorted.forEach(row => {
+                const fecha = row.Fecha ? new Date(row.Fecha).toLocaleString('es-AR') : '';
+                const nombre = row.Nombre || '';
+                const telefono = row.Teléfono || '';
+                const email = row.Email || '';
+                let servicio = row.Servicio || '';
+                if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
+                const ubicacion = row.Ubicación || '';
+                const mensaje = row.Mensaje || '';
+
+                const esEmergencia = servicio.toLowerCase().includes('emergencia');
+
+                html += `<tr>
+                    <td>${fecha}</td>
+                    <td><strong>${nombre}</strong></td>
+                    <td>${telefono}</td>
+                    <td>${email}</td>
+                    <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
+                    <td>${ubicacion}</td>
+                    <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${mensaje}">${mensaje}</td>
+                </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // REFRESCAR
+        // =============================================
+        document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
+
+        // =============================================
+        // LOGIN AUTOMÁTICO (si ya está logueado en sesión)
+        // =============================================
+        // (Opcional: podrías guardar un token en localStorage)
+        // Pero por simplicidad, se queda en la pantalla de login.
+    </script>
+</body>
+</html>
