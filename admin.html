@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2pdf.js para generar PDF directamente -->
@@ -1022,7 +1022,8 @@
         // =============================================
         // CONFIGURACIÓN
         // =============================================
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwnzHIG1wpQ3_xdkUa8RxrnbZ_8FV-a83XYHEis3chWf2ioFuEnJ5rsqKcKli_gKZqQ/exec';
+        // ⚠️ REEMPLAZA ESTA URL CON LA QUE OBTENGAS AL PUBLICAR EL SCRIPT ⚠️
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzrLIQ8SxzqHagx730HKaSSYV42QoR3dkAdeeAV4_aKZdfsbYO1BETyqpzeWq86R8Xo/exec';
 
         let chartInstance = null;
         let datosCache = { contactos: [], presupuestos: [] };
@@ -1384,7 +1385,6 @@
                 return;
             }
 
-            // Ordenar por fecha descendente (más reciente primero)
             const sorted = [...data].sort((a, b) => {
                 if (!a.Fecha) return 1;
                 if (!b.Fecha) return -1;
