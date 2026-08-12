@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Google Fonts (Inter) -->
@@ -57,21 +57,13 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 380px;
             width: 100%;
+            text-align: center;
         }
 
-        .login-box h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin-bottom: 6px;
-        }
-        .login-box h1 span {
-            color: var(--primary-cyan);
-        }
-        .login-box p {
-            color: var(--gray-text);
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+        .login-box .logo-img {
+            max-width: 180px;
+            display: block;
+            margin: 0 auto 25px;
         }
 
         .login-box .form-group {
@@ -342,18 +334,37 @@
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 5px 14px;
+            padding: 5px 10px;
             border-radius: 50px;
             font-size: 0.8rem;
-            font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            margin-right: 6px;
         }
         .btn-delete:hover {
             background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .btn-presupuesto {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+        }
+        .btn-presupuesto:hover {
+            background: #27ae60;
             transform: scale(1.05);
         }
 
@@ -383,6 +394,18 @@
             padding: 2px 12px;
             border-radius: 50px;
             font-weight: 600;
+        }
+
+        /* Ícono de Google Maps en la tabla */
+        .maps-link {
+            color: var(--primary-cyan);
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .maps-link:hover {
+            color: var(--primary-dark);
+            transform: scale(1.1);
         }
 
         /* Cargando */
@@ -542,6 +565,63 @@
             border-color: #ccc;
         }
 
+        /* ========== MODAL DE PRESUPUESTO ========== */
+        .presupuesto-box {
+            max-width: 800px;
+        }
+        .presupuesto-box .presupuesto-datos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .presupuesto-box .presupuesto-datos .full-width {
+            grid-column: 1 / -1;
+        }
+        .presupuesto-box .presupuesto-preview {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 15px 0;
+            border: 1px solid #E9ECEF;
+        }
+        .presupuesto-box .presupuesto-preview .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E9ECEF;
+        }
+        .presupuesto-box .presupuesto-preview .item:last-child {
+            border-bottom: none;
+        }
+        .presupuesto-box .presupuesto-preview .total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+        .presupuesto-box .presupuesto-preview .validez {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-top: 10px;
+        }
+        .presupuesto-box .btn-imprimir {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .presupuesto-box .btn-imprimir:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .chart-section {
@@ -560,6 +640,9 @@
             .modal-box {
                 padding: 25px 20px;
             }
+            .presupuesto-box .presupuesto-datos {
+                grid-template-columns: 1fr;
+            }
         }
         @media (max-width: 480px) {
             .stats-grid {
@@ -567,6 +650,33 @@
             }
             .login-box {
                 padding: 30px 20px;
+            }
+            .login-box .logo-img {
+                max-width: 140px;
+            }
+        }
+
+        /* Estilos para impresión */
+        @media print {
+            .dashboard-header, .header-actions, .modal-actions, .btn-imprimir, .close-modal {
+                display: none !important;
+            }
+            .modal-box {
+                box-shadow: none !important;
+                padding: 20px !important;
+                max-height: none !important;
+            }
+            .modal-overlay {
+                background: white !important;
+                position: static !important;
+                padding: 0 !important;
+            }
+            .presupuesto-box .presupuesto-preview {
+                border: none !important;
+                background: white !important;
+            }
+            body {
+                background: white !important;
             }
         }
     </style>
@@ -576,8 +686,7 @@
     <!-- ========== LOGIN ========== -->
     <div class="login-container" id="loginContainer">
         <div class="login-box">
-            <h1>REF <span>Admin</span></h1>
-            <p>Ingresa tu contraseña para acceder al panel</p>
+            <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="logo-img">
             <div class="form-group">
                 <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
             </div>
@@ -654,7 +763,7 @@
     <!-- ========== MODAL DE EDICIÓN ========== -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
-            <button class="close-modal" id="closeModalBtn">&times;</button>
+            <button class="close-modal" id="closeEditModal">&times;</button>
             <h3><span>✏️</span> Editar registro</h3>
             <input type="hidden" id="editIndex">
             <div class="form-group">
@@ -698,12 +807,71 @@
         </div>
     </div>
 
+    <!-- ========== MODAL DE PRESUPUESTO ========== -->
+    <div class="modal-overlay" id="presupuestoModal">
+        <div class="modal-box presupuesto-box">
+            <button class="close-modal" id="closePresupuestoModal">&times;</button>
+            <h3><span>📄</span> Presupuesto</h3>
+            <input type="hidden" id="presupuestoIndex">
+            <div class="presupuesto-datos">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="presupuestoNombre" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="presupuestoTelefono" readonly>
+                </div>
+                <div class="form-group full-width">
+                    <label>Email</label>
+                    <input type="text" id="presupuestoEmail" readonly>
+                </div>
+                <div class="form-group full-width">
+                    <label>Descripción del servicio</label>
+                    <textarea id="presupuestoDescripcion" rows="3" placeholder="Describe el trabajo a realizar"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="presupuestoPrecio" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Validez (días)</label>
+                    <input type="number" id="presupuestoValidez" value="30" readonly>
+                </div>
+            </div>
+
+            <div class="presupuesto-preview" id="presupuestoPreview">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" style="height:40px;">
+                    <span style="font-weight:700; color:var(--primary-dark);">REF Electrotecnia</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <div><strong>Cliente:</strong> <span id="previewNombre">-</span></div>
+                    <div><strong>Tel:</strong> <span id="previewTelefono">-</span></div>
+                </div>
+                <div style="margin-bottom:10px;"><strong>Email:</strong> <span id="previewEmail">-</span></div>
+                <div class="item"><span>Descripción</span> <span id="previewDescripcion">-</span></div>
+                <div class="item"><span>Precio</span> <span id="previewPrecio">$0.00</span></div>
+                <div class="item total"><span>Total</span> <span id="previewTotal">$0.00</span></div>
+                <div class="validez">
+                    <strong>Fecha emisión:</strong> <span id="previewFecha">-</span><br>
+                    <strong>Validez:</strong> <span id="previewValidez">-</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelPresupuestoBtn">Cerrar</button>
+                <button class="btn-imprimir" id="imprimirPresupuestoBtn"><i class="fas fa-print"></i> Imprimir / Guardar PDF</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // =============================================
         // CONFIGURACIÓN
         // =============================================
-        const CONTRASENA = 'admin123'; // Cambia esto
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyQAiZdTIgAF2MnGXJe25dP1hJTkvVzBYj6dGNJyg0iVmcNg7slU0zvmO2ZiYg_ncxm/exec'; // <-- REEMPLAZA CON TU URL
+        const CONTRASENA = 'admin123';
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyQAiZdTIgAF2MnGXJe25dP1hJTkvVzBYj6dGNJyg0iVmcNg7slU0zvmO2ZiYg_ncxm/exec';
 
         let chartInstance = null;
         let datosCache = [];
@@ -753,13 +921,9 @@
                 const response = await fetch(URL_SCRIPT, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
-                // Con no-cors no podemos leer la respuesta, asumimos que funciona.
-                // Recargamos los datos después de un breve retraso.
                 setTimeout(cargarDatos, 500);
                 return true;
             } catch (error) {
@@ -865,21 +1029,13 @@
                     type: 'bar',
                     data: {
                         labels: ['Sin datos'],
-                        datasets: [{
-                            label: 'Solicitudes',
-                            data: [0],
-                            backgroundColor: ['#E9ECEF'],
-                            borderRadius: 6
-                        }]
+                        datasets: [{ label: 'Solicitudes', data: [0], backgroundColor: ['#E9ECEF'], borderRadius: 6 }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
                         plugins: { legend: { display: false } },
-                        scales: {
-                            y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
-                            x: { grid: { display: false } }
-                        }
+                        scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } }
                     }
                 });
                 return;
@@ -901,10 +1057,7 @@
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
-                        x: { grid: { display: false } }
-                    }
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } }
                 }
             });
         }
@@ -940,33 +1093,27 @@
         }
 
         // =============================================
-        // TABLA COMPLETA (CON BOTONES EDITAR / ELIMINAR y MENSAJE COMPLETO)
+        // TABLA COMPLETA (CON BOTONES EDITAR / ELIMINAR / PRESUPUESTO)
         // =============================================
         function renderizarTabla(data, headers) {
             const container = document.getElementById('tablaContainer');
             if (data.length === 0) {
-                container.innerHTML = `
-                    <div class="no-data">
-                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
-                        <p style="margin-top:10px;">No hay registros en la base de datos.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
                 return;
             }
 
             const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje'];
             let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-            
-            // Ordenar: más reciente primero
+
             const sorted = [...data].sort((a, b) => {
                 if (!a.Fecha) return 1;
                 if (!b.Fecha) return -1;
                 return new Date(b.Fecha) - new Date(a.Fecha);
             });
 
-            sorted.forEach((row, idx) => {
+            sorted.forEach((row) => {
                 const originalIndex = data.indexOf(row);
-                
+
                 const fecha = row.Fecha ? new Date(row.Fecha).toLocaleString('es-AR') : '';
                 const nombre = row.Nombre || '';
                 const telefono = row.Teléfono || '';
@@ -977,17 +1124,36 @@
                 const mensaje = row.Mensaje || '';
                 const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
+                // Generar enlace de Maps si hay ubicación
+                let mapsHtml = '';
+                if (ubicacion) {
+                    let url = '';
+                    const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
+                    if (esCoordenada) {
+                        const coords = ubicacion.match(/-?\d+\.\d+/g);
+                        if (coords && coords.length >= 2) {
+                            url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                        }
+                    } else {
+                        url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`;
+                    }
+                    if (url) {
+                        mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
+                    }
+                }
+
                 html += `<tr>
                     <td>${fecha}</td>
                     <td><strong>${nombre}</strong></td>
                     <td>${telefono}</td>
                     <td>${email}</td>
                     <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
-                    <td>${ubicacion}</td>
+                    <td>${mapsHtml || '—'}</td>
                     <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td>
                     <td style="text-align:center; white-space:nowrap;">
                         <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})"><i class="fas fa-trash"></i> Eliminar</button>
+                        <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        <button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
                     </td>
                 </tr>`;
             });
@@ -997,7 +1163,7 @@
         }
 
         // =============================================
-        // EDITAR REGISTRO (ABRIR MODAL)
+        // EDITAR REGISTRO
         // =============================================
         function editarRegistro(index) {
             const registro = datosCache[index];
@@ -1018,9 +1184,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // =============================================
-        // GUARDAR EDICIÓN
-        // =============================================
         async function guardarEdicion() {
             const index = parseInt(document.getElementById('editIndex').value);
             const nombre = document.getElementById('editNombre').value.trim();
@@ -1035,19 +1198,9 @@
                 return;
             }
 
-            const datos = {
-                action: 'update',
-                index: index,
-                nombre: nombre,
-                telefono: telefono,
-                email: email,
-                servicio: servicio,
-                ubicacion: ubicacion,
-                mensaje: mensaje
-            };
-
+            const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
             await enviarAccion(datos);
-            cerrarModal();
+            cerrarModal('editModal');
         }
 
         // =============================================
@@ -1055,29 +1208,127 @@
         // =============================================
         async function eliminarRegistro(index) {
             const registro = datosCache[index];
+            if (!registro) return;
+
+            const confirmar = confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"?`);
+            if (!confirmar) return;
+
+            const datos = { action: 'delete', index };
+            await enviarAccion(datos);
+        }
+
+        // =============================================
+        // PRESUPUESTO
+        // =============================================
+        function abrirPresupuesto(index) {
+            const registro = datosCache[index];
             if (!registro) {
                 alert('Registro no encontrado.');
                 return;
             }
 
-            const confirmar = confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"? Esta acción no se puede deshacer.`);
-            if (!confirmar) return;
+            document.getElementById('presupuestoIndex').value = index;
+            document.getElementById('presupuestoNombre').value = registro.Nombre || '';
+            document.getElementById('presupuestoTelefono').value = registro.Teléfono || '';
+            document.getElementById('presupuestoEmail').value = registro.Email || '';
+            document.getElementById('presupuestoDescripcion').value = '';
+            document.getElementById('presupuestoPrecio').value = '';
 
-            const datos = {
-                action: 'delete',
-                index: index
-            };
+            // Actualizar vista previa
+            actualizarVistaPrevia();
 
-            await enviarAccion(datos);
+            document.getElementById('presupuestoModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function actualizarVistaPrevia() {
+            const nombre = document.getElementById('presupuestoNombre').value || '-';
+            const telefono = document.getElementById('presupuestoTelefono').value || '-';
+            const email = document.getElementById('presupuestoEmail').value || '-';
+            const descripcion = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
+            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+
+            document.getElementById('previewNombre').textContent = nombre;
+            document.getElementById('previewTelefono').textContent = telefono;
+            document.getElementById('previewEmail').textContent = email;
+            document.getElementById('previewDescripcion').textContent = descripcion;
+            document.getElementById('previewPrecio').textContent = `$${precio.toFixed(2)}`;
+            document.getElementById('previewTotal').textContent = `$${precio.toFixed(2)}`;
+
+            const hoy = new Date();
+            const fechaStr = hoy.toLocaleDateString('es-AR');
+            const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
+            const fechaValidez = new Date(hoy);
+            fechaValidez.setDate(fechaValidez.getDate() + validezDias);
+            const validezStr = fechaValidez.toLocaleDateString('es-AR');
+
+            document.getElementById('previewFecha').textContent = fechaStr;
+            document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
+        }
+
+        // Event listeners para actualizar vista previa en tiempo real
+        document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
+        document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
+
+        function imprimirPresupuesto() {
+            const contenido = document.getElementById('presupuestoPreview').innerHTML;
+            const ventana = window.open('', '_blank', 'width=800,height=600');
+            ventana.document.write(`
+                <html>
+                <head>
+                    <title>Presupuesto REF Electrotecnia</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1E1E1E; }
+                        .presupuesto-preview { max-width: 700px; margin: 0 auto; }
+                        .presupuesto-preview .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E9ECEF; }
+                        .presupuesto-preview .total { font-weight: 700; font-size: 1.2rem; color: #0A2E5C; }
+                        .presupuesto-preview .validez { font-size: 0.9rem; color: #4A4A4A; margin-top: 10px; }
+                        .presupuesto-preview .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+                        .presupuesto-preview .header img { height:40px; }
+                        .presupuesto-preview .header span { font-weight:700; color:#0A2E5C; }
+                        @media print { body { padding: 20px; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="presupuesto-preview">
+                        ${contenido}
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            ventana.document.close();
         }
 
         // =============================================
-        // CERRAR MODAL
+        // CERRAR MODALES
         // =============================================
-        function cerrarModal() {
-            document.getElementById('editModal').classList.remove('active');
+        function cerrarModal(id) {
+            document.getElementById(id).classList.remove('active');
             document.body.style.overflow = '';
         }
+
+        // Event listeners para modales
+        document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
+        document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
+        document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
+        document.getElementById('cancelPresupuestoBtn').addEventListener('click', () => cerrarModal('presupuestoModal'));
+        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
+
+        // Cerrar modales al hacer clic en el overlay
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
 
         // =============================================
         // RESUMEN POR CONTACTO
@@ -1085,12 +1336,7 @@
         function actualizarResumenContactos(data) {
             const container = document.getElementById('resumenContainer');
             if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="no-data">
-                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
-                        <p style="margin-top:10px;">No hay contactos registrados.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
                 return;
             }
 
@@ -1108,86 +1354,43 @@
                     }
                 } else {
                     contactosMap.set(key, {
-                        nombre: nombre,
-                        telefono: telefono,
+                        nombre,
+                        telefono,
                         cantidad: 1,
                         servicios: item.Servicio ? [item.Servicio] : []
                     });
                 }
             });
 
-            const contactos = Array.from(contactosMap.values())
-                .sort((a, b) => b.cantidad - a.cantidad);
-
+            const contactos = Array.from(contactosMap.values()).sort((a, b) => b.cantidad - a.cantidad);
             if (contactos.length === 0) {
-                container.innerHTML = `
-                    <div class="no-data">
-                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
-                        <p style="margin-top:10px;">No hay contactos con teléfono registrado.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
                 return;
             }
 
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th style="text-align:center;">Servicios solicitados</th>
-                            <th style="text-align:center;">Contactar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
+            let html = `<table><thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th style="text-align:center;">Servicios</th><th style="text-align:center;">Contactar</th></tr></thead><tbody>`;
             contactos.forEach((contacto, index) => {
                 const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
                 const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
                 const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
                 const serviciosLista = contacto.servicios.join(', ');
 
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${contacto.nombre}</strong></td>
-                        <td>${contacto.telefono}</td>
-                        <td style="text-align:center;">
-                            <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">
-                                ${contacto.cantidad}
-                            </span>
-                            <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}">
-                                <i class="fas fa-info-circle"></i>
-                            </span>
-                        </td>
-                        <td style="text-align:center;">
-                            <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp">
-                                <i class="fab fa-whatsapp"></i> Contactar
-                            </a>
-                        </td>
-                    </tr>
-                `;
+                html += `<tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${contacto.nombre}</strong></td>
+                    <td>${contacto.telefono}</td>
+                    <td style="text-align:center;">
+                        <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
+                        <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
+                    </td>
+                    <td style="text-align:center;">
+                        <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a>
+                    </td>
+                </tr>`;
             });
-
             html += `</tbody></table>`;
             container.innerHTML = html;
         }
-
-        // =============================================
-        // EVENT LISTENERS DEL MODAL
-        // =============================================
-        document.getElementById('closeModalBtn').addEventListener('click', cerrarModal);
-        document.getElementById('cancelEditBtn').addEventListener('click', cerrarModal);
-        document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
-
-        // Cerrar modal al hacer clic en el overlay
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarModal();
-            }
-        });
 
         // =============================================
         // REFRESCAR
