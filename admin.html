@@ -987,14 +987,14 @@
                 </div>
                 <div class="detalle-item">
                     <span class="desc" id="previewDescripcion">-</span>
-                    <span class="precio" id="previewSubtotal">$0</span>
+                    <span class="precio" id="previewSubtotal">$ 0</span>
                 </div>
                 <div class="detalle-item" style="font-size:0.9rem; color:var(--gray-text); border-bottom: 2px solid #E9ECEF;">
                     <span class="desc">IVA 21%</span>
-                    <span class="precio" id="previewIva">$0</span>
+                    <span class="precio" id="previewIva">$ 0</span>
                 </div>
                 <div class="totales">
-                    <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$0</span></div>
+                    <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$ 0</span></div>
                 </div>
 
                 <div class="validez">
@@ -1025,14 +1025,13 @@
         let contadorPresupuesto = 0;
 
         // =============================================
-        // FUNCIÓN PARA FORMATEAR PRECIOS (SIN CENTAVOS, CON PUNTOS DE MILES)
+        // FUNCIÓN PARA FORMATEAR PRECIOS (CON ESPACIO, SIN CENTAVOS, CON PUNTOS DE MILES)
         // =============================================
         function formatearPrecio(valor) {
-            if (isNaN(valor)) return '0';
-            // Redondear a entero
+            if (isNaN(valor)) return '$ 0';
             const entero = Math.round(valor);
-            // Agregar separador de miles con puntos (formato argentino)
-            return entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            const conPuntos = entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return '$ ' + conPuntos;
         }
 
         // =============================================
@@ -1428,10 +1427,10 @@
             document.getElementById('previewDescripcion').textContent = descripcion;
             document.getElementById('previewMateriales').textContent = materiales;
 
-            // Aplicar formato sin centavos y con puntos de miles
-            document.getElementById('previewSubtotal').textContent = '$' + formatearPrecio(subtotal);
-            document.getElementById('previewIva').textContent = '$' + formatearPrecio(iva);
-            document.getElementById('previewTotal').textContent = '$' + formatearPrecio(total);
+            // Aplicar formato con espacio
+            document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
+            document.getElementById('previewIva').textContent = formatearPrecio(iva);
+            document.getElementById('previewTotal').textContent = formatearPrecio(total);
             document.getElementById('previewCondMateriales').textContent = materiales;
 
             const hoy = new Date();
@@ -1461,7 +1460,7 @@
             const total = subtotal * 1.21;
             const numero = document.getElementById('previewNumero').textContent;
 
-            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: $${formatearPrecio(total)}`);
+            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}`);
 
             console.log('Presupuesto guardado:', {
                 numero,
@@ -1478,15 +1477,23 @@
         document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
         // =============================================
-        // IMPRIMIR / PDF (sin enviar WhatsApp)
+        // IMPRIMIR / PDF (con nombre de archivo personalizado)
         // =============================================
         function imprimirPresupuesto() {
+            const numero = document.getElementById('previewNumero').textContent || 'Sin número';
+            const nombreCliente = document.getElementById('presupuestoNombre').value.trim() || 'Sin nombre';
+            const hoy = new Date();
+            const fechaStr = hoy.getFullYear() + '-' +
+                String(hoy.getMonth() + 1).padStart(2, '0') + '-' +
+                String(hoy.getDate()).padStart(2, '0');
+            const titulo = `Presupuesto N° ${numero} - ${nombreCliente} - ${fechaStr}`;
+
             const contenido = document.getElementById('presupuestoPreview').innerHTML;
             const ventana = window.open('', '_blank', 'width=800,height=600');
             ventana.document.write(`
                 <html>
                 <head>
-                    <title>Presupuesto REF Electrotecnia</title>
+                    <title>${titulo}</title>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
                     <style>
                         body { font-family: 'Inter', sans-serif; padding: 40px; color: #1E1E1E; background: white; }
@@ -1513,6 +1520,8 @@
                         ${contenido}
                     </div>
                     <script>
+                        // Asignar el título también en el momento de imprimir
+                        document.title = "${titulo}";
                         window.onload = function() { window.print(); }
                     <\/script>
                 </body>
