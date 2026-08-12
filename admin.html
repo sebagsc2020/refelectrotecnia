@@ -121,7 +121,7 @@
             display: block;
         }
 
-        /* ========== DASHBOARD (oculto por defecto) ========== */
+        /* ========== DASHBOARD ========== */
         .dashboard {
             display: none;
             padding: 20px;
@@ -130,7 +130,6 @@
             display: block;
         }
 
-        /* Header del dashboard */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -194,7 +193,7 @@
             border-color: #ccc;
         }
 
-        /* Tarjetas de estadísticas */
+        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -233,7 +232,7 @@
             color: #e74c3c;
         }
 
-        /* Gráfico + tabla */
+        /* Gráfico */
         .chart-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -258,13 +257,14 @@
             max-width: 100%;
         }
 
-        /* Tabla */
+        /* Tablas */
         .table-container {
             background: white;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
             padding: 0 0 12px 0;
+            margin-bottom: 30px;
         }
         .table-container h4 {
             padding: 18px 24px 10px 24px;
@@ -314,6 +314,34 @@
             display: inline-block;
         }
 
+        /* Botón WhatsApp en resumen */
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-whatsapp:hover {
+            background: #1DA851;
+            transform: scale(1.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
         /* Cargando */
         .loading {
             text-align: center;
@@ -330,7 +358,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Sin datos */
         .no-data {
             text-align: center;
             padding: 40px;
@@ -412,7 +439,7 @@
             </div>
         </div>
 
-        <!-- Gráfico + tabla -->
+        <!-- Gráfico + últimos registros -->
         <div class="chart-section">
             <div class="chart-box">
                 <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
@@ -433,6 +460,15 @@
                 <div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>
             </div>
         </div>
+
+        <!-- ==================== NUEVO: RESUMEN POR CONTACTO ==================== -->
+        <div class="table-container">
+            <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
+            <div class="table-scroll" id="resumenContainer">
+                <div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -488,6 +524,7 @@
         async function cargarDatos() {
             const tablaContainer = document.getElementById('tablaContainer');
             tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
+            document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
 
             try {
                 const response = await fetch(URL_SCRIPT);
@@ -498,17 +535,11 @@
                 const { data, headers } = json;
                 datosCache = data || [];
 
-                // Actualizar stats
                 actualizarStats(datosCache);
-
-                // Actualizar gráfico
                 actualizarGrafico(datosCache);
-
-                // Últimos 5 registros
                 actualizarUltimos(datosCache);
-
-                // Tabla completa
                 renderizarTabla(datosCache, headers);
+                actualizarResumenContactos(datosCache); // <-- NUEVA FUNCIÓN
 
             } catch (error) {
                 console.error(error);
@@ -517,6 +548,12 @@
                         <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
                         <p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p>
                         <button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button>
+                    </div>
+                `;
+                document.getElementById('resumenContainer').innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
+                        <p style="margin-top:10px;">Error al procesar contactos.</p>
                     </div>
                 `;
             }
@@ -529,7 +566,6 @@
             const total = data.length;
             document.getElementById('totalContactos').textContent = total;
 
-            // Últimos 7 días
             const hoy = new Date();
             const semana = new Date(hoy);
             semana.setDate(hoy.getDate() - 7);
@@ -540,11 +576,9 @@
             });
             document.getElementById('contactosSemana').textContent = contactosSemana.length;
 
-            // Emergencias
             const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
             document.getElementById('emergencias').textContent = emergencias.length;
 
-            // Hoy
             const hoyInicio = new Date(hoy);
             hoyInicio.setHours(0, 0, 0, 0);
             const hoyFin = new Date(hoy);
@@ -558,10 +592,9 @@
         }
 
         // =============================================
-        // GRÁFICO (Chart.js)
+        // GRÁFICO
         // =============================================
         function actualizarGrafico(data) {
-            // Contar servicios
             const servicioCount = {};
             data.forEach(item => {
                 let servicio = item.Servicio || 'No especificado';
@@ -569,16 +602,12 @@
                 servicioCount[servicio] = (servicioCount[servicio] || 0) + 1;
             });
 
-            // Ordenar por cantidad descendente
             const sorted = Object.entries(servicioCount).sort((a, b) => b[1] - a[1]);
             const labels = sorted.map(item => item[0]);
             const values = sorted.map(item => item[1]);
 
             const ctx = document.getElementById('serviciosChart').getContext('2d');
-
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (chartInstance) chartInstance.destroy();
 
             if (labels.length === 0) {
                 chartInstance = new Chart(ctx, {
@@ -595,9 +624,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        plugins: {
-                            legend: { display: false }
-                        },
+                        plugins: { legend: { display: false } },
                         scales: {
                             y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
                             x: { grid: { display: false } }
@@ -607,11 +634,7 @@
                 return;
             }
 
-            const colores = [
-                '#00A8FF', '#0A2E5C', '#FFB800', '#FF7A00', '#34A853',
-                '#E4405F', '#9B59B6', '#1ABC9C', '#F39C12', '#E74C3C'
-            ];
-
+            const colores = ['#00A8FF', '#0A2E5C', '#FFB800', '#FF7A00', '#34A853', '#E4405F', '#9B59B6', '#1ABC9C', '#F39C12', '#E74C3C'];
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -626,9 +649,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         y: { beginAtZero: true, grid: { color: '#f1f1f1' } },
                         x: { grid: { display: false } }
@@ -672,7 +693,6 @@
         // =============================================
         function renderizarTabla(data, headers) {
             const container = document.getElementById('tablaContainer');
-
             if (data.length === 0) {
                 container.innerHTML = `
                     <div class="no-data">
@@ -683,20 +703,8 @@
                 return;
             }
 
-            // Definir columnas a mostrar (ordenadas)
             const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje'];
-
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            ${columnas.map(col => `<th>${col}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            // Ordenar por fecha descendente (más reciente primero)
+            let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}</tr></thead><tbody>`;
             const sorted = [...data].sort((a, b) => {
                 if (!a.Fecha) return 1;
                 if (!b.Fecha) return -1;
@@ -712,7 +720,6 @@
                 if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
                 const ubicacion = row.Ubicación || '';
                 const mensaje = row.Mensaje || '';
-
                 const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
                 html += `<tr>
@@ -725,6 +732,101 @@
                     <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${mensaje}">${mensaje}</td>
                 </tr>`;
             });
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        // =============================================
+        // NUEVO: RESUMEN POR CONTACTO
+        // =============================================
+        function actualizarResumenContactos(data) {
+            const container = document.getElementById('resumenContainer');
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
+                        <p style="margin-top:10px;">No hay contactos registrados.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const contactosMap = new Map();
+            data.forEach(item => {
+                const nombre = item.Nombre || 'Anónimo';
+                const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
+                if (!telefono) return; // omitir contactos sin teléfono
+                const key = `${nombre}|${telefono}`;
+                if (contactosMap.has(key)) {
+                    const contacto = contactosMap.get(key);
+                    contacto.cantidad += 1;
+                    if (item.Servicio && !contacto.servicios.includes(item.Servicio)) {
+                        contacto.servicios.push(item.Servicio);
+                    }
+                } else {
+                    contactosMap.set(key, {
+                        nombre: nombre,
+                        telefono: telefono,
+                        cantidad: 1,
+                        servicios: item.Servicio ? [item.Servicio] : []
+                    });
+                }
+            });
+
+            const contactos = Array.from(contactosMap.values())
+                .sort((a, b) => b.cantidad - a.cantidad);
+
+            if (contactos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i>
+                        <p style="margin-top:10px;">No hay contactos con teléfono registrado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th style="text-align:center;">Servicios solicitados</th>
+                            <th style="text-align:center;">Contactar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            contactos.forEach((contacto, index) => {
+                const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
+                const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
+                const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
+                const serviciosLista = contacto.servicios.join(', ');
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${contacto.nombre}</strong></td>
+                        <td>${contacto.telefono}</td>
+                        <td style="text-align:center;">
+                            <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">
+                                ${contacto.cantidad}
+                            </span>
+                            <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </td>
+                        <td style="text-align:center;">
+                            <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp">
+                                <i class="fab fa-whatsapp"></i> Contactar
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
 
             html += `</tbody></table>`;
             container.innerHTML = html;
@@ -734,12 +836,6 @@
         // REFRESCAR
         // =============================================
         document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
-
-        // =============================================
-        // LOGIN AUTOMÁTICO (si ya está logueado en sesión)
-        // =============================================
-        // (Opcional: podrías guardar un token en localStorage)
-        // Pero por simplicidad, se queda en la pantalla de login.
     </script>
 </body>
 </html>
