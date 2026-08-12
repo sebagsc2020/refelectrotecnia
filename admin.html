@@ -801,7 +801,7 @@
                 <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password">
             </div>
             <button class="btn-login" id="loginBtn"><i class="fas fa-lock"></i> Ingresar</button>
-            <div class="login-error" id="loginError">Contraseña incorrecta. Intenta de nuevo.</div>
+            <div class="login-error" id="loginError"></div>
         </div>
     </div>
 
@@ -861,7 +861,7 @@
             </div>
         </div>
 
-        <!-- ========== NUEVO: PRESUPUESTOS ENVIADOS ========== -->
+        <!-- Presupuestos enviados -->
         <div class="table-container">
             <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
             <div class="table-scroll" id="presupuestosContainer">
@@ -1023,7 +1023,7 @@
         // CONFIGURACIÓN
         // =============================================
         // ⚠️ REEMPLAZA ESTA URL CON LA QUE OBTENGAS AL PUBLICAR EL SCRIPT ⚠️
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzrLIQ8SxzqHagx730HKaSSYV42QoR3dkAdeeAV4_aKZdfsbYO1BETyqpzeWq86R8Xo/exec';
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwXTZT9lkmYyqnk4xGk0Ra6ltqlLXwfch6oAOMJdQIzusxhCbzk78R7RQ235XGzBA4h/exec';
 
         let chartInstance = null;
         let datosCache = { contactos: [], presupuestos: [] };
@@ -1031,7 +1031,7 @@
         let sesionActiva = false;
 
         // =============================================
-        // FUNCIÓN PARA FORMATEAR PRECIOS (CON ESPACIO, SIN CENTAVOS, CON PUNTOS DE MILES)
+        // FUNCIÓN PARA FORMATEAR PRECIOS
         // =============================================
         function formatearPrecio(valor) {
             if (isNaN(valor)) return '$ 0';
@@ -1041,7 +1041,7 @@
         }
 
         // =============================================
-        // LOGIN (vía Google Apps Script)
+        // LOGIN (vía Google Apps Script) con mejor manejo de errores
         // =============================================
         const loginContainer = document.getElementById('loginContainer');
         const dashboard = document.getElementById('dashboard');
@@ -1063,7 +1063,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'login', password: pass })
                 });
-                const data = await response.json();
+
+                // Intentar parsear como JSON
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    // Si no es JSON, leer como texto para mostrar el error real
+                    const text = await response.text();
+                    throw new Error('El servidor devolvió: ' + text);
+                }
+
                 if (data.result === 'success') {
                     sesionActiva = true;
                     localStorage.setItem('adminSession', 'true');
@@ -1071,14 +1081,14 @@
                     dashboard.classList.add('active');
                     cargarDatos();
                 } else {
-                    loginError.textContent = 'Contraseña incorrecta. Intenta de nuevo.';
+                    loginError.textContent = data.message || 'Contraseña incorrecta. Intenta de nuevo.';
                     loginError.classList.add('show');
                     passwordInput.value = '';
                     passwordInput.focus();
                 }
             } catch (error) {
                 console.error('Error en login:', error);
-                loginError.textContent = 'Error de conexión. Revisa la URL del script.';
+                loginError.textContent = 'Error: ' + error.message;
                 loginError.classList.add('show');
             }
         }
