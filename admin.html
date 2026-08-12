@@ -565,7 +565,7 @@
             border-color: #ccc;
         }
 
-        /* ========== MODAL DE PRESUPUESTO (mejorado) ========== */
+        /* ========== MODAL DE PRESUPUESTO ========== */
         .presupuesto-box {
             max-width: 850px;
         }
@@ -672,8 +672,8 @@
             justify-content: flex-end;
             margin-top: 10px;
         }
-        .presupuesto-box .presupuesto-actions .btn-whatsapp-envio {
-            background: #25D366;
+        .presupuesto-box .presupuesto-actions .btn-guardar {
+            background: var(--primary-cyan);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -686,8 +686,8 @@
             align-items: center;
             gap: 8px;
         }
-        .presupuesto-box .presupuesto-actions .btn-whatsapp-envio:hover {
-            background: #1DA851;
+        .presupuesto-box .presupuesto-actions .btn-guardar:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
         }
         .presupuesto-box .presupuesto-actions .btn-imprimir {
@@ -915,7 +915,7 @@
         </div>
     </div>
 
-    <!-- ========== MODAL DE PRESUPUESTO (mejorado) ========== -->
+    <!-- ========== MODAL DE PRESUPUESTO ========== -->
     <div class="modal-overlay" id="presupuestoModal">
         <div class="modal-box presupuesto-box">
             <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -946,6 +946,14 @@
                     <label>Validez (días)</label>
                     <input type="number" id="presupuestoValidez" value="30" step="1" min="1">
                 </div>
+                <!-- Nuevo campo: Materiales incluidos -->
+                <div class="form-group full-width">
+                    <label>Materiales incluidos</label>
+                    <select id="presupuestoMateriales">
+                        <option value="Sí">Sí</option>
+                        <option value="No" selected>No</option>
+                    </select>
+                </div>
             </div>
 
             <div class="presupuesto-preview" id="presupuestoPreview">
@@ -959,32 +967,46 @@
                     </div>
                 </div>
                 <div class="cliente-info">
+                    <!-- Servicio en primer lugar -->
+                    <div style="grid-column: 1 / -1; margin-bottom: 2px;">
+                        <span class="label">Servicio:</span> <span id="previewServicio" style="font-weight: 600; color: var(--primary-dark);">-</span>
+                    </div>
                     <div><span class="label">Cliente:</span> <span id="previewNombre">-</span></div>
                     <div><span class="label">Teléfono:</span> <span id="previewTelefono">-</span></div>
                     <div><span class="label">Email:</span> <span id="previewEmail">-</span></div>
                     <div><span class="label">Fecha:</span> <span id="previewFecha">-</span></div>
+                    <div style="grid-column: 1 / -1; margin-top: 4px;">
+                        <span class="label">Materiales incluidos:</span> <span id="previewMateriales" style="font-weight: 500;">No</span>
+                    </div>
                 </div>
-                <div class="detalle-item">
-                    <span class="desc"><strong>Descripción del trabajo</strong></span>
-                    <span class="precio"><strong>Importe</strong></span>
+
+                <!-- Tabla de importes -->
+                <div class="detalle-item" style="font-weight: 600; border-bottom: 2px solid var(--primary-cyan);">
+                    <span class="desc">Descripción del Servicio</span>
+                    <span class="precio">Importe</span>
                 </div>
                 <div class="detalle-item">
                     <span class="desc" id="previewDescripcion">-</span>
-                    <span class="precio" id="previewPrecio">$0.00</span>
+                    <span class="precio" id="previewSubtotal">$0.00</span>
+                </div>
+                <div class="detalle-item" style="font-size:0.9rem; color:var(--gray-text); border-bottom: 2px solid #E9ECEF;">
+                    <span class="desc">IVA 21%</span>
+                    <span class="precio" id="previewIva">$0.00</span>
                 </div>
                 <div class="totales">
-                    <div><strong>Total</strong> <span class="total" id="previewTotal">$0.00</span></div>
+                    <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$0.00</span></div>
                 </div>
+
                 <div class="validez">
                     <strong>Validez del presupuesto:</strong> <span id="previewValidez">-</span>
                 </div>
                 <div class="condiciones">
-                    <i class="fas fa-info-circle"></i> Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días. Los precios no incluyen IVA ni otros impuestos. Para cualquier consulta, comuníquese al teléfono +54 9 351 869-2251.
+                    <i class="fas fa-info-circle"></i> Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días. Los precios incluyen el IVA 21% (detallado arriba). Materiales incluidos: <span id="previewCondMateriales">No</span>.
                 </div>
             </div>
 
             <div class="presupuesto-actions">
-                <button class="btn-whatsapp-envio" id="enviarWhatsAppPresupuesto"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar Presupuesto</button>
                 <button class="btn-imprimir" id="imprimirPresupuestoBtn"><i class="fas fa-print"></i> Imprimir / PDF</button>
                 <button class="btn-cancel" id="cancelPresupuestoBtn">Cerrar</button>
             </div>
@@ -1362,11 +1384,15 @@
             document.getElementById('presupuestoNombre').value = registro.Nombre || '';
             document.getElementById('presupuestoTelefono').value = registro.Teléfono || '';
             document.getElementById('presupuestoEmail').value = registro.Email || '';
+
+            let servicioMostrar = registro.Servicio || 'No especificado';
+            if (servicioMostrar === 'emergencia') servicioMostrar = 'Emergencia 24/7';
+            document.getElementById('previewServicio').textContent = servicioMostrar;
+
             document.getElementById('presupuestoDescripcion').value = '';
             document.getElementById('presupuestoPrecio').value = '';
-
-            // Por defecto 30 días, pero si el usuario ya lo cambió, se mantiene
             document.getElementById('presupuestoValidez').value = 30;
+            document.getElementById('presupuestoMateriales').value = 'No';
 
             actualizarVistaPrevia();
             document.getElementById('presupuestoModal').classList.add('active');
@@ -1378,15 +1404,23 @@
             const telefono = document.getElementById('presupuestoTelefono').value || '-';
             const email = document.getElementById('presupuestoEmail').value || '-';
             const descripcion = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
-            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+            const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
             const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
+            const materiales = document.getElementById('presupuestoMateriales').value;
+
+            const iva = subtotal * 0.21;
+            const total = subtotal + iva;
 
             document.getElementById('previewNombre').textContent = nombre;
             document.getElementById('previewTelefono').textContent = telefono;
             document.getElementById('previewEmail').textContent = email;
             document.getElementById('previewDescripcion').textContent = descripcion;
-            document.getElementById('previewPrecio').textContent = `$${precio.toFixed(2)}`;
-            document.getElementById('previewTotal').textContent = `$${precio.toFixed(2)}`;
+            document.getElementById('previewMateriales').textContent = materiales;
+
+            document.getElementById('previewSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('previewIva').textContent = `$${iva.toFixed(2)}`;
+            document.getElementById('previewTotal').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('previewCondMateriales').textContent = materiales;
 
             const hoy = new Date();
             const fechaStr = hoy.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -1403,54 +1437,40 @@
         document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
         document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
         document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
+        document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
         // =============================================
-        // ENVIAR PRESUPUESTO POR WHATSAPP
+        // GUARDAR PRESUPUESTO
         // =============================================
-        function enviarPresupuestoWhatsApp() {
-            const telefono = document.getElementById('presupuestoTelefono').value.trim();
-            const nombre = document.getElementById('presupuestoNombre').value.trim();
-            const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-            const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
-            const hoy = new Date();
-            const fechaStr = hoy.toLocaleDateString('es-AR');
-            const fechaValidez = new Date(hoy);
-            fechaValidez.setDate(fechaValidez.getDate() + validezDias);
-            const validezStr = fechaValidez.toLocaleDateString('es-AR');
+        function guardarPresupuesto() {
+            const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
+            const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
+            const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+            const total = subtotal * 1.21;
             const numero = document.getElementById('previewNumero').textContent;
 
-            if (!telefono) {
-                alert('El cliente no tiene número de teléfono registrado.');
-                return;
-            }
+            // Mostrar mensaje de éxito
+            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: $${total.toFixed(2)}`);
 
-            let mensaje = `📄 *PRESUPUESTO REF ELECTROTECNIA*\n\n`;
-            mensaje += `👤 *Cliente:* ${nombre}\n`;
-            mensaje += `📞 *Teléfono:* ${telefono}\n\n`;
-            mensaje += `📝 *Descripción del servicio:*\n${descripcion}\n\n`;
-            mensaje += `💰 *Precio:* $${precio.toFixed(2)}\n`;
-            mensaje += `📅 *Fecha emisión:* ${fechaStr}\n`;
-            mensaje += `⏳ *Validez:* ${validezStr} (${validezDias} días)\n\n`;
-            mensaje += `🔹 *Condiciones:* Este presupuesto tiene una validez de ${validezDias} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
-            mensaje += `📞 *Contacto:* +54 9 351 869-2251\n`;
-            mensaje += `🌐 *Web:* https://sebagsc2020.github.io/refelectrotecnia/`;
-
-            const telefonoLimpio = telefono.replace(/\D/g, '');
-            const url = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
+            // Opcional: guardar en consola para depuración
+            console.log('Presupuesto guardado:', {
+                numero,
+                nombre,
+                servicio,
+                subtotal,
+                iva: subtotal * 0.21,
+                total,
+                validez: document.getElementById('presupuestoValidez').value,
+                materiales: document.getElementById('presupuestoMateriales').value
+            });
         }
 
-        document.getElementById('enviarWhatsAppPresupuesto').addEventListener('click', enviarPresupuestoWhatsApp);
+        document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
         // =============================================
-        // IMPRIMIR / PDF Y ENVIAR POR WHATSAPP
+        // IMPRIMIR / PDF (sin enviar WhatsApp)
         // =============================================
-        function imprimirYEnviarWhatsApp() {
-            // Primero abrimos WhatsApp con el mensaje
-            enviarPresupuestoWhatsApp();
-
-            // Luego abrimos la ventana de impresión para PDF
+        function imprimirPresupuesto() {
             const contenido = document.getElementById('presupuestoPreview').innerHTML;
             const ventana = window.open('', '_blank', 'width=800,height=600');
             ventana.document.write(`
@@ -1491,7 +1511,7 @@
             ventana.document.close();
         }
 
-        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirYEnviarWhatsApp);
+        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
 
         // =============================================
         // CERRAR MODALES
