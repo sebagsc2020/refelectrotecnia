@@ -1868,7 +1868,26 @@
                 );
             });
 
-            // --- Formulario: Enviar por WhatsApp ---
+            // === NUEVA FUNCIÓN: Guardar en Google Sheets ===
+            async function guardarEnSheets(datos) {
+                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec'; // <-- REEMPLAZA CON TU URL
+                try {
+                    const response = await fetch(URL_SCRIPT, {
+                        method: 'POST',
+                        mode: 'no-cors', // Necesario para evitar CORS
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(datos)
+                    });
+                    // Con no-cors no podemos leer la respuesta, pero asumimos que funciona
+                    console.log('Datos enviados a Sheets');
+                } catch (error) {
+                    console.error('Error al guardar en Sheets:', error);
+                }
+            }
+
+            // --- Formulario: Enviar por WhatsApp + Guardar en Sheets ---
             const contactForm = document.getElementById('contactForm');
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -1885,6 +1904,11 @@
                     return;
                 }
 
+                // 1) Guardar en Google Sheets (sin bloquear el envío de WhatsApp)
+                const datos = { nombre, telefono, email, servicio, ubicacion, mensaje };
+                guardarEnSheets(datos);
+
+                // 2) Construir mensaje de WhatsApp
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
@@ -1913,6 +1937,9 @@
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+
+                // Opcional: limpiar el formulario después de enviar
+                // this.reset();
             });
 
             // --- Cookies ---
