@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Google Fonts (Inter) -->
@@ -690,24 +690,6 @@
             background: #1DA851;
             transform: translateY(-2px);
         }
-        .presupuesto-box .presupuesto-actions .btn-email-envio {
-            background: #EA4335;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .presupuesto-box .presupuesto-actions .btn-email-envio:hover {
-            background: #D33426;
-            transform: translateY(-2px);
-        }
         .presupuesto-box .presupuesto-actions .btn-imprimir {
             background: var(--primary-dark);
             color: white;
@@ -962,7 +944,7 @@
                 </div>
                 <div class="form-group">
                     <label>Validez (días)</label>
-                    <input type="number" id="presupuestoValidez" value="30" readonly>
+                    <input type="number" id="presupuestoValidez" value="30" step="1" min="1">
                 </div>
             </div>
 
@@ -1003,7 +985,6 @@
 
             <div class="presupuesto-actions">
                 <button class="btn-whatsapp-envio" id="enviarWhatsAppPresupuesto"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button class="btn-email-envio" id="enviarEmailPresupuesto"><i class="fas fa-envelope"></i> Email</button>
                 <button class="btn-imprimir" id="imprimirPresupuestoBtn"><i class="fas fa-print"></i> Imprimir / PDF</button>
                 <button class="btn-cancel" id="cancelPresupuestoBtn">Cerrar</button>
             </div>
@@ -1372,7 +1353,6 @@
                 return;
             }
 
-            // Generar número de presupuesto
             contadorPresupuesto++;
             const year = new Date().getFullYear();
             const numero = `${year}-${String(contadorPresupuesto).padStart(4, '0')}`;
@@ -1385,6 +1365,9 @@
             document.getElementById('presupuestoDescripcion').value = '';
             document.getElementById('presupuestoPrecio').value = '';
 
+            // Por defecto 30 días, pero si el usuario ya lo cambió, se mantiene
+            document.getElementById('presupuestoValidez').value = 30;
+
             actualizarVistaPrevia();
             document.getElementById('presupuestoModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1396,6 +1379,7 @@
             const email = document.getElementById('presupuestoEmail').value || '-';
             const descripcion = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
             const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+            const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
 
             document.getElementById('previewNombre').textContent = nombre;
             document.getElementById('previewTelefono').textContent = telefono;
@@ -1406,7 +1390,6 @@
 
             const hoy = new Date();
             const fechaStr = hoy.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
             const fechaValidez = new Date(hoy);
             fechaValidez.setDate(fechaValidez.getDate() + validezDias);
             const validezStr = fechaValidez.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -1419,6 +1402,7 @@
         // Event listeners para actualizar vista previa en tiempo real
         document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
         document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
+        document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
 
         // =============================================
         // ENVIAR PRESUPUESTO POR WHATSAPP
@@ -1428,11 +1412,11 @@
             const nombre = document.getElementById('presupuestoNombre').value.trim();
             const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
             const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-            const validez = document.getElementById('presupuestoValidez').value || 30;
+            const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
             const hoy = new Date();
             const fechaStr = hoy.toLocaleDateString('es-AR');
             const fechaValidez = new Date(hoy);
-            fechaValidez.setDate(fechaValidez.getDate() + parseInt(validez));
+            fechaValidez.setDate(fechaValidez.getDate() + validezDias);
             const validezStr = fechaValidez.toLocaleDateString('es-AR');
             const numero = document.getElementById('previewNumero').textContent;
 
@@ -1441,15 +1425,14 @@
                 return;
             }
 
-            // Formatear mensaje
             let mensaje = `📄 *PRESUPUESTO REF ELECTROTECNIA*\n\n`;
             mensaje += `👤 *Cliente:* ${nombre}\n`;
             mensaje += `📞 *Teléfono:* ${telefono}\n\n`;
             mensaje += `📝 *Descripción del servicio:*\n${descripcion}\n\n`;
             mensaje += `💰 *Precio:* $${precio.toFixed(2)}\n`;
             mensaje += `📅 *Fecha emisión:* ${fechaStr}\n`;
-            mensaje += `⏳ *Validez:* ${validezStr} (${validez} días)\n\n`;
-            mensaje += `🔹 *Condiciones:* Este presupuesto tiene una validez de ${validez} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
+            mensaje += `⏳ *Validez:* ${validezStr} (${validezDias} días)\n\n`;
+            mensaje += `🔹 *Condiciones:* Este presupuesto tiene una validez de ${validezDias} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
             mensaje += `📞 *Contacto:* +54 9 351 869-2251\n`;
             mensaje += `🌐 *Web:* https://sebagsc2020.github.io/refelectrotecnia/`;
 
@@ -1458,48 +1441,16 @@
             window.open(url, '_blank');
         }
 
-        // =============================================
-        // ENVIAR PRESUPUESTO POR EMAIL
-        // =============================================
-        function enviarPresupuestoEmail() {
-            const email = document.getElementById('presupuestoEmail').value.trim();
-            const nombre = document.getElementById('presupuestoNombre').value.trim();
-            const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-            const validez = document.getElementById('presupuestoValidez').value || 30;
-            const hoy = new Date();
-            const fechaStr = hoy.toLocaleDateString('es-AR');
-            const fechaValidez = new Date(hoy);
-            fechaValidez.setDate(fechaValidez.getDate() + parseInt(validez));
-            const validezStr = fechaValidez.toLocaleDateString('es-AR');
-            const numero = document.getElementById('previewNumero').textContent;
-
-            if (!email) {
-                alert('El cliente no tiene correo electrónico registrado.');
-                return;
-            }
-
-            const asunto = encodeURIComponent(`Presupuesto N° ${numero} - REF Electrotecnia`);
-            let cuerpo = `Estimado(a) ${nombre},\n\n`;
-            cuerpo += `Adjuntamos el presupuesto solicitado:\n\n`;
-            cuerpo += `N° Presupuesto: ${numero}\n`;
-            cuerpo += `Fecha emisión: ${fechaStr}\n`;
-            cuerpo += `Validez: ${validezStr} (${validez} días)\n\n`;
-            cuerpo += `Descripción del servicio:\n${descripcion}\n\n`;
-            cuerpo += `Precio: $${precio.toFixed(2)}\n\n`;
-            cuerpo += `Condiciones: Este presupuesto tiene una validez de ${validez} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
-            cuerpo += `Para cualquier consulta, comuníquese al +54 9 351 869-2251.\n\n`;
-            cuerpo += `Saludos cordiales,\nREF Electrotecnia`;
-
-            const url = `mailto:${email}?subject=${asunto}&body=${encodeURIComponent(cuerpo)}`;
-            window.open(url, '_blank');
-        }
-
-        // Event listeners para los botones de presupuesto
         document.getElementById('enviarWhatsAppPresupuesto').addEventListener('click', enviarPresupuestoWhatsApp);
-        document.getElementById('enviarEmailPresupuesto').addEventListener('click', enviarPresupuestoEmail);
 
-        function imprimirPresupuesto() {
+        // =============================================
+        // IMPRIMIR / PDF Y ENVIAR POR WHATSAPP
+        // =============================================
+        function imprimirYEnviarWhatsApp() {
+            // Primero abrimos WhatsApp con el mensaje
+            enviarPresupuestoWhatsApp();
+
+            // Luego abrimos la ventana de impresión para PDF
             const contenido = document.getElementById('presupuestoPreview').innerHTML;
             const ventana = window.open('', '_blank', 'width=800,height=600');
             ventana.document.write(`
@@ -1540,7 +1491,7 @@
             ventana.document.close();
         }
 
-        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
+        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirYEnviarWhatsApp);
 
         // =============================================
         // CERRAR MODALES
