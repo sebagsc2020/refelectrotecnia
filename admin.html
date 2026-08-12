@@ -565,9 +565,9 @@
             border-color: #ccc;
         }
 
-        /* ========== MODAL DE PRESUPUESTO ========== */
+        /* ========== MODAL DE PRESUPUESTO (mejorado) ========== */
         .presupuesto-box {
-            max-width: 800px;
+            max-width: 850px;
         }
         .presupuesto-box .presupuesto-datos {
             display: grid;
@@ -578,48 +578,168 @@
             grid-column: 1 / -1;
         }
         .presupuesto-box .presupuesto-preview {
-            background: var(--light-bg);
-            padding: 20px;
+            background: white;
+            padding: 25px;
             border-radius: var(--radius);
-            margin: 15px 0;
+            margin: 20px 0;
             border: 1px solid #E9ECEF;
+            font-size: 0.95rem;
         }
-        .presupuesto-box .presupuesto-preview .item {
+        .presupuesto-box .presupuesto-preview .presupuesto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-cyan);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa img {
+            height: 45px;
+        }
+        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa h4 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .presupuesto-box .presupuesto-preview .presupuesto-header .numero {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .presupuesto-box .presupuesto-preview .cliente-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: var(--light-bg);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .presupuesto-box .presupuesto-preview .cliente-info .label {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .presupuesto-box .presupuesto-preview .detalle-item {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
             border-bottom: 1px solid #E9ECEF;
         }
-        .presupuesto-box .presupuesto-preview .item:last-child {
+        .presupuesto-box .presupuesto-preview .detalle-item:last-child {
             border-bottom: none;
         }
-        .presupuesto-box .presupuesto-preview .total {
-            font-weight: 700;
-            font-size: 1.2rem;
+        .presupuesto-box .presupuesto-preview .detalle-item .desc {
+            flex: 1;
+        }
+        .presupuesto-box .presupuesto-preview .detalle-item .precio {
+            font-weight: 600;
+        }
+        .presupuesto-box .presupuesto-preview .totales {
+            margin-top: 15px;
+            text-align: right;
+            border-top: 2px solid var(--primary-cyan);
+            padding-top: 15px;
+        }
+        .presupuesto-box .presupuesto-preview .totales .total {
+            font-size: 1.4rem;
+            font-weight: 800;
             color: var(--primary-dark);
         }
         .presupuesto-box .presupuesto-preview .validez {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: var(--gray-text);
+            margin-top: 15px;
+            text-align: center;
+            border-top: 1px solid #E9ECEF;
+            padding-top: 15px;
+        }
+        .presupuesto-box .presupuesto-preview .condiciones {
+            font-size: 0.85rem;
             color: var(--gray-text);
             margin-top: 10px;
+            background: var(--light-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
         }
-        .presupuesto-box .btn-imprimir {
-            background: var(--primary-dark);
+        .presupuesto-box .presupuesto-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .presupuesto-box .presupuesto-actions .btn-whatsapp-envio {
+            background: #25D366;
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 10px 20px;
             border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        .presupuesto-box .btn-imprimir:hover {
+        .presupuesto-box .presupuesto-actions .btn-whatsapp-envio:hover {
+            background: #1DA851;
+            transform: translateY(-2px);
+        }
+        .presupuesto-box .presupuesto-actions .btn-email-envio {
+            background: #EA4335;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .presupuesto-box .presupuesto-actions .btn-email-envio:hover {
+            background: #D33426;
+            transform: translateY(-2px);
+        }
+        .presupuesto-box .presupuesto-actions .btn-imprimir {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .presupuesto-box .presupuesto-actions .btn-imprimir:hover {
             background: var(--primary-cyan);
             transform: translateY(-2px);
+        }
+        .presupuesto-box .presupuesto-actions .btn-cancel {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .presupuesto-box .presupuesto-actions .btn-cancel:hover {
+            background: #f1f1f1;
+            border-color: #ccc;
         }
 
         /* ========== RESPONSIVE ========== */
@@ -643,6 +763,12 @@
             .presupuesto-box .presupuesto-datos {
                 grid-template-columns: 1fr;
             }
+            .presupuesto-box .presupuesto-preview .cliente-info {
+                grid-template-columns: 1fr;
+            }
+            .presupuesto-box .presupuesto-actions {
+                justify-content: center;
+            }
         }
         @media (max-width: 480px) {
             .stats-grid {
@@ -658,7 +784,7 @@
 
         /* Estilos para impresión */
         @media print {
-            .dashboard-header, .header-actions, .modal-actions, .btn-imprimir, .close-modal {
+            .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
                 display: none !important;
             }
             .modal-box {
@@ -807,11 +933,11 @@
         </div>
     </div>
 
-    <!-- ========== MODAL DE PRESUPUESTO ========== -->
+    <!-- ========== MODAL DE PRESUPUESTO (mejorado) ========== -->
     <div class="modal-overlay" id="presupuestoModal">
         <div class="modal-box presupuesto-box">
             <button class="close-modal" id="closePresupuestoModal">&times;</button>
-            <h3><span>📄</span> Presupuesto</h3>
+            <h3><span>📄</span> Generar Presupuesto</h3>
             <input type="hidden" id="presupuestoIndex">
             <div class="presupuesto-datos">
                 <div class="form-group">
@@ -841,27 +967,45 @@
             </div>
 
             <div class="presupuesto-preview" id="presupuestoPreview">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" style="height:40px;">
-                    <span style="font-weight:700; color:var(--primary-dark);">REF Electrotecnia</span>
+                <div class="presupuesto-header">
+                    <div class="empresa">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia">
+                        <h4>REF Electrotecnia</h4>
+                    </div>
+                    <div class="numero">
+                        <strong>Presupuesto N°</strong> <span id="previewNumero">-</span>
+                    </div>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <div><strong>Cliente:</strong> <span id="previewNombre">-</span></div>
-                    <div><strong>Tel:</strong> <span id="previewTelefono">-</span></div>
+                <div class="cliente-info">
+                    <div><span class="label">Cliente:</span> <span id="previewNombre">-</span></div>
+                    <div><span class="label">Teléfono:</span> <span id="previewTelefono">-</span></div>
+                    <div><span class="label">Email:</span> <span id="previewEmail">-</span></div>
+                    <div><span class="label">Fecha:</span> <span id="previewFecha">-</span></div>
                 </div>
-                <div style="margin-bottom:10px;"><strong>Email:</strong> <span id="previewEmail">-</span></div>
-                <div class="item"><span>Descripción</span> <span id="previewDescripcion">-</span></div>
-                <div class="item"><span>Precio</span> <span id="previewPrecio">$0.00</span></div>
-                <div class="item total"><span>Total</span> <span id="previewTotal">$0.00</span></div>
+                <div class="detalle-item">
+                    <span class="desc"><strong>Descripción del trabajo</strong></span>
+                    <span class="precio"><strong>Importe</strong></span>
+                </div>
+                <div class="detalle-item">
+                    <span class="desc" id="previewDescripcion">-</span>
+                    <span class="precio" id="previewPrecio">$0.00</span>
+                </div>
+                <div class="totales">
+                    <div><strong>Total</strong> <span class="total" id="previewTotal">$0.00</span></div>
+                </div>
                 <div class="validez">
-                    <strong>Fecha emisión:</strong> <span id="previewFecha">-</span><br>
-                    <strong>Validez:</strong> <span id="previewValidez">-</span>
+                    <strong>Validez del presupuesto:</strong> <span id="previewValidez">-</span>
+                </div>
+                <div class="condiciones">
+                    <i class="fas fa-info-circle"></i> Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días. Los precios no incluyen IVA ni otros impuestos. Para cualquier consulta, comuníquese al teléfono +54 9 351 869-2251.
                 </div>
             </div>
 
-            <div class="modal-actions">
+            <div class="presupuesto-actions">
+                <button class="btn-whatsapp-envio" id="enviarWhatsAppPresupuesto"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-email-envio" id="enviarEmailPresupuesto"><i class="fas fa-envelope"></i> Email</button>
+                <button class="btn-imprimir" id="imprimirPresupuestoBtn"><i class="fas fa-print"></i> Imprimir / PDF</button>
                 <button class="btn-cancel" id="cancelPresupuestoBtn">Cerrar</button>
-                <button class="btn-imprimir" id="imprimirPresupuestoBtn"><i class="fas fa-print"></i> Imprimir / Guardar PDF</button>
             </div>
         </div>
     </div>
@@ -875,6 +1019,7 @@
 
         let chartInstance = null;
         let datosCache = [];
+        let contadorPresupuesto = 0;
 
         // =============================================
         // LOGIN
@@ -1227,6 +1372,12 @@
                 return;
             }
 
+            // Generar número de presupuesto
+            contadorPresupuesto++;
+            const year = new Date().getFullYear();
+            const numero = `${year}-${String(contadorPresupuesto).padStart(4, '0')}`;
+            document.getElementById('previewNumero').textContent = numero;
+
             document.getElementById('presupuestoIndex').value = index;
             document.getElementById('presupuestoNombre').value = registro.Nombre || '';
             document.getElementById('presupuestoTelefono').value = registro.Teléfono || '';
@@ -1234,9 +1385,7 @@
             document.getElementById('presupuestoDescripcion').value = '';
             document.getElementById('presupuestoPrecio').value = '';
 
-            // Actualizar vista previa
             actualizarVistaPrevia();
-
             document.getElementById('presupuestoModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1256,19 +1405,99 @@
             document.getElementById('previewTotal').textContent = `$${precio.toFixed(2)}`;
 
             const hoy = new Date();
-            const fechaStr = hoy.toLocaleDateString('es-AR');
+            const fechaStr = hoy.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
             const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
             const fechaValidez = new Date(hoy);
             fechaValidez.setDate(fechaValidez.getDate() + validezDias);
-            const validezStr = fechaValidez.toLocaleDateString('es-AR');
+            const validezStr = fechaValidez.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
             document.getElementById('previewFecha').textContent = fechaStr;
             document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
+            document.getElementById('previewValidezDias').textContent = validezDias;
         }
 
         // Event listeners para actualizar vista previa en tiempo real
         document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
         document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
+
+        // =============================================
+        // ENVIAR PRESUPUESTO POR WHATSAPP
+        // =============================================
+        function enviarPresupuestoWhatsApp() {
+            const telefono = document.getElementById('presupuestoTelefono').value.trim();
+            const nombre = document.getElementById('presupuestoNombre').value.trim();
+            const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
+            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+            const validez = document.getElementById('presupuestoValidez').value || 30;
+            const hoy = new Date();
+            const fechaStr = hoy.toLocaleDateString('es-AR');
+            const fechaValidez = new Date(hoy);
+            fechaValidez.setDate(fechaValidez.getDate() + parseInt(validez));
+            const validezStr = fechaValidez.toLocaleDateString('es-AR');
+            const numero = document.getElementById('previewNumero').textContent;
+
+            if (!telefono) {
+                alert('El cliente no tiene número de teléfono registrado.');
+                return;
+            }
+
+            // Formatear mensaje
+            let mensaje = `📄 *PRESUPUESTO REF ELECTROTECNIA*\n\n`;
+            mensaje += `👤 *Cliente:* ${nombre}\n`;
+            mensaje += `📞 *Teléfono:* ${telefono}\n\n`;
+            mensaje += `📝 *Descripción del servicio:*\n${descripcion}\n\n`;
+            mensaje += `💰 *Precio:* $${precio.toFixed(2)}\n`;
+            mensaje += `📅 *Fecha emisión:* ${fechaStr}\n`;
+            mensaje += `⏳ *Validez:* ${validezStr} (${validez} días)\n\n`;
+            mensaje += `🔹 *Condiciones:* Este presupuesto tiene una validez de ${validez} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
+            mensaje += `📞 *Contacto:* +54 9 351 869-2251\n`;
+            mensaje += `🌐 *Web:* https://sebagsc2020.github.io/refelectrotecnia/`;
+
+            const telefonoLimpio = telefono.replace(/\D/g, '');
+            const url = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+
+        // =============================================
+        // ENVIAR PRESUPUESTO POR EMAIL
+        // =============================================
+        function enviarPresupuestoEmail() {
+            const email = document.getElementById('presupuestoEmail').value.trim();
+            const nombre = document.getElementById('presupuestoNombre').value.trim();
+            const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
+            const precio = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+            const validez = document.getElementById('presupuestoValidez').value || 30;
+            const hoy = new Date();
+            const fechaStr = hoy.toLocaleDateString('es-AR');
+            const fechaValidez = new Date(hoy);
+            fechaValidez.setDate(fechaValidez.getDate() + parseInt(validez));
+            const validezStr = fechaValidez.toLocaleDateString('es-AR');
+            const numero = document.getElementById('previewNumero').textContent;
+
+            if (!email) {
+                alert('El cliente no tiene correo electrónico registrado.');
+                return;
+            }
+
+            const asunto = encodeURIComponent(`Presupuesto N° ${numero} - REF Electrotecnia`);
+            let cuerpo = `Estimado(a) ${nombre},\n\n`;
+            cuerpo += `Adjuntamos el presupuesto solicitado:\n\n`;
+            cuerpo += `N° Presupuesto: ${numero}\n`;
+            cuerpo += `Fecha emisión: ${fechaStr}\n`;
+            cuerpo += `Validez: ${validezStr} (${validez} días)\n\n`;
+            cuerpo += `Descripción del servicio:\n${descripcion}\n\n`;
+            cuerpo += `Precio: $${precio.toFixed(2)}\n\n`;
+            cuerpo += `Condiciones: Este presupuesto tiene una validez de ${validez} días. Los precios no incluyen IVA ni otros impuestos.\n\n`;
+            cuerpo += `Para cualquier consulta, comuníquese al +54 9 351 869-2251.\n\n`;
+            cuerpo += `Saludos cordiales,\nREF Electrotecnia`;
+
+            const url = `mailto:${email}?subject=${asunto}&body=${encodeURIComponent(cuerpo)}`;
+            window.open(url, '_blank');
+        }
+
+        // Event listeners para los botones de presupuesto
+        document.getElementById('enviarWhatsAppPresupuesto').addEventListener('click', enviarPresupuestoWhatsApp);
+        document.getElementById('enviarEmailPresupuesto').addEventListener('click', enviarPresupuestoEmail);
 
         function imprimirPresupuesto() {
             const contenido = document.getElementById('presupuestoPreview').innerHTML;
@@ -1279,14 +1508,22 @@
                     <title>Presupuesto REF Electrotecnia</title>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
                     <style>
-                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1E1E1E; }
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1E1E1E; background: white; }
                         .presupuesto-preview { max-width: 700px; margin: 0 auto; }
-                        .presupuesto-preview .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E9ECEF; }
-                        .presupuesto-preview .total { font-weight: 700; font-size: 1.2rem; color: #0A2E5C; }
-                        .presupuesto-preview .validez { font-size: 0.9rem; color: #4A4A4A; margin-top: 10px; }
-                        .presupuesto-preview .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
-                        .presupuesto-preview .header img { height:40px; }
-                        .presupuesto-preview .header span { font-weight:700; color:#0A2E5C; }
+                        .presupuesto-preview .presupuesto-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00A8FF; padding-bottom: 15px; margin-bottom: 20px; }
+                        .presupuesto-preview .presupuesto-header .empresa { display: flex; align-items: center; gap: 12px; }
+                        .presupuesto-preview .presupuesto-header .empresa img { height: 45px; }
+                        .presupuesto-preview .presupuesto-header .empresa h4 { font-size: 1.2rem; font-weight: 800; color: #0A2E5C; }
+                        .presupuesto-preview .cliente-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #F4F6F9; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; }
+                        .presupuesto-preview .cliente-info .label { font-weight: 600; color: #0A2E5C; }
+                        .presupuesto-preview .detalle-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E9ECEF; }
+                        .presupuesto-preview .detalle-item:last-child { border-bottom: none; }
+                        .presupuesto-preview .detalle-item .desc { flex: 1; }
+                        .presupuesto-preview .detalle-item .precio { font-weight: 600; }
+                        .presupuesto-preview .totales { margin-top: 15px; text-align: right; border-top: 2px solid #00A8FF; padding-top: 15px; }
+                        .presupuesto-preview .totales .total { font-size: 1.4rem; font-weight: 800; color: #0A2E5C; }
+                        .presupuesto-preview .validez { font-size: 0.85rem; color: #4A4A4A; margin-top: 15px; text-align: center; border-top: 1px solid #E9ECEF; padding-top: 15px; }
+                        .presupuesto-preview .condiciones { font-size: 0.85rem; color: #4A4A4A; margin-top: 10px; background: #F4F6F9; padding: 10px 15px; border-radius: 8px; }
                         @media print { body { padding: 20px; } }
                     </style>
                 </head>
@@ -1303,6 +1540,8 @@
             ventana.document.close();
         }
 
+        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
+
         // =============================================
         // CERRAR MODALES
         // =============================================
@@ -1316,7 +1555,6 @@
         document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
         document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
         document.getElementById('cancelPresupuestoBtn').addEventListener('click', () => cerrarModal('presupuestoModal'));
-        document.getElementById('imprimirPresupuestoBtn').addEventListener('click', imprimirPresupuesto);
 
         // Cerrar modales al hacer clic en el overlay
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
