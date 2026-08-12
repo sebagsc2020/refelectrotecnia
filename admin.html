@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js CDN para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- html2pdf.js para generar PDF directamente -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -764,7 +766,7 @@
             }
         }
 
-        /* Estilos para impresión */
+        /* Estilos para impresión (se mantienen por si se usa) */
         @media print {
             .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
                 display: none !important;
@@ -859,6 +861,14 @@
             </div>
         </div>
 
+        <!-- ========== NUEVO: PRESUPUESTOS ENVIADOS ========== -->
+        <div class="table-container">
+            <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+            <div class="table-scroll" id="presupuestosContainer">
+                <div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>
+            </div>
+        </div>
+
         <!-- Resumen por Contacto -->
         <div class="table-container">
             <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
@@ -946,7 +956,6 @@
                     <label>Validez (días)</label>
                     <input type="number" id="presupuestoValidez" value="30" step="1" min="1">
                 </div>
-                <!-- Nuevo campo: Materiales incluidos -->
                 <div class="form-group full-width">
                     <label>Materiales incluidos</label>
                     <select id="presupuestoMateriales">
@@ -967,7 +976,6 @@
                     </div>
                 </div>
                 <div class="cliente-info">
-                    <!-- Servicio en primer lugar -->
                     <div style="grid-column: 1 / -1; margin-bottom: 2px;">
                         <span class="label">Servicio:</span> <span id="previewServicio" style="font-weight: 600; color: var(--primary-dark);">-</span>
                     </div>
@@ -979,8 +987,6 @@
                         <span class="label">Materiales incluidos:</span> <span id="previewMateriales" style="font-weight: 500;">No</span>
                     </div>
                 </div>
-
-                <!-- Tabla de importes -->
                 <div class="detalle-item" style="font-weight: 600; border-bottom: 2px solid var(--primary-cyan);">
                     <span class="desc">Descripción del Servicio</span>
                     <span class="precio">Importe</span>
@@ -996,7 +1002,6 @@
                 <div class="totales">
                     <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$ 0</span></div>
                 </div>
-
                 <div class="validez">
                     <strong>Validez del presupuesto:</strong> <span id="previewValidez">-</span>
                 </div>
@@ -1017,12 +1022,12 @@
         // =============================================
         // CONFIGURACIÓN
         // =============================================
-        const CONTRASENA = 'admin123';
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyQAiZdTIgAF2MnGXJe25dP1hJTkvVzBYj6dGNJyg0iVmcNg7slU0zvmO2ZiYg_ncxm/exec';
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwnzHIG1wpQ3_xdkUa8RxrnbZ_8FV-a83XYHEis3chWf2ioFuEnJ5rsqKcKli_gKZqQ/exec';
 
         let chartInstance = null;
-        let datosCache = [];
+        let datosCache = { contactos: [], presupuestos: [] };
         let contadorPresupuesto = 0;
+        let sesionActiva = false;
 
         // =============================================
         // FUNCIÓN PARA FORMATEAR PRECIOS (CON ESPACIO, SIN CENTAVOS, CON PUNTOS DE MILES)
@@ -1035,7 +1040,7 @@
         }
 
         // =============================================
-        // LOGIN
+        // LOGIN (vía Google Apps Script)
         // =============================================
         const loginContainer = document.getElementById('loginContainer');
         const dashboard = document.getElementById('dashboard');
@@ -1043,16 +1048,37 @@
         const loginBtn = document.getElementById('loginBtn');
         const loginError = document.getElementById('loginError');
 
-        function doLogin() {
+        async function doLogin() {
             const pass = passwordInput.value.trim();
-            if (pass === CONTRASENA) {
-                loginContainer.style.display = 'none';
-                dashboard.classList.add('active');
-                cargarDatos();
-            } else {
+            if (!pass) {
+                loginError.textContent = 'Ingresa la contraseña.';
                 loginError.classList.add('show');
-                passwordInput.value = '';
-                passwordInput.focus();
+                return;
+            }
+
+            try {
+                const response = await fetch(URL_SCRIPT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', password: pass })
+                });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    sesionActiva = true;
+                    localStorage.setItem('adminSession', 'true');
+                    loginContainer.style.display = 'none';
+                    dashboard.classList.add('active');
+                    cargarDatos();
+                } else {
+                    loginError.textContent = 'Contraseña incorrecta. Intenta de nuevo.';
+                    loginError.classList.add('show');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (error) {
+                console.error('Error en login:', error);
+                loginError.textContent = 'Error de conexión. Revisa la URL del script.';
+                loginError.classList.add('show');
             }
         }
 
@@ -1061,10 +1087,31 @@
             if (e.key === 'Enter') doLogin();
         });
 
+        // Verificar sesión al cargar
+        if (localStorage.getItem('adminSession') === 'true') {
+            (async () => {
+                try {
+                    const response = await fetch(URL_SCRIPT);
+                    if (response.ok) {
+                        sesionActiva = true;
+                        loginContainer.style.display = 'none';
+                        dashboard.classList.add('active');
+                        cargarDatos();
+                    } else {
+                        localStorage.removeItem('adminSession');
+                    }
+                } catch {
+                    localStorage.removeItem('adminSession');
+                }
+            })();
+        }
+
         // =============================================
         // LOGOUT
         // =============================================
         document.getElementById('logoutBtn').addEventListener('click', () => {
+            sesionActiva = false;
+            localStorage.removeItem('adminSession');
             dashboard.classList.remove('active');
             loginContainer.style.display = 'flex';
             passwordInput.value = '';
@@ -1072,7 +1119,7 @@
         });
 
         // =============================================
-        // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS
+        // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (excepto login)
         // =============================================
         async function enviarAccion(datos) {
             try {
@@ -1098,6 +1145,7 @@
             const tablaContainer = document.getElementById('tablaContainer');
             tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
             document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
+            document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
 
             try {
                 const response = await fetch(URL_SCRIPT);
@@ -1105,14 +1153,15 @@
                 const json = await response.json();
                 if (json.error) throw new Error(json.error);
 
-                const { data, headers } = json;
-                datosCache = data || [];
+                datosCache.contactos = json.contactos || [];
+                datosCache.presupuestos = json.presupuestos || [];
 
-                actualizarStats(datosCache);
-                actualizarGrafico(datosCache);
-                actualizarUltimos(datosCache);
-                renderizarTabla(datosCache, headers);
-                actualizarResumenContactos(datosCache);
+                actualizarStats(datosCache.contactos);
+                actualizarGrafico(datosCache.contactos);
+                actualizarUltimos(datosCache.contactos);
+                renderizarTabla(datosCache.contactos);
+                actualizarResumenContactos(datosCache.contactos);
+                renderizarPresupuestos(datosCache.presupuestos);
 
             } catch (error) {
                 console.error(error);
@@ -1127,6 +1176,12 @@
                     <div class="no-data">
                         <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
                         <p style="margin-top:10px;">Error al procesar contactos.</p>
+                    </div>
+                `;
+                document.getElementById('presupuestosContainer').innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
+                        <p style="margin-top:10px;">Error al cargar presupuestos.</p>
                     </div>
                 `;
             }
@@ -1251,9 +1306,9 @@
         }
 
         // =============================================
-        // TABLA COMPLETA (CON BOTONES EDITAR / ELIMINAR / PRESUPUESTO)
+        // TABLA COMPLETA (CONTACTOS)
         // =============================================
-        function renderizarTabla(data, headers) {
+        function renderizarTabla(data) {
             const container = document.getElementById('tablaContainer');
             if (data.length === 0) {
                 container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
@@ -1282,7 +1337,6 @@
                 const mensaje = row.Mensaje || '';
                 const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-                // Generar enlace de Maps si hay ubicación
                 let mapsHtml = '';
                 if (ubicacion) {
                     let url = '';
@@ -1321,10 +1375,61 @@
         }
 
         // =============================================
+        // RENDERIZAR PRESUPUESTOS ENVIADOS
+        // =============================================
+        function renderizarPresupuestos(data) {
+            const container = document.getElementById('presupuestosContainer');
+            if (!data || data.length === 0) {
+                container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
+                return;
+            }
+
+            // Ordenar por fecha descendente (más reciente primero)
+            const sorted = [...data].sort((a, b) => {
+                if (!a.Fecha) return 1;
+                if (!b.Fecha) return -1;
+                return new Date(b.Fecha) - new Date(a.Fecha);
+            });
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Servicio</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Fecha de envío</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sorted.forEach(row => {
+                const nombre = row.Nombre || '-';
+                const servicio = row.Servicio || '-';
+                const descripcion = row.Descripción || '-';
+                const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0';
+                const fecha = row.Fecha ? new Date(row.Fecha).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
+
+                html += `<tr>
+                    <td><strong>${nombre}</strong></td>
+                    <td>${servicio}</td>
+                    <td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
+                    <td>${precio}</td>
+                    <td>${fecha}</td>
+                </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        // =============================================
         // EDITAR REGISTRO
         // =============================================
         function editarRegistro(index) {
-            const registro = datosCache[index];
+            const registro = datosCache.contactos[index];
             if (!registro) {
                 alert('Registro no encontrado.');
                 return;
@@ -1365,7 +1470,7 @@
         // ELIMINAR REGISTRO
         // =============================================
         async function eliminarRegistro(index) {
-            const registro = datosCache[index];
+            const registro = datosCache.contactos[index];
             if (!registro) return;
 
             const confirmar = confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"?`);
@@ -1379,7 +1484,7 @@
         // PRESUPUESTO
         // =============================================
         function abrirPresupuesto(index) {
-            const registro = datosCache[index];
+            const registro = datosCache.contactos[index];
             if (!registro) {
                 alert('Registro no encontrado.');
                 return;
@@ -1427,7 +1532,6 @@
             document.getElementById('previewDescripcion').textContent = descripcion;
             document.getElementById('previewMateriales').textContent = materiales;
 
-            // Aplicar formato con espacio
             document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
             document.getElementById('previewIva').textContent = formatearPrecio(iva);
             document.getElementById('previewTotal').textContent = formatearPrecio(total);
@@ -1451,33 +1555,50 @@
         document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
         // =============================================
-        // GUARDAR PRESUPUESTO
+        // GUARDAR PRESUPUESTO (descarga PDF + guarda en Sheets)
         // =============================================
         function guardarPresupuesto() {
             const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
             const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
+            const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
             const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
             const total = subtotal * 1.21;
             const numero = document.getElementById('previewNumero').textContent;
+            const validez = document.getElementById('presupuestoValidez').value || 30;
+            const materiales = document.getElementById('presupuestoMateriales').value;
 
+            // 1. Guardar en Google Sheets
+            const datos = {
+                action: 'save_budget',
+                nombre: nombre,
+                servicio: servicio,
+                descripcion: descripcion,
+                precio: total.toFixed(2),
+                numero: numero,
+                validez: validez,
+                materiales: materiales
+            };
+            enviarAccion(datos);
+
+            // 2. Mostrar alerta de confirmación
             alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}`);
 
-            console.log('Presupuesto guardado:', {
-                numero,
-                nombre,
-                servicio,
-                subtotal: formatearPrecio(subtotal),
-                iva: formatearPrecio(subtotal * 0.21),
-                total: formatearPrecio(total),
-                validez: document.getElementById('presupuestoValidez').value,
-                materiales: document.getElementById('presupuestoMateriales').value
-            });
+            // 3. Generar PDF y descargar
+            const element = document.getElementById('presupuestoPreview');
+            const opt = {
+                margin:       1,
+                filename:     `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'cm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
         }
 
         document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
         // =============================================
-        // IMPRIMIR / PDF (con nombre de archivo personalizado)
+        // IMPRIMIR / PDF (abre ventana de impresión)
         // =============================================
         function imprimirPresupuesto() {
             const numero = document.getElementById('previewNumero').textContent || 'Sin número';
@@ -1520,7 +1641,6 @@
                         ${contenido}
                     </div>
                     <script>
-                        // Asignar el título también en el momento de imprimir
                         document.title = "${titulo}";
                         window.onload = function() { window.print(); }
                     <\/script>
