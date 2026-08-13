@@ -1480,7 +1480,6 @@
         }
 
         @media (max-width: 768px) {
-            /* ✅ REDUCCIÓN DEL PADDING-TOP DEL HERO A LA MITAD EN MÓVIL */
             .hero {
                 padding: 40px 0 60px;
             }
@@ -1945,9 +1944,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // ⚠️⚠️⚠️ PEGA AQUÍ LA URL DE TU APPS SCRIPT (ver instrucciones abajo) ⚠️⚠️⚠️
+            // ============================================================
+            // ⚠️ IMPORTANTE: Reemplazar con la URL de tu Apps Script
+            // ============================================================
             const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxrt_EOlyA5gNmaUivWvYqecqhgRO0vj49FYTdjd2IkHcClPY1llB7CabhoG090wXau/exec';
-            // Ejemplo: 'https://script.google.com/macros/s/AKfycbX.../exec'
 
             function trackEvent(name, params) {
                 if (typeof window.gtag === 'function') {
@@ -2339,7 +2339,9 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        ubicacionInput.value = lat.toFixed(6) + ', ' + lng.toFixed(6);
+                        // 🔥 Guardar link de Google Maps en lugar de coordenadas
+                        const mapsLink = 'https://www.google.com/maps?q=' + lat.toFixed(6) + ',' + lng.toFixed(6);
+                        ubicacionInput.value = mapsLink;
                         ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
