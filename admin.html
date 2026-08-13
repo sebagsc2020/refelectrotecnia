@@ -33,6 +33,51 @@
             color: #1E1E1E;
             min-height: 100vh;
         }
+        
+        /* ===== LOGIN ===== */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0A2E5C 0%, #00A8FF 100%);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 99999; padding: 20px;
+        }
+        .login-box {
+            background: white; padding: 40px 35px; border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            max-width: 420px; width: 100%; text-align: center;
+        }
+        .login-box .logo {
+            height: 60px; margin-bottom: 20px;
+        }
+        .login-box h2 {
+            color: var(--primary-dark); font-size: 1.6rem;
+            font-weight: 800; margin-bottom: 8px;
+        }
+        .login-box .subtitle {
+            color: var(--gray-text); font-size: 0.9rem; margin-bottom: 25px;
+        }
+        .login-box input {
+            width: 100%; padding: 14px 16px; border: 2px solid #E9ECEF;
+            border-radius: 10px; font-size: 1rem; font-family: var(--font);
+            margin-bottom: 15px; background: var(--light-bg);
+        }
+        .login-box input:focus {
+            outline: none; border-color: var(--primary-cyan); background: white;
+            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
+        }
+        .login-box .btn-login {
+            width: 100%; background: var(--primary-cyan); color: white;
+            border: none; padding: 14px; border-radius: 10px;
+            font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .login-box .btn-login:hover { background: var(--primary-dark); }
+        .login-box .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+        .login-box .error-msg {
+            color: #e74c3c; font-size: 0.9rem; margin-top: 10px;
+            display: none; font-weight: 600;
+        }
+        .dashboard-locked { display: none !important; }
+        
         .dashboard {
             padding: 20px;
             max-width: 1400px;
@@ -591,7 +636,21 @@
 </head>
 <body>
 
-<div class="dashboard" id="dashboard">
+<!-- PANTALLA DE LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF" class="logo">
+        <h2>Panel Administrativo</h2>
+        <p class="subtitle">REF Electrotecnia · Acceso restringido</p>
+        <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password">
+        <button class="btn-login" id="btnLogin">
+            <i class="fas fa-lock"></i> Ingresar
+        </button>
+        <p class="error-msg" id="loginError"></p>
+    </div>
+</div>
+
+<div class="dashboard dashboard-locked" id="dashboard">
     <div class="dashboard-header">
         <h2><span>📊</span> Panel de Administración</h2>
         <div class="header-actions">
@@ -747,11 +806,73 @@
 
 <script>
     // =============================================
-    // CONFIGURACIÓN
+    // SISTEMA DE AUTENTICACIÓN
     // =============================================
-    // ⚠️ REEMPLAZA ESTA URL CON LA DE TU SCRIPT PUBLICADO ⚠️
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkKfrHQNPRtb1OJqQSM8cWNtW2lhUQgjhsNptUnZYP-wRYMnjoDOaXytykQpDgElKo/exec';
 
+    function getToken() { return sessionStorage.getItem('admin_token'); }
+    function setToken(token) { sessionStorage.setItem('admin_token', token); }
+    function clearToken() { sessionStorage.removeItem('admin_token'); }
+
+    function showLogin() {
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('dashboard').classList.add('dashboard-locked');
+    }
+
+    function showDashboard() {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('dashboard').classList.remove('dashboard-locked');
+    }
+
+    async function handleLogin() {
+        const password = document.getElementById('loginPassword').value;
+        const errorEl = document.getElementById('loginError');
+        const btn = document.getElementById('btnLogin');
+        
+        if (!password) {
+            errorEl.textContent = 'Ingresa una contraseña';
+            errorEl.style.display = 'block';
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+        errorEl.style.display = 'none';
+        
+        try {
+            const response = await fetch(URL_SCRIPT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'login', password: password })
+            });
+            const result = await response.json();
+            
+            if (result.success && result.token) {
+                setToken(result.token);
+                showDashboard();
+                cargarDatos();
+            } else {
+                errorEl.textContent = result.error || 'Contraseña incorrecta';
+                errorEl.style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+            }
+        } catch (err) {
+            errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
+            errorEl.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
+        }
+    }
+
+    document.getElementById('btnLogin').addEventListener('click', handleLogin);
+    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleLogin();
+    });
+
+    // =============================================
+    // CONFIGURACIÓN
+    // =============================================
     let chartInstance = null;
     let datosCache = { contactos: [], presupuestos: [] };
     let contadorPresupuesto = 0;
@@ -795,19 +916,34 @@
     }
 
     // =============================================
-    // CARGAR DATOS DESDE SHEETS
+    // CARGAR DATOS DESDE SHEETS (con token)
     // =============================================
     async function cargarDatos() {
+        const token = getToken();
+        if (!token) { showLogin(); return; }
+        
         const tablaContainer = document.getElementById('tablaContainer');
         tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
         document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
         document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
 
         try {
-            const response = await fetch(URL_SCRIPT);
-            if (!response.ok) throw new Error('Error al obtener datos');
+            const response = await fetch(URL_SCRIPT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'get_data', token: token })
+            });
             const json = await response.json();
-            if (json.error) throw new Error(json.error);
+            
+            if (json.error) {
+                if (json.error.includes('expirada') || json.error.includes('inválida')) {
+                    clearToken();
+                    showLogin();
+                    alert('Tu sesión ha expirado. Inicia sesión nuevamente.');
+                    return;
+                }
+                throw new Error(json.error);
+            }
 
             datosCache.contactos = json.contactos || [];
             datosCache.presupuestos = json.presupuestos || [];
@@ -1247,9 +1383,13 @@
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
     // =============================================
-    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS
+    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (con token)
     // =============================================
     async function enviarAccion(datos) {
+        const token = getToken();
+        if (!token) { showLogin(); return false; }
+        datos.token = token;
+        
         try {
             await fetch(URL_SCRIPT, {
                 method: 'POST',
@@ -1362,11 +1502,35 @@
     document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
     // =============================================
-    // INICIALIZAR
+    // LOGOUT
     // =============================================
-    cargarDatos().then(() => {
-        iniciarAutoRefresh();
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('¿Cerrar sesión?')) {
+            const token = getToken();
+            if (token) {
+                fetch(URL_SCRIPT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'logout', token: token })
+                });
+            }
+            clearToken();
+            showLogin();
+        }
     });
+
+    // =============================================
+    // INICIALIZACIÓN
+    // =============================================
+    if (getToken()) {
+        showDashboard();
+        cargarDatos().then(() => {
+            iniciarAutoRefresh();
+        });
+    } else {
+        showLogin();
+    }
 
     window.addEventListener('beforeunload', function() {
         if (intervaloAuto) clearInterval(intervaloAuto);
