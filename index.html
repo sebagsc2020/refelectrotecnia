@@ -4,40 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
-
+    
     <!-- ========== FAVICON ========== -->
-    <link rel="icon" type="image/png" href="images/72x72.png">
-    <link rel="shortcut icon" href="images/72x72.png">
-
+    <link rel="icon" type="image/png" href="/images/72x72.png">
+    <link rel="shortcut icon" href="/images/72x72.png">
+    
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-
     <!-- Font Awesome 6 (Iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- ========== GOOGLE ANALYTICS (gtag.js) ========== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHFCYBZBJ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-HRHFCYBZBJ');
-    </script>
-
-    <!-- ========== PWA (Progressive Web App) ========== -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="REF Electrotecnia">
-    <link rel="apple-touch-icon" href="/icon-192.png">
-    <meta name="theme-color" content="#00A8FF">
-
     <style>
         /* ========================================
-           RESET Y VARIABLES
-        ======================================== */
+                   RESET Y VARIABLES
+                ======================================== */
         * {
             margin: 0;
             padding: 0;
@@ -63,7 +44,6 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px;
         }
 
         body {
@@ -85,8 +65,8 @@
         }
 
         /* ========================================
-           BOTÓN FLOTANTE INSTAGRAM
-        ======================================== */
+                   BOTÓN FLOTANTE INSTAGRAM
+                ======================================== */
         .instagram-float {
             position: fixed;
             bottom: 30px;
@@ -117,8 +97,8 @@
         }
 
         /* ========================================
-           HEADER / NAVEGACIÓN
-        ======================================== */
+                   HEADER / NAVEGACIÓN
+                ======================================== */
         .header {
             background: var(--white);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
@@ -251,8 +231,8 @@
         }
 
         /* ========================================
-           HERO
-        ======================================== */
+                   HERO
+                ======================================== */
         .hero {
             background: linear-gradient(135deg, var(--primary-dark) 0%, #0D3B66 100%);
             padding: 80px 0 100px;
@@ -360,11 +340,12 @@
             left: -150%;
             width: 250%;
             height: 100%;
-            background: linear-gradient(90deg,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.5) 35%,
-                    rgba(255, 255, 255, 0.5) 65%,
-                    transparent 100%);
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.5) 35%, 
+                rgba(255, 255, 255, 0.5) 65%, 
+                transparent 100%
+            );
             transform: skewX(-25deg);
             animation: shimmerButton 4s infinite ease-in-out;
             z-index: 1;
@@ -382,7 +363,6 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 35px rgba(255, 184, 0, 0.2);
         }
-
         .btn-primary:hover::before {
             animation-duration: 2s;
         }
@@ -412,8 +392,8 @@
         }
 
         /* ========================================
-           BARRAS DE CONFIANZA
-        ======================================== */
+                   BARRAS DE CONFIANZA
+                ======================================== */
         .trust-bar {
             background: var(--white);
             padding: 30px 0;
@@ -451,8 +431,8 @@
         }
 
         /* ========================================
-           SERVICIOS
-        ======================================== */
+                   SERVICIOS
+                ======================================== */
         .services {
             padding: 80px 0;
             background: var(--light-bg);
@@ -530,8 +510,8 @@
         }
 
         /* ========================================
-           SOBRE NOSOTROS (con SLIDER)
-        ======================================== */
+                   SOBRE NOSOTROS
+                ======================================== */
         .about {
             padding: 80px 0;
             background: var(--white);
@@ -544,45 +524,24 @@
             align-items: center;
         }
 
-        .slider-container {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 4 / 3;
-            background: var(--primary-dark);
+        .about-image {
+            background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
             border-radius: var(--radius);
+            aspect-ratio: 4/3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
             border: 2px dashed rgba(255, 255, 255, 0.1);
+            gap: 16px;
+            font-size: 1.1rem;
         }
 
-        .slider-track {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .slider-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            will-change: opacity;
-        }
-
-        .slider-img.active {
-            opacity: 1;
-        }
-
-        .slider-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 46, 92, 0.15);
-            z-index: 1;
-            pointer-events: none;
-            border-radius: var(--radius);
+        .about-image i {
+            font-size: 5rem;
+            color: var(--accent-yellow);
+            opacity: 0.5;
         }
 
         .about-content h3 {
@@ -625,8 +584,8 @@
         }
 
         /* ========================================
-           TESTIMONIOS
-        ======================================== */
+                   TESTIMONIOS
+                ======================================== */
         .testimonials {
             padding: 80px 0;
             background: var(--light-bg);
@@ -696,8 +655,8 @@
         }
 
         /* ========================================
-           FAQS
-        ======================================== */
+                   FAQS
+                ======================================== */
         .faq {
             padding: 80px 0;
             background: var(--white);
@@ -764,8 +723,8 @@
         }
 
         /* ========================================
-           COBERTURA
-        ======================================== */
+                   COBERTURA
+                ======================================== */
         .coverage {
             padding: 60px 0;
             background: var(--primary-dark);
@@ -797,8 +756,8 @@
         }
 
         /* ========================================
-           CONTACTO / PRESUPUESTO
-        ======================================== */
+                   CONTACTO / PRESUPUESTO
+                ======================================== */
         .contact {
             padding: 80px 0;
             background: var(--light-bg);
@@ -1024,8 +983,8 @@
         }
 
         /* ========================================
-           MODAL / POPUP LEGAL
-        ======================================== */
+                   MODAL / POPUP LEGAL
+                ======================================== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1137,8 +1096,8 @@
         }
 
         /* ========================================
-           COOKIE CONSENT
-        ======================================== */
+                   COOKIE CONSENT
+                ======================================== */
         .cookie-consent {
             position: fixed;
             bottom: 20px;
@@ -1159,9 +1118,9 @@
         }
 
         .cookie-consent.hidden {
-            display: none !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
+            transform: translateY(30px);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .cookie-consent p {
@@ -1221,8 +1180,8 @@
         }
 
         /* ========================================
-           FOOTER
-        ======================================== */
+                   FOOTER
+                ======================================== */
         .footer {
             background: #0A1E2E;
             color: rgba(255, 255, 255, 0.7);
@@ -1300,8 +1259,8 @@
         }
 
         /* ========================================
-           RESPONSIVE
-        ======================================== */
+                   RESPONSIVE
+                ======================================== */
         @media (max-width: 992px) {
             .hero .container {
                 display: flex;
@@ -1423,8 +1382,7 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-            .btn-maps,
-            .btn-ubicacion {
+            .btn-maps, .btn-ubicacion {
                 justify-content: center;
             }
             .hero .container {
@@ -1451,11 +1409,10 @@
         }
     </style>
 </head>
-
 <body>
 
     <!-- ==================== BOTÓN FLOTANTE INSTAGRAM ==================== -->
-    <a href="https://www.instagram.com/rodrigoeduardofigueras/" target="_blank" class="instagram-float" aria-label="Instagram">
+    <a href="https://www.instagram.com/sc_photo_br/" target="_blank" class="instagram-float" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
     </a>
 
@@ -1495,9 +1452,11 @@
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
+                <!-- Solo se mantiene el badge de Atención 24/7 -->
                 <div class="hero-badges">
                     <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
                 </div>
+                <!-- Solo se mantiene el botón "Solicitar presupuesto" -->
                 <div class="hero-buttons">
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
                 </div>
@@ -1526,59 +1485,28 @@
                 <p>Soluciones integrales para hogares, comercios e industrias. Siempre con la máxima seguridad y calidad.</p>
             </div>
             <div class="services-grid">
-                <div class="service-card"><i class="fas fa-home"></i>
-                    <h4>Instalaciones eléctricas</h4>
-                    <p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p>
-                </div>
-                <div class="service-card"><i class="fas fa-tools"></i>
-                    <h4>Reparaciones y mantenimiento</h4>
-                    <p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p>
-                </div>
-                <div class="service-card"><i class="fas fa-microchip"></i>
-                    <h4>Domótica y automatización</h4>
-                    <p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p>
-                </div>
-                <div class="service-card"><i class="fas fa-bolt"></i>
-                    <h4>Tableros y puestas a tierra</h4>
-                    <p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p>
-                </div>
-                <div class="service-card"><i class="fas fa-lightbulb"></i>
-                    <h4>Iluminación interior y exterior</h4>
-                    <p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p>
-                </div>
-                <div class="service-card"><i class="fas fa-file-signature"></i>
-                    <h4>Certificaciones y habilitaciones</h4>
-                    <p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p>
-                </div>
+                <div class="service-card"><i class="fas fa-home"></i><h4>Instalaciones eléctricas</h4><p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h4>Reparaciones y mantenimiento</h4><p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p></div>
+                <div class="service-card"><i class="fas fa-microchip"></i><h4>Domótica y automatización</h4><p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p></div>
+                <div class="service-card"><i class="fas fa-bolt"></i><h4>Tableros y puestas a tierra</h4><p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p></div>
+                <div class="service-card"><i class="fas fa-lightbulb"></i><h4>Iluminación interior y exterior</h4><p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p></div>
+                <div class="service-card"><i class="fas fa-file-signature"></i><h4>Certificaciones y habilitaciones</h4><p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ==================== SOBRE NOSOTROS (con SLIDER) ==================== -->
+    <!-- ==================== SOBRE NOSOTROS ==================== -->
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
-                <div class="slider-container">
-                    <div class="slider-track" id="sliderTrack">
-                        <img src="images/ref01.webp" alt="Equipo REF 01" class="slider-img active">
-                        <img src="images/ref02.webp" alt="Equipo REF 02" class="slider-img">
-                        <img src="images/ref03.webp" alt="Equipo REF 03" class="slider-img">
-                        <img src="images/ref04.webp" alt="Equipo REF 04" class="slider-img">
-                        <img src="images/ref05.webp" alt="Equipo REF 05" class="slider-img">
-                        <img src="images/ref06.webp" alt="Equipo REF 06" class="slider-img">
-                        <img src="images/ref07.webp" alt="Equipo REF 07" class="slider-img">
-                        <img src="images/ref08.webp" alt="Equipo REF 08" class="slider-img">
-                        <img src="images/ref09.webp" alt="Equipo REF 09" class="slider-img">
-                        <img src="images/ref10.webp" alt="Equipo REF 10" class="slider-img">
-                    </div>
-                </div>
+                <div class="about-image"><i class="fas fa-users"></i><span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span></div>
                 <div class="about-content">
                     <h3>Más de <span>20 años</span> iluminando Córdoba</h3>
                     <p>En <strong>REF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
                     <p>Somos una empresa familiar con matrícula habilitante, comprometida con la excelencia y la satisfacción del cliente. Nuestro objetivo es ofrecer soluciones duraderas, no parches temporales.</p>
                     <div class="about-stats">
                         <div><span class="number">+20</span> <span class="label">Años de trayectoria</span></div>
-                        <div><span class="number">+1000</span> <span class="label">Proyectos realizados</span></div>
+                        <div><span class="number">+500</span> <span class="label">Proyectos realizados</span></div>
                         <div><span class="number">98%</span> <span class="label">Clientes satisfechos</span></div>
                     </div>
                 </div>
@@ -1598,32 +1526,17 @@
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">MF</div>
-                        <div><span class="name">María Fernández</span>
-                            <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div>
-                        </div>
-                    </div>
+                    <div class="client"><div class="avatar">MF</div><div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Contraté a REF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">CR</div>
-                        <div><span class="name">Carlos Rodríguez</span>
-                            <div class="location"><i class="fas fa-map-pin"></i> Centro</div>
-                        </div>
-                    </div>
+                    <div class="client"><div class="avatar">CR</div><div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
-                    <div class="client">
-                        <div class="avatar">LG</div>
-                        <div><span class="name">Laura Gómez</span>
-                            <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div>
-                        </div>
-                    </div>
+                    <div class="client"><div class="avatar">LG</div><div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div></div>
                 </div>
             </div>
         </div>
@@ -1655,9 +1568,7 @@
                 </div>
                 <div class="faq-item" style="border-left: 4px solid var(--accent-yellow);">
                     <button class="faq-question"><span><i class="fas fa-reply" style="color: var(--accent-yellow); margin-right: 10px;"></i> ¿Cómo recibo la respuesta a mi solicitud de presupuesto?</span><i class="fas fa-chevron-down"></i></button>
-                    <div class="faq-answer">
-                        <p><strong>¡Por el mismo medio que nos contactaste!</strong> Si completaste el formulario de contacto, te responderemos al correo electrónico o al número de WhatsApp que hayas indicado en el formulario. De esta forma, la comunicación es ágil y directa, sin que tengas que buscar nuestros datos nuevamente.</p>
-                    </div>
+                    <div class="faq-answer"><p><strong>¡Por el mismo medio que nos contactaste!</strong> Si completaste el formulario de contacto, te responderemos al correo electrónico o al número de WhatsApp que hayas indicado en el formulario. De esta forma, la comunicación es ágil y directa, sin que tengas que buscar nuestros datos nuevamente.</p></div>
                 </div>
             </div>
         </div>
@@ -1677,26 +1588,26 @@
         <div class="container">
             <div class="section-header">
                 <h3>Ponte en contacto</h3>
-                <h2>Solicita tu presupuesto / Emergencia !</h2>
+                <h2>Solicita tu presupuesto</h2>
                 <p>Llena el formulario o escríbenos directamente por WhatsApp. Te responderemos a la brevedad.</p>
             </div>
             <div class="contact-grid">
                 <div class="contact-info">
                     <h3>Estamos para ayudarte</h3>
                     <p>Si prefieres hablar directamente, estos son nuestros canales de atención. Respondemos en menos de 1 hora en horario laboral.</p>
-
+                    
                     <div class="contact-detail">
                         <i class="fas fa-phone-alt"></i>
                         <div class="info-text">
                             <strong>Teléfono</strong>
-                            <span class="data">+54 9 3541 528-232</span>
+                            <span class="data">+54 9 351 869-2251</span>
                         </div>
                     </div>
                     <div class="contact-detail">
                         <i class="fab fa-whatsapp"></i>
                         <div class="info-text">
                             <strong>WhatsApp</strong>
-                            <span class="data">+54 9 3541 528-232</span>
+                            <span class="data">+54 9 351 869-2251</span>
                         </div>
                     </div>
                     <div class="contact-detail">
@@ -1797,22 +1708,11 @@
                 </div>
                 <div class="footer-col">
                     <h5>Enlaces</h5>
-                    <ul>
-                        <li><a href="#inicio" class="nav-link">Inicio</a></li>
-                        <li><a href="#servicios" class="nav-link">Servicios</a></li>
-                        <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
-                        <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
-                        <li><a href="#contacto" class="nav-link">Contacto</a></li>
-                    </ul>
+                    <ul><li><a href="#inicio" class="nav-link">Inicio</a></li><li><a href="#servicios" class="nav-link">Servicios</a></li><li><a href="#nosotros" class="nav-link">Nosotros</a></li><li><a href="#testimonios" class="nav-link">Testimonios</a></li><li><a href="#contacto" class="nav-link">Contacto</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Servicios</h5>
-                    <ul>
-                        <li><a href="#servicios" class="nav-link">Instalaciones</a></li>
-                        <li><a href="#servicios" class="nav-link">Reparaciones</a></li>
-                        <li><a href="#servicios" class="nav-link">Domótica</a></li>
-                        <li><a href="#servicios" class="nav-link">Emergencias</a></li>
-                    </ul>
+                    <ul><li><a href="#servicios" class="nav-link">Instalaciones</a></li><li><a href="#servicios" class="nav-link">Reparaciones</a></li><li><a href="#servicios" class="nav-link">Domótica</a></li><li><a href="#servicios" class="nav-link">Emergencias</a></li></ul>
                 </div>
                 <div class="footer-col">
                     <h5>Legal</h5>
@@ -1825,8 +1725,8 @@
             </div>
             <div class="footer-bottom">
                 <span>
-                    &copy; 2026 REF Electrotecnia. Todos los derechos reservados. |
-                    <a href="https://wa.me/5493541528232?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
+                    &copy; 2026 REF Electrotecnia. Todos los derechos reservados. | 
+                    <a href="https://wa.me/5493518692251?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
                         Diseño SC Photo
                     </a>
                 </span>
@@ -1837,26 +1737,22 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Menú Hamburguesa (estilo LG Tattoo - simplificado) ---
+            // --- Menú Hamburguesa ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
-
             function toggleMenu() {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
-                // NO bloqueamos el scroll del body para evitar conflictos en móviles
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
             }
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            // --- Cerrar menú al hacer clic en un enlace (sin interferir con el scroll) ---
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (navMenu.classList.contains('active')) {
-                        toggleMenu();
-                    }
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) toggleMenu();
                 });
             });
 
@@ -1963,7 +1859,8 @@
                         alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                    }, {
+                    },
+                    {
                         enableHighAccuracy: true,
                         timeout: 10000,
                         maximumAge: 0
@@ -1971,21 +1868,22 @@
                 );
             });
 
-            // --- Guardar en Google Sheets (CORREGIDO con text/plain) ---
+            // === NUEVA FUNCIÓN: Guardar en Google Sheets ===
             async function guardarEnSheets(datos) {
-                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxO4rVZl0tcmQHThl1hIDEBcgQpQDAYToKNP4w_HJTHl8GT8jHsoRmZ8bqZHAEWH7Wy/exec';
+                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec'; // <-- REEMPLAZA CON TU URL
                 try {
-                    await fetch(URL_SCRIPT, {
+                    const response = await fetch(URL_SCRIPT, {
                         method: 'POST',
-                        mode: 'no-cors',
+                        mode: 'no-cors', // Necesario para evitar CORS
                         headers: {
-                            'Content-Type': 'text/plain;charset=utf-8',
+                            'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(datos)
                     });
-                    console.log('📤 Datos enviados a Sheets');
+                    // Con no-cors no podemos leer la respuesta, pero asumimos que funciona
+                    console.log('Datos enviados a Sheets');
                 } catch (error) {
-                    console.error('❌ Error al guardar en Sheets:', error);
+                    console.error('Error al guardar en Sheets:', error);
                 }
             }
 
@@ -2006,21 +1904,20 @@
                     return;
                 }
 
-                guardarEnSheets({ nombre, telefono, email, servicio, ubicacion, mensaje });
+                // 1) Guardar en Google Sheets (sin bloquear el envío de WhatsApp)
+                const datos = { nombre, telefono, email, servicio, ubicacion, mensaje };
+                guardarEnSheets(datos);
 
+                // 2) Construir mensaje de WhatsApp
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
                 if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
-
-                let servicioLabel = servicio;
-                if (servicio === 'emergencia') {
-                    servicioLabel = 'Emergencia 24/7 ⚠️';
-                }
                 if (servicio) {
+                    let servicioLabel = servicio;
+                    if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
                     whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
                 }
-
                 if (ubicacion) {
                     const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
                     if (esCoordenada) {
@@ -2037,44 +1934,32 @@
                 }
                 if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
 
-                const phoneNumber = '5493541528232';
+                const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+
+                // Opcional: limpiar el formulario después de enviar
+                // this.reset();
             });
 
             // --- Cookies ---
             const cookieConsent = document.getElementById('cookieConsent');
-            const acceptBtn = document.getElementById('acceptCookies');
-            const declineBtn = document.getElementById('declineCookies');
-
             function setCookieConsent(choice) {
                 localStorage.setItem('cookieConsent', choice);
-                cookieConsent.style.display = 'none';
                 cookieConsent.classList.add('hidden');
                 document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`;
-                console.log('Cookie consent:', choice);
             }
-
             if (localStorage.getItem('cookieConsent')) {
-                cookieConsent.style.display = 'none';
                 cookieConsent.classList.add('hidden');
             }
+            document.getElementById('acceptCookies').addEventListener('click', function() {
+                setCookieConsent('accepted');
+            });
+            document.getElementById('declineCookies').addEventListener('click', function() {
+                setCookieConsent('declined');
+            });
 
-            if (acceptBtn) {
-                acceptBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    setCookieConsent('accepted');
-                });
-            }
-
-            if (declineBtn) {
-                declineBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    setCookieConsent('declined');
-                });
-            }
-
-            // --- Modal legal ---
+            // --- MODAL LEGAL ---
             const modalOverlay = document.getElementById('legalModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
@@ -2160,37 +2045,7 @@
                 openModal('privacidad');
             });
 
-            // ==========================================
-            // SLIDESHOW AUTOMÁTICO (10 imágenes, 1.2s)
-            // ==========================================
-            (function() {
-                const slider = document.getElementById('sliderTrack');
-                if (!slider) return;
-                const imagenes = slider.querySelectorAll('.slider-img');
-                if (imagenes.length === 0) return;
-                let currentIndex = 0;
-                const total = imagenes.length;
-
-                function mostrarSiguiente() {
-                    imagenes[currentIndex].classList.remove('active');
-                    currentIndex = (currentIndex + 1) % total;
-                    imagenes[currentIndex].classList.add('active');
-                }
-
-                setInterval(mostrarSiguiente, 1200);
-            })();
-
-            // ==========================================
-            // REGISTRO DEL SERVICE WORKER (PWA)
-            // ==========================================
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(() => console.log('Service Worker registrado correctamente'))
-                    .catch(err => console.error('Error al registrar el Service Worker:', err));
-            }
-
         });
     </script>
-
 </body>
 </html>
