@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REF+Electrotecnia | Instalaciones y Mantenimiento</title>
+    <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
 
     <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="images/72x72.png">
@@ -63,7 +63,7 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px; /* Compensa la barra fija */
+            scroll-padding-top: 80px;
         }
 
         body {
@@ -1837,7 +1837,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Menú Hamburguesa ---
+            // --- Menú Hamburguesa (estilo LG Tattoo - simplificado) ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
@@ -1846,12 +1846,21 @@
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
-                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+                // NO bloqueamos el scroll del body para evitar conflictos en móviles
             }
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            // --- Scroll suave + cerrar menú (CORREGIDO) ---
+            // --- Cerrar menú al hacer clic en un enlace (sin interferir con el scroll) ---
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (navMenu.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // --- Scroll suave para enlaces internos ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1859,23 +1868,12 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-
-                        // Si el enlace está dentro del menú, cerrar el menú (pero con retraso)
-                        const isInMenu = this.closest('.nav-menu');
-                        if (isInMenu && navMenu.classList.contains('active')) {
-                            // Cerrar inmediatamente el menú (quita el overflow hidden)
-                            toggleMenu();
-                        }
-
-                        // Esperar un frame para que el scroll funcione (especialmente en móviles)
-                        requestAnimationFrame(() => {
-                            const headerOffset = 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                            const offsetPosition = elementPosition - headerOffset;
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth'
-                            });
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset;
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
                         });
                     }
                 });
@@ -1973,7 +1971,7 @@
                 );
             });
 
-            // --- Guardar en Google Sheets ---
+            // --- Guardar en Google Sheets (CORREGIDO con text/plain) ---
             async function guardarEnSheets(datos) {
                 const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxO4rVZl0tcmQHThl1hIDEBcgQpQDAYToKNP4w_HJTHl8GT8jHsoRmZ8bqZHAEWH7Wy/exec';
                 try {
@@ -1981,13 +1979,13 @@
                         method: 'POST',
                         mode: 'no-cors',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain;charset=utf-8',
                         },
                         body: JSON.stringify(datos)
                     });
-                    console.log('Datos enviados a Sheets');
+                    console.log('📤 Datos enviados a Sheets');
                 } catch (error) {
-                    console.error('Error al guardar en Sheets:', error);
+                    console.error('❌ Error al guardar en Sheets:', error);
                 }
             }
 
@@ -2008,10 +2006,8 @@
                     return;
                 }
 
-                // Guardar en Sheets
                 guardarEnSheets({ nombre, telefono, email, servicio, ubicacion, mensaje });
 
-                // Construir mensaje de WhatsApp
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
