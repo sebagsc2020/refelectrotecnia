@@ -2,7 +2,7 @@
   "name": "REF Electrotecnia",
   "short_name": "REF Eléctrica",
   "description": "Instalaciones y mantenimiento eléctrico en Córdoba",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0A2E5C",
   "theme_color": "#00A8FF",
