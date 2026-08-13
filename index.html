@@ -2,1890 +2,2050 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Admin | REF Electrotecnia</title>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- html2canvas y jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Fonts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
+    
+    <!-- ========== FAVICON ========== -->
+    <link rel="icon" type="image/png" href="/images/72x72.png">
+    <link rel="shortcut icon" href="/images/72x72.png">
+    
+    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
+    <!-- Font Awesome 6 (Iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== RESET Y VARIABLES ========== */
-        * { margin:0; padding:0; box-sizing:border-box; }
+        /* ========================================
+                   RESET Y VARIABLES
+                ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary-dark: #0A2E5C;
+            --primary-medium: #1A4B7A;
+            --primary-blue: #0099E8;
             --primary-cyan: #00A8FF;
-            --light-bg: #F4F6F9;
+            --accent-yellow: #FFB800;
+            --accent-orange: #FF7A00;
+            --light-bg: #F8F9FA;
             --gray-text: #4A4A4A;
-            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --white: #FFFFFF;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
             --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --font: 'Inter', sans-serif;
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: var(--font);
-            background: var(--light-bg);
             color: #1E1E1E;
-            min-height: 100vh;
+            background: var(--white);
+            line-height: 1.6;
         }
-        /* ========== LOGIN CON PATRÓN ========== */
-        #loginSection {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            background: var(--light-bg);
+
+        a {
+            text-decoration: none;
+            color: inherit;
         }
-        #loginSection .login-box {
-            background: white;
-            padding: 40px 30px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-        }
-        #loginSection .login-box h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin-bottom: 4px;
-        }
-        #loginSection .login-box h1 span { color: var(--primary-cyan); }
-        #loginSection .login-box p.sub {
-            color: var(--gray-text);
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-        /* Contenedor del patrón */
-        .pattern-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto 20px;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .pattern-container canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-            border-radius: 12px;
-            background: #f8faff;
-            touch-action: none;
-            cursor: pointer;
-        }
-        .pattern-message {
-            font-size: 0.95rem;
-            margin: 10px 0 15px;
-            min-height: 24px;
-            color: var(--gray-text);
-        }
-        .pattern-message.success { color: #27ae60; }
-        .pattern-message.error { color: #e74c3c; }
-        .pattern-message.info { color: var(--primary-cyan); }
-        .btn-pattern {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin: 4px;
-        }
-        .btn-pattern:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
-        }
-        .btn-pattern:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .btn-pattern.secondary {
-            background: #2ecc71;
-        }
-        .btn-pattern.secondary:hover {
-            background: #27ae60;
-        }
-        .btn-pattern.danger {
-            background: #e74c3c;
-        }
-        .btn-pattern.danger:hover {
-            background: #c0392b;
-        }
-        .login-actions {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 5px;
-        }
-        /* ========== DASHBOARD (oculto al inicio) ========== */
-        .dashboard {
-            padding: 20px;
-            max-width: 1400px;
+
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            display: none;
+            padding: 0 24px;
         }
-        .dashboard-header {
+
+        /* ========================================
+                   BOTÓN FLOTANTE INSTAGRAM
+                ======================================== */
+        .instagram-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #E4405F;
+            color: white;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.4);
+            z-index: 1000;
+            transition: var(--transition);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .instagram-float:hover {
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: 0 12px 30px rgba(228, 64, 95, 0.6);
+            color: white;
+        }
+
+        .instagram-float i {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        /* ========================================
+                   HEADER / NAVEGACIÓN
+                ======================================== */
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--primary-cyan);
+        }
+
+        .header .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            background: white;
-            padding: 16px 28px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
         }
-        .dashboard-header h2 {
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 48px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo h1 {
             font-size: 1.6rem;
             font-weight: 800;
+            letter-spacing: -0.5px;
             color: var(--primary-dark);
         }
-        .dashboard-header h2 span { color: var(--primary-cyan); }
-        .dashboard-header .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .dashboard-header .btn-refresh {
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .dashboard-header .btn-refresh:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        .dashboard-header .btn-logout {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .dashboard-header .btn-logout:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px 22px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary-cyan);
-        }
-        .stat-card .stat-number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .stat-card .stat-label {
-            font-size: 0.9rem;
-            color: var(--gray-text);
-            margin-top: 4px;
-        }
-        .stat-card .stat-icon {
-            float: right;
-            font-size: 2rem;
+
+        .logo h1 span {
             color: var(--primary-cyan);
-            opacity: 0.4;
         }
-        .stat-card.emergencia { border-left-color: #e74c3c; }
-        .stat-card.emergencia .stat-icon { color: #e74c3c; }
-        .stat-card.pendiente { border-left-color: #f39c12; }
-        .stat-card.pendiente .stat-icon { color: #f39c12; }
-        .chart-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 30px;
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
         }
-        .chart-box {
-            background: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-        .chart-box h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 16px;
-        }
-        .chart-box canvas { max-height: 220px; max-width: 100%; }
-        .table-container {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            padding: 0 0 12px 0;
-            margin-bottom: 30px;
-        }
-        .table-container h4 {
-            padding: 18px 24px 10px 24px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-        .table-scroll {
-            overflow-x: auto;
-            padding: 0 16px 16px 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        table thead { background: var(--light-bg); }
-        table th {
-            text-align: left;
-            padding: 12px 14px;
+
+        .nav-menu a {
             font-weight: 600;
-            color: var(--primary-dark);
-            border-bottom: 2px solid #E9ECEF;
-            white-space: nowrap;
-        }
-        table td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #E9ECEF;
+            font-size: 0.95rem;
             color: var(--gray-text);
-            vertical-align: middle;
+            transition: var(--transition);
+            position: relative;
         }
-        table tbody tr:hover { background: #F8FAFC; }
-        .badge-emergencia {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 2px 12px;
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-cyan);
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-dark);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--primary-cyan);
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: var(--transition);
+            border: 2px solid var(--primary-cyan);
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .header-matricula {
+            background: var(--light-bg);
+            padding: 4px 16px;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 600;
+            color: var(--primary-dark);
+            border-left: 3px solid var(--accent-yellow);
+        }
+
+        .header-matricula i {
+            color: var(--accent-yellow);
+            margin-right: 6px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: var(--primary-dark);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        /* ========================================
+                   HERO
+                ======================================== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #0D3B66 100%);
+            padding: 80px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 168, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h2 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-content h2 span {
+            color: var(--accent-yellow);
+            position: relative;
+        }
+
+        .hero-content h2 span::after {
+            content: '⚡';
+            font-size: 2rem;
+            margin-left: 8px;
+        }
+
+        .hero-content p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 30px;
+            margin-bottom: 36px;
+        }
+
+        .hero-badges span {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-badges i {
+            color: var(--accent-yellow);
+            font-size: 1.2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            background: var(--accent-yellow);
+            color: var(--primary-dark);
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            border: 2px solid var(--accent-yellow);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(255, 184, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 250%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.5) 35%, 
+                rgba(255, 255, 255, 0.5) 65%, 
+                transparent 100%
+            );
+            transform: skewX(-25deg);
+            animation: shimmerButton 4s infinite ease-in-out;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerButton {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-yellow);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(255, 184, 0, 0.2);
+        }
+        .btn-primary:hover::before {
+            animation-duration: 2s;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: var(--radius);
+            box-shadow: none;
+            border: none;
+            background: none;
+            padding: 0;
+            aspect-ratio: 4/3;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* ========================================
+                   BARRAS DE CONFIANZA
+                ======================================== */
+        .trust-bar {
+            background: var(--white);
+            padding: 30px 0;
+            border-bottom: 1px solid #E9ECEF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .trust-item i {
+            font-size: 1.8rem;
+            color: var(--primary-cyan);
+            background: var(--light-bg);
+            padding: 12px;
+            border-radius: 50%;
+        }
+
+        .trust-item .highlight {
+            color: var(--accent-orange);
+        }
+
+        /* ========================================
+                   SERVICIOS
+                ======================================== */
+        .services {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--primary-cyan);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-header h2 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            color: var(--gray-text);
+            max-width: 600px;
+            margin: 12px auto 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--white);
+            padding: 35px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-bottom: 4px solid transparent;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-bottom-color: var(--primary-cyan);
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: var(--primary-cyan);
+            background: #E8F4FD;
+            padding: 20px;
+            border-radius: 50%;
+            margin-bottom: 20px;
             display: inline-block;
         }
-        .btn-edit {
+
+        .service-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+        }
+
+        /* ========================================
+                   SOBRE NOSOTROS
+                ======================================== */
+        .about {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
+            border-radius: var(--radius);
+            aspect-ratio: 4/3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            gap: 16px;
+            font-size: 1.1rem;
+        }
+
+        .about-image i {
+            font-size: 5rem;
+            color: var(--accent-yellow);
+            opacity: 0.5;
+        }
+
+        .about-content h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .about-content h3 span {
+            color: var(--primary-cyan);
+        }
+
+        .about-content p {
+            color: var(--gray-text);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .about-stats div {
+            text-align: left;
+        }
+
+        .about-stats .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-cyan);
+        }
+
+        .about-stats .label {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            font-weight: 500;
+        }
+
+        /* ========================================
+                   TESTIMONIOS
+                ======================================== */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--accent-yellow);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: scale(1.02);
+        }
+
+        .testimonial-card .stars {
+            color: var(--accent-yellow);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-card blockquote {
+            font-size: 1rem;
+            color: var(--gray-text);
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .testimonial-card .client {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .testimonial-card .client .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .testimonial-card .client .name {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .testimonial-card .client .location {
+            font-size: 0.85rem;
+            color: var(--gray-text);
+        }
+
+        /* ========================================
+                   FAQS
+                ======================================== */
+        .faq {
+            padding: 80px 0;
+            background: var(--white);
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid #E9ECEF;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary-cyan);
+        }
+
+        .faq-question {
+            padding: 20px 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05rem;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+
+        .faq-question i {
+            transition: var(--transition);
+            color: var(--primary-cyan);
+            font-size: 1.2rem;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 28px;
+            color: var(--gray-text);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 28px 24px;
+        }
+
+        /* ========================================
+                   COBERTURA
+                ======================================== */
+        .coverage {
+            padding: 60px 0;
+            background: var(--primary-dark);
+            color: white;
+            text-align: center;
+        }
+
+        .coverage h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .coverage h2 span {
+            color: var(--accent-yellow);
+        }
+
+        .coverage p {
+            opacity: 0.8;
+            margin-bottom: 24px;
+        }
+
+        .coverage .nota {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 12px;
+            font-style: italic;
+            letter-spacing: 0.3px;
+        }
+
+        /* ========================================
+                   CONTACTO / PRESUPUESTO
+                ======================================== */
+        .contact {
+            padding: 80px 0;
+            background: var(--light-bg);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .contact-info p {
+            color: var(--gray-text);
+            margin-bottom: 30px;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .contact-detail i {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-cyan);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-detail .info-text {
+            font-weight: 500;
+            color: var(--gray-text);
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        .contact-detail .info-text strong {
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: block;
+        }
+
+        .contact-detail .info-text .data {
+            color: #333;
+        }
+
+        .contact-detail .info-text .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .contact-form h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .ubicacion-group {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ubicacion-group.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ubicacion-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .ubicacion-wrapper input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-ubicacion {
             background: var(--primary-cyan);
             color: white;
             border: none;
-            padding: 5px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-right: 6px;
-        }
-        .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 6px;
-        }
-        .btn-delete:hover { background: #c0392b; transform: scale(1.05); }
-        .btn-presupuesto {
-            background: #2ecc71;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 6px;
-        }
-        .btn-presupuesto:hover { background: #27ae60; transform: scale(1.05); }
-        .btn-whatsapp {
-            background: #25D366;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-whatsapp:hover { background: #1DA851; transform: scale(1.05); }
-        .badge {
-            display: inline-block;
-            padding: 2px 12px;
+            padding: 12px 20px;
             border-radius: 50px;
             font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
         }
-        .maps-link {
-            color: var(--primary-cyan);
+
+        .btn-ubicacion:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-ubicacion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-maps {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-maps:hover {
+            background: #2D8F47;
+            transform: translateY(-2px);
+        }
+
+        .btn-maps.hidden {
+            display: none;
+        }
+
+        .ubicacion-group small {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .btn-submit {
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
             font-size: 1.1rem;
-            text-decoration: none;
-            transition: 0.2s;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
-        .maps-link:hover { color: var(--primary-dark); transform: scale(1.1); }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray-text);
+
+        .btn-submit:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
         }
-        .loading i {
-            font-size: 2rem;
-            color: var(--primary-cyan);
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray-text);
-        }
-        /* MODALES */
+
+        /* ========================================
+                   MODAL / POPUP LEGAL
+                ======================================== */
         .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius);
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            padding: 40px 35px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-content .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--gray-text);
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+            padding: 0 8px;
+        }
+
+        .modal-content .modal-close:hover {
+            color: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+
+        .modal-content h2 span {
+            color: var(--primary-cyan);
+        }
+
+        .modal-content .modal-body {
+            color: var(--gray-text);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .modal-content .modal-body p {
+            margin-bottom: 16px;
+        }
+
+        .modal-content .modal-body ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        .modal-content .modal-body ul li {
+            margin-bottom: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary-cyan);
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ========================================
+                   COOKIE CONSENT
+                ======================================== */
+        .cookie-consent {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--white);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 360px;
+            z-index: 9998;
+            border-left: 6px solid var(--primary-cyan);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .cookie-consent.hidden {
+            transform: translateY(30px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cookie-consent p {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .cookie-consent p a {
+            color: var(--primary-cyan);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .cookie-consent .cookie-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .cookie-consent .btn-cookie-accept {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .cookie-consent .btn-cookie-accept:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .cookie-consent .btn-cookie-decline {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .cookie-consent .btn-cookie-decline:hover {
+            background: #F1F3F5;
+            border-color: #CED4DA;
+        }
+
+        /* ========================================
+                   FOOTER
+                ======================================== */
+        .footer {
+            background: #0A1E2E;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 50px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h4 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand h4 span {
+            color: var(--primary-cyan);
+        }
+
+        .footer-brand p {
+            max-width: 300px;
+            font-size: 0.95rem;
+        }
+
+        .footer-col h5 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary-cyan);
+            padding-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: var(--primary-cyan);
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--accent-yellow);
+        }
+
+        /* ========================================
+                   RESPONSIVE
+                ======================================== */
+        @media (max-width: 992px) {
+            .hero .container {
+                display: flex;
+                flex-direction: column;
+                gap: 40px;
+                text-align: center;
+            }
+            .hero-content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-badges {
+                justify-content: center;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-image {
+                order: -1;
+                margin-bottom: 10px;
+            }
+            .hero-image img {
+                max-width: 360px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-matricula {
+                display: none;
+            }
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--white);
+                flex-direction: column;
+                padding: 80px 30px 30px;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                gap: 20px;
+                align-items: flex-start;
+                z-index: 1001;
+            }
+            .nav-menu.active {
+                left: 0;
+            }
+            .hamburger {
+                display: flex;
+                z-index: 1002;
+            }
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+            .hero-content h2 {
+                font-size: 2.4rem;
+            }
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            .about-stats {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .instagram-float {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+                bottom: 20px;
+                right: 20px;
+            }
+            .contact-form {
+                padding: 24px;
+            }
+            .cookie-consent {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                padding: 16px 20px;
+            }
+            .modal-content {
+                padding: 30px 20px;
+                max-height: 85vh;
+            }
+            .modal-content h2 {
+                font-size: 1.4rem;
+            }
+            .btn-primary::before {
+                animation-duration: 5s;
+            }
+            .ubicacion-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-maps, .btn-ubicacion {
+                justify-content: center;
+            }
+            .hero .container {
+                gap: 30px;
+            }
+            .hero-image img {
+                max-width: 280px;
+            }
+        }
+
+        .overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
         }
-        .modal-overlay.active { display: flex; }
-        .modal-box {
-            background: white;
-            border-radius: var(--radius);
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 35px 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            animation: modalFade 0.3s ease;
-        }
-        @keyframes modalFade {
-            from { opacity:0; transform:scale(0.95) translateY(20px); }
-            to { opacity:1; transform:scale(1) translateY(0); }
-        }
-        .modal-box h3 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-            padding-right: 30px;
-        }
-        .modal-box h3 span { color: var(--primary-cyan); }
-        .modal-box .close-modal {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: var(--gray-text);
-            cursor: pointer;
-            transition: 0.3s;
-            line-height: 1;
-        }
-        .modal-box .close-modal:hover {
-            color: var(--primary-dark);
-            transform: rotate(90deg);
-        }
-        .modal-box .form-group {
-            margin-bottom: 16px;
-        }
-        .modal-box label {
+
+        .overlay.active {
             display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary-dark);
-            margin-bottom: 4px;
-        }
-        .modal-box input,
-        .modal-box select,
-        .modal-box textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: var(--font);
-            transition: 0.2s;
-            background: var(--light-bg);
-        }
-        .modal-box input:focus,
-        .modal-box select:focus,
-        .modal-box textarea:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
-        }
-        .modal-box textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .modal-box .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        .modal-box .btn-save {
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .modal-box .btn-save:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        .modal-box .btn-save:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .modal-box .btn-cancel {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .modal-box .btn-cancel:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        /* Presupuesto */
-        .presupuesto-box { max-width: 850px; }
-        .presupuesto-box .presupuesto-datos {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .presupuesto-box .presupuesto-datos .full-width {
-            grid-column: 1 / -1;
-        }
-        .presupuesto-box .presupuesto-preview {
-            background: white;
-            padding: 25px;
-            border-radius: var(--radius);
-            margin: 20px 0;
-            border: 1px solid #E9ECEF;
-            font-size: 0.95rem;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary-cyan);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa img {
-            height: 45px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa h4 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .numero {
-            font-size: 0.9rem;
-            color: var(--gray-text);
-        }
-        .presupuesto-box .presupuesto-preview .cliente-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: var(--light-bg);
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .presupuesto-box .presupuesto-preview .cliente-info .label {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #E9ECEF;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item:last-child {
-            border-bottom: none;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item .desc {
-            flex: 1;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item .precio {
-            font-weight: 600;
-        }
-        .presupuesto-box .presupuesto-preview .totales {
-            margin-top: 15px;
-            text-align: right;
-            border-top: 2px solid var(--primary-cyan);
-            padding-top: 15px;
-        }
-        .presupuesto-box .presupuesto-preview .totales .total {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .validez {
-            font-size: 0.85rem;
-            color: var(--gray-text);
-            margin-top: 15px;
-            text-align: center;
-            border-top: 1px solid #E9ECEF;
-            padding-top: 15px;
-        }
-        .presupuesto-box .presupuesto-preview .condiciones {
-            font-size: 0.85rem;
-            color: var(--gray-text);
-            margin-top: 10px;
-            background: var(--light-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-        .presupuesto-box .presupuesto-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            margin-top: 10px;
-        }
-        .presupuesto-box .presupuesto-actions .btn-guardar {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .presupuesto-box .presupuesto-actions .btn-guardar:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
-        }
-        .presupuesto-box .presupuesto-actions .btn-guardar:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .check-presupuesto {
-            color: #27ae60;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .no-presupuesto {
-            color: #ccc;
-            font-size: 1.2rem;
-        }
-        @media (max-width: 768px) {
-            .chart-section { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .dashboard-header { flex-direction: column; align-items: stretch; }
-            .dashboard-header .header-actions { flex-wrap: wrap; }
-            .modal-box { padding: 25px 20px; }
-            .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
-            .presupuesto-box .presupuesto-preview .cliente-info { grid-template-columns: 1fr; }
-            .presupuesto-box .presupuesto-actions { justify-content: center; }
-            .pattern-container { width: 240px; height: 240px; }
-            #loginSection .login-box { padding: 30px 20px; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .pattern-container { width: 200px; height: 200px; }
-        }
-        @media print {
-            .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
-                display: none !important;
-            }
-            .modal-box { box-shadow: none !important; padding: 20px !important; max-height: none !important; }
-            .modal-overlay { background: white !important; position: static !important; padding: 0 !important; }
-            .presupuesto-box .presupuesto-preview { border: none !important; background: white !important; }
-            body { background: white !important; }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== SECCIÓN DE LOGIN CON PATRÓN ========== -->
-<div id="loginSection">
-    <div class="login-box">
-        <h1><span>🔐</span> REF Electrotecnia</h1>
-        <p class="sub">Acceso con patrón de 9 puntos</p>
+    <!-- ==================== BOTÓN FLOTANTE INSTAGRAM ==================== -->
+    <a href="https://www.instagram.com/sc_photo_br/" target="_blank" class="instagram-float" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+    </a>
 
-        <div class="pattern-container">
-            <canvas id="patternCanvas" width="280" height="280"></canvas>
-        </div>
-
-        <div id="patternMessage" class="pattern-message info">Dibuja tu patrón</div>
-
-        <div class="login-actions">
-            <button id="patternLoginBtn" class="btn-pattern secondary"><i class="fas fa-unlock"></i> Iniciar sesión</button>
-            <button id="patternRegisterBtn" class="btn-pattern"><i class="fas fa-plus-circle"></i> Registrar patrón</button>
-            <button id="patternChangeBtn" class="btn-pattern danger"><i class="fas fa-edit"></i> Cambiar patrón</button>
-        </div>
-
-        <div style="margin-top:15px; font-size:0.8rem; color:var(--gray-text);">
-            <i class="fas fa-info-circle"></i> Dibuja conectando al menos 4 puntos.
-            <br>Funciona con mouse o con tu dedo (touch).
-        </div>
-    </div>
-</div>
-
-<!-- ========== DASHBOARD ========== -->
-<div class="dashboard" id="dashboard">
-    <div class="dashboard-header">
-        <h2><span>📊</span> Panel de Administración</h2>
-        <div class="header-actions">
-            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
-            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
-        </div>
-    </div>
-
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-users"></i></span>
-            <div class="stat-number" id="totalContactos">0</div>
-            <div class="stat-label">Total de contactos</div>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
-            <div class="stat-number" id="contactosSemana">0</div>
-            <div class="stat-label">Últimos 7 días</div>
-        </div>
-        <div class="stat-card emergencia">
-            <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
-            <div class="stat-number" id="emergencias">0</div>
-            <div class="stat-label">Emergencias 24/7</div>
-        </div>
-        <div class="stat-card pendiente">
-            <span class="stat-icon"><i class="fas fa-clock"></i></span>
-            <div class="stat-number" id="pendientesPresupuesto">0</div>
-            <div class="stat-label">Pendientes de presupuesto</div>
-        </div>
-    </div>
-
-    <div class="chart-section">
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
-            <canvas id="serviciosChart"></canvas>
-        </div>
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
-            <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
-        </div>
-    </div>
-
-    <div class="table-container">
-        <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
-    </div>
-
-    <div class="table-container">
-        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
-        <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
-    </div>
-
-    <div class="table-container">
-        <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
-    </div>
-</div>
-
-<!-- MODAL EDITAR -->
-<div class="modal-overlay" id="editModal">
-    <div class="modal-box">
-        <button class="close-modal" id="closeEditModal">&times;</button>
-        <h3><span>✏️</span> Editar registro</h3>
-        <input type="hidden" id="editIndex">
-        <div class="form-group"><label>Nombre completo</label><input type="text" id="editNombre" placeholder="Nombre completo"></div>
-        <div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="editTelefono" placeholder="Teléfono"></div>
-        <div class="form-group"><label>Correo electrónico</label><input type="email" id="editEmail" placeholder="Correo electrónico"></div>
-        <div class="form-group">
-            <label>Servicio</label>
-            <select id="editServicio">
-                <option value="">Selecciona el servicio</option>
-                <option>Instalación eléctrica</option>
-                <option>Reparación / Mantenimiento</option>
-                <option>Domótica / Automatización</option>
-                <option>Tableros / Puesta a tierra</option>
-                <option>Iluminación</option>
-                <option>Certificación / Habilitación</option>
-                <option value="emergencia">Emergencia 24/7</option>
-                <option>Otro</option>
-            </select>
-        </div>
-        <div class="form-group"><label>Ubicación</label><input type="text" id="editUbicacion" placeholder="Ubicación o dirección"></div>
-        <div class="form-group"><label>Mensaje</label><textarea id="editMensaje" placeholder="Mensaje"></textarea></div>
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelEditBtn">Cancelar</button>
-            <button class="btn-save" id="saveEditBtn"><i class="fas fa-save"></i> Guardar cambios</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL PRESUPUESTO -->
-<div class="modal-overlay" id="presupuestoModal">
-    <div class="modal-box presupuesto-box">
-        <button class="close-modal" id="closePresupuestoModal">&times;</button>
-        <h3><span>📄</span> Generar Presupuesto</h3>
-        <input type="hidden" id="presupuestoIndex">
-        <div class="presupuesto-datos">
-            <div class="form-group"><label>Nombre</label><input type="text" id="presupuestoNombre" readonly></div>
-            <div class="form-group"><label>Teléfono</label><input type="text" id="presupuestoTelefono" readonly></div>
-            <div class="form-group full-width"><label>Email</label><input type="text" id="presupuestoEmail" readonly></div>
-            <div class="form-group full-width"><label>Descripción del servicio</label><textarea id="presupuestoDescripcion" rows="3" placeholder="Describe el trabajo a realizar"></textarea></div>
-            <div class="form-group"><label>Precio ($)</label><input type="number" id="presupuestoPrecio" placeholder="0" step="0.01"></div>
-            <div class="form-group"><label>Validez (días)</label><input type="number" id="presupuestoValidez" value="30" step="1" min="1"></div>
-            <div class="form-group full-width"><label>Materiales incluidos</label>
-                <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="logo-img">
+                <h1>REF <span>Electrotecnia</span></h1>
             </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+                <li><a href="#contacto" class="nav-cta"><i class="fas fa-paper-plane"></i> Presupuesto</a></li>
+            </ul>
+            <div class="header-matricula">
+                <i class="fas fa-id-card"></i> Matrícula 5617/1
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
+    </header>
+    <div class="overlay" id="overlay"></div>
 
-        <div class="presupuesto-preview" id="presupuestoPreview">
-            <div class="presupuesto-header">
-                <div class="empresa">
-                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia">
-                    <h4>REF Electrotecnia</h4>
+    <!-- ==================== HERO (SECCIÓN INICIO) ==================== -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="hero-image">
+                <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia - Logotipo">
+            </div>
+            <div class="hero-content">
+                <h2>Seguridad y confianza <span>eléctrica</span></h2>
+                <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
+                <!-- Solo se mantiene el badge de Atención 24/7 -->
+                <div class="hero-badges">
+                    <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
                 </div>
-                <div class="numero"><strong>Presupuesto N°</strong> <span id="previewNumero">-</span></div>
-            </div>
-            <div class="cliente-info">
-                <div style="grid-column: 1 / -1; margin-bottom: 2px;"><span class="label">Servicio:</span> <span id="previewServicio" style="font-weight: 600; color: var(--primary-dark);">-</span></div>
-                <div><span class="label">Cliente:</span> <span id="previewNombre">-</span></div>
-                <div><span class="label">Teléfono:</span> <span id="previewTelefono">-</span></div>
-                <div><span class="label">Email:</span> <span id="previewEmail">-</span></div>
-                <div><span class="label">Fecha:</span> <span id="previewFecha">-</span></div>
-                <div style="grid-column: 1 / -1; margin-top: 4px;"><span class="label">Materiales incluidos:</span> <span id="previewMateriales" style="font-weight: 500;">No</span></div>
-            </div>
-            <div class="detalle-item" style="font-weight: 600; border-bottom: 2px solid var(--primary-cyan);">
-                <span class="desc">Descripción del Servicio</span>
-                <span class="precio">Importe</span>
-            </div>
-            <div class="detalle-item">
-                <span class="desc" id="previewDescripcion">-</span>
-                <span class="precio" id="previewSubtotal">$ 0</span>
-            </div>
-            <div class="detalle-item" style="font-size:0.9rem; color:var(--gray-text); border-bottom: 2px solid #E9ECEF;">
-                <span class="desc">IVA 21%</span>
-                <span class="precio" id="previewIva">$ 0</span>
-            </div>
-            <div class="totales">
-                <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$ 0</span></div>
-            </div>
-            <div class="validez">
-                <strong>Validez del presupuesto:</strong> <span id="previewValidez">-</span>
-            </div>
-            <div class="condiciones">
-                <i class="fas fa-info-circle"></i> Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días. Los precios incluyen el IVA 21% (detallado arriba). Materiales incluidos: <span id="previewCondMateriales">No</span>.
+                <!-- Solo se mantiene el botón "Solicitar presupuesto" -->
+                <div class="hero-buttons">
+                    <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="presupuesto-actions">
-            <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar</button>
+    <!-- ==================== BARRA DE CONFIANZA ==================== -->
+    <section class="trust-bar">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item"><i class="fas fa-certificate"></i> Matrícula 5617/1</div>
+                <div class="trust-item"><i class="fas fa-calendar-alt"></i> <span class="highlight">+20</span> años de experiencia</div>
+                <div class="trust-item"><i class="fas fa-handshake"></i> Garantía en todos los trabajos</div>
+                <div class="trust-item"><i class="fas fa-map-marked-alt"></i> Cobertura en toda Córdoba</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SERVICIOS ==================== -->
+    <section class="services" id="servicios">
+        <div class="container">
+            <div class="section-header">
+                <h3>Nuestro trabajo</h3>
+                <h2>Servicios eléctricos profesionales</h2>
+                <p>Soluciones integrales para hogares, comercios e industrias. Siempre con la máxima seguridad y calidad.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card"><i class="fas fa-home"></i><h4>Instalaciones eléctricas</h4><p>Diseño y montaje de instalaciones completas para viviendas y oficinas, cumpliendo con la normativa vigente.</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h4>Reparaciones y mantenimiento</h4><p>Diagnóstico y solución de fallas, cortocircuitos, y mantenimiento preventivo para evitar problemas mayores.</p></div>
+                <div class="service-card"><i class="fas fa-microchip"></i><h4>Domótica y automatización</h4><p>Automatización de iluminación, persianas, y sistemas inteligentes para el hogar conectado.</p></div>
+                <div class="service-card"><i class="fas fa-bolt"></i><h4>Tableros y puestas a tierra</h4><p>Instalación de tableros principales, sub-tableros y sistemas de puesta a tierra (PAT).</p></div>
+                <div class="service-card"><i class="fas fa-lightbulb"></i><h4>Iluminación interior y exterior</h4><p>Proyectos de iluminación LED, jardines, fachadas y espacios comerciales con eficiencia energética.</p></div>
+                <div class="service-card"><i class="fas fa-file-signature"></i><h4>Certificaciones y habilitaciones</h4><p>Gestión de certificados eléctricos, habilitaciones municipales y asesoramiento técnico legal.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SOBRE NOSOTROS ==================== -->
+    <section class="about" id="nosotros">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image"><i class="fas fa-users"></i><span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span></div>
+                <div class="about-content">
+                    <h3>Más de <span>20 años</span> iluminando Córdoba</h3>
+                    <p>En <strong>REF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
+                    <p>Somos una empresa familiar con matrícula habilitante, comprometida con la excelencia y la satisfacción del cliente. Nuestro objetivo es ofrecer soluciones duraderas, no parches temporales.</p>
+                    <div class="about-stats">
+                        <div><span class="number">+20</span> <span class="label">Años de trayectoria</span></div>
+                        <div><span class="number">+500</span> <span class="label">Proyectos realizados</span></div>
+                        <div><span class="number">98%</span> <span class="label">Clientes satisfechos</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TESTIMONIOS ==================== -->
+    <section class="testimonials" id="testimonios">
+        <div class="container">
+            <div class="section-header">
+                <h3>Lo que dicen nuestros clientes</h3>
+                <h2>Testimonios reales</h2>
+                <p>La opinión de quienes confiaron en nosotros es nuestra mejor carta de presentación.</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
+                    <div class="client"><div class="avatar">MF</div><div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div></div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Contraté a REF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
+                    <div class="client"><div class="avatar">CR</div><div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div></div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
+                    <div class="client"><div class="avatar">LG</div><div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FAQs ==================== -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h3>Preguntas frecuentes</h3>
+                <h2>Resolvemos tus dudas</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item active">
+                    <button class="faq-question"><span>¿Realizan presupuestos sin cargo?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Sí, absolutamente. Realizamos una visita técnica para evaluar el trabajo y te entregamos un presupuesto detallado y sin ningún costo.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question"><span>¿Cuentan con matrícula habilitante?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Sí, contamos con matrícula 5617/1 y estamos habilitados para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question"><span>¿Atienden urgencias fuera del horario laboral?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Por supuesto. Disponemos de un servicio de emergencias 24/7 los 365 días del año. Ante cualquier problema eléctrico grave, puedes contactarnos de inmediato.</div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question"><span>¿Qué tipo de garantía ofrecen en los trabajos?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Todos nuestros trabajos cuentan con una garantía escrita por materiales y mano de obra. La duración varía según el tipo de instalación, pero siempre la especificamos en el presupuesto.</div>
+                </div>
+                <div class="faq-item" style="border-left: 4px solid var(--accent-yellow);">
+                    <button class="faq-question"><span><i class="fas fa-reply" style="color: var(--accent-yellow); margin-right: 10px;"></i> ¿Cómo recibo la respuesta a mi solicitud de presupuesto?</span><i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p><strong>¡Por el mismo medio que nos contactaste!</strong> Si completaste el formulario de contacto, te responderemos al correo electrónico o al número de WhatsApp que hayas indicado en el formulario. De esta forma, la comunicación es ágil y directa, sin que tengas que buscar nuestros datos nuevamente.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COBERTURA ==================== -->
+    <section class="coverage">
+        <div class="container">
+            <h2>Zonas de <span>cobertura</span></h2>
+            <p>Trabajamos en toda la ciudad de Córdoba y alrededores.</p>
+            <div class="nota">* Consulte disponibilidad para servicios fuera de la provincia</div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTACTO / PRESUPUESTO ==================== -->
+    <section class="contact" id="contacto">
+        <div class="container">
+            <div class="section-header">
+                <h3>Ponte en contacto</h3>
+                <h2>Solicita tu presupuesto</h2>
+                <p>Llena el formulario o escríbenos directamente por WhatsApp. Te responderemos a la brevedad.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Estamos para ayudarte</h3>
+                    <p>Si prefieres hablar directamente, estos son nuestros canales de atención. Respondemos en menos de 1 hora en horario laboral.</p>
+                    
+                    <div class="contact-detail">
+                        <i class="fas fa-phone-alt"></i>
+                        <div class="info-text">
+                            <strong>Teléfono</strong>
+                            <span class="data">+54 9 351 869-2251</span>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fab fa-whatsapp"></i>
+                        <div class="info-text">
+                            <strong>WhatsApp</strong>
+                            <span class="data">+54 9 351 869-2251</span>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-envelope"></i>
+                        <div class="info-text">
+                            <strong>Email</strong>
+                            <span class="data">info@refelectrotecnia.com</span>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-clock"></i>
+                        <div class="info-text">
+                            <strong>Horarios</strong>
+                            <span class="data no-select">Lunes a Viernes: 8:00 - 19:00 | Emergencias 24/7</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <h4>Completa tus datos</h4>
+                    <div class="form-group">
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono / WhatsApp" autocomplete="tel" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <select id="servicio" name="servicio" autocomplete="off">
+                            <option value="">Selecciona el servicio que necesitas</option>
+                            <option>Instalación eléctrica</option>
+                            <option>Reparación / Mantenimiento</option>
+                            <option>Domótica / Automatización</option>
+                            <option>Tableros / Puesta a tierra</option>
+                            <option>Iluminación</option>
+                            <option>Certificación / Habilitación</option>
+                            <option value="emergencia">Emergencia 24/7</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group ubicacion-group" id="ubicacionGroup">
+                        <label style="display:block; margin-bottom:6px; font-weight:600; color:var(--primary-dark);">
+                            <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i> Ubicación de la emergencia
+                        </label>
+                        <div class="ubicacion-wrapper">
+                            <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
+                            <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
+                                <i class="fas fa-map"></i> Abrir en Maps
+                            </button>
+                        </div>
+                        <button type="button" class="btn-ubicacion" id="btnUbicacion">
+                            <i class="fas fa-location-dot"></i> Compartir ubicación actual
+                        </button>
+                        <small style="display:block; margin-top:6px; color:var(--gray-text); font-size:0.8rem;">
+                            Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MODAL LEGAL (POPUP) ==================== -->
+    <div class="modal-overlay" id="legalModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose" aria-label="Cerrar">&times;</button>
+            <h2 id="modalTitle">Título</h2>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido dinámico -->
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // =============================================
-    // PATRÓN DE 9 PUNTOS
-    // =============================================
-    (function() {
-        const canvas = document.getElementById('patternCanvas');
-        const ctx = canvas.getContext('2d');
-        const msgEl = document.getElementById('patternMessage');
+    <!-- ==================== COOKIE CONSENT ==================== -->
+    <div class="cookie-consent" id="cookieConsent">
+        <p><i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web. <a href="#" id="cookiePolicyLink">Política de cookies</a></p>
+        <div class="cookie-buttons">
+            <button class="btn-cookie-accept" id="acceptCookies">Aceptar</button>
+            <button class="btn-cookie-decline" id="declineCookies">Rechazar</button>
+        </div>
+    </div>
 
-        // Estado del patrón
-        let pattern = [];               // puntos seleccionados (índices 0..8)
-        let isDrawing = false;
-        let currentPoint = null;        // {x, y} del cursor
-        let registeredPattern = null;   // string guardado en localStorage
-        let mode = 'login';             // 'login' | 'register' | 'change'
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h4>REF <span>Electrotecnia</span></h4>
+                    <p>Tu electricista de confianza en Córdoba. Seguridad, calidad y experiencia en cada proyecto.</p>
+                    <p style="margin-top: 12px; font-size: 0.85rem;"><i class="fas fa-id-card"></i> Matrícula 5617/1</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Enlaces</h5>
+                    <ul><li><a href="#inicio" class="nav-link">Inicio</a></li><li><a href="#servicios" class="nav-link">Servicios</a></li><li><a href="#nosotros" class="nav-link">Nosotros</a></li><li><a href="#testimonios" class="nav-link">Testimonios</a></li><li><a href="#contacto" class="nav-link">Contacto</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Servicios</h5>
+                    <ul><li><a href="#servicios" class="nav-link">Instalaciones</a></li><li><a href="#servicios" class="nav-link">Reparaciones</a></li><li><a href="#servicios" class="nav-link">Domótica</a></li><li><a href="#servicios" class="nav-link">Emergencias</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a data-modal="privacidad">Política de privacidad</a></li>
+                        <li><a data-modal="terminos">Términos y condiciones</a></li>
+                        <li><a data-modal="aviso">Aviso legal</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>
+                    &copy; 2026 REF Electrotecnia. Todos los derechos reservados. | 
+                    <a href="https://wa.me/5493518692251?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
+                        Diseño SC Photo
+                    </a>
+                </span>
+            </div>
+        </div>
+    </footer>
 
-        const radius = 20;
-        const spacing = 70;
-        const offset = 40;
-        const points = [];
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // Inicializar posiciones de los 9 puntos
-        function initPoints() {
-            points.length = 0;
-            for (let row = 0; row < 3; row++) {
-                for (let col = 0; col < 3; col++) {
-                    points.push({
-                        x: offset + col * spacing,
-                        y: offset + row * spacing,
-                        index: row * 3 + col
+            // --- Menú Hamburguesa ---
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            const overlay = document.getElementById('overlay');
+            function toggleMenu() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+            }
+            hamburger.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) toggleMenu();
+                });
+            });
+
+            // --- Scroll suave para enlaces internos ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset;
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- FAQs ---
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function() {
+                    faqItems.forEach(other => {
+                        if (other !== item && other.classList.contains('active')) other.classList.remove('active');
                     });
-                }
-            }
-        }
-        initPoints();
-
-        // Cargar patrón guardado
-        function loadPattern() {
-            const stored = localStorage.getItem('pattern_hash');
-            if (stored) {
-                registeredPattern = stored;
-                return true;
-            }
-            return false;
-        }
-
-        // Guardar patrón (hash SHA-256)
-        async function savePattern(patternArray) {
-            const str = patternArray.join('-');
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            localStorage.setItem('pattern_hash', hashHex);
-            registeredPattern = hashHex;
-            return hashHex;
-        }
-
-        // Verificar patrón
-        async function verifyPattern(patternArray) {
-            const str = patternArray.join('-');
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex === registeredPattern;
-        }
-
-        // Dibujar el canvas
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Dibujar líneas del patrón
-            if (pattern.length > 1) {
-                ctx.beginPath();
-                ctx.strokeStyle = '#00A8FF';
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.shadowColor = 'rgba(0,168,255,0.3)';
-                ctx.shadowBlur = 8;
-                const first = points[pattern[0]];
-                ctx.moveTo(first.x, first.y);
-                for (let i = 1; i < pattern.length; i++) {
-                    const p = points[pattern[i]];
-                    ctx.lineTo(p.x, p.y);
-                }
-                if (currentPoint && isDrawing) {
-                    const last = points[pattern[pattern.length - 1]];
-                    ctx.lineTo(currentPoint.x, currentPoint.y);
-                }
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            }
-
-            // Dibujar puntos
-            points.forEach((p, index) => {
-                const isSelected = pattern.includes(index);
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = isSelected ? '#00A8FF' : '#E9ECEF';
-                ctx.fill();
-                ctx.strokeStyle = isSelected ? '#00A8FF' : '#ccc';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Número pequeño (opcional)
-                ctx.fillStyle = isSelected ? 'white' : '#999';
-                ctx.font = '12px Inter, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(index + 1, p.x, p.y);
-            });
-        }
-
-        // Obtener punto más cercano al cursor
-        function getClosestPoint(x, y) {
-            let minDist = Infinity;
-            let closest = null;
-            points.forEach(p => {
-                const dx = p.x - x;
-                const dy = p.y - y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < minDist && dist < 50) {
-                    minDist = dist;
-                    closest = p;
-                }
-            });
-            return closest;
-        }
-
-        // Eventos de inicio de dibujo (mouse/touch)
-        function startDraw(e) {
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            const x = (clientX - rect.left) * scaleX;
-            const y = (clientY - rect.top) * scaleY;
-            const p = getClosestPoint(x, y);
-            if (p && !pattern.includes(p.index)) {
-                pattern.push(p.index);
-                isDrawing = true;
-                currentPoint = { x, y };
-                draw();
-                msgEl.textContent = 'Suelta para terminar o sigue dibujando.';
-                msgEl.className = 'pattern-message info';
-            }
-        }
-
-        function moveDraw(e) {
-            e.preventDefault();
-            if (!isDrawing) return;
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            const x = (clientX - rect.left) * scaleX;
-            const y = (clientY - rect.top) * scaleY;
-            const p = getClosestPoint(x, y);
-            if (p && !pattern.includes(p.index)) {
-                pattern.push(p.index);
-                draw();
-            }
-            currentPoint = { x, y };
-            draw();
-        }
-
-        function endDraw(e) {
-            e.preventDefault();
-            isDrawing = false;
-            currentPoint = null;
-            draw();
-
-            if (pattern.length < 4) {
-                msgEl.textContent = '❌ Debes conectar al menos 4 puntos.';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-                return;
-            }
-
-            // Según el modo, actuar
-            if (mode === 'login') {
-                handleLogin();
-            } else if (mode === 'register') {
-                handleRegister();
-            } else if (mode === 'change') {
-                handleChange();
-            }
-        }
-
-        // ========== MANEJADORES ==========
-        async function handleLogin() {
-            if (!loadPattern()) {
-                msgEl.textContent = '❌ No hay patrón registrado. Regístrate primero.';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-                return;
-            }
-            const ok = await verifyPattern(pattern);
-            if (ok) {
-                msgEl.textContent = '✅ Patrón correcto. Accediendo...';
-                msgEl.className = 'pattern-message success';
-                setTimeout(() => {
-                    document.getElementById('loginSection').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                    // Cargar datos del panel
-                    cargarDatos();
-                }, 500);
-            } else {
-                msgEl.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-            }
-        }
-
-        async function handleRegister() {
-            if (loadPattern()) {
-                msgEl.textContent = '❌ Ya hay un patrón registrado. Usa "Cambiar patrón".';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-                return;
-            }
-            await savePattern(pattern);
-            msgEl.textContent = '✅ Patrón registrado correctamente. Ahora inicia sesión.';
-            msgEl.className = 'pattern-message success';
-            pattern = [];
-            draw();
-            mode = 'login';
-            document.getElementById('patternLoginBtn').disabled = false;
-        }
-
-        async function handleChange() {
-            if (!loadPattern()) {
-                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-                return;
-            }
-            // Verificar el patrón actual
-            const ok = await verifyPattern(pattern);
-            if (!ok) {
-                msgEl.textContent = '❌ El patrón actual no coincide. Intenta de nuevo.';
-                msgEl.className = 'pattern-message error';
-                pattern = [];
-                draw();
-                return;
-            }
-            // Guardar el nuevo patrón
-            await savePattern(pattern);
-            msgEl.textContent = '✅ Patrón actualizado correctamente.';
-            msgEl.className = 'pattern-message success';
-            pattern = [];
-            draw();
-            mode = 'login';
-            document.getElementById('patternLoginBtn').disabled = false;
-        }
-
-        // ========== EVENTOS ==========
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', moveDraw);
-        canvas.addEventListener('mouseup', endDraw);
-        canvas.addEventListener('mouseleave', endDraw);
-
-        canvas.addEventListener('touchstart', startDraw, { passive: false });
-        canvas.addEventListener('touchmove', moveDraw, { passive: false });
-        canvas.addEventListener('touchend', endDraw, { passive: false });
-
-        // Botones
-        document.getElementById('patternLoginBtn').addEventListener('click', () => {
-            if (pattern.length < 4) {
-                msgEl.textContent = '❌ Dibuja un patrón primero.';
-                msgEl.className = 'pattern-message error';
-                return;
-            }
-            mode = 'login';
-            handleLogin();
-        });
-
-        document.getElementById('patternRegisterBtn').addEventListener('click', () => {
-            if (loadPattern()) {
-                msgEl.textContent = '❌ Ya hay un patrón registrado.';
-                msgEl.className = 'pattern-message error';
-                return;
-            }
-            if (pattern.length < 4) {
-                msgEl.textContent = '❌ Dibuja un patrón de al menos 4 puntos.';
-                msgEl.className = 'pattern-message error';
-                return;
-            }
-            mode = 'register';
-            handleRegister();
-        });
-
-        document.getElementById('patternChangeBtn').addEventListener('click', () => {
-            if (!loadPattern()) {
-                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
-                msgEl.className = 'pattern-message error';
-                return;
-            }
-            if (pattern.length < 4) {
-                msgEl.textContent = '❌ Dibuja el patrón actual para verificarlo.';
-                msgEl.className = 'pattern-message error';
-                return;
-            }
-            mode = 'change';
-            handleChange();
-        });
-
-        // Inicializar
-        draw();
-        if (loadPattern()) {
-            msgEl.textContent = '🔐 Patrón registrado. Dibuja tu patrón e inicia sesión.';
-            msgEl.className = 'pattern-message info';
-        } else {
-            msgEl.textContent = '📝 Registra un patrón nuevo (mínimo 4 puntos).';
-            msgEl.className = 'pattern-message info';
-        }
-
-        // Redimensionar canvas según el contenedor
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            const width = container.clientWidth;
-            if (width > 0) {
-                canvas.width = width;
-                canvas.height = width;
-                // Recalcular puntos
-                const size = width;
-                const newOffset = size * 0.15;
-                const newSpacing = (size - 2 * newOffset) / 2;
-                points.forEach((p, i) => {
-                    const row = Math.floor(i / 3);
-                    const col = i % 3;
-                    p.x = newOffset + col * newSpacing;
-                    p.y = newOffset + row * newSpacing;
+                    item.classList.toggle('active');
                 });
-                draw();
-            }
-        }
-        window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 100);
-    })();
-
-    // =============================================
-    // CONFIGURACIÓN DE LA APLICACIÓN
-    // =============================================
-    // ⚠️ REEMPLAZA ESTA URL CON LA DE TU SCRIPT PUBLICADO ⚠️
-    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkKfrHQNPRtb1OJqQSM8cWNtW2lhUQgjhsNptUnZYP-wRYMnjoDOaXytykQpDgElKo/exec';
-
-    let chartInstance = null;
-    let datosCache = { contactos: [], presupuestos: [] };
-    let contadorPresupuesto = 0;
-    let intervaloAuto = null;
-
-    // =============================================
-    // FUNCIONES DE FORMATEO
-    // =============================================
-    function formatearPrecio(valor) {
-        if (isNaN(valor)) return '$ 0';
-        const entero = Math.round(valor);
-        const conPuntos = entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        return '$ ' + conPuntos;
-    }
-
-    function formatearFechaHora(fechaISO) {
-        if (!fechaISO) return '';
-        const fecha = new Date(fechaISO);
-        return fecha.toLocaleString('es-AR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        });
-    }
-
-    function formatearFecha(fechaISO) {
-        if (!fechaISO) return '';
-        const fecha = new Date(fechaISO);
-        return fecha.toLocaleDateString('es-AR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    }
-
-    // =============================================
-    // CARGAR DATOS DESDE SHEETS
-    // =============================================
-    async function cargarDatos() {
-        const tablaContainer = document.getElementById('tablaContainer');
-        tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
-        document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
-        document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
-
-        try {
-            const response = await fetch(URL_SCRIPT);
-            if (!response.ok) throw new Error('Error al obtener datos');
-            const json = await response.json();
-            if (json.error) throw new Error(json.error);
-
-            datosCache.contactos = json.contactos || [];
-            datosCache.presupuestos = json.presupuestos || [];
-
-            actualizarStats(datosCache.contactos);
-            actualizarGrafico(datosCache.contactos);
-            actualizarUltimos(datosCache.contactos);
-            renderizarTabla(datosCache.contactos);
-            actualizarResumenContactos(datosCache.contactos);
-            renderizarPresupuestos(datosCache.presupuestos);
-
-        } catch (error) {
-            console.error(error);
-            tablaContainer.innerHTML = `
-                <div class="no-data">
-                    <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
-                    <p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p>
-                    <button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button>
-                </div>
-            `;
-            document.getElementById('resumenContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al procesar contactos.</p></div>`;
-            document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos.</p></div>`;
-        }
-    }
-
-    // =============================================
-    // ESTADÍSTICAS
-    // =============================================
-    function actualizarStats(data) {
-        const total = data.length;
-        document.getElementById('totalContactos').textContent = total;
-
-        const hoy = new Date();
-        const semana = new Date(hoy);
-        semana.setDate(hoy.getDate() - 7);
-        const contactosSemana = data.filter(item => {
-            if (!item.Fecha) return false;
-            const fecha = new Date(item.Fecha);
-            return fecha >= semana && fecha <= hoy;
-        });
-        document.getElementById('contactosSemana').textContent = contactosSemana.length;
-
-        const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
-        document.getElementById('emergencias').textContent = emergencias.length;
-
-        const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
-        const pendientes = data.filter(item => {
-            const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : '';
-            return nombre !== '' && !nombresConPresupuesto.includes(nombre);
-        });
-        document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
-    }
-
-    // =============================================
-    // GRÁFICO
-    // =============================================
-    function actualizarGrafico(data) {
-        const servicioCount = {};
-        data.forEach(item => {
-            let servicio = item.Servicio || 'No especificado';
-            if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
-            servicioCount[servicio] = (servicioCount[servicio] || 0) + 1;
-        });
-
-        const sorted = Object.entries(servicioCount).sort((a,b) => b[1] - a[1]);
-        const labels = sorted.map(item => item[0]);
-        const values = sorted.map(item => item[1]);
-
-        const ctx = document.getElementById('serviciosChart').getContext('2d');
-        if (chartInstance) chartInstance.destroy();
-
-        if (labels.length === 0) {
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: ['Sin datos'], datasets: [{ label: 'Solicitudes', data: [0], backgroundColor: ['#E9ECEF'], borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
             });
-            return;
-        }
 
-        const colores = ['#00A8FF','#0A2E5C','#FFB800','#FF7A00','#34A853','#E4405F','#9B59B6','#1ABC9C','#F39C12','#E74C3C'];
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: { labels, datasets: [{ label: 'Solicitudes', data: values, backgroundColor: colores.slice(0, labels.length), borderRadius: 6 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
-        });
-    }
+            // --- Mostrar campo de ubicación al seleccionar "Emergencia 24/7" ---
+            const servicioSelect = document.getElementById('servicio');
+            const ubicacionGroup = document.getElementById('ubicacionGroup');
+            const ubicacionInput = document.getElementById('ubicacion');
+            const btnUbicacion = document.getElementById('btnUbicacion');
+            const btnMaps = document.getElementById('btnMaps');
 
-    // =============================================
-    // ÚLTIMOS 5 REGISTROS
-    // =============================================
-    function actualizarUltimos(data) {
-        const container = document.getElementById('ultimosRegistros');
-        if (data.length === 0) {
-            container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
-            return;
-        }
-        const ultimos = data.slice(-5).reverse();
-        let html = '<ul style="list-style:none; padding:0; margin:0;">';
-        ultimos.forEach(item => {
-            const nombre = item.Nombre || 'Anónimo';
-            const servicio = item.Servicio || 'No especificado';
-            const fecha = formatearFecha(item.Fecha);
-            const esEmergencia = servicio.toLowerCase().includes('emergencia');
-            html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
-                <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
-                <span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span>
-            </li>`;
-        });
-        html += '</ul>';
-        container.innerHTML = html;
-    }
+            let ubicacionCompartida = false;
 
-    // =============================================
-    // TABLA COMPLETA
-    // =============================================
-    function renderizarTabla(data) {
-        const container = document.getElementById('tablaContainer');
-        if (data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
-            return;
-        }
-
-        const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
-
-        const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
-        let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-
-        const sorted = [...data].sort((a,b) => {
-            if (!a.Fecha) return 1;
-            if (!b.Fecha) return -1;
-            return new Date(b.Fecha) - new Date(a.Fecha);
-        });
-
-        sorted.forEach((row) => {
-            const originalIndex = data.indexOf(row);
-            const fecha = formatearFechaHora(row.Fecha);
-            const nombre = row.Nombre || '';
-            const telefono = row.Teléfono || '';
-            const email = row.Email || '';
-            let servicio = row.Servicio || '';
-            if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
-            const ubicacion = row.Ubicación || '';
-            const mensaje = row.Mensaje || '';
-            const esEmergencia = servicio.toLowerCase().includes('emergencia');
-
-            const nombreNormalizado = nombre.trim().toLowerCase();
-            const tienePresupuesto = nombresConPresupuesto.includes(nombreNormalizado);
-            const checkHtml = tienePresupuesto
-                ? '<span class="check-presupuesto">✅</span>'
-                : '<span class="no-presupuesto">❌</span>';
-
-            let mapsHtml = '';
-            if (ubicacion) {
-                let url = '';
-                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
-                if (esCoordenada) {
-                    const coords = ubicacion.match(/-?\d+\.\d+/g);
-                    if (coords && coords.length >= 2) url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+            servicioSelect.addEventListener('change', function() {
+                if (this.value === 'emergencia') {
+                    ubicacionGroup.classList.add('visible');
                 } else {
-                    url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`;
+                    ubicacionGroup.classList.remove('visible');
+                    ubicacionInput.value = '';
+                    btnMaps.classList.add('hidden');
+                    ubicacionCompartida = false;
                 }
-                if (url) mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
-            }
-
-            html += `<tr>
-                <td>${fecha}</td>
-                <td><strong>${nombre}</strong></td>
-                <td>${telefono}</td>
-                <td>${email}</td>
-                <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
-                <td>${mapsHtml || '—'}</td>
-                <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td>
-                <td style="text-align:center;">${checkHtml}</td>
-                <td style="text-align:center; white-space:nowrap;">
-                    <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
-                    <button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
-                </td>
-            </tr>`;
-        });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-    }
-
-    // =============================================
-    // PRESUPUESTOS ENVIADOS
-    // =============================================
-    function renderizarPresupuestos(data) {
-        const container = document.getElementById('presupuestosContainer');
-        if (!data || data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
-            return;
-        }
-
-        const sorted = [...data].sort((a,b) => {
-            if (!a.Fecha) return 1;
-            if (!b.Fecha) return -1;
-            return new Date(b.Fecha) - new Date(a.Fecha);
-        });
-
-        let html = `<table><thead><tr>
-            <th>Nombre</th>
-            <th>Servicio</th>
-            <th>Descripción</th>
-            <th>$ sin IVA</th>
-            <th>$ con IVA</th>
-            <th>Fecha de envío</th>
-            <th style="text-align:center;">Acciones</th>
-        </tr></thead><tbody>`;
-
-        sorted.forEach((row, index) => {
-            const nombre = row.Nombre || '-';
-            const servicio = row.Servicio || '-';
-            const descripcion = row.Descripción || '-';
-            const precioTotal = parseFloat(row.Precio) || 0;
-            const precioSubtotal = precioTotal / 1.21;
-            const fecha = formatearFecha(row.Fecha);
-
-            html += `<tr>
-                <td><strong>${nombre}</strong></td>
-                <td>${servicio}</td>
-                <td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
-                <td>${formatearPrecio(precioSubtotal)}</td>
-                <td>${formatearPrecio(precioTotal)}</td>
-                <td>${fecha}</td>
-                <td style="text-align:center;">
-                    <button class="btn-delete" onclick="eliminarPresupuesto(${index})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-    }
-
-    // =============================================
-    // ELIMINAR PRESUPUESTO
-    // =============================================
-    async function eliminarPresupuesto(index) {
-        const presupuesto = datosCache.presupuestos[index];
-        if (!presupuesto) return;
-        const confirmar = confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.Nombre || 'Anónimo'}"?`);
-        if (!confirmar) return;
-        const datos = { action: 'delete_budget', index };
-        await enviarAccion(datos);
-        cargarDatos();
-    }
-
-    // =============================================
-    // EDITAR REGISTRO
-    // =============================================
-    function editarRegistro(index) {
-        const registro = datosCache.contactos[index];
-        if (!registro) { alert('Registro no encontrado.'); return; }
-        document.getElementById('editIndex').value = index;
-        document.getElementById('editNombre').value = registro.Nombre || '';
-        document.getElementById('editTelefono').value = registro.Teléfono || '';
-        document.getElementById('editEmail').value = registro.Email || '';
-        document.getElementById('editServicio').value = registro.Servicio || '';
-        document.getElementById('editUbicacion').value = registro.Ubicación || '';
-        document.getElementById('editMensaje').value = registro.Mensaje || '';
-        document.getElementById('editModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    async function guardarEdicion() {
-        const btn = document.getElementById('saveEditBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-
-        try {
-            const index = parseInt(document.getElementById('editIndex').value);
-            const nombre = document.getElementById('editNombre').value.trim();
-            const telefono = document.getElementById('editTelefono').value.trim();
-            const email = document.getElementById('editEmail').value.trim();
-            const servicio = document.getElementById('editServicio').value;
-            const ubicacion = document.getElementById('editUbicacion').value.trim();
-            const mensaje = document.getElementById('editMensaje').value.trim();
-
-            if (!nombre || !telefono) {
-                alert('El nombre y el teléfono son obligatorios.');
-                return;
-            }
-
-            const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
-            await enviarAccion(datos);
-            cerrarModal('editModal');
-            cargarDatos();
-
-        } catch (error) {
-            console.error('Error al guardar edición:', error);
-            alert('Hubo un error al guardar los cambios. Revisa la consola.');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
-        }
-    }
-
-    // =============================================
-    // ELIMINAR REGISTRO (contacto)
-    // =============================================
-    async function eliminarRegistro(index) {
-        const registro = datosCache.contactos[index];
-        if (!registro) return;
-        const confirmar = confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"?`);
-        if (!confirmar) return;
-        const datos = { action: 'delete', index };
-        await enviarAccion(datos);
-        cargarDatos();
-    }
-
-    // =============================================
-    // PRESUPUESTO
-    // =============================================
-    function abrirPresupuesto(index) {
-        const registro = datosCache.contactos[index];
-        if (!registro) { alert('Registro no encontrado.'); return; }
-        contadorPresupuesto++;
-        const year = new Date().getFullYear();
-        const numero = `${year}-${String(contadorPresupuesto).padStart(4, '0')}`;
-        document.getElementById('previewNumero').textContent = numero;
-        document.getElementById('presupuestoIndex').value = index;
-        document.getElementById('presupuestoNombre').value = registro.Nombre || '';
-        document.getElementById('presupuestoTelefono').value = registro.Teléfono || '';
-        document.getElementById('presupuestoEmail').value = registro.Email || '';
-        let servicioMostrar = registro.Servicio || 'No especificado';
-        if (servicioMostrar === 'emergencia') servicioMostrar = 'Emergencia 24/7';
-        document.getElementById('previewServicio').textContent = servicioMostrar;
-        document.getElementById('presupuestoDescripcion').value = '';
-        document.getElementById('presupuestoPrecio').value = '';
-        document.getElementById('presupuestoValidez').value = 30;
-        document.getElementById('presupuestoMateriales').value = 'No';
-        actualizarVistaPrevia();
-        document.getElementById('presupuestoModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function actualizarVistaPrevia() {
-        const nombre = document.getElementById('presupuestoNombre').value || '-';
-        const telefono = document.getElementById('presupuestoTelefono').value || '-';
-        const email = document.getElementById('presupuestoEmail').value || '-';
-        const descripcion = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
-        const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-        const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
-        const materiales = document.getElementById('presupuestoMateriales').value;
-
-        const iva = subtotal * 0.21;
-        const total = subtotal + iva;
-
-        document.getElementById('previewNombre').textContent = nombre;
-        document.getElementById('previewTelefono').textContent = telefono;
-        document.getElementById('previewEmail').textContent = email;
-        document.getElementById('previewDescripcion').textContent = descripcion;
-        document.getElementById('previewMateriales').textContent = materiales;
-        document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
-        document.getElementById('previewIva').textContent = formatearPrecio(iva);
-        document.getElementById('previewTotal').textContent = formatearPrecio(total);
-        document.getElementById('previewCondMateriales').textContent = materiales;
-
-        const hoy = new Date();
-        const fechaStr = hoy.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
-        const fechaValidez = new Date(hoy);
-        fechaValidez.setDate(fechaValidez.getDate() + validezDias);
-        const validezStr = fechaValidez.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
-
-        document.getElementById('previewFecha').textContent = fechaStr;
-        document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
-        document.getElementById('previewValidezDias').textContent = validezDias;
-    }
-
-    document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
-    document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
-    document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
-    document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
-
-    // =============================================
-    // GUARDAR PRESUPUESTO
-    // =============================================
-    async function guardarPresupuesto() {
-        const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
-        const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
-        const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-        const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-        const total = subtotal * 1.21;
-        const numero = document.getElementById('previewNumero').textContent;
-        const validez = document.getElementById('presupuestoValidez').value || 30;
-        const materiales = document.getElementById('presupuestoMateriales').value;
-
-        const btn = document.getElementById('guardarPresupuestoBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-
-        try {
-            const element = document.getElementById('presupuestoPreview');
-            await new Promise(resolve => setTimeout(resolve, 200));
-
-            const canvas = await html2canvas(element, {
-                scale: 1.5,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: '#ffffff',
-                logging: false,
-                willReadFrequently: true,
-                width: element.scrollWidth,
-                height: element.scrollHeight
             });
 
-            if (canvas.width === 0 || canvas.height === 0) {
-                throw new Error('El canvas generado está vacío.');
+            ubicacionInput.addEventListener('input', function() {
+                if (ubicacionCompartida) {
+                    ubicacionCompartida = false;
+                }
+                if (this.value.trim().length > 0 && !ubicacionCompartida) {
+                    btnMaps.classList.remove('hidden');
+                } else {
+                    btnMaps.classList.add('hidden');
+                }
+            });
+
+            btnMaps.addEventListener('click', function() {
+                const direccion = ubicacionInput.value.trim();
+                if (!direccion) return;
+                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
+                let url;
+                if (esCoordenada) {
+                    const coords = direccion.match(/-?\d+\.\d+/g);
+                    if (coords && coords.length >= 2) {
+                        url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                    } else {
+                        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                    }
+                } else {
+                    url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                }
+                window.open(url, '_blank');
+            });
+
+            btnUbicacion.addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
+                    return;
+                }
+                btnUbicacion.disabled = true;
+                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo ubicación...';
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const texto = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                        ubicacionInput.value = texto;
+                        ubicacionCompartida = true;
+                        btnMaps.classList.add('hidden');
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    },
+                    function(error) {
+                        alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // === NUEVA FUNCIÓN: Guardar en Google Sheets ===
+            async function guardarEnSheets(datos) {
+                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec'; // <-- REEMPLAZA CON TU URL
+                try {
+                    const response = await fetch(URL_SCRIPT, {
+                        method: 'POST',
+                        mode: 'no-cors', // Necesario para evitar CORS
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(datos)
+                    });
+                    // Con no-cors no podemos leer la respuesta, pero asumimos que funciona
+                    console.log('Datos enviados a Sheets');
+                } catch (error) {
+                    console.error('Error al guardar en Sheets:', error);
+                }
             }
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.85);
+            // --- Formulario: Enviar por WhatsApp + Guardar en Sheets ---
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+                const nombre = document.getElementById('nombre').value.trim();
+                const telefono = document.getElementById('telefono').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const servicio = document.getElementById('servicio').value;
+                const mensaje = document.getElementById('mensaje').value.trim();
+                const ubicacion = document.getElementById('ubicacion').value.trim();
 
-            const marginX = 10;
-            const marginY = 20;
-            const maxWidth = pdfWidth - 2 * marginX;
-            const maxHeight = pdfHeight - marginY;
+                if (!nombre || !telefono) {
+                    alert('Por favor, completa tu nombre y teléfono.');
+                    return;
+                }
 
-            const scaleX = maxWidth / canvas.width;
-            const scaleY = maxHeight / canvas.height;
-            const scale = Math.min(scaleX, scaleY);
+                // 1) Guardar en Google Sheets (sin bloquear el envío de WhatsApp)
+                const datos = { nombre, telefono, email, servicio, ubicacion, mensaje };
+                guardarEnSheets(datos);
 
-            const imgWidth = canvas.width * scale;
-            const imgHeight = canvas.height * scale;
-            const xOffset = (pdfWidth - imgWidth) / 2;
-            const yOffset = marginY;
+                // 2) Construir mensaje de WhatsApp
+                let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
+                whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
+                whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
+                if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
+                if (servicio) {
+                    let servicioLabel = servicio;
+                    if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
+                    whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
+                }
+                if (ubicacion) {
+                    const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
+                    if (esCoordenada) {
+                        const coords = ubicacion.match(/-?\d+\.\d+/g);
+                        if (coords && coords.length >= 2) {
+                            const mapsUrl = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                            whatsappMessage += `📍 *Ubicación:* ${mapsUrl}\n`;
+                        } else {
+                            whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                        }
+                    } else {
+                        whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                    }
+                }
+                if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
 
-            pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
+                const phoneNumber = '5493518692251';
+                const encodedMessage = encodeURIComponent(whatsappMessage);
+                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
 
-            const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
-            pdf.save(filename);
+                // Opcional: limpiar el formulario después de enviar
+                // this.reset();
+            });
 
-            const datos = {
-                action: 'save_budget',
-                nombre, servicio, descripcion,
-                precio: total.toFixed(2),
-                numero, validez, materiales
+            // --- Cookies ---
+            const cookieConsent = document.getElementById('cookieConsent');
+            function setCookieConsent(choice) {
+                localStorage.setItem('cookieConsent', choice);
+                cookieConsent.classList.add('hidden');
+                document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`;
+            }
+            if (localStorage.getItem('cookieConsent')) {
+                cookieConsent.classList.add('hidden');
+            }
+            document.getElementById('acceptCookies').addEventListener('click', function() {
+                setCookieConsent('accepted');
+            });
+            document.getElementById('declineCookies').addEventListener('click', function() {
+                setCookieConsent('declined');
+            });
+
+            // --- MODAL LEGAL ---
+            const modalOverlay = document.getElementById('legalModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const modalClose = document.getElementById('modalClose');
+
+            const legalContent = {
+                privacidad: {
+                    title: 'Política de privacidad',
+                    body: `
+                        <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
+                        <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
+                        <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
+                        <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
+                        <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                        <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
+                    `
+                },
+                terminos: {
+                    title: 'Términos y condiciones',
+                    body: `
+                        <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
+                        <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
+                        <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
+                        <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
+                        <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
+                        <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
+                        <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
+                    `
+                },
+                aviso: {
+                    title: 'Aviso legal',
+                    body: `
+                        <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
+                        <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
+                        <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+                        <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
+                        <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
+                        <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
+                        <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                    `
+                }
             };
-            fetch(URL_SCRIPT, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
 
-            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
-
-        } catch (error) {
-            console.error('Error al generar el PDF:', error);
-            alert('El presupuesto se guardó en la hoja, pero hubo un error al generar el PDF.\nRevisa la consola para más detalles.');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
-            cerrarModal('presupuestoModal');
-            cargarDatos();
-        }
-    }
-
-    document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
-
-    // =============================================
-    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS
-    // =============================================
-    async function enviarAccion(datos) {
-        try {
-            await fetch(URL_SCRIPT, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
-            return true;
-        } catch (error) {
-            console.error('Error al enviar acción:', error);
-            alert('Hubo un error al procesar la solicitud. Revisa la consola.');
-            return false;
-        }
-    }
-
-    // =============================================
-    // CERRAR MODALES
-    // =============================================
-    function cerrarModal(id) {
-        document.getElementById(id).classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
-    document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
-    document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
-
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', function(e) {
-            if (e.target === this) { this.classList.remove('active'); document.body.style.overflow = ''; }
-        });
-    });
-
-    document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
-
-    // =============================================
-    // RESUMEN POR CONTACTO
-    // =============================================
-    function actualizarResumenContactos(data) {
-        const container = document.getElementById('resumenContainer');
-        if (!data || data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
-            return;
-        }
-
-        const contactosMap = new Map();
-        data.forEach(item => {
-            const nombre = item.Nombre || 'Anónimo';
-            const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
-            if (!telefono) return;
-            const key = `${nombre}|${telefono}`;
-            if (contactosMap.has(key)) {
-                const contacto = contactosMap.get(key);
-                contacto.cantidad += 1;
-                if (item.Servicio && !contacto.servicios.includes(item.Servicio)) {
-                    contacto.servicios.push(item.Servicio);
-                }
-            } else {
-                contactosMap.set(key, {
-                    nombre,
-                    telefono,
-                    cantidad: 1,
-                    servicios: item.Servicio ? [item.Servicio] : []
-                });
+            function openModal(type) {
+                const content = legalContent[type];
+                if (!content) return;
+                modalTitle.textContent = content.title;
+                modalBody.innerHTML = content.body;
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                modalOverlay.setAttribute('aria-hidden', 'false');
+                modalClose.focus();
             }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                modalOverlay.setAttribute('aria-hidden', 'true');
+            }
+
+            document.querySelectorAll('[data-modal]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = this.getAttribute('data-modal');
+                    openModal(type);
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            document.getElementById('cookiePolicyLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal('privacidad');
+            });
+
         });
-
-        const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
-        if (contactos.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
-            return;
-        }
-
-        let html = `<table><thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th style="text-align:center;">Servicios</th><th style="text-align:center;">Contactar</th></tr></thead><tbody>`;
-        contactos.forEach((contacto, index) => {
-            const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
-            const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
-            const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
-            const serviciosLista = contacto.servicios.join(', ');
-
-            html += `<tr>
-                <td>${index + 1}</td>
-                <td><strong>${contacto.nombre}</strong></td>
-                <td>${contacto.telefono}</td>
-                <td style="text-align:center;">
-                    <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
-                    <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
-                </td>
-                <td style="text-align:center;">
-                    <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a>
-                </td>
-            </tr>`;
-        });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-    }
-
-    // =============================================
-    // AUTO-REFRESH Y CIERRE DE SESIÓN
-    // =============================================
-    function iniciarAutoRefresh() {
-        if (intervaloAuto) clearInterval(intervaloAuto);
-        intervaloAuto = setInterval(cargarDatos, 300000);
-        console.log('Auto-refresh cada 5 minutos activado.');
-    }
-
-    document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
-
-    // Cerrar sesión desde el dashboard
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('loginSection').style.display = 'flex';
-        // No borramos el patrón para que el usuario pueda volver a entrar
-    });
-
-    // =============================================
-    // INICIALIZAR
-    // =============================================
-    // Si ya hay sesión activa (por recarga), mostrar dashboard
-    // pero como el patrón está en localStorage y no hay flag de sesión,
-    // el usuario debe volver a dibujar. Es seguro.
-    // El dashboard se muestra solo después de login exitoso.
-    // =============================================
-</script>
+    </script>
 </body>
 </html>
