@@ -507,7 +507,7 @@
         }
 
         /* ========================================
-                   SOBRE NOSOTROS
+                   SOBRE NOSOTROS + SLIDESHOW
                 ======================================== */
         .about {
             padding: 80px 0;
@@ -521,24 +521,81 @@
             align-items: center;
         }
 
+        /* Contenedor: mismo tamaño que antes (4/3), ahora con slideshow */
         .about-image {
+            position: relative;
             background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
             border-radius: var(--radius);
             aspect-ratio: 4/3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.4);
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            gap: 16px;
-            font-size: 1.1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
 
-        .about-image i {
-            font-size: 5rem;
-            color: var(--accent-yellow);
-            opacity: 0.5;
+        .slideshow {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Sombreado sutil abajo solo para que se vean los puntos */
+        .slideshow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(1.08);
+            transition: opacity 1.2s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 1.2s ease-in-out, transform 5.5s ease-out;
+            z-index: 1;
+        }
+
+        .slide-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 3;
+        }
+
+        .slide-dots button {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .slide-dots button:hover {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .slide-dots button.active {
+            background: var(--accent-yellow);
+            transform: scale(1.35);
         }
 
         .about-content h3 {
@@ -1729,11 +1786,25 @@
         </div>
     </section>
 
-    <!-- ==================== SOBRE NOSOTROS ==================== -->
+    <!-- ==================== SOBRE NOSOTROS (CON SLIDESHOW) ==================== -->
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
-                <div class="about-image"><i class="fas fa-users"></i><span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span></div>
+                <div class="about-image">
+                    <div class="slideshow" id="aboutSlideshow">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref01.webp" alt="REF Electrotecnia trabajando 1" class="slide active">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref02.webp" alt="REF Electrotecnia trabajando 2" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref03.webp" alt="REF Electrotecnia trabajando 3" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref04.webp" alt="REF Electrotecnia trabajando 4" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref05.webp" alt="REF Electrotecnia trabajando 5" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref06.webp" alt="REF Electrotecnia trabajando 6" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref07.webp" alt="REF Electrotecnia trabajando 7" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref08.webp" alt="REF Electrotecnia trabajando 8" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref09.webp" alt="REF Electrotecnia trabajando 9" class="slide" loading="lazy">
+                        <img src="https://sebagsc2020.github.io/refelectrotecnia/images/ref10.webp" alt="REF Electrotecnia trabajando 10" class="slide" loading="lazy">
+                        <div class="slide-dots" id="slideDots"></div>
+                    </div>
+                </div>
                 <div class="about-content">
                     <h3>Más de <span>20 años</span> iluminando Córdoba</h3>
                     <p>En <strong>REF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
@@ -2063,6 +2134,57 @@
                 }
             });
 
+            // --- SLIDESHOW SECCIÓN NOSOTROS ---
+            const slides = document.querySelectorAll('#aboutSlideshow .slide');
+            const dotsContainer = document.getElementById('slideDots');
+            let currentSlide = 0;
+            let slideInterval = null;
+            const SLIDE_DELAY = 4500; // ms entre imágenes
+
+            if (slides.length && dotsContainer) {
+                // Crear un punto por imagen
+                slides.forEach(function(_, i) {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+                    dot.addEventListener('click', function() {
+                        goToSlide(i);
+                        restartSlideshow();
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+                const dots = dotsContainer.querySelectorAll('button');
+                dots[0].classList.add('active');
+
+                function goToSlide(n) {
+                    slides[currentSlide].classList.remove('active');
+                    dots[currentSlide].classList.remove('active');
+                    currentSlide = (n + slides.length) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                    dots[currentSlide].classList.add('active');
+                }
+
+                function nextSlide() {
+                    goToSlide(currentSlide + 1);
+                }
+
+                function restartSlideshow() {
+                    clearInterval(slideInterval);
+                    slideInterval = setInterval(nextSlide, SLIDE_DELAY);
+                }
+
+                restartSlideshow();
+
+                // Pausar cuando la pestaña no está visible (ahorra recursos)
+                document.addEventListener('visibilitychange', function() {
+                    if (document.hidden) {
+                        clearInterval(slideInterval);
+                    } else {
+                        restartSlideshow();
+                    }
+                });
+            }
+
             // --- DICTADO POR VOZ (Web Speech API) ---
             const mensajeTextarea = document.getElementById('mensaje');
             const btnMic = document.getElementById('btnMic');
@@ -2086,7 +2208,7 @@
                     btnMic.title = 'Detener dictado';
                     baseText = mensajeTextarea.value.replace(/\s+$/, '');
                     finalTranscript = '';
-                    if (micHint) micHint.innerHTML = '<i class="fas fa-circle" style="color: var(--danger-red); animation: pulseMic 1s infinite; border-radius:50%;"></i> Escuchando... hablá con normalidad.';
+                    if (micHint) micHint.innerHTML = '<i class="fas fa-circle" style="color: var(--danger-red); border-radius:50%;"></i> Escuchando... hablá con normalidad.';
                 };
 
                 recognition.onresult = function(event) {
@@ -2136,7 +2258,6 @@
                     if (micHint) micHint.innerHTML = '<i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.';
                 }
             } else if (btnMic) {
-                // Navegador sin soporte: ocultamos el botón
                 btnMic.style.display = 'none';
                 if (micHint) micHint.style.display = 'none';
             }
@@ -2262,7 +2383,6 @@
                     text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
                 }
 
-                // Mensaje de WhatsApp con el resumen del diagnóstico
                 let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
                 diagTags.forEach(function(t) { waMsg += '• ' + t + '\n'; });
                 waMsg += '\n📊 Nivel estimado: ' + nivel;
