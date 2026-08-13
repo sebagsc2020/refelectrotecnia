@@ -1590,7 +1590,7 @@
                     <p>Somos una empresa familiar con matrícula habilitante, comprometida con la excelencia y la satisfacción del cliente. Nuestro objetivo es ofrecer soluciones duraderas, no parches temporales.</p>
                     <div class="about-stats">
                         <div><span class="number">+20</span> <span class="label">Años de trayectoria</span></div>
-                        <div><span class="number">+900</span> <span class="label">Proyectos realizados</span></div>
+                        <div><span class="number">+1000</span> <span class="label">Proyectos realizados</span></div>
                         <div><span class="number">98%</span> <span class="label">Clientes satisfechos</span></div>
                     </div>
                 </div>
@@ -1863,13 +1863,7 @@
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) toggleMenu();
-                });
-            });
-
-            // --- Scroll suave para enlaces internos ---
+            // --- Scroll suave + cerrar menú (unificado) ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1877,9 +1871,14 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
+
+                        // Si el enlace está dentro del menú, cerrar el menú
+                        if (this.closest('.nav-menu')) {
+                            if (navMenu.classList.contains('active')) toggleMenu();
+                        }
+
                         const headerOffset = 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window
-                            .pageYOffset;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
                             top: offsetPosition,
@@ -1895,8 +1894,7 @@
                 const question = item.querySelector('.faq-question');
                 question.addEventListener('click', function() {
                     faqItems.forEach(other => {
-                        if (other !== item && other.classList.contains('active')) other.classList
-                            .remove('active');
+                        if (other !== item && other.classList.contains('active')) other.classList.remove('active');
                     });
                     item.classList.toggle('active');
                 });
@@ -1943,8 +1941,7 @@
                     if (coords && coords.length >= 2) {
                         url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
                     } else {
-                        url =
-                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
                     }
                 } else {
                     url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
@@ -1972,9 +1969,7 @@
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
                     },
                     function(error) {
-                        alert(
-                            'No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' +
-                            error.message);
+                        alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
                     }, {
@@ -1987,8 +1982,7 @@
 
             // --- Guardar en Google Sheets ---
             async function guardarEnSheets(datos) {
-                const URL_SCRIPT =
-                    'https://script.google.com/macros/s/AKfycbxO4rVZl0tcmQHThl1hIDEBcgQpQDAYToKNP4w_HJTHl8GT8jHsoRmZ8bqZHAEWH7Wy/exec';
+                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxO4rVZl0tcmQHThl1hIDEBcgQpQDAYToKNP4w_HJTHl8GT8jHsoRmZ8bqZHAEWH7Wy/exec';
                 try {
                     await fetch(URL_SCRIPT, {
                         method: 'POST',
@@ -2101,37 +2095,37 @@
                 privacidad: {
                     title: 'Política de privacidad',
                     body: `
-                            <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
-                            <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
-                            <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
-                            <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
-                            <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                            <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
-                        `
+                        <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
+                        <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
+                        <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
+                        <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
+                        <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                        <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
+                    `
                 },
                 terminos: {
                     title: 'Términos y condiciones',
                     body: `
-                            <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
-                            <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
-                            <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
-                            <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
-                            <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
-                            <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
-                            <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
-                        `
+                        <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
+                        <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
+                        <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
+                        <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
+                        <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
+                        <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
+                        <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
+                    `
                 },
                 aviso: {
                     title: 'Aviso legal',
                     body: `
-                            <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
-                            <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
-                            <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
-                            <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
-                            <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
-                            <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
-                            <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                        `
+                        <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
+                        <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
+                        <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+                        <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
+                        <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
+                        <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
+                        <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                    `
                 }
             };
 
@@ -2194,7 +2188,6 @@
                     imagenes[currentIndex].classList.add('active');
                 }
 
-                // Cambiar cada 1200 ms (1.2 segundos)
                 setInterval(mostrarSiguiente, 1200);
             })();
 
