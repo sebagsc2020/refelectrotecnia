@@ -6,9 +6,8 @@
     <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- html2canvas y jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2pdf.js (para simplificar la generación de PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -610,9 +609,9 @@
             <div class="stat-label">Emergencias 24/7</div>
         </div>
         <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-calendar-day"></i></span>
-            <div class="stat-number" id="hoy">0</div>
-            <div class="stat-label">Contactos hoy</div>
+            <span class="stat-icon"><i class="fas fa-clock"></i></span>
+            <div class="stat-number" id="sinPresupuesto">0</div>
+            <div class="stat-label">Pendientes de presupuesto</div>
         </div>
     </div>
 
@@ -800,7 +799,7 @@
     }
 
     // =============================================
-    // ESTADÍSTICAS
+    // ESTADÍSTICAS (actualizado: sinPresupuesto)
     // =============================================
     function actualizarStats(data) {
         const total = data.length;
@@ -819,16 +818,13 @@
         const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
         document.getElementById('emergencias').textContent = emergencias.length;
 
-        const hoyInicio = new Date(hoy);
-        hoyInicio.setHours(0,0,0,0);
-        const hoyFin = new Date(hoy);
-        hoyFin.setHours(23,59,59,999);
-        const contactosHoy = data.filter(item => {
-            if (!item.Fecha) return false;
-            const fecha = new Date(item.Fecha);
-            return fecha >= hoyInicio && fecha <= hoyFin;
+        // Calcular contactos sin presupuesto (pendientes)
+        const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
+        const sinPresupuesto = data.filter(item => {
+            const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : '';
+            return !nombresConPresupuesto.includes(nombre);
         });
-        document.getElementById('hoy').textContent = contactosHoy.length;
+        document.getElementById('sinPresupuesto').textContent = sinPresupuesto.length;
     }
 
     // =============================================
@@ -1129,7 +1125,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (corregido - sin error de canvas vacío)
+    // GUARDAR PRESUPUESTO (PDF corregido con html2pdf)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1150,54 +1146,20 @@
         };
         await enviarAccion(datos);
 
-        // 2. Generar PDF con html2canvas + jsPDF (corregido)
+        // 2. Generar PDF con html2pdf (sin márgenes grandes)
         try {
             const element = document.getElementById('presupuestoPreview');
-            // Pequeña pausa para que se renderice todo
+            // Pequeña pausa para renderizado
             await new Promise(resolve => setTimeout(resolve, 300));
 
-            // Capturar el elemento con html2canvas
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: '#ffffff',
-                logging: false,
-                willReadFrequently: true,
-                width: element.scrollWidth,
-                height: element.scrollHeight
-            });
-
-            if (canvas.width === 0 || canvas.height === 0) {
-                throw new Error('El canvas generado está vacío.');
-            }
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-
-            // Calcular escala para que quepa con márgenes de 5 mm
-            const margin = 5;
-            const maxWidth = pdfWidth - 2 * margin;
-            const maxHeight = pdfHeight - 2 * margin;
-
-            const scaleX = maxWidth / canvas.width;
-            const scaleY = maxHeight / canvas.height;
-            const scale = Math.min(scaleX, scaleY);
-
-            const imgWidth = canvas.width * scale;
-            const imgHeight = canvas.height * scale;
-            const xOffset = (pdfWidth - imgWidth) / 2;
-            const yOffset = (pdfHeight - imgHeight) / 2;
-
-            // Añadir la imagen al PDF
-            pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
-
-            const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
-            pdf.save(filename);
+            const opt = {
+                margin: 0, // sin márgenes
+                filename: `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false, willReadFrequently: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            await html2pdf().set(opt).from(element).save();
 
             alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
 
