@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -392,10 +392,18 @@
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         .modal-box .btn-save:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
+        }
+        .modal-box .btn-save:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
         .modal-box .btn-cancel {
             background: transparent;
@@ -995,7 +1003,7 @@
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS ENVIADOS (con fecha en 24h)
+    // RENDERIZAR PRESUPUESTOS ENVIADOS (con dos columnas de precios)
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -1010,20 +1018,30 @@
             return new Date(b.Fecha) - new Date(a.Fecha);
         });
 
-        let html = `<table><thead><tr><th>Nombre</th><th>Servicio</th><th>Descripción</th><th>Precio</th><th>Fecha de envío</th><th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
+        let html = `<table><thead><tr>
+            <th>Nombre</th>
+            <th>Servicio</th>
+            <th>Descripción</th>
+            <th>$ sin IVA</th>
+            <th>$ con IVA</th>
+            <th>Fecha de envío</th>
+            <th style="text-align:center;">Acciones</th>
+        </tr></thead><tbody>`;
 
         sorted.forEach((row, index) => {
             const nombre = row.Nombre || '-';
             const servicio = row.Servicio || '-';
             const descripcion = row.Descripción || '-';
-            const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0';
+            const precioTotal = parseFloat(row.Precio) || 0;
+            const precioSubtotal = precioTotal / 1.21;
             const fecha = formatearFecha(row.Fecha);
 
             html += `<tr>
                 <td><strong>${nombre}</strong></td>
                 <td>${servicio}</td>
                 <td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
-                <td>${precio}</td>
+                <td>${formatearPrecio(precioSubtotal)}</td>
+                <td>${formatearPrecio(precioTotal)}</td>
                 <td>${fecha}</td>
                 <td style="text-align:center;">
                     <button class="btn-delete" onclick="eliminarPresupuesto(${index})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
@@ -1048,7 +1066,7 @@
     }
 
     // =============================================
-    // EDITAR REGISTRO
+    // EDITAR REGISTRO (con preloader en el botón)
     // =============================================
     function editarRegistro(index) {
         const registro = datosCache.contactos[index];
@@ -1065,18 +1083,36 @@
     }
 
     async function guardarEdicion() {
-        const index = parseInt(document.getElementById('editIndex').value);
-        const nombre = document.getElementById('editNombre').value.trim();
-        const telefono = document.getElementById('editTelefono').value.trim();
-        const email = document.getElementById('editEmail').value.trim();
-        const servicio = document.getElementById('editServicio').value;
-        const ubicacion = document.getElementById('editUbicacion').value.trim();
-        const mensaje = document.getElementById('editMensaje').value.trim();
-        if (!nombre || !telefono) { alert('El nombre y el teléfono son obligatorios.'); return; }
-        const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
-        await enviarAccion(datos);
-        cerrarModal('editModal');
-        cargarDatos();
+        const btn = document.getElementById('saveEditBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+        try {
+            const index = parseInt(document.getElementById('editIndex').value);
+            const nombre = document.getElementById('editNombre').value.trim();
+            const telefono = document.getElementById('editTelefono').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const servicio = document.getElementById('editServicio').value;
+            const ubicacion = document.getElementById('editUbicacion').value.trim();
+            const mensaje = document.getElementById('editMensaje').value.trim();
+
+            if (!nombre || !telefono) {
+                alert('El nombre y el teléfono son obligatorios.');
+                return;
+            }
+
+            const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
+            await enviarAccion(datos);
+            cerrarModal('editModal');
+            cargarDatos();
+
+        } catch (error) {
+            console.error('Error al guardar edición:', error);
+            alert('Hubo un error al guardar los cambios. Revisa la consola.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+        }
     }
 
     // =============================================
