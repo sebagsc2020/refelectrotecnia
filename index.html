@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REF+Electrotecnia | Instalaciones y Mantenimiento</title>
-    
+
+    <!-- ========== GOOGLE ANALYTICS (gtag.js) ========== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHFCYBZBJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-HRHFCYBZBJ');
+    </script>
+
     <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="/images/72x72.png">
     <link rel="shortcut icon" href="/images/72x72.png">
@@ -521,7 +531,6 @@
             align-items: center;
         }
 
-        /* Contenedor: mismo tamaño que antes (4/3), ahora con slideshow */
         .about-image {
             position: relative;
             background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
@@ -536,7 +545,6 @@
             inset: 0;
         }
 
-        /* Sombreado sutil abajo solo para que se vean los puntos */
         .slideshow::after {
             content: '';
             position: absolute;
@@ -1102,6 +1110,39 @@
         }
 
         /* ========================================
+                   BOTÓN FLOTANTE DE INSTAGRAM
+                ======================================== */
+        .float-instagram {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.7rem;
+            box-shadow: 0 8px 25px rgba(214, 36, 159, 0.4);
+            z-index: 9990;
+            transition: var(--transition);
+            animation: floatIn 0.8s ease 1s backwards;
+        }
+
+        .float-instagram:hover {
+            transform: translateY(-4px) scale(1.06);
+            box-shadow: 0 12px 35px rgba(214, 36, 159, 0.55);
+            color: white;
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.6); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ========================================
                    MODAL / POPUP LEGAL
                 ======================================== */
         .modal-overlay {
@@ -1629,7 +1670,7 @@
             .cookie-consent {
                 bottom: 10px;
                 left: 10px;
-                right: 10px;
+                right: 85px;
                 max-width: none;
                 padding: 16px 20px;
             }
@@ -1677,6 +1718,14 @@
             .btn-secondary {
                 font-size: 1rem;
                 padding: 14px 28px;
+            }
+
+            .float-instagram {
+                bottom: 15px;
+                right: 15px;
+                width: 52px;
+                height: 52px;
+                font-size: 1.5rem;
             }
         }
 
@@ -2023,6 +2072,11 @@
         </div>
     </div>
 
+    <!-- ==================== BOTÓN FLOTANTE INSTAGRAM ==================== -->
+    <a href="https://www.instagram.com/rodrigoeduardofigueras/" target="_blank" rel="noopener noreferrer" class="float-instagram" aria-label="Seguinos en Instagram" title="Seguinos en Instagram">
+        <i class="fab fa-instagram"></i>
+    </a>
+
     <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="container">
@@ -2062,6 +2116,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            // --- Helper para eventos de Google Analytics (seguro si hay adblock) ---
+            function trackEvent(name, params) {
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', name, params || {});
+                }
+            }
 
             // --- Menú Hamburguesa ---
             const hamburger = document.getElementById('hamburger');
@@ -2139,10 +2200,9 @@
             const dotsContainer = document.getElementById('slideDots');
             let currentSlide = 0;
             let slideInterval = null;
-            const SLIDE_DELAY = 4500; // ms entre imágenes
+            const SLIDE_DELAY = 4500;
 
             if (slides.length && dotsContainer) {
-                // Crear un punto por imagen
                 slides.forEach(function(_, i) {
                     const dot = document.createElement('button');
                     dot.type = 'button';
@@ -2175,7 +2235,6 @@
 
                 restartSlideshow();
 
-                // Pausar cuando la pestaña no está visible (ahorra recursos)
                 document.addEventListener('visibilitychange', function() {
                     if (document.hidden) {
                         clearInterval(slideInterval);
@@ -2312,6 +2371,7 @@
                 renderDiagStep();
                 diagModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+                trackEvent('abrir_diagnostico');
             }
 
             function closeDiag() {
@@ -2383,6 +2443,8 @@
                     text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
                 }
 
+                trackEvent('diagnostico_completado', { nivel: nivel });
+
                 let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
                 diagTags.forEach(function(t) { waMsg += '• ' + t + '\n'; });
                 waMsg += '\n📊 Nivel estimado: ' + nivel;
@@ -2419,6 +2481,16 @@
                 diagBody.querySelector('[data-restart]').addEventListener('click', function() {
                     resetDiag();
                     renderDiagStep();
+                });
+
+                // Eventos de conversión para Analytics
+                const waBtn = diagBody.querySelector('.diag-wa');
+                if (waBtn) waBtn.addEventListener('click', function() {
+                    trackEvent('click_whatsapp', { origen: 'diagnostico', nivel: nivel });
+                });
+                const callBtn = diagBody.querySelector('.diag-call');
+                if (callBtn) callBtn.addEventListener('click', function() {
+                    trackEvent('click_llamada', { origen: 'diagnostico', nivel: nivel });
                 });
             }
 
@@ -2548,8 +2620,23 @@
 
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
+
+                // Evento de conversión principal para Analytics
+                trackEvent('generate_lead', {
+                    metodo: 'formulario_whatsapp',
+                    servicio: servicio || 'no_especificado'
+                });
+
                 window.open('https://wa.me/' + phoneNumber + '?text=' + encodedMessage, '_blank');
             });
+
+            // --- Botón flotante Instagram (evento Analytics) ---
+            const instaBtn = document.querySelector('.float-instagram');
+            if (instaBtn) {
+                instaBtn.addEventListener('click', function() {
+                    trackEvent('click_instagram');
+                });
+            }
 
             // --- Cookies ---
             const cookieConsent = document.getElementById('cookieConsent');
@@ -2563,9 +2650,11 @@
             }
             document.getElementById('acceptCookies').addEventListener('click', function() {
                 setCookieConsent('accepted');
+                trackEvent('cookies', { decision: 'aceptadas' });
             });
             document.getElementById('declineCookies').addEventListener('click', function() {
                 setCookieConsent('declined');
+                trackEvent('cookies', { decision: 'rechazadas' });
             });
 
             // --- MODAL LEGAL ---
