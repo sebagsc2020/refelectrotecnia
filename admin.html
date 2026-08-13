@@ -535,6 +535,11 @@
             background: var(--primary-cyan);
             transform: translateY(-2px);
         }
+        .presupuesto-box .presupuesto-actions .btn-guardar:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
         .presupuesto-box .presupuesto-actions .btn-cancel {
             background: transparent;
             color: var(--gray-text);
@@ -1125,7 +1130,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (PDF sin margen superior excesivo)
+    // GUARDAR PRESUPUESTO (optimizado: PDF primero, luego Sheets en segundo plano)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1137,22 +1142,17 @@
         const validez = document.getElementById('presupuestoValidez').value || 30;
         const materiales = document.getElementById('presupuestoMateriales').value;
 
-        // Guardar en Google Sheets
-        const datos = {
-            action: 'save_budget',
-            nombre, servicio, descripcion,
-            precio: total.toFixed(2),
-            numero, validez, materiales
-        };
-        await enviarAccion(datos);
+        const btn = document.getElementById('guardarPresupuestoBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
-        // Generar PDF sin margen superior excesivo
         try {
+            // 1. Generar PDF (primero, para mayor velocidad)
             const element = document.getElementById('presupuestoPreview');
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 200));
 
             const canvas = await html2canvas(element, {
-                scale: 2,
+                scale: 1.5,                // reducido para mayor velocidad
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
@@ -1166,40 +1166,57 @@
                 throw new Error('El canvas generado está vacío.');
             }
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const imgData = canvas.toDataURL('image/jpeg', 0.85); // calidad reducida
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            // Escala para ocupar todo el ancho de la página (margen 0)
-            const scaleX = pdfWidth / canvas.width;
-            const scaleY = pdfHeight / canvas.height;
-            // Usar la escala más pequeña para que quepa completamente en altura,
-            // pero si la imagen es más alta que la página, se escalará para que quepa.
-            // Para eliminar el margen superior, ajustamos la posición Y a 0.
+            const marginX = 10; // 1 cm
+            const marginY = 20; // 2 cm
+            const maxWidth = pdfWidth - 2 * marginX;
+            const maxHeight = pdfHeight - marginY;
+
+            const scaleX = maxWidth / canvas.width;
+            const scaleY = maxHeight / canvas.height;
             const scale = Math.min(scaleX, scaleY);
+
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
-            const xOffset = (pdfWidth - imgWidth) / 2; // centrar horizontalmente
-            // Sin margen superior: yOffset = 0
-            const yOffset = 0;
+            const xOffset = (pdfWidth - imgWidth) / 2;
+            const yOffset = marginY;
 
             pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
 
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
+            // 2. Guardar en Google Sheets (en segundo plano, sin esperar respuesta)
+            const datos = {
+                action: 'save_budget',
+                nombre, servicio, descripcion,
+                precio: total.toFixed(2),
+                numero, validez, materiales
+            };
+            fetch(URL_SCRIPT, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
             alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
 
         } catch (error) {
             console.error('Error al generar el PDF:', error);
             alert('El presupuesto se guardó en la hoja, pero hubo un error al generar el PDF.\nRevisa la consola para más detalles.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+            cerrarModal('presupuestoModal');
+            cargarDatos();
         }
-
-        cerrarModal('presupuestoModal');
-        cargarDatos();
     }
 
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
