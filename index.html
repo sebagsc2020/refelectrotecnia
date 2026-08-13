@@ -1946,7 +1946,7 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             // ⚠️⚠️⚠️ PEGA AQUÍ LA URL DE TU APPS SCRIPT (ver instrucciones abajo) ⚠️⚠️⚠️
-            const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyOSGdFNBQPXyXOMbitllJnyL5o2aOZnYuQbTOpyWeXgjQ9bwL3fkDmWPlB9-zjGgwX/exec';
+            const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxrt_EOlyA5gNmaUivWvYqecqhgRO0vj49FYTdjd2IkHcClPY1llB7CabhoG090wXau/exec';
             // Ejemplo: 'https://script.google.com/macros/s/AKfycbX.../exec'
 
             function trackEvent(name, params) {
@@ -2393,8 +2393,9 @@
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
 
-                // Datos a enviar a Sheets
+                // Datos a enviar a Sheets (CON ACCIÓN save_contact)
                 const payload = {
+                    action: 'save_contact',
                     fecha: new Date().toLocaleString('es-AR'),
                     nombre: nombre,
                     telefono: telefono,
