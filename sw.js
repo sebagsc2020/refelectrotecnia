@@ -3,7 +3,7 @@ const CACHE_NAME = 'ref-electrotecnia-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/panel.html',
+  '/admin.html',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
