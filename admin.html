@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin | REF Electrotecnia</title>
-    <!-- Chart.js -->
+
+    <!-- ========== PWA ========== -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="REF Admin">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="theme-color" content="#00A8FF">
+
+    <!-- ========== CHART.JS ========== -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -15,15 +24,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <!-- ========== GOOGLE ANALYTICS (gtag.js) ========== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HRHFCYBZBJ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-HRHFCYBZBJ');
-    </script>
 
     <style>
         /* ========== RESET Y VARIABLES ========== */
@@ -905,7 +905,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (✅ CORREGIDO - ahora incluye token)
+    // GUARDAR PRESUPUESTO (con token)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -917,7 +917,6 @@
         const validez = document.getElementById('presupuestoValidez').value || 30;
         const materiales = document.getElementById('presupuestoMateriales').value;
 
-        // Verificar token antes de proceder
         const token = getToken();
         if (!token) {
             alert('Tu sesión ha expirado. Inicia sesión nuevamente.');
@@ -974,16 +973,15 @@
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
-            // ✅ DATOS CON TOKEN INCLUIDO
+            // Guardar en Sheets con token
             const datos = {
                 action: 'save_budget',
-                token: token,  // ← TOKEN AGREGADO
+                token: token,
                 nombre, servicio, descripcion,
                 precio: total.toFixed(2),
                 numero, validez, materiales
             };
             
-            // ✅ Content-Type text/plain para evitar problemas CORS en Apps Script
             fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -1007,7 +1005,7 @@
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
     // =============================================
-    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (con token)
+    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS
     // =============================================
     async function enviarAccion(datos) {
         const token = getToken();
@@ -1114,7 +1112,7 @@
     document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
     // =============================================
-    // LOGOUT (✅ MEJORADO - envía token y usa text/plain)
+    // LOGOUT
     // =============================================
     document.getElementById('logoutBtn').addEventListener('click', function() {
         if (confirm('¿Cerrar sesión?')) {
@@ -1131,6 +1129,15 @@
             showLogin();
         }
     });
+
+    // =============================================
+    // REGISTRO DEL SERVICE WORKER (PWA)
+    // =============================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(() => console.log('Service Worker registrado en panel'))
+            .catch(err => console.error('Error al registrar SW en panel:', err));
+    }
 
     // =============================================
     // INICIALIZACIÓN
