@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
+    <title>REF+Electrotecnia | Instalaciones y Mantenimiento</title>
     
     <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="/images/72x72.png">
@@ -32,6 +32,8 @@
             --primary-cyan: #00A8FF;
             --accent-yellow: #FFB800;
             --accent-orange: #FF7A00;
+            --danger-red: #E53935;
+            --wa-green: #25D366;
             --light-bg: #F8F9FA;
             --gray-text: #4A4A4A;
             --white: #FFFFFF;
@@ -338,6 +340,28 @@
         }
         .btn-primary:hover::before {
             animation-duration: 2s;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 16px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            cursor: pointer;
+            font-family: var(--font);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+            transform: translateY(-4px);
         }
 
         .hero-image {
@@ -793,6 +817,29 @@
             user-select: none;
         }
 
+        .btn-secondary-dark {
+            background: transparent;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-dark);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font);
+            margin-top: 10px;
+        }
+
+        .btn-secondary-dark:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+
         .contact-form {
             background: var(--white);
             padding: 40px;
@@ -836,6 +883,57 @@
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
+            padding-right: 64px;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+        }
+
+        /* ===== BOTÓN DE DICTADO POR VOZ ===== */
+        .btn-mic {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-cyan);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
+        }
+
+        .btn-mic:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-mic.listening {
+            background: var(--danger-red);
+            animation: pulseMic 1.2s infinite;
+        }
+
+        @keyframes pulseMic {
+            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.5); }
+            70% { box-shadow: 0 0 0 14px rgba(229, 57, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+        }
+
+        .mic-hint {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .mic-hint i {
+            color: var(--danger-red);
         }
 
         .ubicacion-group {
@@ -1058,6 +1156,129 @@
         .modal-content::-webkit-scrollbar-thumb:hover {
             background: var(--primary-dark);
         }
+
+        /* ========================================
+                   MODAL DIAGNÓSTICO DE EMERGENCIA
+                ======================================== */
+        .diag-subtitle {
+            color: var(--gray-text);
+            margin-top: -12px;
+            margin-bottom: 8px;
+        }
+
+        .diag-progress {
+            height: 6px;
+            background: #E9ECEF;
+            border-radius: 3px;
+            margin: 18px 0 22px;
+            overflow: hidden;
+        }
+
+        .diag-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-cyan), var(--accent-yellow));
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .diag-step-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-cyan);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .diag-question {
+            font-size: 1.15rem;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .diag-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: var(--light-bg);
+            border: 2px solid #E9ECEF;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .diag-option:hover {
+            border-color: var(--primary-cyan);
+            background: #E8F4FD;
+            transform: translateX(4px);
+        }
+
+        .diag-result {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .diag-result .diag-icon {
+            font-size: 3.5rem;
+            margin-bottom: 14px;
+        }
+
+        .diag-result h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .diag-result p {
+            color: var(--gray-text);
+            margin-bottom: 20px;
+        }
+
+        .diag-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .diag-actions a,
+        .diag-actions button {
+            justify-content: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            font-family: var(--font);
+        }
+
+        .diag-call { background: var(--danger-red); color: white; }
+        .diag-call:hover { background: #B71C1C; transform: translateY(-2px); }
+
+        .diag-wa { background: var(--wa-green); color: white; }
+        .diag-wa:hover { background: #1DA851; transform: translateY(-2px); }
+
+        .diag-form-btn { background: var(--primary-dark); color: white; }
+        .diag-form-btn:hover { background: var(--primary-cyan); transform: translateY(-2px); }
+
+        .diag-restart {
+            background: transparent !important;
+            border: 2px solid #E9ECEF !important;
+            color: var(--gray-text) !important;
+            font-weight: 600 !important;
+        }
+        .diag-restart:hover { border-color: var(--primary-cyan) !important; color: var(--primary-dark) !important; }
 
         /* ========================================
                    COOKIE CONSENT
@@ -1395,6 +1616,11 @@
             .logo-img {
                 height: 40px;
             }
+
+            .btn-secondary {
+                font-size: 1rem;
+                padding: 14px 28px;
+            }
         }
 
         .overlay {
@@ -1411,6 +1637,15 @@
 
         .overlay.active {
             display: block;
+        }
+
+        /* ✅ FIX: hover del botón CTA dentro del menú móvil */
+        .nav-menu li a.nav-cta:hover {
+            background: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
         }
     </style>
 </head>
@@ -1457,6 +1692,7 @@
                 </div>
                 <div class="hero-buttons">
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
+                    <button type="button" class="btn-secondary" data-diag><i class="fas fa-stethoscope"></i> Diagnóstico de emergencia</button>
                 </div>
             </div>
         </div>
@@ -1622,6 +1858,10 @@
                             <span class="data no-select">Lunes a Viernes: 8:00 - 19:00 | Emergencias 24/7</span>
                         </div>
                     </div>
+
+                    <button type="button" class="btn-secondary-dark" data-diag>
+                        <i class="fas fa-stethoscope"></i> ¿Emergencia? Diagnóstico rápido en 3 pasos
+                    </button>
                 </div>
                 <form class="contact-form" id="contactForm">
                     <h4>Completa tus datos</h4>
@@ -1667,7 +1907,13 @@
                     </div>
 
                     <div class="form-group">
-                        <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
+                        <div class="textarea-wrapper">
+                            <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
+                            <button type="button" class="btn-mic" id="btnMic" title="Dictar por voz" aria-label="Dictar por voz">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <small class="mic-hint" id="micHint"><i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.</small>
                     </div>
                     <button type="submit" class="btn-submit" id="submitBtn"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
                 </form>
@@ -1683,6 +1929,17 @@
             <div class="modal-body" id="modalBody">
                 <!-- Contenido dinámico -->
             </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DIAGNÓSTICO DE EMERGENCIA ==================== -->
+    <div class="modal-overlay" id="diagModal">
+        <div class="modal-content">
+            <button class="modal-close" id="diagClose" aria-label="Cerrar">&times;</button>
+            <h2><i class="fas fa-stethoscope" style="color: var(--accent-yellow);"></i> Diagnóstico <span>de emergencia</span></h2>
+            <p class="diag-subtitle">Respondé 3 preguntas y te decimos qué hacer.</p>
+            <div class="diag-progress"><div class="diag-progress-bar" id="diagProgressBar"></div></div>
+            <div id="diagBody"></div>
         </div>
     </div>
 
@@ -1771,16 +2028,7 @@
                         closeMenu();
                         
                         setTimeout(() => {
-                            const targetElement = document.querySelector(href);
-                            if (targetElement) {
-                                const headerOffset = 80;
-                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                                const offsetPosition = elementPosition - headerOffset;
-                                window.scrollTo({
-                                    top: offsetPosition,
-                                    behavior: 'smooth'
-                                });
-                            }
+                            scrollToSection(href);
                         }, 350);
                     }
                 });
@@ -1794,16 +2042,19 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        const headerOffset = 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                        const offsetPosition = elementPosition - headerOffset;
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
+                        scrollToSection(targetId);
                     }
                 });
             });
+
+            // Helper de scroll con offset del header
+            function scrollToSection(selector) {
+                const el = document.querySelector(selector);
+                if (!el) return;
+                const headerOffset = 80;
+                const y = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
 
             // Cerrar menú al presionar Escape
             document.addEventListener('keydown', function(e) {
@@ -1811,6 +2062,245 @@
                     closeMenu();
                 }
             });
+
+            // --- DICTADO POR VOZ (Web Speech API) ---
+            const mensajeTextarea = document.getElementById('mensaje');
+            const btnMic = document.getElementById('btnMic');
+            const micHint = document.getElementById('micHint');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && btnMic) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                let listening = false;
+                let shouldListen = false;
+                let baseText = '';
+                let finalTranscript = '';
+
+                recognition.onstart = function() {
+                    listening = true;
+                    btnMic.classList.add('listening');
+                    btnMic.title = 'Detener dictado';
+                    baseText = mensajeTextarea.value.replace(/\s+$/, '');
+                    finalTranscript = '';
+                    if (micHint) micHint.innerHTML = '<i class="fas fa-circle" style="color: var(--danger-red); animation: pulseMic 1s infinite; border-radius:50%;"></i> Escuchando... hablá con normalidad.';
+                };
+
+                recognition.onresult = function(event) {
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript.trim() + ' ';
+                        } else {
+                            interim += transcript;
+                        }
+                    }
+                    mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
+                };
+
+                recognition.onerror = function(event) {
+                    shouldListen = false;
+                    stopListening();
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        alert('Permiso de micrófono denegado. Habilitá el micrófono en el navegador para usar el dictado por voz.');
+                    }
+                };
+
+                recognition.onend = function() {
+                    if (shouldListen) {
+                        try { recognition.start(); } catch (e) {}
+                    } else {
+                        stopListening();
+                    }
+                };
+
+                btnMic.addEventListener('click', function() {
+                    if (listening) {
+                        shouldListen = false;
+                        recognition.stop();
+                        stopListening();
+                    } else {
+                        shouldListen = true;
+                        try { recognition.start(); } catch (e) {}
+                    }
+                });
+
+                function stopListening() {
+                    listening = false;
+                    btnMic.classList.remove('listening');
+                    btnMic.title = 'Dictar por voz';
+                    if (micHint) micHint.innerHTML = '<i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.';
+                }
+            } else if (btnMic) {
+                // Navegador sin soporte: ocultamos el botón
+                btnMic.style.display = 'none';
+                if (micHint) micHint.style.display = 'none';
+            }
+
+            // --- DIAGNÓSTICO DE EMERGENCIA (asistente guiado) ---
+            const diagModal = document.getElementById('diagModal');
+            const diagBody = document.getElementById('diagBody');
+            const diagClose = document.getElementById('diagClose');
+            const diagProgressBar = document.getElementById('diagProgressBar');
+
+            const diagSteps = [
+                {
+                    title: 'Paso 1 de 3',
+                    q: '¿Cuál es el síntoma principal?',
+                    options: [
+                        { text: '🔥 Olor a quemado, humo o chispas', score: 5, tag: 'Olor a quemado / humo / chispas' },
+                        { text: '⚡ Salta la térmica o el disyuntor y no queda luz', score: 3, tag: 'Salta térmica / disyuntor' },
+                        { text: '💡 Corte de luz en una parte de la casa', score: 2, tag: 'Corte parcial de luz' },
+                        { text: '🔌 Un toma o artefacto no funciona', score: 1, tag: 'Falla en toma / artefacto' }
+                    ]
+                },
+                {
+                    title: 'Paso 2 de 3',
+                    q: '¿Hay personas en riesgo o equipos esenciales afectados (heladera, equipos médicos, niños o mayores)?',
+                    options: [
+                        { text: 'Sí', score: 2, tag: 'Personas o equipos esenciales en riesgo' },
+                        { text: 'No', score: 0, tag: '' }
+                    ]
+                },
+                {
+                    title: 'Paso 3 de 3',
+                    q: '¿El problema apareció después de una tormenta, corte de red o un trabajo eléctrico reciente?',
+                    options: [
+                        { text: 'Sí', score: 1, tag: 'Apareció tras tormenta / corte / trabajo reciente' },
+                        { text: 'No / No sé', score: 0, tag: '' }
+                    ]
+                }
+            ];
+
+            let diagScore = 0;
+            let diagTags = [];
+            let diagStepIndex = 0;
+
+            function resetDiag() {
+                diagScore = 0;
+                diagTags = [];
+                diagStepIndex = 0;
+            }
+
+            function openDiag() {
+                resetDiag();
+                renderDiagStep();
+                diagModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeDiag() {
+                diagModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('[data-diag]').forEach(function(btn) {
+                btn.addEventListener('click', openDiag);
+            });
+
+            diagClose.addEventListener('click', closeDiag);
+            diagModal.addEventListener('click', function(e) {
+                if (e.target === diagModal) closeDiag();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && diagModal.classList.contains('active')) {
+                    closeDiag();
+                }
+            });
+
+            function renderDiagStep() {
+                const step = diagSteps[diagStepIndex];
+                diagProgressBar.style.width = (diagStepIndex / diagSteps.length) * 100 + '%';
+
+                let html = '<p class="diag-step-label">' + step.title + '</p>';
+                html += '<h3 class="diag-question">' + step.q + '</h3>';
+                step.options.forEach(function(opt, i) {
+                    html += '<button type="button" class="diag-option" data-opt="' + i + '">' + opt.text + '</button>';
+                });
+                diagBody.innerHTML = html;
+
+                diagBody.querySelectorAll('.diag-option').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        const opt = step.options[parseInt(btn.dataset.opt, 10)];
+                        diagScore += opt.score;
+                        if (opt.tag) diagTags.push(opt.tag);
+                        diagStepIndex++;
+                        if (diagStepIndex < diagSteps.length) {
+                            renderDiagStep();
+                        } else {
+                            renderDiagResult();
+                        }
+                    });
+                });
+            }
+
+            function renderDiagResult() {
+                diagProgressBar.style.width = '100%';
+
+                let nivel, icon, color, title, text;
+                if (diagScore >= 5) {
+                    nivel = 'CRÍTICO';
+                    icon = 'fa-fire';
+                    color = 'var(--danger-red)';
+                    title = '¡Situación CRÍTICA!';
+                    text = 'Cortá la energía desde la llave general y no manipules la instalación ni uses agua. Necesitás atención profesional inmediata de un matriculado.';
+                } else if (diagScore >= 3) {
+                    nivel = 'ALTO';
+                    icon = 'fa-bolt';
+                    color = 'var(--accent-orange)';
+                    title = 'Urgencia ALTA';
+                    text = 'Conviene resolverlo hoy mismo para evitar daños mayores. Coordinemos una visita de urgencia por WhatsApp o teléfono.';
+                } else {
+                    nivel = 'MEDIO';
+                    icon = 'fa-clock';
+                    color = 'var(--primary-cyan)';
+                    title = 'Urgencia MEDIA / programable';
+                    text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
+                }
+
+                // Mensaje de WhatsApp con el resumen del diagnóstico
+                let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
+                diagTags.forEach(function(t) { waMsg += '• ' + t + '\n'; });
+                waMsg += '\n📊 Nivel estimado: ' + nivel;
+                const waUrl = 'https://wa.me/5493518692251?text=' + encodeURIComponent(waMsg);
+
+                let html = '<div class="diag-result">';
+                html += '<div class="diag-icon" style="color:' + color + ';"><i class="fas ' + icon + '"></i></div>';
+                html += '<h3>' + title + '</h3>';
+                html += '<p>' + text + '</p>';
+                html += '<div class="diag-actions">';
+
+                if (nivel === 'CRÍTICO') {
+                    html += '<a class="diag-call" href="tel:+5493518692251"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
+                    html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
+                } else if (nivel === 'ALTO') {
+                    html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
+                    html += '<button type="button" class="diag-form-btn" data-goto-form><i class="fas fa-file-signature"></i> Completar formulario</button>';
+                } else {
+                    html += '<button type="button" class="diag-form-btn" data-goto-form><i class="fas fa-calculator"></i> Pedir presupuesto sin cargo</button>';
+                    html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
+                }
+
+                html += '<button type="button" class="diag-restart" data-restart><i class="fas fa-rotate-left"></i> Reiniciar diagnóstico</button>';
+                html += '</div></div>';
+                diagBody.innerHTML = html;
+
+                const gotoForm = diagBody.querySelector('[data-goto-form]');
+                if (gotoForm) {
+                    gotoForm.addEventListener('click', function() {
+                        closeDiag();
+                        setTimeout(function() { scrollToSection('#contacto'); }, 200);
+                    });
+                }
+                diagBody.querySelector('[data-restart]').addEventListener('click', function() {
+                    resetDiag();
+                    renderDiagStep();
+                });
+            }
 
             // --- FAQs ---
             const faqItems = document.querySelectorAll('.faq-item');
@@ -1863,12 +2353,12 @@
                 if (esCoordenada) {
                     const coords = direccion.match(/-?\d+\.\d+/g);
                     if (coords && coords.length >= 2) {
-                        url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+                        url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
                     } else {
-                        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                        url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
                     }
                 } else {
-                    url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                    url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
                 }
                 window.open(url, '_blank');
             });
@@ -1885,7 +2375,7 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        const texto = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                        const texto = lat.toFixed(6) + ', ' + lng.toFixed(6);
                         ubicacionInput.value = texto;
                         ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
@@ -1914,8 +2404,8 @@
                 const telefono = document.getElementById('telefono').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const servicio = document.getElementById('servicio').value;
-                const mensaje = document.getElementById('mensaje').value.trim();
-                const ubicacion = document.getElementById('ubicacion').value.trim();
+                const mensaje = mensajeTextarea.value.trim();
+                const ubicacion = ubicacionInput.value.trim();
 
                 if (!nombre || !telefono) {
                     alert('Por favor, completa tu nombre y teléfono.');
@@ -1923,22 +2413,22 @@
                 }
 
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
-                whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
-                whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
-                if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
+                whatsappMessage += '👤 *Nombre:* ' + nombre + '\n';
+                whatsappMessage += '📱 *Teléfono:* ' + telefono + '\n';
+                if (email) whatsappMessage += '📧 *Email:* ' + email + '\n';
                 if (servicio) {
                     let servicioLabel = servicio;
                     if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
-                    whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
+                    whatsappMessage += '🔧 *Servicio:* ' + servicioLabel + '\n';
                 }
                 if (ubicacion) {
-                    whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
+                    whatsappMessage += '📍 *Ubicación:* ' + ubicacion + '\n';
                 }
-                if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
+                if (mensaje) whatsappMessage += '📝 *Mensaje:* ' + mensaje + '\n';
 
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
-                window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+                window.open('https://wa.me/' + phoneNumber + '?text=' + encodedMessage, '_blank');
             });
 
             // --- Cookies ---
@@ -1946,7 +2436,7 @@
             function setCookieConsent(choice) {
                 localStorage.setItem('cookieConsent', choice);
                 cookieConsent.classList.add('hidden');
-                document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`;
+                document.cookie = 'cookie_consent=' + choice + '; path=/; max-age=' + (60 * 60 * 24 * 365);
             }
             if (localStorage.getItem('cookieConsent')) {
                 cookieConsent.classList.add('hidden');
