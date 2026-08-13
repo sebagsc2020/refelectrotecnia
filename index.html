@@ -65,38 +65,6 @@
         }
 
         /* ========================================
-                   BOTÓN FLOTANTE INSTAGRAM
-                ======================================== */
-        .instagram-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #E4405F;
-            color: white;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.4);
-            z-index: 1000;
-            transition: var(--transition);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .instagram-float:hover {
-            transform: scale(1.1) translateY(-4px);
-            box-shadow: 0 12px 30px rgba(228, 64, 95, 0.6);
-            color: white;
-        }
-
-        .instagram-float i {
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
-
-        /* ========================================
                    HEADER / NAVEGACIÓN
                 ======================================== */
         .header {
@@ -122,6 +90,7 @@
             align-items: center;
             gap: 12px;
             z-index: 10002;
+            position: relative;
         }
 
         .logo-img {
@@ -223,7 +192,7 @@
             cursor: pointer;
             background: none;
             border: none;
-            padding: 5px;
+            padding: 10px;
             z-index: 10002;
             position: relative;
         }
@@ -235,6 +204,7 @@
             border-radius: 10px;
             transition: var(--transition);
             display: block;
+            pointer-events: none;
         }
 
         /* ========================================
@@ -1308,31 +1278,33 @@
                 display: none;
             }
             
-            /* ===== MENÚ MÓVIL DESDE LA DERECHA ===== */
+            /* ===== MENÚ MÓVIL ===== */
             .nav-menu {
                 position: fixed;
                 top: 0;
-                right: -100%; /* Cambiado de left a right */
+                left: -100%;
                 width: 80%;
                 max-width: 300px;
                 height: 100vh;
                 background: var(--white);
                 flex-direction: column;
                 padding: 80px 30px 30px;
-                box-shadow: -5px 0 40px rgba(0, 0, 0, 0.15); /* Sombra a la izquierda */
-                transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow: 5px 0 40px rgba(0, 0, 0, 0.15);
+                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 gap: 20px;
                 align-items: flex-start;
                 z-index: 10000;
                 overflow-y: auto;
+                pointer-events: auto;
             }
             
             .nav-menu.active {
-                right: 0; /* Se desliza desde la derecha */
+                left: 0;
             }
             
             .nav-menu li {
                 width: 100%;
+                list-style: none;
             }
             
             .nav-menu li a {
@@ -1344,6 +1316,7 @@
                 cursor: pointer;
                 position: relative;
                 z-index: 10001;
+                font-size: 1rem;
             }
             
             .nav-menu li a:hover {
@@ -1361,6 +1334,8 @@
                 position: relative;
                 margin-left: auto;
                 flex-shrink: 0;
+                pointer-events: auto;
+                cursor: pointer;
             }
             
             .hamburger.active span:nth-child(1) {
@@ -1391,13 +1366,6 @@
                 flex-direction: column;
                 gap: 16px;
                 text-align: center;
-            }
-            .instagram-float {
-                width: 56px;
-                height: 56px;
-                font-size: 28px;
-                bottom: 20px;
-                right: 20px;
             }
             .contact-form {
                 padding: 24px;
@@ -1433,7 +1401,6 @@
                 max-width: 280px;
             }
             
-            /* Asegurar que el header no se rompa en móvil */
             .header .container {
                 flex-wrap: nowrap;
                 position: relative;
@@ -1462,6 +1429,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
             z-index: 9999;
+            pointer-events: auto;
         }
 
         .overlay.active {
@@ -1470,11 +1438,6 @@
     </style>
 </head>
 <body>
-
-    <!-- ==================== BOTÓN FLOTANTE INSTAGRAM ==================== -->
-    <a href="https://www.instagram.com/sc_photo_br/" target="_blank" class="instagram-float" aria-label="Instagram">
-        <i class="fab fa-instagram"></i>
-    </a>
 
     <!-- ==================== HEADER ==================== -->
     <header class="header" id="header">
@@ -1494,7 +1457,7 @@
             <div class="header-matricula">
                 <i class="fas fa-id-card"></i> Matrícula 5617/1
             </div>
-            <button class="hamburger" id="hamburger" aria-label="Menu">
+            <button class="hamburger" id="hamburger" aria-label="Menu" type="button">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -1795,12 +1758,17 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Menú Hamburguesa (CORREGIDO) ---
+            // --- Menú Hamburguesa (VERSIÓN SIMPLIFICADA Y CORREGIDA) ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
             
+            console.log('Hamburger:', hamburger);
+            console.log('NavMenu:', navMenu);
+            console.log('Overlay:', overlay);
+            
             function toggleMenu() {
+                console.log('Toggle menu llamado');
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
@@ -1814,26 +1782,35 @@
                 document.body.style.overflow = '';
             }
             
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMenu();
-            });
+            if (hamburger) {
+                hamburger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Hamburger clickeado');
+                    toggleMenu();
+                });
+            }
             
-            overlay.addEventListener('click', closeMenu);
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    console.log('Overlay clickeado');
+                    closeMenu();
+                });
+            }
 
             // Cerrar menú al hacer clic en cualquier link del menú
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
+                    console.log('Link clickeado:', this.getAttribute('href'));
                     const href = this.getAttribute('href');
                     if (href && href.startsWith('#')) {
                         e.preventDefault();
                         closeMenu();
                         
-                        // Scroll suave después de cerrar el menú
                         setTimeout(() => {
                             const targetElement = document.querySelector(href);
                             if (targetElement) {
-                                const headerOffset = 80;
+                                const headerOffset = 70;
                                 const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                                 const offsetPosition = elementPosition - headerOffset;
                                 window.scrollTo({
@@ -1841,7 +1818,7 @@
                                     behavior: 'smooth'
                                 });
                             }
-                        }, 300); // Esperar a que el menú se cierre
+                        }, 300);
                     }
                 });
             });
@@ -1854,7 +1831,7 @@
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        const headerOffset = 80;
+                        const headerOffset = 70;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
@@ -1965,25 +1942,7 @@
                 );
             });
 
-            // === NUEVA FUNCIÓN: Guardar en Google Sheets ===
-            async function guardarEnSheets(datos) {
-                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec';
-                try {
-                    const response = await fetch(URL_SCRIPT, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(datos)
-                    });
-                    console.log('Datos enviados a Sheets');
-                } catch (error) {
-                    console.error('Error al guardar en Sheets:', error);
-                }
-            }
-
-            // --- Formulario: Enviar por WhatsApp + Guardar en Sheets ---
+            // --- Formulario: Enviar por WhatsApp ---
             const contactForm = document.getElementById('contactForm');
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -2000,9 +1959,6 @@
                     return;
                 }
 
-                const datos = { nombre, telefono, email, servicio, ubicacion, mensaje };
-                guardarEnSheets(datos);
-
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
@@ -2013,18 +1969,7 @@
                     whatsappMessage += `🔧 *Servicio:* ${servicioLabel}\n`;
                 }
                 if (ubicacion) {
-                    const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
-                    if (esCoordenada) {
-                        const coords = ubicacion.match(/-?\d+\.\d+/g);
-                        if (coords && coords.length >= 2) {
-                            const mapsUrl = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
-                            whatsappMessage += `📍 *Ubicación:* ${mapsUrl}\n`;
-                        } else {
-                            whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
-                        }
-                    } else {
-                        whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
-                    }
+                    whatsappMessage += `📍 *Ubicación:* ${ubicacion}\n`;
                 }
                 if (mensaje) whatsappMessage += `📝 *Mensaje:* ${mensaje}\n`;
 
