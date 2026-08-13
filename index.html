@@ -26,6 +26,14 @@
         gtag('config', 'G-HRHFCYBZBJ');
     </script>
 
+    <!-- ========== PWA (Progressive Web App) ========== -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="REF Electrotecnia">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="theme-color" content="#00A8FF">
+
     <style>
         /* ========================================
            RESET Y VARIABLES
@@ -2189,6 +2197,15 @@
                 // Cambiar cada 1200 ms (1.2 segundos)
                 setInterval(mostrarSiguiente, 1200);
             })();
+
+            // ==========================================
+            // REGISTRO DEL SERVICE WORKER (PWA)
+            // ==========================================
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('Service Worker registrado correctamente'))
+                    .catch(err => console.error('Error al registrar el Service Worker:', err));
+            }
 
         });
     </script>
