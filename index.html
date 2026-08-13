@@ -1300,6 +1300,8 @@
             .header-matricula {
                 display: none;
             }
+            
+            /* ===== SOLUCIÓN 2: Z-INDEX MÁS ALTO PARA MENÚ MÓVIL ===== */
             .nav-menu {
                 position: fixed;
                 top: 0;
@@ -1311,18 +1313,31 @@
                 flex-direction: column;
                 padding: 80px 30px 30px;
                 box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                            opacity 0.3s ease, 
+                            visibility 0.3s ease;
                 gap: 20px;
                 align-items: flex-start;
-                z-index: 1001;
+                z-index: 10000; /* MÁS ALTO que el botón de Instagram (1000) */
+                visibility: hidden;
+                opacity: 0;
+                overflow-y: auto; /* Permitir scroll si el menú es muy largo */
             }
+            
             .nav-menu.active {
                 left: 0;
+                visibility: visible;
+                opacity: 1;
             }
+            
             .hamburger {
-                display: flex;
-                z-index: 1002;
+                display: flex !important; /* Forzar visibilidad */
+                z-index: 10001; /* Asegurar que esté por encima del menú */
+                position: relative;
+                margin-left: auto; /* Empujar a la derecha */
+                flex-shrink: 0; /* Evitar que se encoja */
             }
+            
             .hamburger.active span:nth-child(1) {
                 transform: rotate(45deg) translate(5px, 5px);
             }
@@ -1332,6 +1347,7 @@
             .hamburger.active span:nth-child(3) {
                 transform: rotate(-45deg) translate(5px, -5px);
             }
+            
             .hero-content h2 {
                 font-size: 2.4rem;
             }
@@ -1391,6 +1407,24 @@
             .hero-image img {
                 max-width: 280px;
             }
+            
+            /* Asegurar que el header no se rompa en móvil */
+            .header .container {
+                flex-wrap: nowrap;
+                position: relative;
+            }
+            
+            .logo {
+                flex-shrink: 0;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .logo-img {
+                height: 40px;
+            }
         }
 
         .overlay {
@@ -1401,7 +1435,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
+            z-index: 9999; /* Debajo del menú (10000) pero encima de todo lo demás */
         }
 
         .overlay.active {
@@ -1741,12 +1775,14 @@
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
+            
             function toggleMenu() {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
                 document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
             }
+            
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
