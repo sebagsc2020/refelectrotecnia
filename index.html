@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REF+Electrotecnia | Instalaciones y Mantenimiento</title>
+    <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
     
     <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="/images/72x72.png">
@@ -89,7 +89,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            z-index: 10002;
             position: relative;
         }
 
@@ -125,8 +124,6 @@
             color: var(--gray-text);
             transition: var(--transition);
             position: relative;
-            pointer-events: auto;
-            cursor: pointer;
         }
 
         .nav-menu a::after {
@@ -193,7 +190,6 @@
             background: none;
             border: none;
             padding: 10px;
-            z-index: 10002;
             position: relative;
         }
 
@@ -781,11 +777,6 @@
         .contact-detail .info-text {
             font-weight: 500;
             color: var(--gray-text);
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            cursor: default;
         }
 
         .contact-detail .info-text strong {
@@ -800,10 +791,6 @@
 
         .contact-detail .info-text .no-select {
             user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            cursor: default;
         }
 
         .contact-form {
@@ -1293,9 +1280,7 @@
                 transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 gap: 20px;
                 align-items: flex-start;
-                z-index: 10000;
                 overflow-y: auto;
-                pointer-events: auto;
             }
             
             .nav-menu.active {
@@ -1312,10 +1297,6 @@
                 padding: 12px 16px;
                 border-radius: 8px;
                 transition: background 0.3s ease;
-                pointer-events: auto;
-                cursor: pointer;
-                position: relative;
-                z-index: 10001;
                 font-size: 1rem;
             }
             
@@ -1329,13 +1310,10 @@
             }
             
             .hamburger {
-                display: flex !important;
-                z-index: 10002;
+                display: flex;
                 position: relative;
                 margin-left: auto;
                 flex-shrink: 0;
-                pointer-events: auto;
-                cursor: pointer;
             }
             
             .hamburger.active span:nth-child(1) {
@@ -1408,7 +1386,6 @@
             
             .logo {
                 flex-shrink: 0;
-                z-index: 10002;
             }
             
             .logo h1 {
@@ -1428,7 +1405,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
-            z-index: 9999;
+            z-index: 998;
             pointer-events: auto;
         }
 
@@ -1758,17 +1735,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Menú Hamburguesa (VERSIÓN SIMPLIFICADA Y CORREGIDA) ---
+            // --- Menú Hamburguesa ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
             
-            console.log('Hamburger:', hamburger);
-            console.log('NavMenu:', navMenu);
-            console.log('Overlay:', overlay);
-            
             function toggleMenu() {
-                console.log('Toggle menu llamado');
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
                 overlay.classList.toggle('active');
@@ -1783,25 +1755,16 @@
             }
             
             if (hamburger) {
-                hamburger.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Hamburger clickeado');
-                    toggleMenu();
-                });
+                hamburger.addEventListener('click', toggleMenu);
             }
             
             if (overlay) {
-                overlay.addEventListener('click', function() {
-                    console.log('Overlay clickeado');
-                    closeMenu();
-                });
+                overlay.addEventListener('click', closeMenu);
             }
 
-            // Cerrar menú al hacer clic en cualquier link del menú
+            // Cerrar menú y hacer scroll suave al hacer clic en cualquier link del menú
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
-                    console.log('Link clickeado:', this.getAttribute('href'));
                     const href = this.getAttribute('href');
                     if (href && href.startsWith('#')) {
                         e.preventDefault();
@@ -1810,7 +1773,7 @@
                         setTimeout(() => {
                             const targetElement = document.querySelector(href);
                             if (targetElement) {
-                                const headerOffset = 70;
+                                const headerOffset = 80;
                                 const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                                 const offsetPosition = elementPosition - headerOffset;
                                 window.scrollTo({
@@ -1818,20 +1781,20 @@
                                     behavior: 'smooth'
                                 });
                             }
-                        }, 300);
+                        }, 350);
                     }
                 });
             });
 
-            // Scroll suave para otros enlaces internos
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            // Scroll suave para otros enlaces internos (hero, footer, etc.)
+            document.querySelectorAll('a[href^="#"]:not(.nav-menu a)').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
                     if (targetId === '#') return;
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        const headerOffset = 70;
+                        const headerOffset = 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
