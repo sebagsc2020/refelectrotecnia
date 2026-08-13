@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -33,10 +33,114 @@
             color: #1E1E1E;
             min-height: 100vh;
         }
+        /* ========== LOGIN CON PATRÓN ========== */
+        #loginSection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--light-bg);
+        }
+        #loginSection .login-box {
+            background: white;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+        #loginSection .login-box h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+        #loginSection .login-box h1 span { color: var(--primary-cyan); }
+        #loginSection .login-box p.sub {
+            color: var(--gray-text);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        /* Contenedor del patrón */
+        .pattern-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 20px;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .pattern-container canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 12px;
+            background: #f8faff;
+            touch-action: none;
+            cursor: pointer;
+        }
+        .pattern-message {
+            font-size: 0.95rem;
+            margin: 10px 0 15px;
+            min-height: 24px;
+            color: var(--gray-text);
+        }
+        .pattern-message.success { color: #27ae60; }
+        .pattern-message.error { color: #e74c3c; }
+        .pattern-message.info { color: var(--primary-cyan); }
+        .btn-pattern {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px;
+        }
+        .btn-pattern:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+        }
+        .btn-pattern:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-pattern.secondary {
+            background: #2ecc71;
+        }
+        .btn-pattern.secondary:hover {
+            background: #27ae60;
+        }
+        .btn-pattern.danger {
+            background: #e74c3c;
+        }
+        .btn-pattern.danger:hover {
+            background: #c0392b;
+        }
+        .login-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        /* ========== DASHBOARD (oculto al inicio) ========== */
         .dashboard {
             padding: 20px;
             max-width: 1400px;
             margin: 0 auto;
+            display: none;
         }
         .dashboard-header {
             display: flex;
@@ -548,22 +652,6 @@
             cursor: not-allowed;
             transform: none;
         }
-        .presupuesto-box .presupuesto-actions .btn-cancel {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .presupuesto-box .presupuesto-actions .btn-cancel:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        /* Estilo para el tilde de presupuesto enviado */
         .check-presupuesto {
             color: #27ae60;
             font-size: 1.2rem;
@@ -582,9 +670,12 @@
             .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-preview .cliente-info { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-actions { justify-content: center; }
+            .pattern-container { width: 240px; height: 240px; }
+            #loginSection .login-box { padding: 30px 20px; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr; }
+            .pattern-container { width: 200px; height: 200px; }
         }
         @media print {
             .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
@@ -599,6 +690,32 @@
 </head>
 <body>
 
+<!-- ========== SECCIÓN DE LOGIN CON PATRÓN ========== -->
+<div id="loginSection">
+    <div class="login-box">
+        <h1><span>🔐</span> REF Electrotecnia</h1>
+        <p class="sub">Acceso con patrón de 9 puntos</p>
+
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="280" height="280"></canvas>
+        </div>
+
+        <div id="patternMessage" class="pattern-message info">Dibuja tu patrón</div>
+
+        <div class="login-actions">
+            <button id="patternLoginBtn" class="btn-pattern secondary"><i class="fas fa-unlock"></i> Iniciar sesión</button>
+            <button id="patternRegisterBtn" class="btn-pattern"><i class="fas fa-plus-circle"></i> Registrar patrón</button>
+            <button id="patternChangeBtn" class="btn-pattern danger"><i class="fas fa-edit"></i> Cambiar patrón</button>
+        </div>
+
+        <div style="margin-top:15px; font-size:0.8rem; color:var(--gray-text);">
+            <i class="fas fa-info-circle"></i> Dibuja conectando al menos 4 puntos.
+            <br>Funciona con mouse o con tu dedo (touch).
+        </div>
+    </div>
+</div>
+
+<!-- ========== DASHBOARD ========== -->
 <div class="dashboard" id="dashboard">
     <div class="dashboard-header">
         <h2><span>📊</span> Panel de Administración</h2>
@@ -755,7 +872,371 @@
 
 <script>
     // =============================================
-    // CONFIGURACIÓN
+    // PATRÓN DE 9 PUNTOS
+    // =============================================
+    (function() {
+        const canvas = document.getElementById('patternCanvas');
+        const ctx = canvas.getContext('2d');
+        const msgEl = document.getElementById('patternMessage');
+
+        // Estado del patrón
+        let pattern = [];               // puntos seleccionados (índices 0..8)
+        let isDrawing = false;
+        let currentPoint = null;        // {x, y} del cursor
+        let registeredPattern = null;   // string guardado en localStorage
+        let mode = 'login';             // 'login' | 'register' | 'change'
+
+        const radius = 20;
+        const spacing = 70;
+        const offset = 40;
+        const points = [];
+
+        // Inicializar posiciones de los 9 puntos
+        function initPoints() {
+            points.length = 0;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    points.push({
+                        x: offset + col * spacing,
+                        y: offset + row * spacing,
+                        index: row * 3 + col
+                    });
+                }
+            }
+        }
+        initPoints();
+
+        // Cargar patrón guardado
+        function loadPattern() {
+            const stored = localStorage.getItem('pattern_hash');
+            if (stored) {
+                registeredPattern = stored;
+                return true;
+            }
+            return false;
+        }
+
+        // Guardar patrón (hash SHA-256)
+        async function savePattern(patternArray) {
+            const str = patternArray.join('-');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            localStorage.setItem('pattern_hash', hashHex);
+            registeredPattern = hashHex;
+            return hashHex;
+        }
+
+        // Verificar patrón
+        async function verifyPattern(patternArray) {
+            const str = patternArray.join('-');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex === registeredPattern;
+        }
+
+        // Dibujar el canvas
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar líneas del patrón
+            if (pattern.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#00A8FF';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowColor = 'rgba(0,168,255,0.3)';
+                ctx.shadowBlur = 8;
+                const first = points[pattern[0]];
+                ctx.moveTo(first.x, first.y);
+                for (let i = 1; i < pattern.length; i++) {
+                    const p = points[pattern[i]];
+                    ctx.lineTo(p.x, p.y);
+                }
+                if (currentPoint && isDrawing) {
+                    const last = points[pattern[pattern.length - 1]];
+                    ctx.lineTo(currentPoint.x, currentPoint.y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Dibujar puntos
+            points.forEach((p, index) => {
+                const isSelected = pattern.includes(index);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = isSelected ? '#00A8FF' : '#E9ECEF';
+                ctx.fill();
+                ctx.strokeStyle = isSelected ? '#00A8FF' : '#ccc';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Número pequeño (opcional)
+                ctx.fillStyle = isSelected ? 'white' : '#999';
+                ctx.font = '12px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(index + 1, p.x, p.y);
+            });
+        }
+
+        // Obtener punto más cercano al cursor
+        function getClosestPoint(x, y) {
+            let minDist = Infinity;
+            let closest = null;
+            points.forEach(p => {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < minDist && dist < 50) {
+                    minDist = dist;
+                    closest = p;
+                }
+            });
+            return closest;
+        }
+
+        // Eventos de inicio de dibujo (mouse/touch)
+        function startDraw(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            const p = getClosestPoint(x, y);
+            if (p && !pattern.includes(p.index)) {
+                pattern.push(p.index);
+                isDrawing = true;
+                currentPoint = { x, y };
+                draw();
+                msgEl.textContent = 'Suelta para terminar o sigue dibujando.';
+                msgEl.className = 'pattern-message info';
+            }
+        }
+
+        function moveDraw(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            const p = getClosestPoint(x, y);
+            if (p && !pattern.includes(p.index)) {
+                pattern.push(p.index);
+                draw();
+            }
+            currentPoint = { x, y };
+            draw();
+        }
+
+        function endDraw(e) {
+            e.preventDefault();
+            isDrawing = false;
+            currentPoint = null;
+            draw();
+
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Debes conectar al menos 4 puntos.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+
+            // Según el modo, actuar
+            if (mode === 'login') {
+                handleLogin();
+            } else if (mode === 'register') {
+                handleRegister();
+            } else if (mode === 'change') {
+                handleChange();
+            }
+        }
+
+        // ========== MANEJADORES ==========
+        async function handleLogin() {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón registrado. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            const ok = await verifyPattern(pattern);
+            if (ok) {
+                msgEl.textContent = '✅ Patrón correcto. Accediendo...';
+                msgEl.className = 'pattern-message success';
+                setTimeout(() => {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    // Cargar datos del panel
+                    cargarDatos();
+                }, 500);
+            } else {
+                msgEl.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+            }
+        }
+
+        async function handleRegister() {
+            if (loadPattern()) {
+                msgEl.textContent = '❌ Ya hay un patrón registrado. Usa "Cambiar patrón".';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            await savePattern(pattern);
+            msgEl.textContent = '✅ Patrón registrado correctamente. Ahora inicia sesión.';
+            msgEl.className = 'pattern-message success';
+            pattern = [];
+            draw();
+            mode = 'login';
+            document.getElementById('patternLoginBtn').disabled = false;
+        }
+
+        async function handleChange() {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            // Verificar el patrón actual
+            const ok = await verifyPattern(pattern);
+            if (!ok) {
+                msgEl.textContent = '❌ El patrón actual no coincide. Intenta de nuevo.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            // Guardar el nuevo patrón
+            await savePattern(pattern);
+            msgEl.textContent = '✅ Patrón actualizado correctamente.';
+            msgEl.className = 'pattern-message success';
+            pattern = [];
+            draw();
+            mode = 'login';
+            document.getElementById('patternLoginBtn').disabled = false;
+        }
+
+        // ========== EVENTOS ==========
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', moveDraw);
+        canvas.addEventListener('mouseup', endDraw);
+        canvas.addEventListener('mouseleave', endDraw);
+
+        canvas.addEventListener('touchstart', startDraw, { passive: false });
+        canvas.addEventListener('touchmove', moveDraw, { passive: false });
+        canvas.addEventListener('touchend', endDraw, { passive: false });
+
+        // Botones
+        document.getElementById('patternLoginBtn').addEventListener('click', () => {
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja un patrón primero.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'login';
+            handleLogin();
+        });
+
+        document.getElementById('patternRegisterBtn').addEventListener('click', () => {
+            if (loadPattern()) {
+                msgEl.textContent = '❌ Ya hay un patrón registrado.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja un patrón de al menos 4 puntos.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'register';
+            handleRegister();
+        });
+
+        document.getElementById('patternChangeBtn').addEventListener('click', () => {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja el patrón actual para verificarlo.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'change';
+            handleChange();
+        });
+
+        // Inicializar
+        draw();
+        if (loadPattern()) {
+            msgEl.textContent = '🔐 Patrón registrado. Dibuja tu patrón e inicia sesión.';
+            msgEl.className = 'pattern-message info';
+        } else {
+            msgEl.textContent = '📝 Registra un patrón nuevo (mínimo 4 puntos).';
+            msgEl.className = 'pattern-message info';
+        }
+
+        // Redimensionar canvas según el contenedor
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const width = container.clientWidth;
+            if (width > 0) {
+                canvas.width = width;
+                canvas.height = width;
+                // Recalcular puntos
+                const size = width;
+                const newOffset = size * 0.15;
+                const newSpacing = (size - 2 * newOffset) / 2;
+                points.forEach((p, i) => {
+                    const row = Math.floor(i / 3);
+                    const col = i % 3;
+                    p.x = newOffset + col * newSpacing;
+                    p.y = newOffset + row * newSpacing;
+                });
+                draw();
+            }
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+    })();
+
+    // =============================================
+    // CONFIGURACIÓN DE LA APLICACIÓN
     // =============================================
     // ⚠️ REEMPLAZA ESTA URL CON LA DE TU SCRIPT PUBLICADO ⚠️
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkKfrHQNPRtb1OJqQSM8cWNtW2lhUQgjhsNptUnZYP-wRYMnjoDOaXytykQpDgElKo/exec';
@@ -766,7 +1247,7 @@
     let intervaloAuto = null;
 
     // =============================================
-    // FUNCIÓN PARA FORMATEAR PRECIOS
+    // FUNCIONES DE FORMATEO
     // =============================================
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
@@ -775,9 +1256,6 @@
         return '$ ' + conPuntos;
     }
 
-    // =============================================
-    // FUNCIÓN PARA FORMATEAR FECHA EN 24 HORAS
-    // =============================================
     function formatearFechaHora(fechaISO) {
         if (!fechaISO) return '';
         const fecha = new Date(fechaISO);
@@ -842,7 +1320,7 @@
     }
 
     // =============================================
-    // ESTADÍSTICAS (con "Pendientes de presupuesto")
+    // ESTADÍSTICAS
     // =============================================
     function actualizarStats(data) {
         const total = data.length;
@@ -861,7 +1339,6 @@
         const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
         document.getElementById('emergencias').textContent = emergencias.length;
 
-        // Pendientes de presupuesto: contactos que NO tienen presupuesto
         const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
         const pendientes = data.filter(item => {
             const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : '';
@@ -906,7 +1383,7 @@
     }
 
     // =============================================
-    // ÚLTIMOS 5 REGISTROS (con fecha en 24h)
+    // ÚLTIMOS 5 REGISTROS
     // =============================================
     function actualizarUltimos(data) {
         const container = document.getElementById('ultimosRegistros');
@@ -931,7 +1408,7 @@
     }
 
     // =============================================
-    // TABLA COMPLETA (CONTACTOS) con columna "Presupuesto" y fecha en 24h
+    // TABLA COMPLETA
     // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
@@ -1003,7 +1480,7 @@
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS ENVIADOS (con dos columnas de precios)
+    // PRESUPUESTOS ENVIADOS
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -1066,7 +1543,7 @@
     }
 
     // =============================================
-    // EDITAR REGISTRO (con preloader en el botón)
+    // EDITAR REGISTRO
     // =============================================
     function editarRegistro(index) {
         const registro = datosCache.contactos[index];
@@ -1193,7 +1670,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (optimizado)
+    // GUARDAR PRESUPUESTO
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1384,7 +1861,7 @@
     }
 
     // =============================================
-    // ACTUALIZACIÓN AUTOMÁTICA CADA 5 MINUTOS
+    // AUTO-REFRESH Y CIERRE DE SESIÓN
     // =============================================
     function iniciarAutoRefresh() {
         if (intervaloAuto) clearInterval(intervaloAuto);
@@ -1392,21 +1869,23 @@
         console.log('Auto-refresh cada 5 minutos activado.');
     }
 
-    // =============================================
-    // REFRESCAR MANUAL
-    // =============================================
     document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
+
+    // Cerrar sesión desde el dashboard
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'flex';
+        // No borramos el patrón para que el usuario pueda volver a entrar
+    });
 
     // =============================================
     // INICIALIZAR
     // =============================================
-    cargarDatos().then(() => {
-        iniciarAutoRefresh();
-    });
-
-    window.addEventListener('beforeunload', function() {
-        if (intervaloAuto) clearInterval(intervaloAuto);
-    });
+    // Si ya hay sesión activa (por recarga), mostrar dashboard
+    // pero como el patrón está en localStorage y no hay flag de sesión,
+    // el usuario debe volver a dibujar. Es seguro.
+    // El dashboard se muestra solo después de login exitoso.
+    // =============================================
 </script>
 </body>
 </html>
