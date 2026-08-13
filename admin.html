@@ -1107,7 +1107,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (corregido: html2canvas + jsPDF, sin errores de escala)
+    // GUARDAR PRESUPUESTO (CORREGIDO)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1128,25 +1128,24 @@
         };
         await enviarAccion(datos);
 
-        // 2. Generar PDF con html2canvas + jsPDF (corregido)
+        // 2. Generar PDF con html2canvas + jsPDF
         try {
             const element = document.getElementById('presupuestoPreview');
-            // Pequeña pausa para que se renderice todo
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // Esperar a que el contenido esté completamente renderizado
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Capturar el elemento con html2canvas
+            // Capturar con html2canvas
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
                 logging: false,
-                willReadFrequently: true, // evita advertencia
+                willReadFrequently: true,
                 width: element.scrollWidth,
                 height: element.scrollHeight
             });
 
-            // Verificar que el canvas tenga dimensiones válidas
             if (canvas.width === 0 || canvas.height === 0) {
                 throw new Error('El canvas generado está vacío.');
             }
@@ -1158,24 +1157,18 @@
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            // Calcular la escala para que la imagen quepa en la página (con márgenes de 5 mm)
-            const margin = 5;
-            const maxWidth = pdfWidth - 2 * margin;
-            const maxHeight = pdfHeight - 2 * margin;
-
-            const scaleX = maxWidth / canvas.width;
-            const scaleY = maxHeight / canvas.height;
-            const scale = Math.min(scaleX, scaleY);
-
+            // Calcular escala para que quepa en la página manteniendo la relación de aspecto
+            const scale = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
+
+            // Centrar horizontalmente y alinear arriba verticalmente (sin margen superior)
             const xOffset = (pdfWidth - imgWidth) / 2;
-            const yOffset = (pdfHeight - imgHeight) / 2;
+            const yOffset = 0;
 
             // Añadir la imagen al PDF
             pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
 
-            // Guardar PDF
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
@@ -1300,7 +1293,7 @@
     // =============================================
     function iniciarAutoRefresh() {
         if (intervaloAuto) clearInterval(intervaloAuto);
-        intervaloAuto = setInterval(cargarDatos, 300000); // 5 minutos
+        intervaloAuto = setInterval(cargarDatos, 300000); // 5 min
         console.log('Auto-refresh cada 5 minutos activado.');
     }
 
