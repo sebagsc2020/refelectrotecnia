@@ -516,7 +516,7 @@
         }
 
         /* ========================================
-           SOBRE NOSOTROS
+           SOBRE NOSOTROS (con SLIDER)
         ======================================== */
         .about {
             padding: 80px 0;
@@ -530,24 +530,47 @@
             align-items: center;
         }
 
-        .about-image {
-            background: linear-gradient(145deg, var(--primary-dark), #1A4B7A);
+        /* Slider - reemplaza la imagen estática */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            background: var(--primary-dark);
             border-radius: var(--radius);
-            aspect-ratio: 4/3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.4);
             border: 2px dashed rgba(255, 255, 255, 0.1);
-            gap: 16px;
-            font-size: 1.1rem;
         }
 
-        .about-image i {
-            font-size: 5rem;
-            color: var(--accent-yellow);
-            opacity: 0.5;
+        .slider-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slider-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            will-change: opacity;
+        }
+
+        .slider-img.active {
+            opacity: 1;
+        }
+
+        /* Overlay decorativo (opcional) */
+        .slider-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 46, 92, 0.15);
+            z-index: 1;
+            pointer-events: none;
+            border-radius: var(--radius);
         }
 
         .about-content h3 {
@@ -1108,7 +1131,7 @@
         }
 
         /* ========================================
-           COOKIE CONSENT (corregido para que se oculte bien)
+           COOKIE CONSENT (corregido)
         ======================================== */
         .cookie-consent {
             position: fixed;
@@ -1131,7 +1154,6 @@
 
         .cookie-consent.hidden {
             display: none !important;
-            /* Forzamos el ocultamiento */
             opacity: 0 !important;
             pointer-events: none !important;
         }
@@ -1526,11 +1548,25 @@
         </div>
     </section>
 
-    <!-- ==================== SOBRE NOSOTROS ==================== -->
+    <!-- ==================== SOBRE NOSOTROS (con SLIDER) ==================== -->
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
-                <div class="about-image"><i class="fas fa-users"></i><span>Rodrigo Figueras y equipo <br> <small style="font-weight:300; opacity:0.6;">(Fotografía real del equipo)</small></span></div>
+                <!-- SLIDER: reemplaza el div .about-image anterior -->
+                <div class="slider-container">
+                    <div class="slider-track" id="sliderTrack">
+                        <img src="/images/ref01.webp" alt="Equipo REF 01" class="slider-img active">
+                        <img src="/images/ref02.webp" alt="Equipo REF 02" class="slider-img">
+                        <img src="/images/ref03.webp" alt="Equipo REF 03" class="slider-img">
+                        <img src="/images/ref04.webp" alt="Equipo REF 04" class="slider-img">
+                        <img src="/images/ref05.webp" alt="Equipo REF 05" class="slider-img">
+                        <img src="/images/ref06.webp" alt="Equipo REF 06" class="slider-img">
+                        <img src="/images/ref07.webp" alt="Equipo REF 07" class="slider-img">
+                        <img src="/images/ref08.webp" alt="Equipo REF 08" class="slider-img">
+                        <img src="/images/ref09.webp" alt="Equipo REF 09" class="slider-img">
+                        <img src="/images/ref10.webp" alt="Equipo REF 10" class="slider-img">
+                    </div>
+                </div>
                 <div class="about-content">
                     <h3>Más de <span>20 años</span> iluminando Córdoba</h3>
                     <p>En <strong>REF Electrotecnia</strong>, sabemos que la electricidad no es un juego. Por eso, cada trabajo lo realizamos con la seriedad y el profesionalismo que nos caracteriza, garantizando la seguridad de tu familia o negocio.</p>
@@ -1785,7 +1821,7 @@
             <div class="footer-bottom">
                 <span>
                     &copy; 2026 REF Electrotecnia. Todos los derechos reservados. |
-                    <a href="https://wa.me/5493518692251?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
+                    <a href="https://wa.me/5493541528232?text=Vi%20el%20dise%C3%B1o%20de%20REF%20Electrot%C3%A9cnia%20y%20queria%20pedir%20un%20presupuesto%20para..." target="_blank">
                         Diseño SC Photo
                     </a>
                 </span>
@@ -1826,7 +1862,7 @@
                         e.preventDefault();
                         const headerOffset = 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window
-                        .pageYOffset;
+                            .pageYOffset;
                         const offsetPosition = elementPosition - headerOffset;
                         window.scrollTo({
                             top: offsetPosition,
@@ -1891,7 +1927,7 @@
                         url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
                     } else {
                         url =
-                        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
+                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
                     }
                 } else {
                     url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`;
@@ -1932,7 +1968,7 @@
                 );
             });
 
-            // --- Guardar en Google Sheets (opcional) ---
+            // --- Guardar en Google Sheets ---
             async function guardarEnSheets(datos) {
                 const URL_SCRIPT =
                     'https://script.google.com/macros/s/AKfycbxO4rVZl0tcmQHThl1hIDEBcgQpQDAYToKNP4w_HJTHl8GT8jHsoRmZ8bqZHAEWH7Wy/exec';
@@ -1977,7 +2013,6 @@
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
                 if (email) whatsappMessage += `📧 *Email:* ${email}\n`;
 
-                // --- CORRECCIÓN: usar variable auxiliar con bloque adecuado ---
                 let servicioLabel = servicio;
                 if (servicio === 'emergencia') {
                     servicioLabel = 'Emergencia 24/7 ⚠️';
@@ -2007,21 +2042,19 @@
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
             });
 
-            // --- Cookies (corregido: cierra el popup correctamente) ---
+            // --- Cookies (corregido) ---
             const cookieConsent = document.getElementById('cookieConsent');
             const acceptBtn = document.getElementById('acceptCookies');
             const declineBtn = document.getElementById('declineCookies');
 
             function setCookieConsent(choice) {
                 localStorage.setItem('cookieConsent', choice);
-                // Ocultar con display none + clase
                 cookieConsent.style.display = 'none';
                 cookieConsent.classList.add('hidden');
                 document.cookie = `cookie_consent=${choice}; path=/; max-age=${60 * 60 * 24 * 365}`;
                 console.log('Cookie consent:', choice);
             }
 
-            // Si ya hay consentimiento, ocultar directamente
             if (localStorage.getItem('cookieConsent')) {
                 cookieConsent.style.display = 'none';
                 cookieConsent.classList.add('hidden');
@@ -2032,8 +2065,6 @@
                     e.preventDefault();
                     setCookieConsent('accepted');
                 });
-            } else {
-                console.warn('Botón Aceptar no encontrado');
             }
 
             if (declineBtn) {
@@ -2053,37 +2084,37 @@
                 privacidad: {
                     title: 'Política de privacidad',
                     body: `
-                        <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
-                        <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
-                        <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
-                        <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
-                        <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                        <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
-                    `
+                            <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
+                            <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
+                            <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
+                            <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
+                            <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                            <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
+                        `
                 },
                 terminos: {
                     title: 'Términos y condiciones',
                     body: `
-                        <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
-                        <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
-                        <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
-                        <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
-                        <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
-                        <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
-                        <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
-                    `
+                            <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
+                            <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
+                            <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
+                            <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
+                            <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
+                            <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
+                            <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
+                        `
                 },
                 aviso: {
                     title: 'Aviso legal',
                     body: `
-                        <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
-                        <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
-                        <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
-                        <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
-                        <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
-                        <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
-                        <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                    `
+                            <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
+                            <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
+                            <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
+                            <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
+                            <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
+                            <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
+                            <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
+                        `
                 }
             };
 
@@ -2128,6 +2159,27 @@
                 e.preventDefault();
                 openModal('privacidad');
             });
+
+            // ==========================================
+            // SLIDESHOW AUTOMÁTICO (10 imágenes, 1.2s)
+            // ==========================================
+            (function() {
+                const slider = document.getElementById('sliderTrack');
+                if (!slider) return;
+                const imagenes = slider.querySelectorAll('.slider-img');
+                if (imagenes.length === 0) return;
+                let currentIndex = 0;
+                const total = imagenes.length;
+
+                function mostrarSiguiente() {
+                    imagenes[currentIndex].classList.remove('active');
+                    currentIndex = (currentIndex + 1) % total;
+                    imagenes[currentIndex].classList.add('active');
+                }
+
+                // Cambiar cada 1200 ms (1.2 segundos)
+                setInterval(mostrarSiguiente, 1200);
+            })();
 
         });
     </script>
