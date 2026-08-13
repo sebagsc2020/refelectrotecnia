@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REF Electrotecnia | Instalaciones y Mantenimiento</title>
+    <title>REF+Electrotecnia | Instalaciones y Mantenimiento</title>
     
     <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="/images/72x72.png">
@@ -114,12 +114,14 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
+            z-index: 10002;
         }
 
         .logo-img {
@@ -154,6 +156,8 @@
             color: var(--gray-text);
             transition: var(--transition);
             position: relative;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         .nav-menu a::after {
@@ -220,6 +224,8 @@
             background: none;
             border: none;
             padding: 5px;
+            z-index: 10002;
+            position: relative;
         }
 
         .hamburger span {
@@ -228,6 +234,7 @@
             background: var(--primary-dark);
             border-radius: 10px;
             transition: var(--transition);
+            display: block;
         }
 
         /* ========================================
@@ -1301,41 +1308,59 @@
                 display: none;
             }
             
-            /* ===== SOLUCIÓN 2: Z-INDEX MÁS ALTO PARA MENÚ MÓVIL ===== */
+            /* ===== MENÚ MÓVIL DESDE LA DERECHA ===== */
             .nav-menu {
                 position: fixed;
                 top: 0;
-                left: -100%;
+                right: -100%; /* Cambiado de left a right */
                 width: 80%;
                 max-width: 300px;
                 height: 100vh;
                 background: var(--white);
                 flex-direction: column;
                 padding: 80px 30px 30px;
-                box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-                transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                            opacity 0.3s ease, 
-                            visibility 0.3s ease;
+                box-shadow: -5px 0 40px rgba(0, 0, 0, 0.15); /* Sombra a la izquierda */
+                transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 gap: 20px;
                 align-items: flex-start;
-                z-index: 10000; /* MÁS ALTO que el botón de Instagram (1000) */
-                visibility: hidden;
-                opacity: 0;
-                overflow-y: auto; /* Permitir scroll si el menú es muy largo */
+                z-index: 10000;
+                overflow-y: auto;
             }
             
             .nav-menu.active {
-                left: 0;
-                visibility: visible;
-                opacity: 1;
+                right: 0; /* Se desliza desde la derecha */
+            }
+            
+            .nav-menu li {
+                width: 100%;
+            }
+            
+            .nav-menu li a {
+                display: block;
+                padding: 12px 16px;
+                border-radius: 8px;
+                transition: background 0.3s ease;
+                pointer-events: auto;
+                cursor: pointer;
+                position: relative;
+                z-index: 10001;
+            }
+            
+            .nav-menu li a:hover {
+                background: var(--light-bg);
+            }
+            
+            .nav-menu li a.nav-cta {
+                text-align: center;
+                margin-top: 10px;
             }
             
             .hamburger {
-                display: flex !important; /* Forzar visibilidad */
-                z-index: 10001; /* Asegurar que esté por encima del menú */
+                display: flex !important;
+                z-index: 10002;
                 position: relative;
-                margin-left: auto; /* Empujar a la derecha */
-                flex-shrink: 0; /* Evitar que se encoja */
+                margin-left: auto;
+                flex-shrink: 0;
             }
             
             .hamburger.active span:nth-child(1) {
@@ -1416,6 +1441,7 @@
             
             .logo {
                 flex-shrink: 0;
+                z-index: 10002;
             }
             
             .logo h1 {
@@ -1435,7 +1461,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.4);
-            z-index: 9999; /* Debajo del menú (10000) pero encima de todo lo demás */
+            z-index: 9999;
         }
 
         .overlay.active {
@@ -1486,11 +1512,9 @@
             <div class="hero-content">
                 <h2>Seguridad y confianza <span>eléctrica</span></h2>
                 <p>Más de <strong>20 años</strong> garantizando instalaciones seguras, eficientes y con la mejor atención. Presupuesto sin cargo y trabajos con garantía.</p>
-                <!-- Solo se mantiene el badge de Atención 24/7 -->
                 <div class="hero-badges">
                     <span><i class="fas fa-clock"></i> Atención 24/7 emergencias</span>
                 </div>
-                <!-- Solo se mantiene el botón "Solicitar presupuesto" -->
                 <div class="hero-buttons">
                     <a href="#contacto" class="btn-primary"><i class="fas fa-calculator"></i> Solicitar presupuesto</a>
                 </div>
@@ -1559,17 +1583,17 @@
             <div class="testimonial-grid">
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables.”</blockquote>
+                    <blockquote>"Excelente servicio. Llegaron puntuales, resolvieron el problema en el día y me dejaron todo impecable. Totalmente recomendables."</blockquote>
                     <div class="client"><div class="avatar">MF</div><div><span class="name">María Fernández</span> <div class="location"><i class="fas fa-map-pin"></i> Nueva Córdoba</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“Contraté a REF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto.”</blockquote>
+                    <blockquote>"Contraté a REF Electrotecnia para la instalación completa de mi local comercial. Profesionales de primer nivel, asesoraron muy bien y el resultado fue perfecto."</blockquote>
                     <div class="client"><div class="avatar">CR</div><div><span class="name">Carlos Rodríguez</span> <div class="location"><i class="fas fa-map-pin"></i> Centro</div></div></div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado.”</blockquote>
+                    <blockquote>"Muy buena atención y predisposición. Vinieron a resolver una emergencia un domingo, algo que otros no hacen. Precios justos y trabajo garantizado."</blockquote>
                     <div class="client"><div class="avatar">LG</div><div><span class="name">Laura Gómez</span> <div class="location"><i class="fas fa-map-pin"></i> Cerro de las Rosas</div></div></div>
                 </div>
             </div>
@@ -1771,7 +1795,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Menú Hamburguesa ---
+            // --- Menú Hamburguesa (CORREGIDO) ---
             const hamburger = document.getElementById('hamburger');
             const navMenu = document.getElementById('navMenu');
             const overlay = document.getElementById('overlay');
@@ -1783,16 +1807,46 @@
                 document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
             }
             
-            hamburger.addEventListener('click', toggleMenu);
-            overlay.addEventListener('click', toggleMenu);
+            function closeMenu() {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+            
+            overlay.addEventListener('click', closeMenu);
 
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) toggleMenu();
+            // Cerrar menú al hacer clic en cualquier link del menú
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        closeMenu();
+                        
+                        // Scroll suave después de cerrar el menú
+                        setTimeout(() => {
+                            const targetElement = document.querySelector(href);
+                            if (targetElement) {
+                                const headerOffset = 80;
+                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                                const offsetPosition = elementPosition - headerOffset;
+                                window.scrollTo({
+                                    top: offsetPosition,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 300); // Esperar a que el menú se cierre
+                    }
                 });
             });
 
-            // --- Scroll suave para enlaces internos ---
+            // Scroll suave para otros enlaces internos
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1809,6 +1863,13 @@
                         });
                     }
                 });
+            });
+
+            // Cerrar menú al presionar Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                    closeMenu();
+                }
             });
 
             // --- FAQs ---
@@ -1906,17 +1967,16 @@
 
             // === NUEVA FUNCIÓN: Guardar en Google Sheets ===
             async function guardarEnSheets(datos) {
-                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec'; // <-- REEMPLAZA CON TU URL
+                const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyBUdxyz7RFCyDNwfVLyyphx-B7qERBAin8k58_y15GFwEMlRxtlzrS5lvwhOoFXeZF/exec';
                 try {
                     const response = await fetch(URL_SCRIPT, {
                         method: 'POST',
-                        mode: 'no-cors', // Necesario para evitar CORS
+                        mode: 'no-cors',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(datos)
                     });
-                    // Con no-cors no podemos leer la respuesta, pero asumimos que funciona
                     console.log('Datos enviados a Sheets');
                 } catch (error) {
                     console.error('Error al guardar en Sheets:', error);
@@ -1940,11 +2000,9 @@
                     return;
                 }
 
-                // 1) Guardar en Google Sheets (sin bloquear el envío de WhatsApp)
                 const datos = { nombre, telefono, email, servicio, ubicacion, mensaje };
                 guardarEnSheets(datos);
 
-                // 2) Construir mensaje de WhatsApp
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += `👤 *Nombre:* ${nombre}\n`;
                 whatsappMessage += `📱 *Teléfono:* ${telefono}\n`;
@@ -1973,9 +2031,6 @@
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-
-                // Opcional: limpiar el formulario después de enviar
-                // this.reset();
             });
 
             // --- Cookies ---
