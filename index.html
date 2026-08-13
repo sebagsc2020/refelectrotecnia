@@ -63,6 +63,7 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 80px; /* Compensa la barra fija */
         }
 
         body {
@@ -371,12 +372,8 @@
         }
 
         @keyframes shimmerButton {
-            0% {
-                left: -150%;
-            }
-            100% {
-                left: 150%;
-            }
+            0% { left: -150%; }
+            100% { left: 150%; }
         }
 
         .btn-primary:hover {
@@ -547,7 +544,6 @@
             align-items: center;
         }
 
-        /* Slider - reemplaza la imagen estática */
         .slider-container {
             position: relative;
             overflow: hidden;
@@ -579,7 +575,6 @@
             opacity: 1;
         }
 
-        /* Overlay decorativo (opcional) */
         .slider-container::after {
             content: '';
             position: absolute;
@@ -930,14 +925,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .ubicacion-wrapper {
@@ -1148,7 +1137,7 @@
         }
 
         /* ========================================
-           COOKIE CONSENT (corregido)
+           COOKIE CONSENT
         ======================================== */
         .cookie-consent {
             position: fixed;
@@ -1569,7 +1558,6 @@
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
-                <!-- SLIDER: reemplaza el div .about-image anterior -->
                 <div class="slider-container">
                     <div class="slider-track" id="sliderTrack">
                         <img src="images/ref01.webp" alt="Equipo REF 01" class="slider-img active">
@@ -1863,7 +1851,7 @@
             hamburger.addEventListener('click', toggleMenu);
             overlay.addEventListener('click', toggleMenu);
 
-            // --- Scroll suave + cerrar menú (unificado) ---
+            // --- Scroll suave + cerrar menú (CORREGIDO) ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1872,17 +1860,22 @@
                     if (targetElement) {
                         e.preventDefault();
 
-                        // Si el enlace está dentro del menú, cerrar el menú
-                        if (this.closest('.nav-menu')) {
-                            if (navMenu.classList.contains('active')) toggleMenu();
+                        // Si el enlace está dentro del menú, cerrar el menú (pero con retraso)
+                        const isInMenu = this.closest('.nav-menu');
+                        if (isInMenu && navMenu.classList.contains('active')) {
+                            // Cerrar inmediatamente el menú (quita el overflow hidden)
+                            toggleMenu();
                         }
 
-                        const headerOffset = 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                        const offsetPosition = elementPosition - headerOffset;
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
+                        // Esperar un frame para que el scroll funcione (especialmente en móviles)
+                        requestAnimationFrame(() => {
+                            const headerOffset = 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                            const offsetPosition = elementPosition - headerOffset;
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
                         });
                     }
                 });
@@ -2053,7 +2046,7 @@
                 window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
             });
 
-            // --- Cookies (corregido) ---
+            // --- Cookies ---
             const cookieConsent = document.getElementById('cookieConsent');
             const acceptBtn = document.getElementById('acceptCookies');
             const declineBtn = document.getElementById('declineCookies');
