@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin | REF Electrotecnia</title>
+    <title>Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -32,13 +32,257 @@
             background: var(--light-bg);
             color: #1E1E1E;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .dashboard {
-            padding: 20px;
+        .container {
+            width: 100%;
             max-width: 1400px;
-            margin: 0 auto;
-            display: none; /* Oculto hasta login */
+            margin: 20px;
         }
+        /* ========== PANTALLA DE LOGIN ========== */
+        #loginSection {
+            background: white;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #loginSection h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+        #loginSection h1 span { color: var(--primary-cyan); }
+        #loginSection p.sub {
+            color: var(--gray-text);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        #loginSection .login-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #loginSection .login-tabs button {
+            padding: 8px 18px;
+            border: 2px solid #E9ECEF;
+            border-radius: 50px;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--gray-text);
+        }
+        #loginSection .login-tabs button.active {
+            background: var(--primary-cyan);
+            color: white;
+            border-color: var(--primary-cyan);
+        }
+        #loginSection .login-tabs button:hover:not(.active) {
+            background: #f1f1f1;
+        }
+        #loginSection .login-method {
+            display: none;
+        }
+        #loginSection .login-method.active {
+            display: block;
+        }
+        #loginMessage {
+            margin: 12px 0;
+            font-size: 0.95rem;
+            color: var(--gray-text);
+            min-height: 1.5em;
+        }
+        #loginMessage.success { color: #27ae60; }
+        #loginMessage.error { color: #e74c3c; }
+        #loginMessage.info { color: var(--primary-cyan); }
+
+        /* ========== PATRÓN DE 9 PUNTOS ========== */
+        .pattern-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            position: relative;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .pattern-dot {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #E9ECEF;
+            border: 3px solid #d1d5db;
+            transition: all 0.15s;
+            position: relative;
+            cursor: pointer;
+            touch-action: none;
+        }
+        .pattern-dot.active {
+            background: var(--primary-cyan);
+            border-color: var(--primary-cyan);
+            transform: scale(0.85);
+        }
+        .pattern-dot.error {
+            background: #e74c3c;
+            border-color: #c0392b;
+            transform: scale(0.85);
+        }
+        .pattern-dot.success {
+            background: #27ae60;
+            border-color: #1e8449;
+            transform: scale(0.85);
+        }
+        .pattern-dot.highlight {
+            background: var(--primary-cyan);
+            border-color: var(--primary-cyan);
+            transform: scale(1.1);
+        }
+        .pattern-dot .dot-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 30%;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.3;
+            transition: 0.15s;
+        }
+        .pattern-dot.active .dot-inner,
+        .pattern-dot.success .dot-inner,
+        .pattern-dot.error .dot-inner {
+            opacity: 0.8;
+        }
+        .pattern-dot.highlight .dot-inner {
+            opacity: 0.6;
+        }
+        canvas#patternCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .pattern-grid-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+        }
+        .pattern-status {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .pattern-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .pattern-actions button {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .pattern-actions .btn-pattern-clear {
+            background: #e74c3c;
+            color: white;
+        }
+        .pattern-actions .btn-pattern-clear:hover {
+            background: #c0392b;
+        }
+        .pattern-actions .btn-pattern-confirm {
+            background: var(--primary-cyan);
+            color: white;
+        }
+        .pattern-actions .btn-pattern-confirm:hover {
+            background: var(--primary-dark);
+        }
+        .pattern-actions .btn-pattern-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========== WEBAUTHN ========== */
+        .webauthn-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .btn-login-action {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-login-action:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .btn-login-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-login-action.secondary {
+            background: #2ecc71;
+        }
+        .btn-login-action.secondary:hover {
+            background: #27ae60;
+        }
+        .btn-login-action.outline {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+        }
+        .btn-login-action.outline:hover {
+            background: #f1f1f1;
+            border-color: #ccc;
+        }
+
+        /* ========== DASHBOARD ========== */
+        #dashboard {
+            display: none;
+        }
+        /* ... resto de estilos igual que antes ... */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -96,91 +340,7 @@
             background: #f1f1f1;
             border-color: #ccc;
         }
-        /* ========== LOGIN ========== */
-        #loginSection {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            background: var(--light-bg);
-        }
-        #loginSection .login-box {
-            background: white;
-            padding: 40px 50px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-        }
-        #loginSection .login-box h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin-bottom: 8px;
-        }
-        #loginSection .login-box h1 span { color: var(--primary-cyan); }
-        #loginSection .login-box p {
-            color: var(--gray-text);
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
-        #loginSection .login-box input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: var(--font);
-            margin-bottom: 15px;
-            transition: 0.2s;
-            background: var(--light-bg);
-        }
-        #loginSection .login-box input:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
-        }
-        .btn-biometric {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            justify-content: center;
-            margin-top: 5px;
-        }
-        .btn-biometric:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
-        }
-        .btn-biometric:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .login-message {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            min-height: 24px;
-            color: var(--gray-text);
-        }
-        .login-message.success { color: #27ae60; }
-        .login-message.error { color: #e74c3c; }
-        .login-message.info { color: var(--primary-cyan); }
-
-        /* ========== ESTADÍSTICAS ========== */
+        /* ... resto de estilos (stats, charts, tablas, modales) igual que antes ... */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -634,6 +794,21 @@
             cursor: not-allowed;
             transform: none;
         }
+        .presupuesto-box .presupuesto-actions .btn-cancel {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .presupuesto-box .presupuesto-actions .btn-cancel:hover {
+            background: #f1f1f1;
+            border-color: #ccc;
+        }
         .check-presupuesto {
             color: #27ae60;
             font-size: 1.2rem;
@@ -652,7 +827,7 @@
             .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-preview .cliente-info { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-actions { justify-content: center; }
-            #loginSection .login-box { padding: 30px 20px; }
+            .pattern-grid-wrapper, .pattern-grid { width: 200px; height: 200px; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr; }
@@ -670,81 +845,118 @@
 </head>
 <body>
 
-<!-- ========== SECCIÓN DE LOGIN CON WEBAUTHN ========== -->
-<div id="loginSection">
-    <div class="login-box">
+<div class="container">
+    <!-- ========== PANTALLA DE LOGIN ========== -->
+    <div id="loginSection">
         <h1><span>🔐</span> REF Electrotecnia</h1>
-        <p>Acceso con verificación biométrica<br><small style="font-size:0.8rem; color:#888;">Face ID / Windows Hello / Huella</small></p>
+        <p class="sub">Acceso al panel de administración</p>
 
-        <div id="loginForm">
-            <input type="text" id="usernameInput" placeholder="Nombre de usuario (opcional)" value="admin">
-            <button id="registerBtn" class="btn-biometric"><i class="fas fa-fingerprint"></i> Registrar con biometría</button>
-            <button id="loginBtn" class="btn-biometric" style="margin-top:10px; background:#27ae60;"><i class="fas fa-unlock"></i> Iniciar sesión con biometría</button>
+        <!-- Pestañas de método -->
+        <div class="login-tabs">
+            <button class="active" data-method="pattern">🔒 Patrón</button>
+            <button data-method="webauthn">📱 Biometría</button>
         </div>
 
-        <div id="loginMessage" class="login-message info">ℹ️ Registra tu rostro o huella para acceder.</div>
+        <div id="loginMessage">Selecciona un método de acceso.</div>
 
-        <button id="logoutBtn2" class="btn-biometric" style="display:none; background:#e74c3c; margin-top:15px;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
-    </div>
-</div>
+        <!-- ===== MÉTODO PATRÓN ===== -->
+        <div id="method-pattern" class="login-method active">
+            <div class="pattern-container">
+                <div class="pattern-grid-wrapper">
+                    <div class="pattern-grid" id="patternGrid">
+                        <div class="pattern-dot" data-index="0"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="1"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="2"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="3"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="4"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="5"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="6"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="7"><div class="dot-inner"></div></div>
+                        <div class="pattern-dot" data-index="8"><div class="dot-inner"></div></div>
+                        <canvas id="patternCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="pattern-status" id="patternStatus">Dibuja tu patrón (mínimo 4 puntos)</div>
+                <div class="pattern-actions">
+                    <button class="btn-pattern-clear" id="patternClearBtn">🗑️ Borrar</button>
+                    <button class="btn-pattern-confirm" id="patternConfirmBtn" disabled>✅ Confirmar</button>
+                </div>
+            </div>
+            <div style="margin-top:8px; font-size:0.8rem; color:var(--gray-text);">
+                <i class="fas fa-info-circle"></i> Dibuja con el mouse o con el dedo (táctil)
+            </div>
+        </div>
 
-<!-- ========== DASHBOARD ========== -->
-<div class="dashboard" id="dashboard">
-    <div class="dashboard-header">
-        <h2><span>📊</span> Panel de Administración</h2>
-        <div class="header-actions">
-            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
-            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
-        </div>
-    </div>
-
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-users"></i></span>
-            <div class="stat-number" id="totalContactos">0</div>
-            <div class="stat-label">Total de contactos</div>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
-            <div class="stat-number" id="contactosSemana">0</div>
-            <div class="stat-label">Últimos 7 días</div>
-        </div>
-        <div class="stat-card emergencia">
-            <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
-            <div class="stat-number" id="emergencias">0</div>
-            <div class="stat-label">Emergencias 24/7</div>
-        </div>
-        <div class="stat-card pendiente">
-            <span class="stat-icon"><i class="fas fa-clock"></i></span>
-            <div class="stat-number" id="pendientesPresupuesto">0</div>
-            <div class="stat-label">Pendientes de presupuesto</div>
-        </div>
-    </div>
-
-    <div class="chart-section">
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
-            <canvas id="serviciosChart"></canvas>
-        </div>
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
-            <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
+        <!-- ===== MÉTODO WEBAUTHN ===== -->
+        <div id="method-webauthn" class="login-method">
+            <div class="webauthn-buttons">
+                <button id="registerBtn" class="btn-login-action secondary"><i class="fas fa-fingerprint"></i> Registrar dispositivo</button>
+                <button id="loginBtn" class="btn-login-action"><i class="fas fa-id-card"></i> Iniciar sesión</button>
+            </div>
+            <p style="margin-top:15px; font-size:0.8rem; color:var(--gray-text);">
+                <i class="fas fa-info-circle"></i> Face ID / Windows Hello / Huella digital
+            </p>
         </div>
     </div>
 
-    <div class="table-container">
-        <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
-    </div>
+    <!-- ========== DASHBOARD ========== -->
+    <div id="dashboard">
+        <div class="dashboard-header">
+            <h2><span>📊</span> Panel de Administración</h2>
+            <div class="header-actions">
+                <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+            </div>
+        </div>
 
-    <div class="table-container">
-        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
-        <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
-    </div>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-users"></i></span>
+                <div class="stat-number" id="totalContactos">0</div>
+                <div class="stat-label">Total de contactos</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
+                <div class="stat-number" id="contactosSemana">0</div>
+                <div class="stat-label">Últimos 7 días</div>
+            </div>
+            <div class="stat-card emergencia">
+                <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                <div class="stat-number" id="emergencias">0</div>
+                <div class="stat-label">Emergencias 24/7</div>
+            </div>
+            <div class="stat-card pendiente">
+                <span class="stat-icon"><i class="fas fa-clock"></i></span>
+                <div class="stat-number" id="pendientesPresupuesto">0</div>
+                <div class="stat-label">Pendientes de presupuesto</div>
+            </div>
+        </div>
 
-    <div class="table-container">
-        <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
+        <div class="chart-section">
+            <div class="chart-box">
+                <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
+                <canvas id="serviciosChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
+                <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
+            <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
+        </div>
+
+        <div class="table-container">
+            <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+            <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
+        </div>
+
+        <div class="table-container">
+            <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
+            <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
+        </div>
     </div>
 </div>
 
@@ -845,251 +1057,8 @@
 
 <script>
     // =============================================
-    // WEBAUTHN - REGISTRO Y LOGIN BIOMÉTRICO
+    // CONFIGURACIÓN
     // =============================================
-    (function() {
-        const loginSection = document.getElementById('loginSection');
-        const dashboard = document.getElementById('dashboard');
-        const loginMessage = document.getElementById('loginMessage');
-        const usernameInput = document.getElementById('usernameInput');
-        const registerBtn = document.getElementById('registerBtn');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn2 = document.getElementById('logoutBtn2');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        // Almacenamiento en localStorage (solo demo)
-        let credencialGuardada = localStorage.getItem('webauthn_credential');
-        if (credencialGuardada) {
-            try {
-                credencialGuardada = JSON.parse(credencialGuardada);
-                loginMessage.textContent = '🔐 Credencial biométrica registrada. Haz clic en "Iniciar sesión".';
-                loginMessage.className = 'login-message success';
-                loginBtn.style.display = 'inline-flex';
-                registerBtn.textContent = '🔄 Re-registrar biometría';
-            } catch (e) {
-                localStorage.removeItem('webauthn_credential');
-                credencialGuardada = null;
-            }
-        } else {
-            loginBtn.style.display = 'none';
-        }
-
-        // Funciones auxiliares para base64url <-> ArrayBuffer
-        function base64urlToBuffer(base64url) {
-            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-            const pad = base64.length % 4 === 0 ? '' : '='.repeat(4 - (base64.length % 4));
-            const binaryString = atob(base64 + pad);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        function bufferToBase64url(buffer) {
-            const bytes = new Uint8Array(buffer);
-            let binary = '';
-            for (let i = 0; i < bytes.length; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-        }
-
-        // Generar challenge aleatorio (16 bytes)
-        function generateChallenge() {
-            const arr = new Uint8Array(16);
-            crypto.getRandomValues(arr);
-            return arr.buffer;
-        }
-
-        // =============================================
-        // REGISTRO BIOMÉTRICO
-        // =============================================
-        registerBtn.addEventListener('click', async () => {
-            const username = usernameInput.value.trim() || 'admin';
-            if (!window.PublicKeyCredential) {
-                alert('Tu navegador no soporta WebAuthn. Usa Chrome, Edge o Safari.');
-                return;
-            }
-
-            try {
-                registerBtn.disabled = true;
-                registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
-                loginMessage.textContent = '⏳ Esperando verificación biométrica...';
-                loginMessage.className = 'login-message info';
-
-                const challenge = generateChallenge();
-                const userId = new TextEncoder().encode(username + Date.now());
-
-                const publicKey = {
-                    challenge: challenge,
-                    rp: { name: 'REF Electrotecnia', id: window.location.hostname },
-                    user: {
-                        id: userId,
-                        name: username,
-                        displayName: username
-                    },
-                    pubKeyCredParams: [
-                        { type: 'public-key', alg: -7 },  // ES256
-                        { type: 'public-key', alg: -257 } // RS256
-                    ],
-                    authenticatorSelection: {
-                        authenticatorAttachment: 'platform', // forza biometría integrada (Face ID, Windows Hello)
-                        requireResidentKey: false,
-                        userVerification: 'required'
-                    },
-                    timeout: 60000,
-                    attestation: 'none'
-                };
-
-                const credential = await navigator.credentials.create({ publicKey });
-                if (!credential) throw new Error('Registro cancelado o fallido.');
-
-                // Guardar credencial (solo para demo)
-                const credData = {
-                    id: credential.id,
-                    rawId: bufferToBase64url(credential.rawId),
-                    response: {
-                        authenticatorData: bufferToBase64url(credential.response.authenticatorData),
-                        clientDataJSON: bufferToBase64url(credential.response.clientDataJSON),
-                        attestationObject: bufferToBase64url(credential.response.attestationObject)
-                    },
-                    type: credential.type,
-                    username: username
-                };
-                localStorage.setItem('webauthn_credential', JSON.stringify(credData));
-                credencialGuardada = credData;
-
-                loginMessage.textContent = '✅ Biometría registrada correctamente. Ahora puedes iniciar sesión.';
-                loginMessage.className = 'login-message success';
-                loginBtn.style.display = 'inline-flex';
-                registerBtn.textContent = '🔄 Re-registrar biometría';
-                alert('¡Registro exitoso! Ahora puedes iniciar sesión con tu rostro/huella.');
-
-            } catch (error) {
-                console.error('Error en registro:', error);
-                loginMessage.textContent = '❌ Error en el registro: ' + (error.message || 'Desconocido');
-                loginMessage.className = 'login-message error';
-            } finally {
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = '<i class="fas fa-fingerprint"></i> Registrar con biometría';
-            }
-        });
-
-        // =============================================
-        // LOGIN BIOMÉTRICO
-        // =============================================
-        loginBtn.addEventListener('click', async () => {
-            if (!credencialGuardada) {
-                alert('Primero registra tu biometría.');
-                return;
-            }
-            if (!window.PublicKeyCredential) {
-                alert('Tu navegador no soporta WebAuthn.');
-                return;
-            }
-
-            try {
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-                loginMessage.textContent = '⏳ Esperando autenticación biométrica...';
-                loginMessage.className = 'login-message info';
-
-                const challenge = generateChallenge();
-                const publicKey = {
-                    challenge: challenge,
-                    rpId: window.location.hostname,
-                    allowCredentials: [{
-                        id: base64urlToBuffer(credencialGuardada.rawId),
-                        type: 'public-key'
-                    }],
-                    userVerification: 'required',
-                    timeout: 60000
-                };
-
-                const assertion = await navigator.credentials.get({ publicKey });
-                if (!assertion) throw new Error('Autenticación cancelada o fallida.');
-
-                // Verificación simplificada (en producción se valida con el servidor)
-                // Aquí comprobamos que el ID coincida con el registrado
-                const rawIdBase64 = bufferToBase64url(assertion.rawId);
-                if (rawIdBase64 !== credencialGuardada.rawId) {
-                    throw new Error('La credencial no coincide.');
-                }
-
-                // Login exitoso
-                loginMessage.textContent = '✅ Acceso concedido. Cargando panel...';
-                loginMessage.className = 'login-message success';
-
-                // Mostrar dashboard y ocultar login
-                loginSection.style.display = 'none';
-                dashboard.style.display = 'block';
-                logoutBtn2.style.display = 'none';
-                logoutBtn.style.display = 'inline-flex';
-
-                // Cargar datos del panel
-                cargarDatos();
-
-            } catch (error) {
-                console.error('Error en login:', error);
-                loginMessage.textContent = '❌ Error en autenticación: ' + (error.message || 'Desconocido');
-                loginMessage.className = 'login-message error';
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-unlock"></i> Iniciar sesión con biometría';
-            }
-        });
-
-        // =============================================
-        // CIERRE DE SESIÓN
-        // =============================================
-        function cerrarSesion() {
-            loginSection.style.display = 'flex';
-            dashboard.style.display = 'none';
-            logoutBtn.style.display = 'none';
-            logoutBtn2.style.display = 'none';
-            loginMessage.textContent = '🔒 Sesión cerrada.';
-            loginMessage.className = 'login-message info';
-            // No eliminamos la credencial para no tener que re-registrar
-        }
-
-        logoutBtn.addEventListener('click', cerrarSesion);
-        logoutBtn2.addEventListener('click', cerrarSesion);
-
-        // Si ya hay sesión abierta (por recarga), comprobar si hay credencial y mostrar dashboard
-        if (credencialGuardada && localStorage.getItem('webauthn_session')) {
-            loginSection.style.display = 'none';
-            dashboard.style.display = 'block';
-            logoutBtn.style.display = 'inline-flex';
-            cargarDatos();
-        }
-
-        // Guardar sesión en localStorage al hacer login (ya se hace arriba)
-        // Sobrescribir el evento login para guardar la sesión
-        const originalLogin = loginBtn.click;
-        loginBtn.addEventListener('click', function(e) {
-            // Se ejecutará después del código anterior
-            // Guardamos la sesión si el login fue exitoso (se detecta al final)
-        });
-
-        // Parche: después de login exitoso, guardar sesión
-        const observer = new MutationObserver(() => {
-            if (loginMessage.textContent.includes('Acceso concedido')) {
-                localStorage.setItem('webauthn_session', 'true');
-            }
-        });
-        observer.observe(loginMessage, { childList: true, characterData: true, subtree: true });
-
-        // Inicializar
-        if (credencialGuardada) {
-            loginBtn.style.display = 'inline-flex';
-        }
-    })();
-
-    // =============================================
-    // CONFIGURACIÓN DE LA APLICACIÓN
-    // =============================================
-    // ⚠️ REEMPLAZA ESTA URL CON LA DE TU SCRIPT PUBLICADO ⚠️
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkKfrHQNPRtb1OJqQSM8cWNtW2lhUQgjhsNptUnZYP-wRYMnjoDOaXytykQpDgElKo/exec';
 
     let chartInstance = null;
@@ -1098,7 +1067,515 @@
     let intervaloAuto = null;
 
     // =============================================
-    // FUNCIONES DE FORMATEO
+    // PATRÓN DE 9 PUNTOS
+    // =============================================
+    const patternGrid = document.getElementById('patternGrid');
+    const patternCanvas = document.getElementById('patternCanvas');
+    const patternStatus = document.getElementById('patternStatus');
+    const patternClearBtn = document.getElementById('patternClearBtn');
+    const patternConfirmBtn = document.getElementById('patternConfirmBtn');
+    const dots = document.querySelectorAll('.pattern-dot');
+    const loginMessage = document.getElementById('loginMessage');
+
+    let patternState = {
+        dots: [],           // índices seleccionados
+        isDrawing: false,
+        savedPattern: null, // patrón guardado (array de índices)
+        isFirstTime: true   // si es el primer registro
+    };
+
+    // Cargar patrón guardado
+    function loadPattern() {
+        const saved = localStorage.getItem('pattern_lock');
+        if (saved) {
+            try {
+                patternState.savedPattern = JSON.parse(saved);
+                patternState.isFirstTime = false;
+                loginMessage.textContent = '🔒 Patrón registrado. Dibuja tu patrón para acceder.';
+                loginMessage.className = 'info';
+                patternConfirmBtn.textContent = '✅ Desbloquear';
+                patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
+            } catch (e) {
+                patternState.savedPattern = null;
+                patternState.isFirstTime = true;
+            }
+        } else {
+            patternState.savedPattern = null;
+            patternState.isFirstTime = true;
+            loginMessage.textContent = '📝 Registra un patrón de desbloqueo (mínimo 4 puntos).';
+            loginMessage.className = 'info';
+            patternConfirmBtn.textContent = '✅ Guardar patrón';
+            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
+        }
+        resetPattern();
+    }
+
+    // Resetear visualmente
+    function resetPattern() {
+        patternState.dots = [];
+        dots.forEach(d => d.className = 'pattern-dot');
+        patternConfirmBtn.disabled = true;
+        drawLines([]);
+        if (patternState.isFirstTime) {
+            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
+        } else {
+            patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
+        }
+    }
+
+    // Obtener centro de un dot
+    function getDotCenter(index) {
+        const dot = dots[index];
+        const rect = dot.getBoundingClientRect();
+        const gridRect = patternGrid.getBoundingClientRect();
+        const x = (rect.left + rect.width/2) - gridRect.left;
+        const y = (rect.top + rect.height/2) - gridRect.top;
+        return { x, y };
+    }
+
+    // Dibujar líneas en el canvas
+    function drawLines(selectedIndices) {
+        const canvas = patternCanvas;
+        const rect = patternGrid.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (selectedIndices.length < 1) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#00A8FF';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        const first = getDotCenter(selectedIndices[0]);
+        ctx.moveTo(first.x, first.y);
+
+        for (let i = 1; i < selectedIndices.length; i++) {
+            const center = getDotCenter(selectedIndices[i]);
+            ctx.lineTo(center.x, center.y);
+        }
+        ctx.stroke();
+
+        // Dibujar puntos de conexión
+        for (let i = 0; i < selectedIndices.length; i++) {
+            const center = getDotCenter(selectedIndices[i]);
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, 8, 0, 2 * Math.PI);
+            ctx.fillStyle = '#00A8FF';
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+
+    // Detectar el dot más cercano al punto (x, y)
+    function getNearestDot(x, y) {
+        let minDist = Infinity;
+        let nearest = -1;
+        dots.forEach((dot, index) => {
+            const rect = dot.getBoundingClientRect();
+            const gridRect = patternGrid.getBoundingClientRect();
+            const cx = (rect.left + rect.width/2) - gridRect.left;
+            const cy = (rect.top + rect.height/2) - gridRect.top;
+            const dist = Math.hypot(x - cx, y - cy);
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = index;
+            }
+        });
+        // Umbral de 40px
+        if (minDist < 40) return nearest;
+        return -1;
+    }
+
+    // Manejar inicio de dibujo
+    function onPatternStart(e) {
+        e.preventDefault();
+        const rect = patternGrid.getBoundingClientRect();
+        let clientX, clientY;
+        if (e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        const gridRect = patternGrid.getBoundingClientRect();
+        const x = clientX - gridRect.left;
+        const y = clientY - gridRect.top;
+        const index = getNearestDot(x, y);
+        if (index !== -1 && !patternState.dots.includes(index)) {
+            patternState.dots.push(index);
+            dots[index].classList.add('active');
+            drawLines(patternState.dots);
+            patternConfirmBtn.disabled = false;
+            if (patternState.dots.length >= 4) {
+                patternStatus.textContent = `✅ ${patternState.dots.length} puntos seleccionados. Confirma.`;
+            } else {
+                patternStatus.textContent = `${patternState.dots.length} puntos (mínimo 4)`;
+            }
+        }
+        patternState.isDrawing = true;
+    }
+
+    function onPatternMove(e) {
+        if (!patternState.isDrawing) return;
+        e.preventDefault();
+        const rect = patternGrid.getBoundingClientRect();
+        let clientX, clientY;
+        if (e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        const index = getNearestDot(x, y);
+        if (index !== -1 && !patternState.dots.includes(index)) {
+            patternState.dots.push(index);
+            dots[index].classList.add('active');
+            drawLines(patternState.dots);
+            if (patternState.dots.length >= 4) {
+                patternStatus.textContent = `✅ ${patternState.dots.length} puntos seleccionados. Confirma.`;
+            } else {
+                patternStatus.textContent = `${patternState.dots.length} puntos (mínimo 4)`;
+            }
+            patternConfirmBtn.disabled = false;
+        }
+    }
+
+    function onPatternEnd(e) {
+        patternState.isDrawing = false;
+    }
+
+    // Eventos para patrón
+    patternGrid.addEventListener('mousedown', onPatternStart);
+    patternGrid.addEventListener('mousemove', onPatternMove);
+    patternGrid.addEventListener('mouseup', onPatternEnd);
+    patternGrid.addEventListener('mouseleave', onPatternEnd);
+
+    patternGrid.addEventListener('touchstart', onPatternStart, { passive: false });
+    patternGrid.addEventListener('touchmove', onPatternMove, { passive: false });
+    patternGrid.addEventListener('touchend', onPatternEnd, { passive: false });
+
+    // Botón Borrar
+    patternClearBtn.addEventListener('click', () => {
+        resetPattern();
+        patternState.dots = [];
+        dots.forEach(d => d.className = 'pattern-dot');
+        drawLines([]);
+        patternConfirmBtn.disabled = true;
+        if (patternState.savedPattern) {
+            patternStatus.textContent = 'Patrón borrado. Dibuja de nuevo.';
+        } else {
+            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
+        }
+        loginMessage.textContent = 'Patrón borrado.';
+        loginMessage.className = 'info';
+    });
+
+    // Botón Confirmar / Desbloquear
+    patternConfirmBtn.addEventListener('click', () => {
+        const selected = patternState.dots;
+        if (selected.length < 4) {
+            patternStatus.textContent = '❌ Mínimo 4 puntos requeridos.';
+            patternStatus.style.color = '#e74c3c';
+            return;
+        }
+
+        // Si no hay patrón guardado -> REGISTRAR
+        if (patternState.isFirstTime || !patternState.savedPattern) {
+            // Guardar patrón
+            localStorage.setItem('pattern_lock', JSON.stringify(selected));
+            patternState.savedPattern = selected;
+            patternState.isFirstTime = false;
+            loginMessage.textContent = '✅ Patrón registrado correctamente. Ahora puedes desbloquear.';
+            loginMessage.className = 'success';
+            patternConfirmBtn.textContent = '✅ Desbloquear';
+            patternStatus.textContent = 'Patrón guardado. Dibuja el mismo patrón para acceder.';
+            patternStatus.style.color = '#27ae60';
+            // Mostrar éxito visual
+            dots.forEach(d => d.classList.remove('active', 'error', 'highlight'));
+            selected.forEach(i => dots[i].classList.add('success'));
+            setTimeout(() => {
+                resetPattern();
+                patternState.dots = [];
+                dots.forEach(d => d.className = 'pattern-dot');
+                drawLines([]);
+                patternConfirmBtn.disabled = true;
+                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
+                patternStatus.style.color = 'var(--gray-text)';
+            }, 1500);
+            return;
+        }
+
+        // VERIFICAR patrón guardado
+        const saved = patternState.savedPattern;
+        if (selected.length !== saved.length) {
+            patternStatus.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
+            patternStatus.style.color = '#e74c3c';
+            dots.forEach(d => d.classList.remove('active', 'success', 'highlight'));
+            selected.forEach(i => dots[i].classList.add('error'));
+            setTimeout(() => {
+                resetPattern();
+                patternState.dots = [];
+                dots.forEach(d => d.className = 'pattern-dot');
+                drawLines([]);
+                patternConfirmBtn.disabled = true;
+                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
+                patternStatus.style.color = 'var(--gray-text)';
+            }, 1000);
+            return;
+        }
+
+        let match = true;
+        for (let i = 0; i < selected.length; i++) {
+            if (selected[i] !== saved[i]) {
+                match = false;
+                break;
+            }
+        }
+
+        if (match) {
+            // ACCESO CONCEDIDO
+            loginMessage.textContent = '✅ Acceso concedido. Cargando panel...';
+            loginMessage.className = 'success';
+            patternStatus.textContent = '¡Bienvenido!';
+            patternStatus.style.color = '#27ae60';
+            dots.forEach(d => d.classList.remove('active', 'error'));
+            selected.forEach(i => dots[i].classList.add('success'));
+
+            setTimeout(() => {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                cargarDatos();
+            }, 500);
+        } else {
+            patternStatus.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
+            patternStatus.style.color = '#e74c3c';
+            dots.forEach(d => d.classList.remove('active', 'success', 'highlight'));
+            selected.forEach(i => dots[i].classList.add('error'));
+            setTimeout(() => {
+                resetPattern();
+                patternState.dots = [];
+                dots.forEach(d => d.className = 'pattern-dot');
+                drawLines([]);
+                patternConfirmBtn.disabled = true;
+                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
+                patternStatus.style.color = 'var(--gray-text)';
+            }, 1000);
+        }
+    });
+
+    // =============================================
+    // WEBAUTHN - AUTENTICACIÓN BIOMÉTRICA
+    // =============================================
+    let credentialData = null;
+
+    function loadCredential() {
+        const stored = localStorage.getItem('webauthn_credential');
+        if (stored) {
+            try {
+                credentialData = JSON.parse(stored);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    function saveCredential(cred) {
+        localStorage.setItem('webauthn_credential', JSON.stringify(cred));
+        credentialData = cred;
+    }
+
+    function clearCredential() {
+        localStorage.removeItem('webauthn_credential');
+        credentialData = null;
+    }
+
+    function generateUserId() {
+        const array = new Uint8Array(16);
+        crypto.getRandomValues(array);
+        return array;
+    }
+
+    function bufferToBase64Url(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function base64UrlToBuffer(str) {
+        const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+        const padding = '='.repeat((4 - base64.length % 4) % 4);
+        const raw = atob(base64 + padding);
+        const buffer = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) {
+            buffer[i] = raw.charCodeAt(i);
+        }
+        return buffer.buffer;
+    }
+
+    async function registerDevice() {
+        try {
+            loginMessage.textContent = '⏳ Generando credencial...';
+            loginMessage.className = 'info';
+            registerBtn.disabled = true;
+            loginBtn.disabled = true;
+
+            if (!navigator.credentials || !navigator.credentials.create) {
+                throw new Error('WebAuthn no está soportado en este navegador.');
+            }
+
+            const userId = generateUserId();
+            const publicKey = {
+                challenge: crypto.getRandomValues(new Uint8Array(32)),
+                rp: { name: 'REF Electrotecnia', id: window.location.hostname },
+                user: { id: userId, name: 'admin@refelectrotecnia.com', displayName: 'Administrador' },
+                pubKeyCredParams: [
+                    { type: 'public-key', alg: -7 },
+                    { type: 'public-key', alg: -257 }
+                ],
+                authenticatorSelection: {
+                    userVerification: 'required',
+                    residentKey: 'preferred',
+                    authenticatorAttachment: 'platform'
+                },
+                timeout: 60000,
+                attestation: 'none'
+            };
+
+            const credential = await navigator.credentials.create({ publicKey });
+            const credData = {
+                id: credential.id,
+                rawId: bufferToBase64Url(credential.rawId),
+                userId: bufferToBase64Url(credential.response.userHandle || userId)
+            };
+
+            saveCredential(credData);
+            loginMessage.textContent = '✅ Dispositivo registrado correctamente. Ahora puedes iniciar sesión.';
+            loginMessage.className = 'success';
+
+        } catch (error) {
+            console.error('Error al registrar:', error);
+            loginMessage.textContent = '❌ Error al registrar: ' + error.message;
+            loginMessage.className = 'error';
+        } finally {
+            registerBtn.disabled = false;
+            loginBtn.disabled = false;
+        }
+    }
+
+    async function loginWebAuthn() {
+        try {
+            loginMessage.textContent = '⏳ Solicitando autenticación...';
+            loginMessage.className = 'info';
+            registerBtn.disabled = true;
+            loginBtn.disabled = true;
+
+            if (!navigator.credentials || !navigator.credentials.get) {
+                throw new Error('WebAuthn no está soportado en este navegador.');
+            }
+
+            if (!credentialData) {
+                throw new Error('No hay dispositivo registrado. Registra primero.');
+            }
+
+            const rawIdBuffer = base64UrlToBuffer(credentialData.rawId);
+            const publicKey = {
+                challenge: crypto.getRandomValues(new Uint8Array(32)),
+                allowCredentials: [{ id: rawIdBuffer, type: 'public-key' }],
+                userVerification: 'required',
+                timeout: 60000
+            };
+
+            const assertion = await navigator.credentials.get({ publicKey });
+            if (assertion.id !== credentialData.id) {
+                throw new Error('Credencial no válida.');
+            }
+
+            loginMessage.textContent = '✅ Acceso concedido. Cargando panel...';
+            loginMessage.className = 'success';
+
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            cargarDatos();
+
+        } catch (error) {
+            console.error('Error al autenticar:', error);
+            loginMessage.textContent = '❌ Error al autenticar: ' + error.message;
+            loginMessage.className = 'error';
+        } finally {
+            registerBtn.disabled = false;
+            loginBtn.disabled = false;
+        }
+    }
+
+    // =============================================
+    // NAVEGACIÓN ENTRE MÉTODOS
+    // =============================================
+    document.querySelectorAll('.login-tabs button').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.login-tabs button').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const method = this.dataset.method;
+            document.querySelectorAll('.login-method').forEach(m => m.classList.remove('active'));
+            document.getElementById(`method-${method}`).classList.add('active');
+            // Resetear mensaje
+            if (method === 'pattern') {
+                loginMessage.textContent = '🔒 Ingresa tu patrón o regístrate.';
+                loginMessage.className = 'info';
+                loadPattern();
+            } else {
+                loginMessage.textContent = '📱 Usa Face ID / Windows Hello / huella.';
+                loginMessage.className = 'info';
+                loadCredential();
+                if (credentialData) {
+                    loginMessage.textContent = '🔑 Dispositivo registrado. Haz clic en "Iniciar sesión".';
+                } else {
+                    loginMessage.textContent = '📱 Registra tu dispositivo para usar biometría.';
+                }
+            }
+        });
+    });
+
+    // =============================================
+    // CIERRE DE SESIÓN
+    // =============================================
+    function logout() {
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('dashboard').style.display = 'none';
+        // Resetear estado de patrón
+        loadPattern();
+        // Resetear estado de webauthn
+        const hasCred = loadCredential();
+        if (hasCred) {
+            document.querySelector('#method-webauthn .webauthn-status')?.remove();
+            loginMessage.textContent = '🔑 Dispositivo registrado. Elige método.';
+        } else {
+            loginMessage.textContent = 'Sesión cerrada. Elige un método.';
+        }
+        loginMessage.className = 'info';
+        // Detener auto-refresh
+        if (intervaloAuto) {
+            clearInterval(intervaloAuto);
+            intervaloAuto = null;
+        }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // =============================================
+    // FUNCIONES DEL PANEL (resto igual que antes)
     // =============================================
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
@@ -1131,9 +1608,6 @@
         });
     }
 
-    // =============================================
-    // CARGAR DATOS DESDE SHEETS
-    // =============================================
     async function cargarDatos() {
         const tablaContainer = document.getElementById('tablaContainer');
         tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
@@ -1170,9 +1644,6 @@
         }
     }
 
-    // =============================================
-    // ESTADÍSTICAS
-    // =============================================
     function actualizarStats(data) {
         const total = data.length;
         document.getElementById('totalContactos').textContent = total;
@@ -1198,9 +1669,6 @@
         document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
     }
 
-    // =============================================
-    // GRÁFICO
-    // =============================================
     function actualizarGrafico(data) {
         const servicioCount = {};
         data.forEach(item => {
@@ -1233,9 +1701,6 @@
         });
     }
 
-    // =============================================
-    // ÚLTIMOS 5 REGISTROS
-    // =============================================
     function actualizarUltimos(data) {
         const container = document.getElementById('ultimosRegistros');
         if (data.length === 0) {
@@ -1258,9 +1723,6 @@
         container.innerHTML = html;
     }
 
-    // =============================================
-    // TABLA COMPLETA
-    // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
         if (data.length === 0) {
@@ -1330,9 +1792,6 @@
         container.innerHTML = html;
     }
 
-    // =============================================
-    // PRESUPUESTOS ENVIADOS (dos columnas de precios)
-    // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
         if (!data || data.length === 0) {
@@ -1380,9 +1839,6 @@
         container.innerHTML = html;
     }
 
-    // =============================================
-    // ELIMINAR PRESUPUESTO
-    // =============================================
     async function eliminarPresupuesto(index) {
         const presupuesto = datosCache.presupuestos[index];
         if (!presupuesto) return;
@@ -1393,9 +1849,6 @@
         cargarDatos();
     }
 
-    // =============================================
-    // EDITAR REGISTRO (con preloader)
-    // =============================================
     function editarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1443,9 +1896,6 @@
         }
     }
 
-    // =============================================
-    // ELIMINAR REGISTRO (contacto)
-    // =============================================
     async function eliminarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) return;
@@ -1456,9 +1906,6 @@
         cargarDatos();
     }
 
-    // =============================================
-    // PRESUPUESTO
-    // =============================================
     function abrirPresupuesto(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1520,12 +1967,218 @@
     document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
-    // =============================================
-    // GUARDAR PRESUPUESTO (optimizado)
-    // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
         const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
         const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
         const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-        const total = subt
+        const total = subtotal * 1.21;
+        const numero = document.getElementById('previewNumero').textContent;
+        const validez = document.getElementById('presupuestoValidez').value || 30;
+        const materiales = document.getElementById('presupuestoMateriales').value;
+
+        const btn = document.getElementById('guardarPresupuestoBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+
+        try {
+            const element = document.getElementById('presupuestoPreview');
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            const canvas = await html2canvas(element, {
+                scale: 1.5,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: '#ffffff',
+                logging: false,
+                willReadFrequently: true,
+                width: element.scrollWidth,
+                height: element.scrollHeight
+            });
+
+            if (canvas.width === 0 || canvas.height === 0) {
+                throw new Error('El canvas generado está vacío.');
+            }
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.85);
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const marginX = 10;
+            const marginY = 20;
+            const maxWidth = pdfWidth - 2 * marginX;
+            const maxHeight = pdfHeight - marginY;
+
+            const scaleX = maxWidth / canvas.width;
+            const scaleY = maxHeight / canvas.height;
+            const scale = Math.min(scaleX, scaleY);
+
+            const imgWidth = canvas.width * scale;
+            const imgHeight = canvas.height * scale;
+            const xOffset = (pdfWidth - imgWidth) / 2;
+            const yOffset = marginY;
+
+            pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
+
+            const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
+            pdf.save(filename);
+
+            const datos = {
+                action: 'save_budget',
+                nombre, servicio, descripcion,
+                precio: total.toFixed(2),
+                numero, validez, materiales
+            };
+            fetch(URL_SCRIPT, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
+
+        } catch (error) {
+            console.error('Error al generar el PDF:', error);
+            alert('El presupuesto se guardó en la hoja, pero hubo un error al generar el PDF.\nRevisa la consola para más detalles.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+            cerrarModal('presupuestoModal');
+            cargarDatos();
+        }
+    }
+
+    document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
+
+    async function enviarAccion(datos) {
+        try {
+            await fetch(URL_SCRIPT, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+            return true;
+        } catch (error) {
+            console.error('Error al enviar acción:', error);
+            alert('Hubo un error al procesar la solicitud. Revisa la consola.');
+            return false;
+        }
+    }
+
+    function cerrarModal(id) {
+        document.getElementById(id).classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
+    document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
+    document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) { this.classList.remove('active'); document.body.style.overflow = ''; }
+        });
+    });
+
+    document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
+    document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
+
+    function actualizarResumenContactos(data) {
+        const container = document.getElementById('resumenContainer');
+        if (!data || data.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
+            return;
+        }
+
+        const contactosMap = new Map();
+        data.forEach(item => {
+            const nombre = item.Nombre || 'Anónimo';
+            const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
+            if (!telefono) return;
+            const key = `${nombre}|${telefono}`;
+            if (contactosMap.has(key)) {
+                const contacto = contactosMap.get(key);
+                contacto.cantidad += 1;
+                if (item.Servicio && !contacto.servicios.includes(item.Servicio)) {
+                    contacto.servicios.push(item.Servicio);
+                }
+            } else {
+                contactosMap.set(key, {
+                    nombre,
+                    telefono,
+                    cantidad: 1,
+                    servicios: item.Servicio ? [item.Servicio] : []
+                });
+            }
+        });
+
+        const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
+        if (contactos.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
+            return;
+        }
+
+        let html = `<table><thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th style="text-align:center;">Servicios</th><th style="text-align:center;">Contactar</th></tr></thead><tbody>`;
+        contactos.forEach((contacto, index) => {
+            const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
+            const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
+            const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
+            const serviciosLista = contacto.servicios.join(', ');
+
+            html += `<tr>
+                <td>${index + 1}</td>
+                <td><strong>${contacto.nombre}</strong></td>
+                <td>${contacto.telefono}</td>
+                <td style="text-align:center;">
+                    <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
+                    <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
+                </td>
+                <td style="text-align:center;">
+                    <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a>
+                </td>
+            </tr>`;
+        });
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function iniciarAutoRefresh() {
+        if (intervaloAuto) clearInterval(intervaloAuto);
+        intervaloAuto = setInterval(cargarDatos, 300000);
+        console.log('Auto-refresh cada 5 minutos activado.');
+    }
+
+    // Inicialización: cargar patrón al cargar la página
+    loadPattern();
+    loadCredential();
+
+    // Si hay credencial webauthn, actualizar mensaje
+    if (credentialData) {
+        document.querySelector('#method-webauthn .webauthn-status')?.remove();
+    }
+
+    // Eventos Webauthn
+    document.getElementById('registerBtn').addEventListener('click', registerDevice);
+    document.getElementById('loginBtn').addEventListener('click', loginWebAuthn);
+
+    // Cuando el dashboard se muestre, iniciar auto-refresh
+    const observer = new MutationObserver(() => {
+        if (document.getElementById('dashboard').style.display === 'block') {
+            iniciarAutoRefresh();
+        }
+    });
+    observer.observe(document.getElementById('dashboard'), { attributes: true, attributeFilter: ['style'] });
+
+    window.addEventListener('beforeunload', function() {
+        if (intervaloAuto) clearInterval(intervaloAuto);
+    });
+
+    console.log('✅ Panel de administración con doble autenticación: Patrón + WebAuthn');
+</script>
+</body>
+</html>
