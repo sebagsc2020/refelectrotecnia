@@ -768,6 +768,33 @@
     }
 
     // =============================================
+    // FUNCIÓN PARA FORMATEAR FECHA EN 24 HORAS
+    // =============================================
+    function formatearFechaHora(fechaISO) {
+        if (!fechaISO) return '';
+        const fecha = new Date(fechaISO);
+        return fecha.toLocaleString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+    }
+
+    function formatearFecha(fechaISO) {
+        if (!fechaISO) return '';
+        const fecha = new Date(fechaISO);
+        return fecha.toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    // =============================================
     // CARGAR DATOS DESDE SHEETS
     // =============================================
     async function cargarDatos() {
@@ -871,7 +898,7 @@
     }
 
     // =============================================
-    // ÚLTIMOS 5 REGISTROS
+    // ÚLTIMOS 5 REGISTROS (con fecha en 24h)
     // =============================================
     function actualizarUltimos(data) {
         const container = document.getElementById('ultimosRegistros');
@@ -884,7 +911,7 @@
         ultimos.forEach(item => {
             const nombre = item.Nombre || 'Anónimo';
             const servicio = item.Servicio || 'No especificado';
-            const fecha = item.Fecha ? new Date(item.Fecha).toLocaleDateString('es-AR') : '';
+            const fecha = formatearFecha(item.Fecha);
             const esEmergencia = servicio.toLowerCase().includes('emergencia');
             html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
                 <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
@@ -896,7 +923,7 @@
     }
 
     // =============================================
-    // TABLA COMPLETA (CONTACTOS) con columna "Presupuesto"
+    // TABLA COMPLETA (CONTACTOS) con columna "Presupuesto" y fecha en 24h
     // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
@@ -918,7 +945,7 @@
 
         sorted.forEach((row) => {
             const originalIndex = data.indexOf(row);
-            const fecha = row.Fecha ? new Date(row.Fecha).toLocaleString('es-AR') : '';
+            const fecha = formatearFechaHora(row.Fecha);
             const nombre = row.Nombre || '';
             const telefono = row.Teléfono || '';
             const email = row.Email || '';
@@ -968,7 +995,7 @@
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS ENVIADOS
+    // RENDERIZAR PRESUPUESTOS ENVIADOS (con fecha en 24h)
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -990,7 +1017,7 @@
             const servicio = row.Servicio || '-';
             const descripcion = row.Descripción || '-';
             const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0';
-            const fecha = row.Fecha ? new Date(row.Fecha).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' }) : '-';
+            const fecha = formatearFecha(row.Fecha);
 
             html += `<tr>
                 <td><strong>${nombre}</strong></td>
@@ -1130,7 +1157,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (optimizado: PDF primero, luego Sheets en segundo plano)
+    // GUARDAR PRESUPUESTO (optimizado)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1147,12 +1174,11 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
         try {
-            // 1. Generar PDF (primero, para mayor velocidad)
             const element = document.getElementById('presupuestoPreview');
             await new Promise(resolve => setTimeout(resolve, 200));
 
             const canvas = await html2canvas(element, {
-                scale: 1.5,                // reducido para mayor velocidad
+                scale: 1.5,
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
@@ -1166,15 +1192,15 @@
                 throw new Error('El canvas generado está vacío.');
             }
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.85); // calidad reducida
+            const imgData = canvas.toDataURL('image/jpeg', 0.85);
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            const marginX = 10; // 1 cm
-            const marginY = 20; // 2 cm
+            const marginX = 10;
+            const marginY = 20;
             const maxWidth = pdfWidth - 2 * marginX;
             const maxHeight = pdfHeight - marginY;
 
@@ -1192,7 +1218,6 @@
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
-            // 2. Guardar en Google Sheets (en segundo plano, sin esperar respuesta)
             const datos = {
                 action: 'save_budget',
                 nombre, servicio, descripcion,
