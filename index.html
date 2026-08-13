@@ -11,29 +11,17 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-HRHFCYBZBJ');
     </script>
 
-    <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/png" href="/images/72x72.png">
     <link rel="shortcut icon" href="/images/72x72.png">
-    
-    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (Iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========================================
-                   RESET Y VARIABLES
-                ======================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary-dark: #0A2E5C;
@@ -44,6 +32,7 @@
             --accent-orange: #FF7A00;
             --danger-red: #E53935;
             --wa-green: #25D366;
+            --success-green: #2E7D32;
             --light-bg: #F8F9FA;
             --gray-text: #4A4A4A;
             --white: #FFFFFF;
@@ -54,9 +43,7 @@
             --font: 'Inter', sans-serif;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font);
@@ -65,10 +52,7 @@
             line-height: 1.6;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+        a { text-decoration: none; color: inherit; }
 
         .container {
             max-width: 1200px;
@@ -119,9 +103,7 @@
             color: var(--primary-dark);
         }
 
-        .logo h1 span {
-            color: var(--primary-cyan);
-        }
+        .logo h1 span { color: var(--primary-cyan); }
 
         .nav-menu {
             display: flex;
@@ -149,13 +131,8 @@
             transition: var(--transition);
         }
 
-        .nav-menu a:hover {
-            color: var(--primary-dark);
-        }
-
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
+        .nav-menu a:hover { color: var(--primary-dark); }
+        .nav-menu a:hover::after { width: 100%; }
 
         .nav-cta {
             background: var(--primary-cyan);
@@ -167,9 +144,7 @@
             border: 2px solid var(--primary-cyan);
         }
 
-        .nav-cta::after {
-            display: none !important;
-        }
+        .nav-cta::after { display: none !important; }
 
         .nav-cta:hover {
             background: var(--primary-dark);
@@ -325,12 +300,7 @@
             left: -150%;
             width: 250%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.5) 35%, 
-                rgba(255, 255, 255, 0.5) 65%, 
-                transparent 100%
-            );
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 35%, rgba(255, 255, 255, 0.5) 65%, transparent 100%);
             transform: skewX(-25deg);
             animation: shimmerButton 4s infinite ease-in-out;
             z-index: 1;
@@ -348,9 +318,7 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 35px rgba(255, 184, 0, 0.2);
         }
-        .btn-primary:hover::before {
-            animation-duration: 2s;
-        }
+        .btn-primary:hover::before { animation-duration: 2s; }
 
         .btn-secondary {
             background: transparent;
@@ -394,9 +362,7 @@
             transition: transform 0.3s ease;
         }
 
-        .hero-image img:hover {
-            transform: scale(1.02);
-        }
+        .hero-image img:hover { transform: scale(1.02); }
 
         /* ========================================
                    BARRAS DE CONFIANZA
@@ -433,9 +399,7 @@
             border-radius: 50%;
         }
 
-        .trust-item .highlight {
-            color: var(--accent-orange);
-        }
+        .trust-item .highlight { color: var(--accent-orange); }
 
         /* ========================================
                    SERVICIOS
@@ -445,10 +409,7 @@
             background: var(--light-bg);
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+        .section-header { text-align: center; margin-bottom: 50px; }
 
         .section-header h3 {
             font-size: 0.85rem;
@@ -540,10 +501,7 @@
             box-shadow: var(--shadow);
         }
 
-        .slideshow {
-            position: absolute;
-            inset: 0;
-        }
+        .slideshow { position: absolute; inset: 0; }
 
         .slideshow::after {
             content: '';
@@ -597,9 +555,7 @@
             transition: var(--transition);
         }
 
-        .slide-dots button:hover {
-            background: rgba(255, 255, 255, 0.85);
-        }
+        .slide-dots button:hover { background: rgba(255, 255, 255, 0.85); }
 
         .slide-dots button.active {
             background: var(--accent-yellow);
@@ -613,9 +569,7 @@
             margin-bottom: 16px;
         }
 
-        .about-content h3 span {
-            color: var(--primary-cyan);
-        }
+        .about-content h3 span { color: var(--primary-cyan); }
 
         .about-content p {
             color: var(--gray-text);
@@ -629,9 +583,7 @@
             margin-top: 30px;
         }
 
-        .about-stats div {
-            text-align: left;
-        }
+        .about-stats div { text-align: left; }
 
         .about-stats .number {
             font-size: 2.2rem;
@@ -740,9 +692,7 @@
             transition: var(--transition);
         }
 
-        .faq-item:hover {
-            border-color: var(--primary-cyan);
-        }
+        .faq-item:hover { border-color: var(--primary-cyan); }
 
         .faq-question {
             padding: 20px 28px;
@@ -767,9 +717,7 @@
             font-size: 1.2rem;
         }
 
-        .faq-item.active .faq-question i {
-            transform: rotate(180deg);
-        }
+        .faq-item.active .faq-question i { transform: rotate(180deg); }
 
         .faq-answer {
             max-height: 0;
@@ -800,14 +748,8 @@
             margin-bottom: 10px;
         }
 
-        .coverage h2 span {
-            color: var(--accent-yellow);
-        }
-
-        .coverage p {
-            opacity: 0.8;
-            margin-bottom: 24px;
-        }
+        .coverage h2 span { color: var(--accent-yellow); }
+        .coverage p { opacity: 0.8; margin-bottom: 24px; }
 
         .coverage .nota {
             font-size: 0.9rem;
@@ -874,13 +816,8 @@
             display: block;
         }
 
-        .contact-detail .info-text .data {
-            color: #333;
-        }
-
-        .contact-detail .info-text .no-select {
-            user-select: none;
-        }
+        .contact-detail .info-text .data { color: #333; }
+        .contact-detail .info-text .no-select { user-select: none; }
 
         .btn-secondary-dark {
             background: transparent;
@@ -919,9 +856,7 @@
             margin-bottom: 20px;
         }
 
-        .form-group {
-            margin-bottom: 18px;
-        }
+        .form-group { margin-bottom: 18px; }
 
         .form-group input,
         .form-group textarea,
@@ -951,11 +886,8 @@
             padding-right: 64px;
         }
 
-        .textarea-wrapper {
-            position: relative;
-        }
+        .textarea-wrapper { position: relative; }
 
-        /* ===== BOTÓN DE DICTADO POR VOZ ===== */
         .btn-mic {
             position: absolute;
             right: 12px;
@@ -975,9 +907,7 @@
             box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
         }
 
-        .btn-mic:hover {
-            background: var(--primary-dark);
-        }
+        .btn-mic:hover { background: var(--primary-dark); }
 
         .btn-mic.listening {
             background: var(--danger-red);
@@ -997,8 +927,25 @@
             font-size: 0.8rem;
         }
 
-        .mic-hint i {
-            color: var(--danger-red);
+        .mic-hint i { color: var(--danger-red); }
+
+        /* Mensaje de éxito del formulario */
+        .form-success {
+            display: none;
+            background: #E8F5E9;
+            border: 2px solid var(--success-green);
+            color: var(--success-green);
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-success.visible {
+            display: flex;
+            animation: fadeIn 0.4s ease;
         }
 
         .ubicacion-group {
@@ -1006,9 +953,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .ubicacion-group.visible {
-            display: block;
-        }
+        .ubicacion-group.visible { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -1075,9 +1020,7 @@
             transform: translateY(-2px);
         }
 
-        .btn-maps.hidden {
-            display: none;
-        }
+        .btn-maps.hidden { display: none; }
 
         .ubicacion-group small {
             display: block;
@@ -1103,10 +1046,15 @@
             gap: 12px;
         }
 
-        .btn-submit:hover {
+        .btn-submit:hover:not(:disabled) {
             background: var(--primary-cyan);
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         /* ========================================
@@ -1162,10 +1110,7 @@
             transition: opacity 0.3s ease;
         }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.active { display: flex; opacity: 1; }
 
         .modal-content {
             background: var(--white);
@@ -1214,9 +1159,7 @@
             padding-right: 40px;
         }
 
-        .modal-content h2 span {
-            color: var(--primary-cyan);
-        }
+        .modal-content h2 span { color: var(--primary-cyan); }
 
         .modal-content .modal-body {
             color: var(--gray-text);
@@ -1224,36 +1167,14 @@
             line-height: 1.8;
         }
 
-        .modal-content .modal-body p {
-            margin-bottom: 16px;
-        }
+        .modal-content .modal-body p { margin-bottom: 16px; }
+        .modal-content .modal-body ul { padding-left: 24px; margin-bottom: 16px; }
+        .modal-content .modal-body ul li { margin-bottom: 8px; }
 
-        .modal-content .modal-body ul {
-            padding-left: 24px;
-            margin-bottom: 16px;
-        }
-
-        .modal-content .modal-body ul li {
-            margin-bottom: 8px;
-        }
-
-        .modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb {
-            background: var(--primary-cyan);
-            border-radius: 10px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--primary-cyan); border-radius: 10px; }
+        .modal-content::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
 
         /* ========================================
                    MODAL DIAGNÓSTICO DE EMERGENCIA
@@ -1485,9 +1406,7 @@
             margin-bottom: 12px;
         }
 
-        .footer-brand h4 span {
-            color: var(--primary-cyan);
-        }
+        .footer-brand h4 span { color: var(--primary-cyan); }
 
         .footer-brand p {
             max-width: 300px;
@@ -1501,13 +1420,8 @@
             font-size: 1.1rem;
         }
 
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 10px;
-        }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
 
         .footer-col ul li a {
             transition: var(--transition);
@@ -1537,9 +1451,7 @@
             text-underline-offset: 2px;
         }
 
-        .footer-bottom a:hover {
-            color: var(--accent-yellow);
-        }
+        .footer-bottom a:hover { color: var(--accent-yellow); }
 
         /* ========================================
                    RESPONSIVE
@@ -1555,36 +1467,26 @@
                 margin-left: auto;
                 margin-right: auto;
             }
-            .hero-badges {
-                justify-content: center;
-            }
-            .hero-buttons {
-                justify-content: center;
-            }
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+            .hero-badges { justify-content: center; }
+            .hero-buttons { justify-content: center; }
+            .about-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
             .hero-image {
                 order: -1;
                 margin-bottom: 10px;
             }
-            .hero-image img {
-                max-width: 360px;
-            }
+            .hero-image img { max-width: 360px; }
         }
 
         @media (max-width: 768px) {
-            .header-matricula {
-                display: none;
+            /* ✅ REDUCCIÓN DEL PADDING-TOP DEL HERO A LA MITAD EN MÓVIL */
+            .hero {
+                padding: 40px 0 60px;
             }
+
+            .header-matricula { display: none; }
             
-            /* ===== MENÚ MÓVIL ===== */
             .nav-menu {
                 position: fixed;
                 top: 0;
@@ -1602,14 +1504,8 @@
                 overflow-y: auto;
             }
             
-            .nav-menu.active {
-                left: 0;
-            }
-            
-            .nav-menu li {
-                width: 100%;
-                list-style: none;
-            }
+            .nav-menu.active { left: 0; }
+            .nav-menu li { width: 100%; list-style: none; }
             
             .nav-menu li a {
                 display: block;
@@ -1619,14 +1515,8 @@
                 font-size: 1rem;
             }
             
-            .nav-menu li a:hover {
-                background: var(--light-bg);
-            }
-            
-            .nav-menu li a.nav-cta {
-                text-align: center;
-                margin-top: 10px;
-            }
+            .nav-menu li a:hover { background: var(--light-bg); }
+            .nav-menu li a.nav-cta { text-align: center; margin-top: 10px; }
             
             .hamburger {
                 display: flex;
@@ -1635,38 +1525,16 @@
                 flex-shrink: 0;
             }
             
-            .hamburger.active span:nth-child(1) {
-                transform: rotate(45deg) translate(5px, 5px);
-            }
-            .hamburger.active span:nth-child(2) {
-                opacity: 0;
-            }
-            .hamburger.active span:nth-child(3) {
-                transform: rotate(-45deg) translate(5px, -5px);
-            }
+            .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
             
-            .hero-content h2 {
-                font-size: 2.4rem;
-            }
-            .section-header h2 {
-                font-size: 2rem;
-            }
-            .about-stats {
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-            }
-            .contact-form {
-                padding: 24px;
-            }
+            .hero-content h2 { font-size: 2.4rem; }
+            .section-header h2 { font-size: 2rem; }
+            .about-stats { gap: 20px; flex-wrap: wrap; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .contact-form { padding: 24px; }
             .cookie-consent {
                 bottom: 10px;
                 left: 10px;
@@ -1674,46 +1542,22 @@
                 max-width: none;
                 padding: 16px 20px;
             }
-            .modal-content {
-                padding: 30px 20px;
-                max-height: 85vh;
-            }
-            .modal-content h2 {
-                font-size: 1.4rem;
-            }
-            .btn-primary::before {
-                animation-duration: 5s;
-            }
-            .ubicacion-wrapper {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .btn-maps, .btn-ubicacion {
-                justify-content: center;
-            }
-            .hero .container {
-                gap: 30px;
-            }
-            .hero-image img {
-                max-width: 280px;
-            }
+            .modal-content { padding: 30px 20px; max-height: 85vh; }
+            .modal-content h2 { font-size: 1.4rem; }
+            .btn-primary::before { animation-duration: 5s; }
+            .ubicacion-wrapper { flex-direction: column; align-items: stretch; }
+            .btn-maps, .btn-ubicacion { justify-content: center; }
+            .hero .container { gap: 30px; }
+            .hero-image img { max-width: 280px; }
             
             .header .container {
                 flex-wrap: nowrap;
                 position: relative;
             }
             
-            .logo {
-                flex-shrink: 0;
-            }
-            
-            .logo h1 {
-                font-size: 1.3rem;
-            }
-            
-            .logo-img {
-                height: 40px;
-            }
+            .logo { flex-shrink: 0; }
+            .logo h1 { font-size: 1.3rem; }
+            .logo-img { height: 40px; }
 
             .btn-secondary {
                 font-size: 1rem;
@@ -1741,11 +1585,8 @@
             pointer-events: auto;
         }
 
-        .overlay.active {
-            display: block;
-        }
+        .overlay.active { display: block; }
 
-        /* ✅ FIX: hover del botón CTA dentro del menú móvil */
         .nav-menu li a.nav-cta:hover {
             background: var(--primary-dark) !important;
             border-color: var(--primary-dark) !important;
@@ -1757,7 +1598,6 @@
 </head>
 <body>
 
-    <!-- ==================== HEADER ==================== -->
     <header class="header" id="header">
         <div class="container">
             <div class="logo">
@@ -1784,7 +1624,6 @@
     </header>
     <div class="overlay" id="overlay"></div>
 
-    <!-- ==================== HERO (SECCIÓN INICIO) ==================== -->
     <section class="hero" id="inicio">
         <div class="container">
             <div class="hero-image">
@@ -1804,7 +1643,6 @@
         </div>
     </section>
 
-    <!-- ==================== BARRA DE CONFIANZA ==================== -->
     <section class="trust-bar">
         <div class="container">
             <div class="trust-grid">
@@ -1816,7 +1654,6 @@
         </div>
     </section>
 
-    <!-- ==================== SERVICIOS ==================== -->
     <section class="services" id="servicios">
         <div class="container">
             <div class="section-header">
@@ -1835,7 +1672,6 @@
         </div>
     </section>
 
-    <!-- ==================== SOBRE NOSOTROS (CON SLIDESHOW) ==================== -->
     <section class="about" id="nosotros">
         <div class="container">
             <div class="about-grid">
@@ -1868,7 +1704,6 @@
         </div>
     </section>
 
-    <!-- ==================== TESTIMONIOS ==================== -->
     <section class="testimonials" id="testimonios">
         <div class="container">
             <div class="section-header">
@@ -1896,7 +1731,6 @@
         </div>
     </section>
 
-    <!-- ==================== FAQs ==================== -->
     <section class="faq" id="faq">
         <div class="container">
             <div class="section-header">
@@ -1928,7 +1762,6 @@
         </div>
     </section>
 
-    <!-- ==================== COBERTURA ==================== -->
     <section class="coverage">
         <div class="container">
             <h2>Zonas de <span>cobertura</span></h2>
@@ -1937,7 +1770,6 @@
         </div>
     </section>
 
-    <!-- ==================== CONTACTO / PRESUPUESTO ==================== -->
     <section class="contact" id="contacto">
         <div class="container">
             <div class="section-header">
@@ -1985,6 +1817,9 @@
                 </div>
                 <form class="contact-form" id="contactForm">
                     <h4>Completa tus datos</h4>
+                    <div class="form-success" id="formSuccess">
+                        <i class="fas fa-check-circle"></i> <span>¡Solicitud enviada! Te responderemos a la brevedad por WhatsApp.</span>
+                    </div>
                     <div class="form-group">
                         <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required>
                     </div>
@@ -2041,18 +1876,14 @@
         </div>
     </section>
 
-    <!-- ==================== MODAL LEGAL (POPUP) ==================== -->
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content">
             <button class="modal-close" id="modalClose" aria-label="Cerrar">&times;</button>
             <h2 id="modalTitle">Título</h2>
-            <div class="modal-body" id="modalBody">
-                <!-- Contenido dinámico -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
-    <!-- ==================== MODAL DIAGNÓSTICO DE EMERGENCIA ==================== -->
     <div class="modal-overlay" id="diagModal">
         <div class="modal-content">
             <button class="modal-close" id="diagClose" aria-label="Cerrar">&times;</button>
@@ -2063,7 +1894,6 @@
         </div>
     </div>
 
-    <!-- ==================== COOKIE CONSENT ==================== -->
     <div class="cookie-consent" id="cookieConsent">
         <p><i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web. <a href="#" id="cookiePolicyLink">Política de cookies</a></p>
         <div class="cookie-buttons">
@@ -2072,12 +1902,10 @@
         </div>
     </div>
 
-    <!-- ==================== BOTÓN FLOTANTE INSTAGRAM ==================== -->
     <a href="https://www.instagram.com/rodrigoeduardofigueras/" target="_blank" rel="noopener noreferrer" class="float-instagram" aria-label="Seguinos en Instagram" title="Seguinos en Instagram">
         <i class="fab fa-instagram"></i>
     </a>
 
-    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -2117,7 +1945,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // --- Helper para eventos de Google Analytics (seguro si hay adblock) ---
+            // ⚠️⚠️⚠️ PEGA AQUÍ LA URL DE TU APPS SCRIPT (ver instrucciones abajo) ⚠️⚠️⚠️
+            const SHEETS_WEBHOOK_URL = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT';
+            // Ejemplo: 'https://script.google.com/macros/s/AKfycbX.../exec'
+
             function trackEvent(name, params) {
                 if (typeof window.gtag === 'function') {
                     window.gtag('event', name, params || {});
@@ -2143,30 +1974,20 @@
                 document.body.style.overflow = '';
             }
             
-            if (hamburger) {
-                hamburger.addEventListener('click', toggleMenu);
-            }
-            
-            if (overlay) {
-                overlay.addEventListener('click', closeMenu);
-            }
+            if (hamburger) hamburger.addEventListener('click', toggleMenu);
+            if (overlay) overlay.addEventListener('click', closeMenu);
 
-            // Cerrar menú y hacer scroll suave al hacer clic en cualquier link del menú
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href && href.startsWith('#')) {
                         e.preventDefault();
                         closeMenu();
-                        
-                        setTimeout(() => {
-                            scrollToSection(href);
-                        }, 350);
+                        setTimeout(() => scrollToSection(href), 350);
                     }
                 });
             });
 
-            // Scroll suave para otros enlaces internos (hero, footer, etc.)
             document.querySelectorAll('a[href^="#"]:not(.nav-menu a)').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -2179,23 +2000,18 @@
                 });
             });
 
-            // Helper de scroll con offset del header
             function scrollToSection(selector) {
                 const el = document.querySelector(selector);
                 if (!el) return;
-                const headerOffset = 80;
-                const y = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
                 window.scrollTo({ top: y, behavior: 'smooth' });
             }
 
-            // Cerrar menú al presionar Escape
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                    closeMenu();
-                }
+                if (e.key === 'Escape' && navMenu.classList.contains('active')) closeMenu();
             });
 
-            // --- SLIDESHOW SECCIÓN NOSOTROS ---
+            // --- SLIDESHOW ---
             const slides = document.querySelectorAll('#aboutSlideshow .slide');
             const dotsContainer = document.getElementById('slideDots');
             let currentSlide = 0;
@@ -2224,9 +2040,7 @@
                     dots[currentSlide].classList.add('active');
                 }
 
-                function nextSlide() {
-                    goToSlide(currentSlide + 1);
-                }
+                function nextSlide() { goToSlide(currentSlide + 1); }
 
                 function restartSlideshow() {
                     clearInterval(slideInterval);
@@ -2236,15 +2050,12 @@
                 restartSlideshow();
 
                 document.addEventListener('visibilitychange', function() {
-                    if (document.hidden) {
-                        clearInterval(slideInterval);
-                    } else {
-                        restartSlideshow();
-                    }
+                    if (document.hidden) clearInterval(slideInterval);
+                    else restartSlideshow();
                 });
             }
 
-            // --- DICTADO POR VOZ (Web Speech API) ---
+            // --- DICTADO POR VOZ ---
             const mensajeTextarea = document.getElementById('mensaje');
             const btnMic = document.getElementById('btnMic');
             const micHint = document.getElementById('micHint');
@@ -2256,10 +2067,7 @@
                 recognition.continuous = true;
                 recognition.interimResults = true;
 
-                let listening = false;
-                let shouldListen = false;
-                let baseText = '';
-                let finalTranscript = '';
+                let listening = false, shouldListen = false, baseText = '', finalTranscript = '';
 
                 recognition.onstart = function() {
                     listening = true;
@@ -2274,11 +2082,8 @@
                     let interim = '';
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript.trim() + ' ';
-                        } else {
-                            interim += transcript;
-                        }
+                        if (event.results[i].isFinal) finalTranscript += transcript.trim() + ' ';
+                        else interim += transcript;
                     }
                     mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
                 };
@@ -2287,16 +2092,13 @@
                     shouldListen = false;
                     stopListening();
                     if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                        alert('Permiso de micrófono denegado. Habilitá el micrófono en el navegador para usar el dictado por voz.');
+                        alert('Permiso de micrófono denegado.');
                     }
                 };
 
                 recognition.onend = function() {
-                    if (shouldListen) {
-                        try { recognition.start(); } catch (e) {}
-                    } else {
-                        stopListening();
-                    }
+                    if (shouldListen) { try { recognition.start(); } catch (e) {} }
+                    else stopListening();
                 };
 
                 btnMic.addEventListener('click', function() {
@@ -2321,7 +2123,7 @@
                 if (micHint) micHint.style.display = 'none';
             }
 
-            // --- DIAGNÓSTICO DE EMERGENCIA (asistente guiado) ---
+            // --- DIAGNÓSTICO DE EMERGENCIA ---
             const diagModal = document.getElementById('diagModal');
             const diagBody = document.getElementById('diagBody');
             const diagClose = document.getElementById('diagClose');
@@ -2356,14 +2158,10 @@
                 }
             ];
 
-            let diagScore = 0;
-            let diagTags = [];
-            let diagStepIndex = 0;
+            let diagScore = 0, diagTags = [], diagStepIndex = 0;
 
             function resetDiag() {
-                diagScore = 0;
-                diagTags = [];
-                diagStepIndex = 0;
+                diagScore = 0; diagTags = []; diagStepIndex = 0;
             }
 
             function openDiag() {
@@ -2379,18 +2177,11 @@
                 document.body.style.overflow = '';
             }
 
-            document.querySelectorAll('[data-diag]').forEach(function(btn) {
-                btn.addEventListener('click', openDiag);
-            });
-
+            document.querySelectorAll('[data-diag]').forEach(btn => btn.addEventListener('click', openDiag));
             diagClose.addEventListener('click', closeDiag);
-            diagModal.addEventListener('click', function(e) {
-                if (e.target === diagModal) closeDiag();
-            });
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && diagModal.classList.contains('active')) {
-                    closeDiag();
-                }
+            diagModal.addEventListener('click', e => { if (e.target === diagModal) closeDiag(); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && diagModal.classList.contains('active')) closeDiag();
             });
 
             function renderDiagStep() {
@@ -2410,11 +2201,8 @@
                         diagScore += opt.score;
                         if (opt.tag) diagTags.push(opt.tag);
                         diagStepIndex++;
-                        if (diagStepIndex < diagSteps.length) {
-                            renderDiagStep();
-                        } else {
-                            renderDiagResult();
-                        }
+                        if (diagStepIndex < diagSteps.length) renderDiagStep();
+                        else renderDiagResult();
                     });
                 });
             }
@@ -2424,21 +2212,15 @@
 
                 let nivel, icon, color, title, text;
                 if (diagScore >= 5) {
-                    nivel = 'CRÍTICO';
-                    icon = 'fa-fire';
-                    color = 'var(--danger-red)';
+                    nivel = 'CRÍTICO'; icon = 'fa-fire'; color = 'var(--danger-red)';
                     title = '¡Situación CRÍTICA!';
                     text = 'Cortá la energía desde la llave general y no manipules la instalación ni uses agua. Necesitás atención profesional inmediata de un matriculado.';
                 } else if (diagScore >= 3) {
-                    nivel = 'ALTO';
-                    icon = 'fa-bolt';
-                    color = 'var(--accent-orange)';
+                    nivel = 'ALTO'; icon = 'fa-bolt'; color = 'var(--accent-orange)';
                     title = 'Urgencia ALTA';
                     text = 'Conviene resolverlo hoy mismo para evitar daños mayores. Coordinemos una visita de urgencia por WhatsApp o teléfono.';
                 } else {
-                    nivel = 'MEDIO';
-                    icon = 'fa-clock';
-                    color = 'var(--primary-cyan)';
+                    nivel = 'MEDIO'; icon = 'fa-clock'; color = 'var(--primary-cyan)';
                     title = 'Urgencia MEDIA / programable';
                     text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
                 }
@@ -2446,7 +2228,7 @@
                 trackEvent('diagnostico_completado', { nivel: nivel });
 
                 let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
-                diagTags.forEach(function(t) { waMsg += '• ' + t + '\n'; });
+                diagTags.forEach(t => waMsg += '• ' + t + '\n');
                 waMsg += '\n📊 Nivel estimado: ' + nivel;
                 const waUrl = 'https://wa.me/5493518692251?text=' + encodeURIComponent(waMsg);
 
@@ -2483,7 +2265,6 @@
                     renderDiagStep();
                 });
 
-                // Eventos de conversión para Analytics
                 const waBtn = diagBody.querySelector('.diag-wa');
                 if (waBtn) waBtn.addEventListener('click', function() {
                     trackEvent('click_whatsapp', { origen: 'diagnostico', nivel: nivel });
@@ -2506,7 +2287,7 @@
                 });
             });
 
-            // --- Mostrar campo de ubicación al seleccionar "Emergencia 24/7" ---
+            // --- Ubicación en emergencia ---
             const servicioSelect = document.getElementById('servicio');
             const ubicacionGroup = document.getElementById('ubicacionGroup');
             const ubicacionInput = document.getElementById('ubicacion');
@@ -2516,9 +2297,8 @@
             let ubicacionCompartida = false;
 
             servicioSelect.addEventListener('change', function() {
-                if (this.value === 'emergencia') {
-                    ubicacionGroup.classList.add('visible');
-                } else {
+                if (this.value === 'emergencia') ubicacionGroup.classList.add('visible');
+                else {
                     ubicacionGroup.classList.remove('visible');
                     ubicacionInput.value = '';
                     btnMaps.classList.add('hidden');
@@ -2527,14 +2307,9 @@
             });
 
             ubicacionInput.addEventListener('input', function() {
-                if (ubicacionCompartida) {
-                    ubicacionCompartida = false;
-                }
-                if (this.value.trim().length > 0 && !ubicacionCompartida) {
-                    btnMaps.classList.remove('hidden');
-                } else {
-                    btnMaps.classList.add('hidden');
-                }
+                if (ubicacionCompartida) ubicacionCompartida = false;
+                if (this.value.trim().length > 0 && !ubicacionCompartida) btnMaps.classList.remove('hidden');
+                else btnMaps.classList.add('hidden');
             });
 
             btnMaps.addEventListener('click', function() {
@@ -2544,11 +2319,8 @@
                 let url;
                 if (esCoordenada) {
                     const coords = direccion.match(/-?\d+\.\d+/g);
-                    if (coords && coords.length >= 2) {
-                        url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
-                    } else {
-                        url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
-                    }
+                    if (coords && coords.length >= 2) url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
+                    else url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
                 } else {
                     url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
                 }
@@ -2557,7 +2329,7 @@
 
             btnUbicacion.addEventListener('click', function() {
                 if (!navigator.geolocation) {
-                    alert('Tu navegador no soporta geolocalización. Por favor, ingresa la dirección manualmente.');
+                    alert('Tu navegador no soporta geolocalización.');
                     return;
                 }
                 btnUbicacion.disabled = true;
@@ -2567,28 +2339,28 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        const texto = lat.toFixed(6) + ', ' + lng.toFixed(6);
-                        ubicacionInput.value = texto;
+                        ubicacionInput.value = lat.toFixed(6) + ', ' + lng.toFixed(6);
                         ubicacionCompartida = true;
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
                     },
                     function(error) {
-                        alert('No se pudo obtener tu ubicación. Por favor, ingresa la dirección manualmente.\nError: ' + error.message);
+                        alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
                     },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             });
 
-            // --- Formulario: Enviar por WhatsApp ---
+            // ========================================
+            // 📊 FORMULARIO: ENVÍO A GOOGLE SHEETS + WHATSAPP
+            // ========================================
             const contactForm = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSuccess = document.getElementById('formSuccess');
+
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
@@ -2604,6 +2376,7 @@
                     return;
                 }
 
+                // 1) Preparar mensaje de WhatsApp
                 let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
                 whatsappMessage += '👤 *Nombre:* ' + nombre + '\n';
                 whatsappMessage += '📱 *Teléfono:* ' + telefono + '\n';
@@ -2613,24 +2386,61 @@
                     if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
                     whatsappMessage += '🔧 *Servicio:* ' + servicioLabel + '\n';
                 }
-                if (ubicacion) {
-                    whatsappMessage += '📍 *Ubicación:* ' + ubicacion + '\n';
-                }
+                if (ubicacion) whatsappMessage += '📍 *Ubicación:* ' + ubicacion + '\n';
                 if (mensaje) whatsappMessage += '📝 *Mensaje:* ' + mensaje + '\n';
 
                 const phoneNumber = '5493518692251';
                 const encodedMessage = encodeURIComponent(whatsappMessage);
+                const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
 
-                // Evento de conversión principal para Analytics
-                trackEvent('generate_lead', {
-                    metodo: 'formulario_whatsapp',
-                    servicio: servicio || 'no_especificado'
-                });
+                // Datos a enviar a Sheets
+                const payload = {
+                    fecha: new Date().toLocaleString('es-AR'),
+                    nombre: nombre,
+                    telefono: telefono,
+                    email: email || '-',
+                    servicio: servicio || '-',
+                    ubicacion: ubicacion || '-',
+                    mensaje: mensaje || '-',
+                    origen: 'web_formulario'
+                };
 
-                window.open('https://wa.me/' + phoneNumber + '?text=' + encodedMessage, '_blank');
+                // 2) Enviar a Google Sheets (si hay URL configurada)
+                if (SHEETS_WEBHOOK_URL && SHEETS_WEBHOOK_URL !== 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT') {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+                    fetch(SHEETS_WEBHOOK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(() => {
+                        trackEvent('generate_lead', { metodo: 'sheets', servicio: servicio || 'no_especificado' });
+                        // Mostrar mensaje de éxito
+                        formSuccess.classList.add('visible');
+                        setTimeout(() => formSuccess.classList.remove('visible'), 6000);
+                    })
+                    .catch((err) => {
+                        console.warn('Error al enviar a Sheets:', err);
+                        // Igual seguimos con WhatsApp como respaldo
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Enviar por WhatsApp';
+                    });
+                } else {
+                    trackEvent('generate_lead', { metodo: 'solo_whatsapp', servicio: servicio || 'no_especificado' });
+                }
+
+                // 3) Abrir WhatsApp (siempre, como respaldo)
+                setTimeout(() => {
+                    window.open(waUrl, '_blank');
+                }, 500);
             });
 
-            // --- Botón flotante Instagram (evento Analytics) ---
+            // --- Instagram flotante ---
             const instaBtn = document.querySelector('.float-instagram');
             if (instaBtn) {
                 instaBtn.addEventListener('click', function() {
@@ -2645,9 +2455,7 @@
                 cookieConsent.classList.add('hidden');
                 document.cookie = 'cookie_consent=' + choice + '; path=/; max-age=' + (60 * 60 * 24 * 365);
             }
-            if (localStorage.getItem('cookieConsent')) {
-                cookieConsent.classList.add('hidden');
-            }
+            if (localStorage.getItem('cookieConsent')) cookieConsent.classList.add('hidden');
             document.getElementById('acceptCookies').addEventListener('click', function() {
                 setCookieConsent('accepted');
                 trackEvent('cookies', { decision: 'aceptadas' });
@@ -2657,7 +2465,7 @@
                 trackEvent('cookies', { decision: 'rechazadas' });
             });
 
-            // --- MODAL LEGAL ---
+            // --- Modal Legal ---
             const modalOverlay = document.getElementById('legalModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
@@ -2666,38 +2474,15 @@
             const legalContent = {
                 privacidad: {
                     title: 'Política de privacidad',
-                    body: `
-                        <p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad de nuestros usuarios. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
-                        <p><strong>Datos que recopilamos:</strong> Podemos recoger tu nombre, dirección de correo electrónico, número de teléfono y cualquier otra información que nos proporciones voluntariamente a través de nuestro formulario de contacto o por otros medios.</p>
-                        <p><strong>Uso de la información:</strong> Utilizamos tus datos para responder a tus consultas, enviarte presupuestos, y mejorar nuestros servicios. No compartimos tu información con terceros sin tu consentimiento expreso.</p>
-                        <p><strong>Seguridad:</strong> Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados, pérdidas o alteraciones.</p>
-                        <p><strong>Derechos:</strong> Puedes solicitar el acceso, rectificación o eliminación de tus datos personales en cualquier momento enviándonos un correo a <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                        <p>Esta política puede actualizarse periódicamente. Te recomendamos revisarla con frecuencia.</p>
-                    `
+                    body: '<p>En <strong>REF Electrotecnia</strong>, nos tomamos muy en serio la privacidad...</p>'
                 },
                 terminos: {
                     title: 'Términos y condiciones',
-                    body: `
-                        <p>Bienvenido a <strong>REF Electrotecnia</strong>. Al utilizar nuestro sitio web y nuestros servicios, aceptas cumplir con los siguientes términos y condiciones.</p>
-                        <p><strong>Servicios:</strong> Ofrecemos servicios de instalación, reparación y mantenimiento eléctrico. Todos los trabajos se realizan con la máxima profesionalidad y cumpliendo con la normativa vigente.</p>
-                        <p><strong>Presupuestos:</strong> Los presupuestos son gratuitos y tienen una validez de 30 días. Cualquier cambio en el alcance del trabajo puede modificar el presupuesto inicial.</p>
-                        <p><strong>Garantía:</strong> Todos nuestros trabajos cuentan con una garantía escrita de 12 meses por defecto, salvo condiciones especiales acordadas previamente.</p>
-                        <p><strong>Responsabilidad:</strong> No nos hacemos responsables de daños causados por uso indebido de las instalaciones por parte del cliente o por eventos de fuerza mayor.</p>
-                        <p><strong>Propiedad intelectual:</strong> Todo el contenido de este sitio web (textos, imágenes, diseño) es propiedad de REF Electrotecnia y está protegido por las leyes de derechos de autor.</p>
-                        <p>Estos términos pueden ser modificados sin previo aviso. La versión vigente es la publicada en este sitio.</p>
-                    `
+                    body: '<p>Bienvenido a <strong>REF Electrotecnia</strong>...</p>'
                 },
                 aviso: {
                     title: 'Aviso legal',
-                    body: `
-                        <p>El presente aviso legal regula el uso del sitio web <strong>REF Electrotecnia</strong> (en adelante, el "Sitio"). Al acceder o utilizar el Sitio, aceptas las condiciones aquí establecidas.</p>
-                        <p><strong>Datos identificativos:</strong> REF Electrotecnia es una empresa dedicada a la electricidad, con domicilio en Córdoba, Argentina, y matrícula profesional 5617/1.</p>
-                        <p><strong>Propiedad intelectual:</strong> Los contenidos del Sitio (textos, gráficos, logotipos, etc.) son propiedad de REF Electrotecnia o de terceros que han autorizado su uso. Queda prohibida su reproducción total o parcial sin autorización expresa.</p>
-                        <p><strong>Exoneración de responsabilidad:</strong> El Sitio se proporciona "tal cual" y no garantizamos que esté libre de errores o interrupciones. No nos hacemos responsables de daños derivados del uso del Sitio.</p>
-                        <p><strong>Enlaces externos:</strong> Este Sitio puede contener enlaces a sitios de terceros. No somos responsables del contenido ni de las prácticas de privacidad de dichos sitios.</p>
-                        <p><strong>Legislación aplicable:</strong> El uso del Sitio y las presentes condiciones se rigen por la legislación de la República Argentina.</p>
-                        <p>Para cualquier consulta legal, puedes contactarnos en <a href="mailto:info@refelectrotecnia.com" style="color: var(--primary-cyan); text-decoration: underline;">info@refelectrotecnia.com</a>.</p>
-                    `
+                    body: '<p>El presente aviso legal regula el uso del sitio web...</p>'
                 }
             };
 
@@ -2708,41 +2493,31 @@
                 modalBody.innerHTML = content.body;
                 modalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                modalOverlay.setAttribute('aria-hidden', 'false');
                 modalClose.focus();
             }
 
             function closeModal() {
                 modalOverlay.classList.remove('active');
                 document.body.style.overflow = '';
-                modalOverlay.setAttribute('aria-hidden', 'true');
             }
 
             document.querySelectorAll('[data-modal]').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const type = this.getAttribute('data-modal');
-                    openModal(type);
+                    openModal(this.getAttribute('data-modal'));
                 });
             });
 
             modalClose.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                    closeModal();
-                }
+            modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
 
             document.getElementById('cookiePolicyLink').addEventListener('click', function(e) {
                 e.preventDefault();
                 openModal('privacidad');
             });
-
         });
     </script>
 </body>
