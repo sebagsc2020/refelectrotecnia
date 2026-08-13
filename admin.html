@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -548,6 +548,16 @@
             background: #f1f1f1;
             border-color: #ccc;
         }
+        /* Estilo para el tilde de presupuesto enviado */
+        .check-presupuesto {
+            color: #27ae60;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .no-presupuesto {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
         @media (max-width: 768px) {
             .chart-section { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -724,7 +734,6 @@
 
         <div class="presupuesto-actions">
             <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar</button>
-            <!-- Botón Cerrar eliminado -->
         </div>
     </div>
 </div>
@@ -883,7 +892,7 @@
     }
 
     // =============================================
-    // TABLA COMPLETA (CONTACTOS)
+    // TABLA COMPLETA (CONTACTOS) con columna "Presupuesto"
     // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
@@ -891,7 +900,12 @@
             container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
             return;
         }
-        const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje'];
+
+        // Obtener lista de nombres con presupuesto (normalizados)
+        const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
+
+        // Columnas: añadimos "Presupuesto"
+        const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
         let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
 
         const sorted = [...data].sort((a,b) => {
@@ -911,6 +925,13 @@
             const ubicacion = row.Ubicación || '';
             const mensaje = row.Mensaje || '';
             const esEmergencia = servicio.toLowerCase().includes('emergencia');
+
+            // Verificar si este contacto tiene presupuesto
+            const nombreNormalizado = nombre.trim().toLowerCase();
+            const tienePresupuesto = nombresConPresupuesto.includes(nombreNormalizado);
+            const checkHtml = tienePresupuesto
+                ? '<span class="check-presupuesto">✅</span>'
+                : '<span class="no-presupuesto">❌</span>';
 
             let mapsHtml = '';
             if (ubicacion) {
@@ -933,6 +954,7 @@
                 <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
                 <td>${mapsHtml || '—'}</td>
                 <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td>
+                <td style="text-align:center;">${checkHtml}</td>
                 <td style="text-align:center; white-space:nowrap;">
                     <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
                     <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
@@ -1107,7 +1129,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (CORREGIDO)
+    // GUARDAR PRESUPUESTO (corregido - sin error de canvas vacío)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1128,13 +1150,13 @@
         };
         await enviarAccion(datos);
 
-        // 2. Generar PDF con html2canvas + jsPDF
+        // 2. Generar PDF con html2canvas + jsPDF (corregido)
         try {
             const element = document.getElementById('presupuestoPreview');
-            // Esperar a que el contenido esté completamente renderizado
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Pequeña pausa para que se renderice todo
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-            // Capturar con html2canvas
+            // Capturar el elemento con html2canvas
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
@@ -1157,14 +1179,19 @@
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            // Calcular escala para que quepa en la página manteniendo la relación de aspecto
-            const scale = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
+            // Calcular escala para que quepa con márgenes de 5 mm
+            const margin = 5;
+            const maxWidth = pdfWidth - 2 * margin;
+            const maxHeight = pdfHeight - 2 * margin;
+
+            const scaleX = maxWidth / canvas.width;
+            const scaleY = maxHeight / canvas.height;
+            const scale = Math.min(scaleX, scaleY);
+
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
-
-            // Centrar horizontalmente y alinear arriba verticalmente (sin margen superior)
             const xOffset = (pdfWidth - imgWidth) / 2;
-            const yOffset = 0;
+            const yOffset = (pdfHeight - imgHeight) / 2;
 
             // Añadir la imagen al PDF
             pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
@@ -1184,7 +1211,6 @@
         cargarDatos();
     }
 
-    // Asignar evento al botón Guardar
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
     // =============================================
