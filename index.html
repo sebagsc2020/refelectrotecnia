@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Panel Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -32,257 +32,116 @@
             background: var(--light-bg);
             color: #1E1E1E;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 20px;
-        }
-        /* ========== PANTALLA DE LOGIN ========== */
+        /* ========== LOGIN CON PATRÓN ========== */
         #loginSection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--light-bg);
+        }
+        #loginSection .login-box {
             background: white;
             padding: 40px 30px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 420px;
+            width: 100%;
             text-align: center;
         }
-        #loginSection h1 {
-            font-size: 1.8rem;
+        #loginSection .login-box h1 {
+            font-size: 2rem;
             font-weight: 800;
             color: var(--primary-dark);
             margin-bottom: 4px;
         }
-        #loginSection h1 span { color: var(--primary-cyan); }
-        #loginSection p.sub {
+        #loginSection .login-box h1 span { color: var(--primary-cyan); }
+        #loginSection .login-box p.sub {
             color: var(--gray-text);
             margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-        #loginSection .login-tabs {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        #loginSection .login-tabs button {
-            padding: 8px 18px;
-            border: 2px solid #E9ECEF;
-            border-radius: 50px;
-            background: transparent;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--gray-text);
-        }
-        #loginSection .login-tabs button.active {
-            background: var(--primary-cyan);
-            color: white;
-            border-color: var(--primary-cyan);
-        }
-        #loginSection .login-tabs button:hover:not(.active) {
-            background: #f1f1f1;
-        }
-        #loginSection .login-method {
-            display: none;
-        }
-        #loginSection .login-method.active {
-            display: block;
-        }
-        #loginMessage {
-            margin: 12px 0;
             font-size: 0.95rem;
-            color: var(--gray-text);
-            min-height: 1.5em;
         }
-        #loginMessage.success { color: #27ae60; }
-        #loginMessage.error { color: #e74c3c; }
-        #loginMessage.info { color: var(--primary-cyan); }
-
-        /* ========== PATRÓN DE 9 PUNTOS ========== */
+        /* Contenedor del patrón */
         .pattern-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px 0;
-        }
-        .pattern-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            width: 250px;
-            height: 250px;
-            margin: 0 auto;
             position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 20px;
             touch-action: none;
             user-select: none;
             -webkit-user-select: none;
         }
-        .pattern-dot {
+        .pattern-container canvas {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            background: #E9ECEF;
-            border: 3px solid #d1d5db;
-            transition: all 0.15s;
-            position: relative;
-            cursor: pointer;
+            display: block;
+            border-radius: 12px;
+            background: #f8faff;
             touch-action: none;
+            cursor: pointer;
         }
-        .pattern-dot.active {
-            background: var(--primary-cyan);
-            border-color: var(--primary-cyan);
-            transform: scale(0.85);
-        }
-        .pattern-dot.error {
-            background: #e74c3c;
-            border-color: #c0392b;
-            transform: scale(0.85);
-        }
-        .pattern-dot.success {
-            background: #27ae60;
-            border-color: #1e8449;
-            transform: scale(0.85);
-        }
-        .pattern-dot.highlight {
-            background: var(--primary-cyan);
-            border-color: var(--primary-cyan);
-            transform: scale(1.1);
-        }
-        .pattern-dot .dot-inner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30%;
-            height: 30%;
-            border-radius: 50%;
-            background: white;
-            opacity: 0.3;
-            transition: 0.15s;
-        }
-        .pattern-dot.active .dot-inner,
-        .pattern-dot.success .dot-inner,
-        .pattern-dot.error .dot-inner {
-            opacity: 0.8;
-        }
-        .pattern-dot.highlight .dot-inner {
-            opacity: 0.6;
-        }
-        canvas#patternCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .pattern-grid-wrapper {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 0 auto;
-        }
-        .pattern-status {
-            margin-top: 12px;
-            font-size: 0.9rem;
+        .pattern-message {
+            font-size: 0.95rem;
+            margin: 10px 0 15px;
+            min-height: 24px;
             color: var(--gray-text);
         }
-        .pattern-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .pattern-actions button {
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .pattern-actions .btn-pattern-clear {
-            background: #e74c3c;
-            color: white;
-        }
-        .pattern-actions .btn-pattern-clear:hover {
-            background: #c0392b;
-        }
-        .pattern-actions .btn-pattern-confirm {
-            background: var(--primary-cyan);
-            color: white;
-        }
-        .pattern-actions .btn-pattern-confirm:hover {
+        .pattern-message.success { color: #27ae60; }
+        .pattern-message.error { color: #e74c3c; }
+        .pattern-message.info { color: var(--primary-cyan); }
+        .btn-pattern {
             background: var(--primary-dark);
-        }
-        .pattern-actions .btn-pattern-confirm:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* ========== WEBAUTHN ========== */
-        .webauthn-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .btn-login-action {
-            background: var(--primary-cyan);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 12px 24px;
             border-radius: 50px;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            width: 100%;
-            justify-content: center;
+            gap: 8px;
+            margin: 4px;
         }
-        .btn-login-action:hover {
-            background: var(--primary-dark);
+        .btn-pattern:hover {
+            background: var(--primary-cyan);
             transform: translateY(-2px);
         }
-        .btn-login-action:disabled {
+        .btn-pattern:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
-        .btn-login-action.secondary {
+        .btn-pattern.secondary {
             background: #2ecc71;
         }
-        .btn-login-action.secondary:hover {
+        .btn-pattern.secondary:hover {
             background: #27ae60;
         }
-        .btn-login-action.outline {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
+        .btn-pattern.danger {
+            background: #e74c3c;
         }
-        .btn-login-action.outline:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
+        .btn-pattern.danger:hover {
+            background: #c0392b;
         }
-
-        /* ========== DASHBOARD ========== */
-        #dashboard {
+        .login-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        /* ========== DASHBOARD (oculto al inicio) ========== */
+        .dashboard {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
             display: none;
         }
-        /* ... resto de estilos igual que antes ... */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -340,7 +199,6 @@
             background: #f1f1f1;
             border-color: #ccc;
         }
-        /* ... resto de estilos (stats, charts, tablas, modales) igual que antes ... */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -794,21 +652,6 @@
             cursor: not-allowed;
             transform: none;
         }
-        .presupuesto-box .presupuesto-actions .btn-cancel {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .presupuesto-box .presupuesto-actions .btn-cancel:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
         .check-presupuesto {
             color: #27ae60;
             font-size: 1.2rem;
@@ -827,10 +670,12 @@
             .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-preview .cliente-info { grid-template-columns: 1fr; }
             .presupuesto-box .presupuesto-actions { justify-content: center; }
-            .pattern-grid-wrapper, .pattern-grid { width: 200px; height: 200px; }
+            .pattern-container { width: 240px; height: 240px; }
+            #loginSection .login-box { padding: 30px 20px; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns: 1fr; }
+            .pattern-container { width: 200px; height: 200px; }
         }
         @media print {
             .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
@@ -845,118 +690,88 @@
 </head>
 <body>
 
-<div class="container">
-    <!-- ========== PANTALLA DE LOGIN ========== -->
-    <div id="loginSection">
+<!-- ========== SECCIÓN DE LOGIN CON PATRÓN ========== -->
+<div id="loginSection">
+    <div class="login-box">
         <h1><span>🔐</span> REF Electrotecnia</h1>
-        <p class="sub">Acceso al panel de administración</p>
+        <p class="sub">Acceso con patrón de 9 puntos</p>
 
-        <!-- Pestañas de método -->
-        <div class="login-tabs">
-            <button class="active" data-method="pattern">🔒 Patrón</button>
-            <button data-method="webauthn">📱 Biometría</button>
+        <div class="pattern-container">
+            <canvas id="patternCanvas" width="280" height="280"></canvas>
         </div>
 
-        <div id="loginMessage">Selecciona un método de acceso.</div>
+        <div id="patternMessage" class="pattern-message info">Dibuja tu patrón</div>
 
-        <!-- ===== MÉTODO PATRÓN ===== -->
-        <div id="method-pattern" class="login-method active">
-            <div class="pattern-container">
-                <div class="pattern-grid-wrapper">
-                    <div class="pattern-grid" id="patternGrid">
-                        <div class="pattern-dot" data-index="0"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="1"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="2"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="3"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="4"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="5"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="6"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="7"><div class="dot-inner"></div></div>
-                        <div class="pattern-dot" data-index="8"><div class="dot-inner"></div></div>
-                        <canvas id="patternCanvas"></canvas>
-                    </div>
-                </div>
-                <div class="pattern-status" id="patternStatus">Dibuja tu patrón (mínimo 4 puntos)</div>
-                <div class="pattern-actions">
-                    <button class="btn-pattern-clear" id="patternClearBtn">🗑️ Borrar</button>
-                    <button class="btn-pattern-confirm" id="patternConfirmBtn" disabled>✅ Confirmar</button>
-                </div>
-            </div>
-            <div style="margin-top:8px; font-size:0.8rem; color:var(--gray-text);">
-                <i class="fas fa-info-circle"></i> Dibuja con el mouse o con el dedo (táctil)
-            </div>
+        <div class="login-actions">
+            <button id="patternLoginBtn" class="btn-pattern secondary"><i class="fas fa-unlock"></i> Iniciar sesión</button>
+            <button id="patternRegisterBtn" class="btn-pattern"><i class="fas fa-plus-circle"></i> Registrar patrón</button>
+            <button id="patternChangeBtn" class="btn-pattern danger"><i class="fas fa-edit"></i> Cambiar patrón</button>
         </div>
 
-        <!-- ===== MÉTODO WEBAUTHN ===== -->
-        <div id="method-webauthn" class="login-method">
-            <div class="webauthn-buttons">
-                <button id="registerBtn" class="btn-login-action secondary"><i class="fas fa-fingerprint"></i> Registrar dispositivo</button>
-                <button id="loginBtn" class="btn-login-action"><i class="fas fa-id-card"></i> Iniciar sesión</button>
-            </div>
-            <p style="margin-top:15px; font-size:0.8rem; color:var(--gray-text);">
-                <i class="fas fa-info-circle"></i> Face ID / Windows Hello / Huella digital
-            </p>
+        <div style="margin-top:15px; font-size:0.8rem; color:var(--gray-text);">
+            <i class="fas fa-info-circle"></i> Dibuja conectando al menos 4 puntos.
+            <br>Funciona con mouse o con tu dedo (touch).
+        </div>
+    </div>
+</div>
+
+<!-- ========== DASHBOARD ========== -->
+<div class="dashboard" id="dashboard">
+    <div class="dashboard-header">
+        <h2><span>📊</span> Panel de Administración</h2>
+        <div class="header-actions">
+            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
+            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
     </div>
 
-    <!-- ========== DASHBOARD ========== -->
-    <div id="dashboard">
-        <div class="dashboard-header">
-            <h2><span>📊</span> Panel de Administración</h2>
-            <div class="header-actions">
-                <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
-                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
-            </div>
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-users"></i></span>
+            <div class="stat-number" id="totalContactos">0</div>
+            <div class="stat-label">Total de contactos</div>
         </div>
+        <div class="stat-card">
+            <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
+            <div class="stat-number" id="contactosSemana">0</div>
+            <div class="stat-label">Últimos 7 días</div>
+        </div>
+        <div class="stat-card emergencia">
+            <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
+            <div class="stat-number" id="emergencias">0</div>
+            <div class="stat-label">Emergencias 24/7</div>
+        </div>
+        <div class="stat-card pendiente">
+            <span class="stat-icon"><i class="fas fa-clock"></i></span>
+            <div class="stat-number" id="pendientesPresupuesto">0</div>
+            <div class="stat-label">Pendientes de presupuesto</div>
+        </div>
+    </div>
 
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-users"></i></span>
-                <div class="stat-number" id="totalContactos">0</div>
-                <div class="stat-label">Total de contactos</div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
-                <div class="stat-number" id="contactosSemana">0</div>
-                <div class="stat-label">Últimos 7 días</div>
-            </div>
-            <div class="stat-card emergencia">
-                <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
-                <div class="stat-number" id="emergencias">0</div>
-                <div class="stat-label">Emergencias 24/7</div>
-            </div>
-            <div class="stat-card pendiente">
-                <span class="stat-icon"><i class="fas fa-clock"></i></span>
-                <div class="stat-number" id="pendientesPresupuesto">0</div>
-                <div class="stat-label">Pendientes de presupuesto</div>
-            </div>
+    <div class="chart-section">
+        <div class="chart-box">
+            <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
+            <canvas id="serviciosChart"></canvas>
         </div>
+        <div class="chart-box">
+            <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
+            <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
+        </div>
+    </div>
 
-        <div class="chart-section">
-            <div class="chart-box">
-                <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
-                <canvas id="serviciosChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
-                <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
-            </div>
-        </div>
+    <div class="table-container">
+        <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
+        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
+    </div>
 
-        <div class="table-container">
-            <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-            <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
-        </div>
+    <div class="table-container">
+        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+        <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
+    </div>
 
-        <div class="table-container">
-            <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
-            <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
-        </div>
-
-        <div class="table-container">
-            <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-            <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
-        </div>
+    <div class="table-container">
+        <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
+        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
     </div>
 </div>
 
@@ -1057,8 +872,373 @@
 
 <script>
     // =============================================
-    // CONFIGURACIÓN
+    // PATRÓN DE 9 PUNTOS
     // =============================================
+    (function() {
+        const canvas = document.getElementById('patternCanvas');
+        const ctx = canvas.getContext('2d');
+        const msgEl = document.getElementById('patternMessage');
+
+        // Estado del patrón
+        let pattern = [];               // puntos seleccionados (índices 0..8)
+        let isDrawing = false;
+        let currentPoint = null;        // {x, y} del cursor
+        let registeredPattern = null;   // string guardado en localStorage
+        let mode = 'login';             // 'login' | 'register' | 'change'
+
+        const radius = 20;
+        const spacing = 70;
+        const offset = 40;
+        const points = [];
+
+        // Inicializar posiciones de los 9 puntos
+        function initPoints() {
+            points.length = 0;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    points.push({
+                        x: offset + col * spacing,
+                        y: offset + row * spacing,
+                        index: row * 3 + col
+                    });
+                }
+            }
+        }
+        initPoints();
+
+        // Cargar patrón guardado
+        function loadPattern() {
+            const stored = localStorage.getItem('pattern_hash');
+            if (stored) {
+                registeredPattern = stored;
+                return true;
+            }
+            return false;
+        }
+
+        // Guardar patrón (hash SHA-256)
+        async function savePattern(patternArray) {
+            const str = patternArray.join('-');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            localStorage.setItem('pattern_hash', hashHex);
+            registeredPattern = hashHex;
+            return hashHex;
+        }
+
+        // Verificar patrón
+        async function verifyPattern(patternArray) {
+            const str = patternArray.join('-');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex === registeredPattern;
+        }
+
+        // Dibujar el canvas
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar líneas del patrón
+            if (pattern.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#00A8FF';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowColor = 'rgba(0,168,255,0.3)';
+                ctx.shadowBlur = 8;
+                const first = points[pattern[0]];
+                ctx.moveTo(first.x, first.y);
+                for (let i = 1; i < pattern.length; i++) {
+                    const p = points[pattern[i]];
+                    ctx.lineTo(p.x, p.y);
+                }
+                if (currentPoint && isDrawing) {
+                    const last = points[pattern[pattern.length - 1]];
+                    ctx.lineTo(currentPoint.x, currentPoint.y);
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Dibujar puntos
+            points.forEach((p, index) => {
+                const isSelected = pattern.includes(index);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = isSelected ? '#00A8FF' : '#E9ECEF';
+                ctx.fill();
+                ctx.strokeStyle = isSelected ? '#00A8FF' : '#ccc';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Número pequeño (opcional)
+                ctx.fillStyle = isSelected ? 'white' : '#999';
+                ctx.font = '12px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(index + 1, p.x, p.y);
+            });
+        }
+
+        // Obtener punto más cercano al cursor
+        function getClosestPoint(x, y) {
+            let minDist = Infinity;
+            let closest = null;
+            points.forEach(p => {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < minDist && dist < 50) {
+                    minDist = dist;
+                    closest = p;
+                }
+            });
+            return closest;
+        }
+
+        // Eventos de inicio de dibujo (mouse/touch)
+        function startDraw(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            const p = getClosestPoint(x, y);
+            if (p && !pattern.includes(p.index)) {
+                pattern.push(p.index);
+                isDrawing = true;
+                currentPoint = { x, y };
+                draw();
+                msgEl.textContent = 'Suelta para terminar o sigue dibujando.';
+                msgEl.className = 'pattern-message info';
+            }
+        }
+
+        function moveDraw(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+            const p = getClosestPoint(x, y);
+            if (p && !pattern.includes(p.index)) {
+                pattern.push(p.index);
+                draw();
+            }
+            currentPoint = { x, y };
+            draw();
+        }
+
+        function endDraw(e) {
+            e.preventDefault();
+            isDrawing = false;
+            currentPoint = null;
+            draw();
+
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Debes conectar al menos 4 puntos.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+
+            // Según el modo, actuar
+            if (mode === 'login') {
+                handleLogin();
+            } else if (mode === 'register') {
+                handleRegister();
+            } else if (mode === 'change') {
+                handleChange();
+            }
+        }
+
+        // ========== MANEJADORES ==========
+        async function handleLogin() {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón registrado. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            const ok = await verifyPattern(pattern);
+            if (ok) {
+                msgEl.textContent = '✅ Patrón correcto. Accediendo...';
+                msgEl.className = 'pattern-message success';
+                setTimeout(() => {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    // Cargar datos del panel
+                    cargarDatos();
+                }, 500);
+            } else {
+                msgEl.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+            }
+        }
+
+        async function handleRegister() {
+            if (loadPattern()) {
+                msgEl.textContent = '❌ Ya hay un patrón registrado. Usa "Cambiar patrón".';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            await savePattern(pattern);
+            msgEl.textContent = '✅ Patrón registrado correctamente. Ahora inicia sesión.';
+            msgEl.className = 'pattern-message success';
+            pattern = [];
+            draw();
+            mode = 'login';
+            document.getElementById('patternLoginBtn').disabled = false;
+        }
+
+        async function handleChange() {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            // Verificar el patrón actual
+            const ok = await verifyPattern(pattern);
+            if (!ok) {
+                msgEl.textContent = '❌ El patrón actual no coincide. Intenta de nuevo.';
+                msgEl.className = 'pattern-message error';
+                pattern = [];
+                draw();
+                return;
+            }
+            // Guardar el nuevo patrón
+            await savePattern(pattern);
+            msgEl.textContent = '✅ Patrón actualizado correctamente.';
+            msgEl.className = 'pattern-message success';
+            pattern = [];
+            draw();
+            mode = 'login';
+            document.getElementById('patternLoginBtn').disabled = false;
+        }
+
+        // ========== EVENTOS ==========
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', moveDraw);
+        canvas.addEventListener('mouseup', endDraw);
+        canvas.addEventListener('mouseleave', endDraw);
+
+        canvas.addEventListener('touchstart', startDraw, { passive: false });
+        canvas.addEventListener('touchmove', moveDraw, { passive: false });
+        canvas.addEventListener('touchend', endDraw, { passive: false });
+
+        // Botones
+        document.getElementById('patternLoginBtn').addEventListener('click', () => {
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja un patrón primero.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'login';
+            handleLogin();
+        });
+
+        document.getElementById('patternRegisterBtn').addEventListener('click', () => {
+            if (loadPattern()) {
+                msgEl.textContent = '❌ Ya hay un patrón registrado.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja un patrón de al menos 4 puntos.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'register';
+            handleRegister();
+        });
+
+        document.getElementById('patternChangeBtn').addEventListener('click', () => {
+            if (!loadPattern()) {
+                msgEl.textContent = '❌ No hay patrón actual. Regístrate primero.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            if (pattern.length < 4) {
+                msgEl.textContent = '❌ Dibuja el patrón actual para verificarlo.';
+                msgEl.className = 'pattern-message error';
+                return;
+            }
+            mode = 'change';
+            handleChange();
+        });
+
+        // Inicializar
+        draw();
+        if (loadPattern()) {
+            msgEl.textContent = '🔐 Patrón registrado. Dibuja tu patrón e inicia sesión.';
+            msgEl.className = 'pattern-message info';
+        } else {
+            msgEl.textContent = '📝 Registra un patrón nuevo (mínimo 4 puntos).';
+            msgEl.className = 'pattern-message info';
+        }
+
+        // Redimensionar canvas según el contenedor
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const width = container.clientWidth;
+            if (width > 0) {
+                canvas.width = width;
+                canvas.height = width;
+                // Recalcular puntos
+                const size = width;
+                const newOffset = size * 0.15;
+                const newSpacing = (size - 2 * newOffset) / 2;
+                points.forEach((p, i) => {
+                    const row = Math.floor(i / 3);
+                    const col = i % 3;
+                    p.x = newOffset + col * newSpacing;
+                    p.y = newOffset + row * newSpacing;
+                });
+                draw();
+            }
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+    })();
+
+    // =============================================
+    // CONFIGURACIÓN DE LA APLICACIÓN
+    // =============================================
+    // ⚠️ REEMPLAZA ESTA URL CON LA DE TU SCRIPT PUBLICADO ⚠️
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkKfrHQNPRtb1OJqQSM8cWNtW2lhUQgjhsNptUnZYP-wRYMnjoDOaXytykQpDgElKo/exec';
 
     let chartInstance = null;
@@ -1067,515 +1247,7 @@
     let intervaloAuto = null;
 
     // =============================================
-    // PATRÓN DE 9 PUNTOS
-    // =============================================
-    const patternGrid = document.getElementById('patternGrid');
-    const patternCanvas = document.getElementById('patternCanvas');
-    const patternStatus = document.getElementById('patternStatus');
-    const patternClearBtn = document.getElementById('patternClearBtn');
-    const patternConfirmBtn = document.getElementById('patternConfirmBtn');
-    const dots = document.querySelectorAll('.pattern-dot');
-    const loginMessage = document.getElementById('loginMessage');
-
-    let patternState = {
-        dots: [],           // índices seleccionados
-        isDrawing: false,
-        savedPattern: null, // patrón guardado (array de índices)
-        isFirstTime: true   // si es el primer registro
-    };
-
-    // Cargar patrón guardado
-    function loadPattern() {
-        const saved = localStorage.getItem('pattern_lock');
-        if (saved) {
-            try {
-                patternState.savedPattern = JSON.parse(saved);
-                patternState.isFirstTime = false;
-                loginMessage.textContent = '🔒 Patrón registrado. Dibuja tu patrón para acceder.';
-                loginMessage.className = 'info';
-                patternConfirmBtn.textContent = '✅ Desbloquear';
-                patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
-            } catch (e) {
-                patternState.savedPattern = null;
-                patternState.isFirstTime = true;
-            }
-        } else {
-            patternState.savedPattern = null;
-            patternState.isFirstTime = true;
-            loginMessage.textContent = '📝 Registra un patrón de desbloqueo (mínimo 4 puntos).';
-            loginMessage.className = 'info';
-            patternConfirmBtn.textContent = '✅ Guardar patrón';
-            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
-        }
-        resetPattern();
-    }
-
-    // Resetear visualmente
-    function resetPattern() {
-        patternState.dots = [];
-        dots.forEach(d => d.className = 'pattern-dot');
-        patternConfirmBtn.disabled = true;
-        drawLines([]);
-        if (patternState.isFirstTime) {
-            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
-        } else {
-            patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
-        }
-    }
-
-    // Obtener centro de un dot
-    function getDotCenter(index) {
-        const dot = dots[index];
-        const rect = dot.getBoundingClientRect();
-        const gridRect = patternGrid.getBoundingClientRect();
-        const x = (rect.left + rect.width/2) - gridRect.left;
-        const y = (rect.top + rect.height/2) - gridRect.top;
-        return { x, y };
-    }
-
-    // Dibujar líneas en el canvas
-    function drawLines(selectedIndices) {
-        const canvas = patternCanvas;
-        const rect = patternGrid.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (selectedIndices.length < 1) return;
-
-        ctx.beginPath();
-        ctx.strokeStyle = '#00A8FF';
-        ctx.lineWidth = 4;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        const first = getDotCenter(selectedIndices[0]);
-        ctx.moveTo(first.x, first.y);
-
-        for (let i = 1; i < selectedIndices.length; i++) {
-            const center = getDotCenter(selectedIndices[i]);
-            ctx.lineTo(center.x, center.y);
-        }
-        ctx.stroke();
-
-        // Dibujar puntos de conexión
-        for (let i = 0; i < selectedIndices.length; i++) {
-            const center = getDotCenter(selectedIndices[i]);
-            ctx.beginPath();
-            ctx.arc(center.x, center.y, 8, 0, 2 * Math.PI);
-            ctx.fillStyle = '#00A8FF';
-            ctx.fill();
-            ctx.closePath();
-        }
-    }
-
-    // Detectar el dot más cercano al punto (x, y)
-    function getNearestDot(x, y) {
-        let minDist = Infinity;
-        let nearest = -1;
-        dots.forEach((dot, index) => {
-            const rect = dot.getBoundingClientRect();
-            const gridRect = patternGrid.getBoundingClientRect();
-            const cx = (rect.left + rect.width/2) - gridRect.left;
-            const cy = (rect.top + rect.height/2) - gridRect.top;
-            const dist = Math.hypot(x - cx, y - cy);
-            if (dist < minDist) {
-                minDist = dist;
-                nearest = index;
-            }
-        });
-        // Umbral de 40px
-        if (minDist < 40) return nearest;
-        return -1;
-    }
-
-    // Manejar inicio de dibujo
-    function onPatternStart(e) {
-        e.preventDefault();
-        const rect = patternGrid.getBoundingClientRect();
-        let clientX, clientY;
-        if (e.touches) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-        }
-        const gridRect = patternGrid.getBoundingClientRect();
-        const x = clientX - gridRect.left;
-        const y = clientY - gridRect.top;
-        const index = getNearestDot(x, y);
-        if (index !== -1 && !patternState.dots.includes(index)) {
-            patternState.dots.push(index);
-            dots[index].classList.add('active');
-            drawLines(patternState.dots);
-            patternConfirmBtn.disabled = false;
-            if (patternState.dots.length >= 4) {
-                patternStatus.textContent = `✅ ${patternState.dots.length} puntos seleccionados. Confirma.`;
-            } else {
-                patternStatus.textContent = `${patternState.dots.length} puntos (mínimo 4)`;
-            }
-        }
-        patternState.isDrawing = true;
-    }
-
-    function onPatternMove(e) {
-        if (!patternState.isDrawing) return;
-        e.preventDefault();
-        const rect = patternGrid.getBoundingClientRect();
-        let clientX, clientY;
-        if (e.touches) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-        }
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-        const index = getNearestDot(x, y);
-        if (index !== -1 && !patternState.dots.includes(index)) {
-            patternState.dots.push(index);
-            dots[index].classList.add('active');
-            drawLines(patternState.dots);
-            if (patternState.dots.length >= 4) {
-                patternStatus.textContent = `✅ ${patternState.dots.length} puntos seleccionados. Confirma.`;
-            } else {
-                patternStatus.textContent = `${patternState.dots.length} puntos (mínimo 4)`;
-            }
-            patternConfirmBtn.disabled = false;
-        }
-    }
-
-    function onPatternEnd(e) {
-        patternState.isDrawing = false;
-    }
-
-    // Eventos para patrón
-    patternGrid.addEventListener('mousedown', onPatternStart);
-    patternGrid.addEventListener('mousemove', onPatternMove);
-    patternGrid.addEventListener('mouseup', onPatternEnd);
-    patternGrid.addEventListener('mouseleave', onPatternEnd);
-
-    patternGrid.addEventListener('touchstart', onPatternStart, { passive: false });
-    patternGrid.addEventListener('touchmove', onPatternMove, { passive: false });
-    patternGrid.addEventListener('touchend', onPatternEnd, { passive: false });
-
-    // Botón Borrar
-    patternClearBtn.addEventListener('click', () => {
-        resetPattern();
-        patternState.dots = [];
-        dots.forEach(d => d.className = 'pattern-dot');
-        drawLines([]);
-        patternConfirmBtn.disabled = true;
-        if (patternState.savedPattern) {
-            patternStatus.textContent = 'Patrón borrado. Dibuja de nuevo.';
-        } else {
-            patternStatus.textContent = 'Dibuja tu patrón (mínimo 4 puntos)';
-        }
-        loginMessage.textContent = 'Patrón borrado.';
-        loginMessage.className = 'info';
-    });
-
-    // Botón Confirmar / Desbloquear
-    patternConfirmBtn.addEventListener('click', () => {
-        const selected = patternState.dots;
-        if (selected.length < 4) {
-            patternStatus.textContent = '❌ Mínimo 4 puntos requeridos.';
-            patternStatus.style.color = '#e74c3c';
-            return;
-        }
-
-        // Si no hay patrón guardado -> REGISTRAR
-        if (patternState.isFirstTime || !patternState.savedPattern) {
-            // Guardar patrón
-            localStorage.setItem('pattern_lock', JSON.stringify(selected));
-            patternState.savedPattern = selected;
-            patternState.isFirstTime = false;
-            loginMessage.textContent = '✅ Patrón registrado correctamente. Ahora puedes desbloquear.';
-            loginMessage.className = 'success';
-            patternConfirmBtn.textContent = '✅ Desbloquear';
-            patternStatus.textContent = 'Patrón guardado. Dibuja el mismo patrón para acceder.';
-            patternStatus.style.color = '#27ae60';
-            // Mostrar éxito visual
-            dots.forEach(d => d.classList.remove('active', 'error', 'highlight'));
-            selected.forEach(i => dots[i].classList.add('success'));
-            setTimeout(() => {
-                resetPattern();
-                patternState.dots = [];
-                dots.forEach(d => d.className = 'pattern-dot');
-                drawLines([]);
-                patternConfirmBtn.disabled = true;
-                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
-                patternStatus.style.color = 'var(--gray-text)';
-            }, 1500);
-            return;
-        }
-
-        // VERIFICAR patrón guardado
-        const saved = patternState.savedPattern;
-        if (selected.length !== saved.length) {
-            patternStatus.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
-            patternStatus.style.color = '#e74c3c';
-            dots.forEach(d => d.classList.remove('active', 'success', 'highlight'));
-            selected.forEach(i => dots[i].classList.add('error'));
-            setTimeout(() => {
-                resetPattern();
-                patternState.dots = [];
-                dots.forEach(d => d.className = 'pattern-dot');
-                drawLines([]);
-                patternConfirmBtn.disabled = true;
-                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
-                patternStatus.style.color = 'var(--gray-text)';
-            }, 1000);
-            return;
-        }
-
-        let match = true;
-        for (let i = 0; i < selected.length; i++) {
-            if (selected[i] !== saved[i]) {
-                match = false;
-                break;
-            }
-        }
-
-        if (match) {
-            // ACCESO CONCEDIDO
-            loginMessage.textContent = '✅ Acceso concedido. Cargando panel...';
-            loginMessage.className = 'success';
-            patternStatus.textContent = '¡Bienvenido!';
-            patternStatus.style.color = '#27ae60';
-            dots.forEach(d => d.classList.remove('active', 'error'));
-            selected.forEach(i => dots[i].classList.add('success'));
-
-            setTimeout(() => {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                cargarDatos();
-            }, 500);
-        } else {
-            patternStatus.textContent = '❌ Patrón incorrecto. Intenta de nuevo.';
-            patternStatus.style.color = '#e74c3c';
-            dots.forEach(d => d.classList.remove('active', 'success', 'highlight'));
-            selected.forEach(i => dots[i].classList.add('error'));
-            setTimeout(() => {
-                resetPattern();
-                patternState.dots = [];
-                dots.forEach(d => d.className = 'pattern-dot');
-                drawLines([]);
-                patternConfirmBtn.disabled = true;
-                patternStatus.textContent = 'Dibuja tu patrón para desbloquear';
-                patternStatus.style.color = 'var(--gray-text)';
-            }, 1000);
-        }
-    });
-
-    // =============================================
-    // WEBAUTHN - AUTENTICACIÓN BIOMÉTRICA
-    // =============================================
-    let credentialData = null;
-
-    function loadCredential() {
-        const stored = localStorage.getItem('webauthn_credential');
-        if (stored) {
-            try {
-                credentialData = JSON.parse(stored);
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    function saveCredential(cred) {
-        localStorage.setItem('webauthn_credential', JSON.stringify(cred));
-        credentialData = cred;
-    }
-
-    function clearCredential() {
-        localStorage.removeItem('webauthn_credential');
-        credentialData = null;
-    }
-
-    function generateUserId() {
-        const array = new Uint8Array(16);
-        crypto.getRandomValues(array);
-        return array;
-    }
-
-    function bufferToBase64Url(buffer) {
-        const bytes = new Uint8Array(buffer);
-        let binary = '';
-        for (let i = 0; i < bytes.length; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
-        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    function base64UrlToBuffer(str) {
-        const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-        const padding = '='.repeat((4 - base64.length % 4) % 4);
-        const raw = atob(base64 + padding);
-        const buffer = new Uint8Array(raw.length);
-        for (let i = 0; i < raw.length; i++) {
-            buffer[i] = raw.charCodeAt(i);
-        }
-        return buffer.buffer;
-    }
-
-    async function registerDevice() {
-        try {
-            loginMessage.textContent = '⏳ Generando credencial...';
-            loginMessage.className = 'info';
-            registerBtn.disabled = true;
-            loginBtn.disabled = true;
-
-            if (!navigator.credentials || !navigator.credentials.create) {
-                throw new Error('WebAuthn no está soportado en este navegador.');
-            }
-
-            const userId = generateUserId();
-            const publicKey = {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                rp: { name: 'REF Electrotecnia', id: window.location.hostname },
-                user: { id: userId, name: 'admin@refelectrotecnia.com', displayName: 'Administrador' },
-                pubKeyCredParams: [
-                    { type: 'public-key', alg: -7 },
-                    { type: 'public-key', alg: -257 }
-                ],
-                authenticatorSelection: {
-                    userVerification: 'required',
-                    residentKey: 'preferred',
-                    authenticatorAttachment: 'platform'
-                },
-                timeout: 60000,
-                attestation: 'none'
-            };
-
-            const credential = await navigator.credentials.create({ publicKey });
-            const credData = {
-                id: credential.id,
-                rawId: bufferToBase64Url(credential.rawId),
-                userId: bufferToBase64Url(credential.response.userHandle || userId)
-            };
-
-            saveCredential(credData);
-            loginMessage.textContent = '✅ Dispositivo registrado correctamente. Ahora puedes iniciar sesión.';
-            loginMessage.className = 'success';
-
-        } catch (error) {
-            console.error('Error al registrar:', error);
-            loginMessage.textContent = '❌ Error al registrar: ' + error.message;
-            loginMessage.className = 'error';
-        } finally {
-            registerBtn.disabled = false;
-            loginBtn.disabled = false;
-        }
-    }
-
-    async function loginWebAuthn() {
-        try {
-            loginMessage.textContent = '⏳ Solicitando autenticación...';
-            loginMessage.className = 'info';
-            registerBtn.disabled = true;
-            loginBtn.disabled = true;
-
-            if (!navigator.credentials || !navigator.credentials.get) {
-                throw new Error('WebAuthn no está soportado en este navegador.');
-            }
-
-            if (!credentialData) {
-                throw new Error('No hay dispositivo registrado. Registra primero.');
-            }
-
-            const rawIdBuffer = base64UrlToBuffer(credentialData.rawId);
-            const publicKey = {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                allowCredentials: [{ id: rawIdBuffer, type: 'public-key' }],
-                userVerification: 'required',
-                timeout: 60000
-            };
-
-            const assertion = await navigator.credentials.get({ publicKey });
-            if (assertion.id !== credentialData.id) {
-                throw new Error('Credencial no válida.');
-            }
-
-            loginMessage.textContent = '✅ Acceso concedido. Cargando panel...';
-            loginMessage.className = 'success';
-
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            cargarDatos();
-
-        } catch (error) {
-            console.error('Error al autenticar:', error);
-            loginMessage.textContent = '❌ Error al autenticar: ' + error.message;
-            loginMessage.className = 'error';
-        } finally {
-            registerBtn.disabled = false;
-            loginBtn.disabled = false;
-        }
-    }
-
-    // =============================================
-    // NAVEGACIÓN ENTRE MÉTODOS
-    // =============================================
-    document.querySelectorAll('.login-tabs button').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.login-tabs button').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            const method = this.dataset.method;
-            document.querySelectorAll('.login-method').forEach(m => m.classList.remove('active'));
-            document.getElementById(`method-${method}`).classList.add('active');
-            // Resetear mensaje
-            if (method === 'pattern') {
-                loginMessage.textContent = '🔒 Ingresa tu patrón o regístrate.';
-                loginMessage.className = 'info';
-                loadPattern();
-            } else {
-                loginMessage.textContent = '📱 Usa Face ID / Windows Hello / huella.';
-                loginMessage.className = 'info';
-                loadCredential();
-                if (credentialData) {
-                    loginMessage.textContent = '🔑 Dispositivo registrado. Haz clic en "Iniciar sesión".';
-                } else {
-                    loginMessage.textContent = '📱 Registra tu dispositivo para usar biometría.';
-                }
-            }
-        });
-    });
-
-    // =============================================
-    // CIERRE DE SESIÓN
-    // =============================================
-    function logout() {
-        document.getElementById('loginSection').style.display = 'block';
-        document.getElementById('dashboard').style.display = 'none';
-        // Resetear estado de patrón
-        loadPattern();
-        // Resetear estado de webauthn
-        const hasCred = loadCredential();
-        if (hasCred) {
-            document.querySelector('#method-webauthn .webauthn-status')?.remove();
-            loginMessage.textContent = '🔑 Dispositivo registrado. Elige método.';
-        } else {
-            loginMessage.textContent = 'Sesión cerrada. Elige un método.';
-        }
-        loginMessage.className = 'info';
-        // Detener auto-refresh
-        if (intervaloAuto) {
-            clearInterval(intervaloAuto);
-            intervaloAuto = null;
-        }
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-
-    // =============================================
-    // FUNCIONES DEL PANEL (resto igual que antes)
+    // FUNCIONES DE FORMATEO
     // =============================================
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
@@ -1608,6 +1280,9 @@
         });
     }
 
+    // =============================================
+    // CARGAR DATOS DESDE SHEETS
+    // =============================================
     async function cargarDatos() {
         const tablaContainer = document.getElementById('tablaContainer');
         tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
@@ -1644,6 +1319,9 @@
         }
     }
 
+    // =============================================
+    // ESTADÍSTICAS
+    // =============================================
     function actualizarStats(data) {
         const total = data.length;
         document.getElementById('totalContactos').textContent = total;
@@ -1669,6 +1347,9 @@
         document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
     }
 
+    // =============================================
+    // GRÁFICO
+    // =============================================
     function actualizarGrafico(data) {
         const servicioCount = {};
         data.forEach(item => {
@@ -1701,6 +1382,9 @@
         });
     }
 
+    // =============================================
+    // ÚLTIMOS 5 REGISTROS
+    // =============================================
     function actualizarUltimos(data) {
         const container = document.getElementById('ultimosRegistros');
         if (data.length === 0) {
@@ -1723,6 +1407,9 @@
         container.innerHTML = html;
     }
 
+    // =============================================
+    // TABLA COMPLETA
+    // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
         if (data.length === 0) {
@@ -1792,6 +1479,9 @@
         container.innerHTML = html;
     }
 
+    // =============================================
+    // PRESUPUESTOS ENVIADOS
+    // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
         if (!data || data.length === 0) {
@@ -1839,6 +1529,9 @@
         container.innerHTML = html;
     }
 
+    // =============================================
+    // ELIMINAR PRESUPUESTO
+    // =============================================
     async function eliminarPresupuesto(index) {
         const presupuesto = datosCache.presupuestos[index];
         if (!presupuesto) return;
@@ -1849,6 +1542,9 @@
         cargarDatos();
     }
 
+    // =============================================
+    // EDITAR REGISTRO
+    // =============================================
     function editarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1896,6 +1592,9 @@
         }
     }
 
+    // =============================================
+    // ELIMINAR REGISTRO (contacto)
+    // =============================================
     async function eliminarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) return;
@@ -1906,6 +1605,9 @@
         cargarDatos();
     }
 
+    // =============================================
+    // PRESUPUESTO
+    // =============================================
     function abrirPresupuesto(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1967,6 +1669,9 @@
     document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
+    // =============================================
+    // GUARDAR PRESUPUESTO
+    // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
         const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
@@ -2054,6 +1759,9 @@
 
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
+    // =============================================
+    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS
+    // =============================================
     async function enviarAccion(datos) {
         try {
             await fetch(URL_SCRIPT, {
@@ -2070,6 +1778,9 @@
         }
     }
 
+    // =============================================
+    // CERRAR MODALES
+    // =============================================
     function cerrarModal(id) {
         document.getElementById(id).classList.remove('active');
         document.body.style.overflow = '';
@@ -2086,8 +1797,10 @@
     });
 
     document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
-    document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
+    // =============================================
+    // RESUMEN POR CONTACTO
+    // =============================================
     function actualizarResumenContactos(data) {
         const container = document.getElementById('resumenContainer');
         if (!data || data.length === 0) {
@@ -2147,38 +1860,32 @@
         container.innerHTML = html;
     }
 
+    // =============================================
+    // AUTO-REFRESH Y CIERRE DE SESIÓN
+    // =============================================
     function iniciarAutoRefresh() {
         if (intervaloAuto) clearInterval(intervaloAuto);
         intervaloAuto = setInterval(cargarDatos, 300000);
         console.log('Auto-refresh cada 5 minutos activado.');
     }
 
-    // Inicialización: cargar patrón al cargar la página
-    loadPattern();
-    loadCredential();
+    document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
-    // Si hay credencial webauthn, actualizar mensaje
-    if (credentialData) {
-        document.querySelector('#method-webauthn .webauthn-status')?.remove();
-    }
-
-    // Eventos Webauthn
-    document.getElementById('registerBtn').addEventListener('click', registerDevice);
-    document.getElementById('loginBtn').addEventListener('click', loginWebAuthn);
-
-    // Cuando el dashboard se muestre, iniciar auto-refresh
-    const observer = new MutationObserver(() => {
-        if (document.getElementById('dashboard').style.display === 'block') {
-            iniciarAutoRefresh();
-        }
-    });
-    observer.observe(document.getElementById('dashboard'), { attributes: true, attributeFilter: ['style'] });
-
-    window.addEventListener('beforeunload', function() {
-        if (intervaloAuto) clearInterval(intervaloAuto);
+    // Cerrar sesión desde el dashboard
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'flex';
+        // No borramos el patrón para que el usuario pueda volver a entrar
     });
 
-    console.log('✅ Panel de administración con doble autenticación: Patrón + WebAuthn');
+    // =============================================
+    // INICIALIZAR
+    // =============================================
+    // Si ya hay sesión activa (por recarga), mostrar dashboard
+    // pero como el patrón está en localStorage y no hay flag de sesión,
+    // el usuario debe volver a dibujar. Es seguro.
+    // El dashboard se muestra solo después de login exitoso.
+    // =============================================
 </script>
 </body>
 </html>
