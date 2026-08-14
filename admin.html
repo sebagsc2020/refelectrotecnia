@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>--Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -71,7 +71,6 @@
         .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
         
-        /* FILTRO DE ESTADOS */
         .filtro-container {
             display: flex;
             gap: 10px;
@@ -154,25 +153,12 @@
             font-family: var(--font);
             font-weight: 600;
             cursor: pointer;
-            min-width: 100px;
+            min-width: 110px;
         }
         .estado-select.estado-aprobado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; }
         .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
         .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
-        
-        /* BADGES DE ESTADO */
-        .badge-estado {
-            padding: 3px 12px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .badge-aprobado { background: #d4edda; color: #155724; }
-        .badge-encurso { background: #fff3cd; color: #856404; }
-        .badge-vencido { background: #f8d7da; color: #721c24; }
+        .estado-select.estado-cancelado { border-color: #7f8c8d; color: #555; background: #f5f5f5; }
         
         /* ========== PRESUPUESTO - DISEÑO EXACTO AL PDF ========== */
         .presupuesto-box { max-width: 900px; }
@@ -331,6 +317,7 @@
                 <option value="aprobado">Aprobado</option>
                 <option value="encurso">En Curso</option>
                 <option value="vencido">Vencido</option>
+                <option value="cancelado">Cancelado</option>
             </select>
         </div>
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
@@ -508,7 +495,6 @@
     let chartInstance = null;
     let datosCache = { contactos: [], presupuestos: [] };
     let intervaloAuto = null;
-    let estadosPresupuestos = {}; // Almacena los estados manuales
 
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
@@ -530,21 +516,9 @@
     // =============================================
     // FUNCIÓN PARA CALCULAR SI UN PRESUPUESTO ESTÁ VENCIDO
     // =============================================
-    function calcularEstadoPresupuesto(presupuesto, index) {
-        // Verificar si hay un estado manual guardado
-        if (estadosPresupuestos[index] && estadosPresupuestos[index] !== 'vencido') {
-            // Si el estado manual es aprobado o en curso, verificar si no está vencido
-            const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
-            const validez = parseInt(presupuesto.Validez) || 30;
-            const fechaVencimiento = new Date(fecha);
-            fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
-            const hoy = new Date();
-            
-            if (hoy > fechaVencimiento) {
-                return 'vencido'; // Automáticamente vencido
-            }
-            return estadosPresupuestos[index];
-        }
+    function calcularEstadoPresupuesto(presupuesto) {
+        // Si el estado guardado es cancelado, siempre mostrar cancelado
+        if (presupuesto.Estado === 'cancelado') return 'cancelado';
         
         // Calcular automáticamente si está vencido
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
@@ -557,7 +531,8 @@
             return 'vencido';
         }
         
-        return estadosPresupuestos[index] || 'encurso';
+        // Devolver el estado guardado o por defecto "encurso"
+        return presupuesto.Estado || 'encurso';
     }
 
     async function cargarDatos() {
@@ -664,8 +639,8 @@
         const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
 
         // Filtrar por estado
-        const filtrados = sorted.filter((presupuesto, index) => {
-            const estado = calcularEstadoPresupuesto(presupuesto, index);
+        const filtrados = sorted.filter((presupuesto) => {
+            const estado = calcularEstadoPresupuesto(presupuesto);
             if (filtroEstado === 'todos') return true;
             return estado === filtroEstado;
         });
@@ -693,15 +668,16 @@
             const descripcion = row.Descripción || '-';
             const precio = row.Precio ? parseFloat(row.Precio) : 0;
             const fecha = formatearFecha(row.Fecha);
-            const estado = calcularEstadoPresupuesto(row, originalIndex);
+            const estado = calcularEstadoPresupuesto(row);
 
             totalFiltrado += precio;
 
-            // Generar select de estado
+            // Generar select de estado con las 4 opciones
             let estadoSelect = `<select class="estado-select estado-${estado}" onchange="cambiarEstadoPresupuesto(${originalIndex}, this.value)">`;
             estadoSelect += `<option value="aprobado" ${estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>`;
             estadoSelect += `<option value="encurso" ${estado === 'encurso' ? 'selected' : ''}>En Curso</option>`;
-            estadoSelect += `<option value="vencido" ${estado === 'vencido' ? 'selected' : ''} disabled>Vencido</option>`;
+            estadoSelect += `<option value="vencido" ${estado === 'vencido' ? 'selected' : ''}>Vencido</option>`;
+            estadoSelect += `<option value="cancelado" ${estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>`;
             estadoSelect += `</select>`;
 
             html += `<tr>
@@ -728,15 +704,23 @@
     }
 
     // =============================================
-    // CAMBIAR ESTADO DE PRESUPUESTO
+    // CAMBIAR ESTADO DE PRESUPUESTO (✅ GUARDA EN SHEETS)
     // =============================================
-    function cambiarEstadoPresupuesto(index, nuevoEstado) {
-        if (nuevoEstado === 'vencido') {
-            alert('El estado "Vencido" se asigna automáticamente según la fecha de validez.');
-            renderizarPresupuestos(datosCache.presupuestos);
-            return;
-        }
-        estadosPresupuestos[index] = nuevoEstado;
+    async function cambiarEstadoPresupuesto(index, nuevoEstado) {
+        const presupuesto = datosCache.presupuestos[index];
+        if (!presupuesto) return;
+        
+        // Actualizar localmente
+        datosCache.presupuestos[index].Estado = nuevoEstado;
+        
+        // Guardar en el servidor
+        await enviarAccion({
+            action: 'update_budget_status',
+            index: index,
+            estado: nuevoEstado
+        });
+        
+        // Re-renderizar
         renderizarPresupuestos(datosCache.presupuestos);
     }
 
@@ -902,7 +886,8 @@
                 token: getToken(),
                 nombre, servicio, descripcion,
                 precio: total.toFixed(2),
-                numero, validez, materiales
+                numero, validez, materiales,
+                estado: 'encurso' // ✅ Estado inicial
             };
             await fetch(URL_SCRIPT, {
                 method: 'POST',
