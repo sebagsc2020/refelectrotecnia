@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== Estilos originales del dashboard (se mantienen) ===== */
+        /* ===== Estilos generales del dashboard (se mantienen) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -73,6 +73,20 @@
         .filtro-container label { font-weight: 600; font-size: 0.85rem; color: var(--primary-dark); }
         .filtro-container select { padding: 8px 12px; border: 2px solid #E9ECEF; border-radius: 8px; font-family: var(--font); font-size: 0.85rem; background: white; cursor: pointer; }
         .filtro-container select:focus { outline: none; border-color: var(--primary-cyan); }
+        .filtro-container input[type="text"] {
+            padding: 8px 12px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            background: white;
+            flex: 1;
+            min-width: 160px;
+        }
+        .filtro-container input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+        }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         table thead { background: var(--light-bg); }
         table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
@@ -132,7 +146,155 @@
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
 
-        /* ===== ESTILOS NUEVOS PARA EL DISEÑO DEL PRESUPUESTO ===== */
+        /* ===== ESTILOS PARA EXPANDIR FILAS ===== */
+        .mensaje-cell,
+        .descripcion-cell {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            cursor: pointer;
+            transition: max-height 0.3s ease;
+        }
+        .mensaje-cell {
+            max-height: 3em;
+            -webkit-line-clamp: 2;
+        }
+        .descripcion-cell {
+            max-height: 1.5em;
+            -webkit-line-clamp: 1;
+        }
+        .mensaje-cell.expandido,
+        .descripcion-cell.expandido {
+            max-height: none;
+            -webkit-line-clamp: unset;
+            display: block;
+        }
+        .table-scroll tbody tr {
+            cursor: pointer;
+        }
+        .table-scroll tbody tr td:last-child {
+            cursor: default;
+        }
+
+        /* ===== ESTILOS ESPECÍFICOS PARA TABLA DE PRESUPUESTOS (escritorio) ===== */
+        #presupuestosContainer table {
+            table-layout: fixed;
+            width: 100%;
+            font-size: 0.85rem;
+        }
+        #presupuestosContainer table th,
+        #presupuestosContainer table td {
+            padding: 8px 10px;
+        }
+        #presupuestosContainer table th:nth-child(1),
+        #presupuestosContainer table td:nth-child(1) { width: 12%; }  /* Nombre */
+        #presupuestosContainer table th:nth-child(2),
+        #presupuestosContainer table td:nth-child(2) { width: 14%; }  /* Servicio */
+        #presupuestosContainer table th:nth-child(3),
+        #presupuestosContainer table td:nth-child(3) {
+            width: 26%;
+            max-width: 180px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }  /* Descripción */
+        #presupuestosContainer table th:nth-child(4),
+        #presupuestosContainer table td:nth-child(4) { width: 12%; }  /* Estado */
+        #presupuestosContainer table th:nth-child(5),
+        #presupuestosContainer table td:nth-child(5) { width: 10%; }  /* Precio */
+        #presupuestosContainer table th:nth-child(6),
+        #presupuestosContainer table td:nth-child(6) { width: 10%; }  /* Fecha */
+        #presupuestosContainer table th:nth-child(7),
+        #presupuestosContainer table td:nth-child(7) {
+            width: 8%;
+            min-width: 65px;
+            text-align: center;
+            white-space: normal;
+            word-break: keep-all;
+        }  /* Acciones */
+
+        .estado-select {
+            max-width: 100%;
+            min-width: 80px;
+            font-size: 0.75rem;
+            padding: 3px 6px;
+        }
+
+        /* ===== RESPONSIVE: MÓVIL (scroll horizontal) ===== */
+        @media (max-width: 600px) {
+            #presupuestosContainer table {
+                display: table;
+                table-layout: auto;
+                font-size: 0.8rem;
+                min-width: 600px;
+                width: auto;
+            }
+            #presupuestosContainer table thead {
+                display: table-header-group;
+            }
+            #presupuestosContainer table tbody {
+                display: table-row-group;
+            }
+            #presupuestosContainer table tbody tr {
+                display: table-row;
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+                background: transparent;
+            }
+            #presupuestosContainer table tbody tr:hover {
+                background: #F8FAFC;
+            }
+            #presupuestosContainer table tbody tr td {
+                display: table-cell;
+                padding: 6px 8px;
+                border-bottom: 1px solid #E9ECEF;
+                white-space: normal;
+                word-break: break-word;
+            }
+            #presupuestosContainer table tbody tr td::before {
+                content: none;
+            }
+            #presupuestosContainer table tfoot {
+                display: table-footer-group;
+            }
+            #presupuestosContainer table tfoot tr {
+                display: table-row;
+                background: var(--light-bg);
+            }
+            #presupuestosContainer table tfoot td {
+                display: table-cell;
+                padding: 8px 10px;
+                border-top: 2px solid #E9ECEF;
+            }
+            .estado-select {
+                min-width: 70px;
+                font-size: 0.7rem;
+                padding: 2px 4px;
+            }
+            .btn-delete {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+            .descripcion-cell {
+                max-height: 2.5em;
+                -webkit-line-clamp: 2;
+            }
+            /* Ajustes para el filtro en móvil */
+            .filtro-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filtro-container select,
+            .filtro-container input[type="text"] {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+
+        /* ===== ESTILOS PARA EL DISEÑO DEL PRESUPUESTO ===== */
         .presupuesto-preview {
             --primary-dark: #0a1a2f;
             --primary-mid: #1a365d;
@@ -717,6 +879,7 @@
                 <option value="vencido">Vencido</option>
                 <option value="cancelado">Cancelado</option>
             </select>
+            <input type="text" id="busquedaPresupuesto" placeholder="Buscar por nombre o servicio" oninput="renderizarPresupuestos(datosCache.presupuestos)">
         </div>
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
@@ -771,7 +934,7 @@
             </div>
         </div>
 
-        <!-- ===== NUEVA VISTA PREVIA CON EL DISEÑO PROFESIONAL ===== -->
+        <!-- ===== VISTA PREVIA CON DISEÑO PROFESIONAL ===== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <!-- MARCA DE AGUA -->
@@ -1029,9 +1192,15 @@
         html += '</ul>'; container.innerHTML = html;
     }
 
+    // =============================================
+    // RENDERIZAR TABLA "TODOS LOS REGISTROS" (CON EXPANSIÓN)
+    // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
-        if (data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`; return; }
+        if (data.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
+            return;
+        }
         const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
         const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
         let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
@@ -1051,13 +1220,38 @@
                 else { url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`; }
                 if (url) mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
             }
-            html += `<tr><td>${fecha}</td><td><strong>${nombre}</strong></td><td>${telefono}</td><td>${email}</td><td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td><td>${mapsHtml || '—'}</td><td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td><td style="text-align:center;">${checkHtml}</td><td style="text-align:center; white-space:nowrap;"><button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button><button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button><button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button></td></tr>`;
+            const mensajeEscapado = mensaje.replace(/"/g, '&quot;');
+            html += `<tr data-index="${originalIndex}">
+                <td>${fecha}</td>
+                <td><strong>${nombre}</strong></td>
+                <td>${telefono}</td>
+                <td>${email}</td>
+                <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
+                <td>${mapsHtml || '—'}</td>
+                <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
+                <td style="text-align:center;">${checkHtml}</td>
+                <td style="text-align:center; white-space:nowrap;">
+                    <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
+                    <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    <button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
+                </td>
+            </tr>`;
         });
-        html += `</tbody></table>`; container.innerHTML = html;
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+        container.querySelector('table tbody').addEventListener('click', function(e) {
+            if (e.target.closest('button, a')) return;
+            const fila = e.target.closest('tr');
+            if (!fila) return;
+            const celdaMensaje = fila.querySelector('.mensaje-cell');
+            if (celdaMensaje) {
+                celdaMensaje.classList.toggle('expandido');
+            }
+        });
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS CON ESTADO Y FILTRO
+    // RENDERIZAR PRESUPUESTOS (CON FILTROS Y EXPANSIÓN)
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -1067,6 +1261,8 @@
         }
 
         const filtroEstado = document.getElementById('filtroEstado').value;
+        const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
+
         const dataConIndice = data.map((item, idx) => ({...item, _originalIndex: idx}));
 
         const sorted = [...dataConIndice].sort((a,b) => {
@@ -1077,12 +1273,17 @@
 
         const filtrados = sorted.filter((presupuesto) => {
             const estado = calcularEstadoPresupuesto(presupuesto);
-            if (filtroEstado === 'todos') return true;
-            return estado === filtroEstado;
+            if (filtroEstado !== 'todos' && estado !== filtroEstado) return false;
+            if (busqueda !== '') {
+                const nombre = (presupuesto.Nombre || '').toLowerCase();
+                const servicio = (presupuesto.Servicio || '').toLowerCase();
+                if (!nombre.includes(busqueda) && !servicio.includes(busqueda)) return false;
+            }
+            return true;
         });
 
         if (filtrados.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-filter" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos con el estado "${filtroEstado}".</p></div>`;
+            container.innerHTML = `<div class="no-data"><i class="fas fa-filter" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos que coincidan con los filtros.</p></div>`;
             return;
         }
 
@@ -1109,10 +1310,11 @@
             estadoSelect += `<option value="cancelado" ${estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>`;
             estadoSelect += `</select>`;
 
-            html += `<tr>
+            const descripcionEscapada = descripcion.replace(/"/g, '&quot;');
+            html += `<tr data-index="${originalIndex}">
                 <td><strong>${nombre}</strong></td>
                 <td>${servicio}</td>
-                <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
+                <td class="descripcion-td"><div class="descripcion-cell" title="Haz clic para expandir/colapsar">${descripcionEscapada}</div></td>
                 <td>${estadoSelect}</td>
                 <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
                 <td>${fecha}</td>
@@ -1127,12 +1329,21 @@
             <td style="font-weight:700; color:var(--primary-dark); font-size:1rem;">${formatearPrecio(totalFiltrado)}</td>
             <td colspan="2"></td>
         </tr></tfoot></table>`;
-
         container.innerHTML = html;
+
+        container.querySelector('table tbody').addEventListener('click', function(e) {
+            if (e.target.closest('button, a, select')) return;
+            const fila = e.target.closest('tr');
+            if (!fila) return;
+            const celdaDesc = fila.querySelector('.descripcion-cell');
+            if (celdaDesc) {
+                celdaDesc.classList.toggle('expandido');
+            }
+        });
     }
 
     // =============================================
-    // CAMBIAR ESTADO DE PRESUPUESTO (GUARDA EN SHEETS)
+    // CAMBIAR ESTADO DE PRESUPUESTO
     // =============================================
     async function cambiarEstadoPresupuesto(index, nuevoEstado) {
         const presupuesto = datosCache.presupuestos[index];
@@ -1219,9 +1430,6 @@
         document.body.style.overflow = 'hidden';
     }
 
-    // =============================================
-    // ACTUALIZAR VISTA PREVIA CON EL NUEVO DISEÑO
-    // =============================================
     function actualizarVistaPrevia() {
         const nombre = document.getElementById('presupuestoNombre').value || '-';
         const telefono = document.getElementById('presupuestoTelefono').value || '-';
@@ -1233,17 +1441,14 @@
         const iva = subtotal * 0.21;
         const total = subtotal + iva;
 
-        // Cliente
         document.getElementById('previewNombre').textContent = nombre;
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
 
-        // Servicio y validez
         const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
         document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicio}`;
         document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
 
-        // Fecha de validez
         const hoy = new Date();
         const fechaValidez = new Date(hoy);
         fechaValidez.setDate(fechaValidez.getDate() + validezDias);
@@ -1253,10 +1458,8 @@
         document.getElementById('previewValidezDias').textContent = validezDias;
         document.getElementById('previewValidezFecha').textContent = validezStr;
 
-        // Descripción (con saltos de línea)
         document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
 
-        // Totales
         document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
         document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
         document.getElementById('previewIva').textContent = formatearPrecio(iva);
@@ -1264,7 +1467,6 @@
         document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
     }
 
-    // Eventos para actualizar vista previa en tiempo real
     document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
@@ -1372,7 +1574,7 @@
     document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
 
     // =============================================
-    // RESUMEN POR CONTACTO (CON ALERTA DE VENCIDO)
+    // RESUMEN POR CONTACTO
     // =============================================
     function actualizarResumenContactos(data) {
         const container = document.getElementById('resumenContainer');
