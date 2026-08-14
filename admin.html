@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>+Admin | REF Electrotecnia</title>
+    <title>Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -1293,7 +1293,7 @@
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
     // =============================================
-    // GUARDAR PRESUPUESTO (optimizado)
+    // GUARDAR PRESUPUESTO (✅ CORREGIDO)
     // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -1354,16 +1354,18 @@
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
+            // ✅ CORREGIDO: se incluye el token y se usa text/plain
             const datos = {
                 action: 'save_budget',
+                token: getToken(),
                 nombre, servicio, descripcion,
                 precio: total.toFixed(2),
                 numero, validez, materiales
             };
-            fetch(URL_SCRIPT, {
+            await fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
                 body: JSON.stringify(datos)
             });
 
@@ -1383,7 +1385,7 @@
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
     // =============================================
-    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (con token)
+    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (✅ CORREGIDO)
     // =============================================
     async function enviarAccion(datos) {
         const token = getToken();
@@ -1394,7 +1396,7 @@
             await fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
                 body: JSON.stringify(datos)
             });
             return true;
@@ -1502,7 +1504,7 @@
     document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
     // =============================================
-    // LOGOUT
+    // LOGOUT (✅ CORREGIDO)
     // =============================================
     document.getElementById('logoutBtn').addEventListener('click', function() {
         if (confirm('¿Cerrar sesión?')) {
@@ -1511,7 +1513,7 @@
                 fetch(URL_SCRIPT, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
                     body: JSON.stringify({ action: 'logout', token: token })
                 });
             }
