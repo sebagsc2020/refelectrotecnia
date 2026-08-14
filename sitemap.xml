@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Página principal -->
+  <url>
+    <loc>https://sebagsc2020.github.io/refelectrotecnia/</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png</image:loc>
+      <image:title>REF Electrotecnia - Logotipo</image:title>
+      <image:caption>Logo de REF Electrotecnia, electricista matriculado en Córdoba</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/ref01.webp</image:loc>
+      <image:title>REF Electrotecnia - Trabajo 1</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/ref02.webp</image:loc>
+      <image:title>REF Electrotecnia - Trabajo 2</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/ref03.webp</image:loc>
+      <image:title>REF Electrotecnia - Trabajo 3</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/ref04.webp</image:loc>
+      <image:title>REF Electrotecnia - Trabajo 4</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://sebagsc2020.github.io/refelectrotecnia/images/ref05.webp</image:loc>
+      <image:title>REF Electrotecnia - Trabajo 5</image:title>
+    </image:image>
+  </url>
+
+  <!-- Secciones ancla (ayuda a IA a entender la estructura) -->
+  <url>
+    <loc>https://sebagsc2020.github.io/refelectrotecnia/#servicios</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://sebagsc2020.github.io/refelectrotecnia/#nosotros</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://sebagsc2020.github.io/refelectrotecnia/#faq</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://sebagsc2020.github.io/refelectrotecnia/#contacto</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+</urlset>

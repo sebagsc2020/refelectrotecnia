@@ -1,0 +1,55 @@
+# robots.txt - REF Electrotecnia
+# Actualizado: 2026-08-14
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*
+
+# Permitir imágenes para Google Imágenes y IA
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /*.webp$
+Allow: /*.png$
+Allow: /*.jpg$
+
+# Permitir acceso completo a Google para indexación IA
+User-agent: Googlebot
+Allow: /
+Allow: /images/
+
+# Permitir acceso a Bing
+User-agent: Bingbot
+Allow: /
+
+# Permitir acceso a ChatGPT-User (IA de OpenAI que navega web)
+User-agent: ChatGPT-User
+Allow: /
+
+# Permitir acceso a GPTBot (crawler de IA de OpenAI)
+User-agent: GPTBot
+Allow: /
+
+# Permitir acceso a PerplexityBot (IA Perplexity)
+User-agent: PerplexityBot
+Allow: /
+
+# Permitir acceso a ClaudeBot (IA Anthropic)
+User-agent: ClaudeBot
+Allow: /
+
+# Permitir acceso a Google-Extended (Gemini / AI Overviews)
+User-agent: Google-Extended
+Allow: /
+
+# Bloquear scrapers agresivos (opcional)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Ubicación del sitemap
+Sitemap: https://sebagsc2020.github.io/refelectrotecnia/sitemap.xml
