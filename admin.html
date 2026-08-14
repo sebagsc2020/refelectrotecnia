@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>--Admin | REF Electrotecnia</title>
+    <title>Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -70,11 +70,46 @@
         .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; padding: 0 0 12px 0; margin-bottom: 30px; }
         .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
+        
+        /* FILTRO DE ESTADOS */
+        .filtro-container {
+            display: flex;
+            gap: 10px;
+            padding: 10px 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filtro-container label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+        }
+        .filtro-container select {
+            padding: 8px 12px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+        }
+        .filtro-container select:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+        }
+        
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         table thead { background: var(--light-bg); }
         table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
         table td { padding: 12px 14px; border-bottom: 1px solid #E9ECEF; color: var(--gray-text); vertical-align: middle; }
         table tbody tr:hover { background: #F8FAFC; }
+        table tfoot td {
+            font-weight: 700;
+            color: var(--primary-dark);
+            background: var(--light-bg);
+            border-top: 2px solid #E9ECEF;
+            padding: 12px 14px;
+        }
         .badge-emergencia { background: #fee2e2; color: #b91c1c; padding: 2px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
         .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
         .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
@@ -110,6 +145,35 @@
         .modal-box .btn-cancel { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .modal-box .btn-cancel:hover { background: #f1f1f1; border-color: #ccc; }
         
+        /* SELECT DE ESTADO EN TABLA */
+        .estado-select {
+            padding: 5px 10px;
+            border: 2px solid #E9ECEF;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: var(--font);
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        .estado-select.estado-aprobado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; }
+        .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
+        .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
+        
+        /* BADGES DE ESTADO */
+        .badge-estado {
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-aprobado { background: #d4edda; color: #155724; }
+        .badge-encurso { background: #fff3cd; color: #856404; }
+        .badge-vencido { background: #f8d7da; color: #721c24; }
+        
         /* ========== PRESUPUESTO - DISEÑO EXACTO AL PDF ========== */
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -126,7 +190,6 @@
             border: 1px solid #E9ECEF;
         }
         
-        /* HEADER */
         .pdf-header {
             background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%);
             color: white;
@@ -144,7 +207,6 @@
         .pdf-header-right .numero { font-size: 0.9rem; font-weight: 700; margin-top: 3px; }
         .pdf-header-right .fecha-emision { font-size: 0.75rem; margin-top: 3px; opacity: 0.9; }
         
-        /* CUERPO */
         .pdf-body { padding: 20px 25px; }
         
         .pdf-section { margin-bottom: 18px; }
@@ -164,7 +226,6 @@
         .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
         .pdf-info-grid .value { color: #4A4A4A; }
         
-        /* TABLA DETALLE */
         .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.8rem; }
         .pdf-table thead tr { background: #0A2E5C; color: white; }
         .pdf-table th { padding: 8px 10px; text-align: left; font-weight: 700; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; }
@@ -176,7 +237,6 @@
         .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.8rem; }
         .pdf-table .firma-sub { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
         
-        /* TOTALES */
         .pdf-totales { margin-top: 12px; margin-left: auto; width: 250px; background: #F4F6F9; border-radius: 6px; padding: 10px 12px; }
         .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.8rem; border-bottom: 1px solid #E9ECEF; }
         .pdf-totales .total-row:last-child { border-bottom: none; }
@@ -185,12 +245,10 @@
         .pdf-totales .total-final { background: #0A2E5C; margin: 6px -12px -10px -12px; padding: 10px 12px; border-radius: 0 0 6px 6px; }
         .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.85rem; }
         
-        /* CONDICIONES */
         .pdf-condiciones { list-style: none; padding: 0; font-size: 0.75rem; color: #555; }
         .pdf-condiciones li { padding: 3px 0; padding-left: 12px; position: relative; }
         .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
         
-        /* FOOTER */
         .pdf-footer {
             background: #0A2E5C;
             color: white;
@@ -262,7 +320,22 @@
     </div>
 
     <div class="table-container"><h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4><div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div></div>
-    <div class="table-container"><h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4><div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div></div>
+    
+    <!-- PRESUPUESTOS CON FILTRO -->
+    <div class="table-container">
+        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+        <div class="filtro-container">
+            <label>Filtrar por estado:</label>
+            <select id="filtroEstado" onchange="renderizarPresupuestos(datosCache.presupuestos)">
+                <option value="todos">Todos</option>
+                <option value="aprobado">Aprobado</option>
+                <option value="encurso">En Curso</option>
+                <option value="vencido">Vencido</option>
+            </select>
+        </div>
+        <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
+    </div>
+    
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
@@ -315,9 +388,7 @@
             </div>
         </div>
 
-        <!-- ========== PREVIEW DEL PDF - DISEÑO EXACTO ========== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
-            <!-- HEADER CON LOGO -->
             <div class="pdf-header">
                 <div class="pdf-header-left">
                     <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="pdf-logo" crossorigin="anonymous">
@@ -334,7 +405,6 @@
             </div>
 
             <div class="pdf-body">
-                <!-- INFORMACIÓN DEL CLIENTE -->
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">INFORMACIÓN DEL CLIENTE</h4>
                     <div class="pdf-info-grid">
@@ -344,7 +414,6 @@
                     </div>
                 </div>
 
-                <!-- DETALLES DEL SERVICIO -->
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">DETALLES DEL SERVICIO</h4>
                     <div class="pdf-info-grid">
@@ -354,7 +423,6 @@
                     </div>
                 </div>
 
-                <!-- DETALLE DE PRESTACIÓN / MANO DE OBRA -->
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">DETALLE DE PRESTACIÓN / MANO DE OBRA</h4>
                     <table class="pdf-table">
@@ -381,7 +449,6 @@
                         </tbody>
                     </table>
 
-                    <!-- TOTALES -->
                     <div class="pdf-totales">
                         <div class="total-row"><span>Subtotal Netos:</span> <span id="previewSubtotalNetos">$ 0</span></div>
                         <div class="total-row"><span>IVA (21%):</span> <span id="previewIva">$ 0</span></div>
@@ -389,7 +456,6 @@
                     </div>
                 </div>
 
-                <!-- CONDICIONES COMERCIALES -->
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">CONDICIONES COMERCIALES & NOTAS</h4>
                     <ul class="pdf-condiciones">
@@ -400,7 +466,6 @@
                 </div>
             </div>
 
-            <!-- FOOTER -->
             <div class="pdf-footer">
                 REF Electrotecnia • Instalaciones Eléctricas Industriales, Comerciales y Domótica • Córdoba, Argentina
             </div>
@@ -443,6 +508,7 @@
     let chartInstance = null;
     let datosCache = { contactos: [], presupuestos: [] };
     let intervaloAuto = null;
+    let estadosPresupuestos = {}; // Almacena los estados manuales
 
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
@@ -459,6 +525,39 @@
         if (!fechaISO) return '';
         const fecha = new Date(fechaISO);
         return fecha.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    // =============================================
+    // FUNCIÓN PARA CALCULAR SI UN PRESUPUESTO ESTÁ VENCIDO
+    // =============================================
+    function calcularEstadoPresupuesto(presupuesto, index) {
+        // Verificar si hay un estado manual guardado
+        if (estadosPresupuestos[index] && estadosPresupuestos[index] !== 'vencido') {
+            // Si el estado manual es aprobado o en curso, verificar si no está vencido
+            const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
+            const validez = parseInt(presupuesto.Validez) || 30;
+            const fechaVencimiento = new Date(fecha);
+            fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
+            const hoy = new Date();
+            
+            if (hoy > fechaVencimiento) {
+                return 'vencido'; // Automáticamente vencido
+            }
+            return estadosPresupuestos[index];
+        }
+        
+        // Calcular automáticamente si está vencido
+        const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
+        const validez = parseInt(presupuesto.Validez) || 30;
+        const fechaVencimiento = new Date(fecha);
+        fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
+        const hoy = new Date();
+        
+        if (hoy > fechaVencimiento) {
+            return 'vencido';
+        }
+        
+        return estadosPresupuestos[index] || 'encurso';
     }
 
     async function cargarDatos() {
@@ -551,17 +650,94 @@
         html += `</tbody></table>`; container.innerHTML = html;
     }
 
+    // =============================================
+    // RENDERIZAR PRESUPUESTOS CON ESTADO Y FILTRO
+    // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
-        if (!data || data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`; return; }
+        if (!data || data.length === 0) { 
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`; 
+            return; 
+        }
+
+        const filtroEstado = document.getElementById('filtroEstado').value;
         const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
-        let html = `<table><thead><tr><th>Nombre</th><th>Servicio</th><th>Descripción</th><th>Precio</th><th>Fecha de envío</th><th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-        sorted.forEach((row, index) => {
-            const nombre = row.Nombre || '-'; const servicio = row.Servicio || '-'; const descripcion = row.Descripción || '-';
-            const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0'; const fecha = formatearFecha(row.Fecha);
-            html += `<tr><td><strong>${nombre}</strong></td><td>${servicio}</td><td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td><td>${precio}</td><td>${fecha}</td><td style="text-align:center;"><button class="btn-delete" onclick="eliminarPresupuesto(${index})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button></td></tr>`;
+
+        // Filtrar por estado
+        const filtrados = sorted.filter((presupuesto, index) => {
+            const estado = calcularEstadoPresupuesto(presupuesto, index);
+            if (filtroEstado === 'todos') return true;
+            return estado === filtroEstado;
         });
-        html += `</tbody></table>`; container.innerHTML = html;
+
+        if (filtrados.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-filter" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos con el estado "${filtroEstado}".</p></div>`;
+            return;
+        }
+
+        let totalFiltrado = 0;
+        let html = `<table><thead><tr>
+            <th>Nombre</th>
+            <th>Servicio</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Precio</th>
+            <th>Fecha de envío</th>
+            <th style="text-align:center;">Acciones</th>
+        </tr></thead><tbody>`;
+
+        filtrados.forEach((row) => {
+            const originalIndex = sorted.indexOf(row);
+            const nombre = row.Nombre || '-';
+            const servicio = row.Servicio || '-';
+            const descripcion = row.Descripción || '-';
+            const precio = row.Precio ? parseFloat(row.Precio) : 0;
+            const fecha = formatearFecha(row.Fecha);
+            const estado = calcularEstadoPresupuesto(row, originalIndex);
+
+            totalFiltrado += precio;
+
+            // Generar select de estado
+            let estadoSelect = `<select class="estado-select estado-${estado}" onchange="cambiarEstadoPresupuesto(${originalIndex}, this.value)">`;
+            estadoSelect += `<option value="aprobado" ${estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>`;
+            estadoSelect += `<option value="encurso" ${estado === 'encurso' ? 'selected' : ''}>En Curso</option>`;
+            estadoSelect += `<option value="vencido" ${estado === 'vencido' ? 'selected' : ''} disabled>Vencido</option>`;
+            estadoSelect += `</select>`;
+
+            html += `<tr>
+                <td><strong>${nombre}</strong></td>
+                <td>${servicio}</td>
+                <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
+                <td>${estadoSelect}</td>
+                <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
+                <td>${fecha}</td>
+                <td style="text-align:center;">
+                    <button class="btn-delete" onclick="eliminarPresupuesto(${originalIndex})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
+        });
+
+        // Fila de totales
+        html += `</tbody><tfoot><tr>
+            <td colspan="4" style="text-align:right; font-weight:700;">TOTAL ${filtroEstado !== 'todos' ? '(' + filtroEstado.toUpperCase() + ')' : ''}:</td>
+            <td style="font-weight:700; color:var(--primary-dark); font-size:1rem;">${formatearPrecio(totalFiltrado)}</td>
+            <td colspan="2"></td>
+        </tr></tfoot></table>`;
+
+        container.innerHTML = html;
+    }
+
+    // =============================================
+    // CAMBIAR ESTADO DE PRESUPUESTO
+    // =============================================
+    function cambiarEstadoPresupuesto(index, nuevoEstado) {
+        if (nuevoEstado === 'vencido') {
+            alert('El estado "Vencido" se asigna automáticamente según la fecha de validez.');
+            renderizarPresupuestos(datosCache.presupuestos);
+            return;
+        }
+        estadosPresupuestos[index] = nuevoEstado;
+        renderizarPresupuestos(datosCache.presupuestos);
     }
 
     async function eliminarPresupuesto(index) {
@@ -645,7 +821,6 @@
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
         
-        // ✅ RESOLUCIÓN: Convertir saltos de línea a <br> para el PDF
         const descripcionHtml = descripcionRaw.replace(/\n/g, '<br>');
         document.getElementById('previewDescripcion').innerHTML = descripcionHtml;
         
