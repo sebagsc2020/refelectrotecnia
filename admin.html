@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>--Admin | REF Electrotecnia</title>
+    <title>Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -71,44 +71,17 @@
         .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
         
-        .filtro-container {
-            display: flex;
-            gap: 10px;
-            padding: 10px 24px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .filtro-container label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--primary-dark);
-        }
-        .filtro-container select {
-            padding: 8px 12px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-family: var(--font);
-            font-size: 0.85rem;
-            background: white;
-            cursor: pointer;
-        }
-        .filtro-container select:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-        }
+        .filtro-container { display: flex; gap: 10px; padding: 10px 24px; align-items: center; flex-wrap: wrap; }
+        .filtro-container label { font-weight: 600; font-size: 0.85rem; color: var(--primary-dark); }
+        .filtro-container select { padding: 8px 12px; border: 2px solid #E9ECEF; border-radius: 8px; font-family: var(--font); font-size: 0.85rem; background: white; cursor: pointer; }
+        .filtro-container select:focus { outline: none; border-color: var(--primary-cyan); }
         
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         table thead { background: var(--light-bg); }
         table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
         table td { padding: 12px 14px; border-bottom: 1px solid #E9ECEF; color: var(--gray-text); vertical-align: middle; }
         table tbody tr:hover { background: #F8FAFC; }
-        table tfoot td {
-            font-weight: 700;
-            color: var(--primary-dark);
-            background: var(--light-bg);
-            border-top: 2px solid #E9ECEF;
-            padding: 12px 14px;
-        }
+        table tfoot td { font-weight: 700; color: var(--primary-dark); background: var(--light-bg); border-top: 2px solid #E9ECEF; padding: 12px 14px; }
         .badge-emergencia { background: #fee2e2; color: #b91c1c; padding: 2px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
         .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
         .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
@@ -144,46 +117,19 @@
         .modal-box .btn-cancel { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .modal-box .btn-cancel:hover { background: #f1f1f1; border-color: #ccc; }
         
-        /* SELECT DE ESTADO EN TABLA */
-        .estado-select {
-            padding: 5px 10px;
-            border: 2px solid #E9ECEF;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-family: var(--font);
-            font-weight: 600;
-            cursor: pointer;
-            min-width: 110px;
-        }
+        .estado-select { padding: 5px 10px; border: 2px solid #E9ECEF; border-radius: 6px; font-size: 0.8rem; font-family: var(--font); font-weight: 600; cursor: pointer; min-width: 110px; }
         .estado-select.estado-aprobado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; }
         .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
         .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
         .estado-select.estado-cancelado { border-color: #7f8c8d; color: #555; background: #f5f5f5; }
         
-        /* ========== PRESUPUESTO - DISEÑO EXACTO AL PDF ========== */
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
         
-        .presupuesto-box .presupuesto-preview {
-            background: #ffffff;
-            margin: 20px 0;
-            font-family: 'Inter', Arial, sans-serif;
-            color: #2c3e50;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            width: 100%;
-            border: 1px solid #E9ECEF;
-        }
+        .presupuesto-box .presupuesto-preview { background: #ffffff; margin: 20px 0; font-family: 'Inter', Arial, sans-serif; color: #2c3e50; font-size: 0.85rem; line-height: 1.5; width: 100%; border: 1px solid #E9ECEF; }
         
-        .pdf-header {
-            background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%);
-            color: white;
-            padding: 20px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .pdf-header { background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; }
         .pdf-header-left { display: flex; align-items: center; gap: 12px; }
         .pdf-logo { height: 45px; background: white; padding: 4px; border-radius: 5px; }
         .pdf-header-left h3 { font-size: 1.2rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
@@ -194,20 +140,8 @@
         .pdf-header-right .fecha-emision { font-size: 0.75rem; margin-top: 3px; opacity: 0.9; }
         
         .pdf-body { padding: 20px 25px; }
-        
         .pdf-section { margin-bottom: 18px; }
-        .pdf-section-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #0A2E5C;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
-            border-bottom: 2px solid #00A8FF;
-            display: inline-block;
-        }
-        
+        .pdf-section-title { font-size: 0.7rem; font-weight: 700; color: #0A2E5C; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px; margin-bottom: 8px; border-bottom: 2px solid #00A8FF; display: inline-block; }
         .pdf-info-grid { display: grid; grid-template-columns: auto auto; gap: 5px 20px; font-size: 0.8rem; }
         .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
         .pdf-info-grid .value { color: #4A4A4A; }
@@ -235,14 +169,7 @@
         .pdf-condiciones li { padding: 3px 0; padding-left: 12px; position: relative; }
         .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
         
-        .pdf-footer {
-            background: #0A2E5C;
-            color: white;
-            text-align: center;
-            padding: 10px 15px;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-        }
+        .pdf-footer { background: #0A2E5C; color: white; text-align: center; padding: 10px 15px; font-size: 0.65rem; letter-spacing: 0.5px; }
         
         .presupuesto-box .presupuesto-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin-top: 10px; }
         .presupuesto-box .presupuesto-actions .btn-guardar { background: var(--primary-dark); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
@@ -307,7 +234,6 @@
 
     <div class="table-container"><h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4><div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div></div>
     
-    <!-- PRESUPUESTOS CON FILTRO -->
     <div class="table-container">
         <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
         <div class="filtro-container">
@@ -514,24 +440,16 @@
     }
 
     // =============================================
-    // FUNCIÓN PARA CALCULAR SI UN PRESUPUESTO ESTÁ VENCIDO
+    // CALCULAR ESTADO DEL PRESUPUESTO
     // =============================================
     function calcularEstadoPresupuesto(presupuesto) {
-        // Si el estado guardado es cancelado, siempre mostrar cancelado
         if (presupuesto.Estado === 'cancelado') return 'cancelado';
-        
-        // Calcular automáticamente si está vencido
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
         const validez = parseInt(presupuesto.Validez) || 30;
         const fechaVencimiento = new Date(fecha);
         fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
         const hoy = new Date();
-        
-        if (hoy > fechaVencimiento) {
-            return 'vencido';
-        }
-        
-        // Devolver el estado guardado o por defecto "encurso"
+        if (hoy > fechaVencimiento) return 'vencido';
         return presupuesto.Estado || 'encurso';
     }
 
@@ -626,19 +544,26 @@
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS CON ESTADO Y FILTRO
+    // RENDERIZAR PRESUPUESTOS (✅ ÍNDICE CORREGIDO)
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
-        if (!data || data.length === 0) { 
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`; 
-            return; 
+        if (!data || data.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
+            return;
         }
 
         const filtroEstado = document.getElementById('filtroEstado').value;
-        const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
 
-        // Filtrar por estado
+        // ✅ CLAVE: agregar índice original ANTES de ordenar
+        const dataConIndice = data.map((item, idx) => ({...item, _originalIndex: idx}));
+
+        const sorted = [...dataConIndice].sort((a,b) => {
+            if (!a.Fecha) return 1;
+            if (!b.Fecha) return -1;
+            return new Date(b.Fecha) - new Date(a.Fecha);
+        });
+
         const filtrados = sorted.filter((presupuesto) => {
             const estado = calcularEstadoPresupuesto(presupuesto);
             if (filtroEstado === 'todos') return true;
@@ -662,7 +587,8 @@
         </tr></thead><tbody>`;
 
         filtrados.forEach((row) => {
-            const originalIndex = sorted.indexOf(row);
+            // ✅ USAR EL ÍNDICE ORIGINAL (posición real en la hoja)
+            const originalIndex = row._originalIndex;
             const nombre = row.Nombre || '-';
             const servicio = row.Servicio || '-';
             const descripcion = row.Descripción || '-';
@@ -672,7 +598,6 @@
 
             totalFiltrado += precio;
 
-            // Generar select de estado con las 4 opciones
             let estadoSelect = `<select class="estado-select estado-${estado}" onchange="cambiarEstadoPresupuesto(${originalIndex}, this.value)">`;
             estadoSelect += `<option value="aprobado" ${estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>`;
             estadoSelect += `<option value="encurso" ${estado === 'encurso' ? 'selected' : ''}>En Curso</option>`;
@@ -693,7 +618,6 @@
             </tr>`;
         });
 
-        // Fila de totales
         html += `</tbody><tfoot><tr>
             <td colspan="4" style="text-align:right; font-weight:700;">TOTAL ${filtroEstado !== 'todos' ? '(' + filtroEstado.toUpperCase() + ')' : ''}:</td>
             <td style="font-weight:700; color:var(--primary-dark); font-size:1rem;">${formatearPrecio(totalFiltrado)}</td>
@@ -704,23 +628,26 @@
     }
 
     // =============================================
-    // CAMBIAR ESTADO DE PRESUPUESTO (✅ GUARDA EN SHEETS)
+    // CAMBIAR ESTADO (✅ GUARDA EN SHEETS COLUMNA I)
     // =============================================
     async function cambiarEstadoPresupuesto(index, nuevoEstado) {
         const presupuesto = datosCache.presupuestos[index];
-        if (!presupuesto) return;
-        
+        if (!presupuesto) {
+            console.error('Presupuesto no encontrado en índice:', index);
+            return;
+        }
+
         // Actualizar localmente
         datosCache.presupuestos[index].Estado = nuevoEstado;
-        
-        // Guardar en el servidor
+
+        // ✅ Enviar índice Y número como respaldo
         await enviarAccion({
             action: 'update_budget_status',
             index: index,
+            numero: presupuesto.Número || presupuesto['Número'] || '',
             estado: nuevoEstado
         });
-        
-        // Re-renderizar
+
         renderizarPresupuestos(datosCache.presupuestos);
     }
 
@@ -804,10 +731,11 @@
         document.getElementById('previewNombre').textContent = nombre;
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
-        
+
+        // ✅ Convertir saltos de línea a <br>
         const descripcionHtml = descripcionRaw.replace(/\n/g, '<br>');
         document.getElementById('previewDescripcion').innerHTML = descripcionHtml;
-        
+
         document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
         document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
         document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
@@ -867,17 +795,14 @@
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            const marginX = 0;
-            const marginY = 0;
-            const maxWidth = pdfWidth - 2 * marginX;
-            const maxHeight = pdfHeight - marginY;
+            const maxWidth = pdfWidth;
+            const maxHeight = pdfHeight;
             const scale = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
             const xOffset = (pdfWidth - imgWidth) / 2;
-            const yOffset = marginY;
 
-            pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', xOffset, 0, imgWidth, imgHeight);
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
@@ -887,7 +812,7 @@
                 nombre, servicio, descripcion,
                 precio: total.toFixed(2),
                 numero, validez, materiales,
-                estado: 'encurso' // ✅ Estado inicial
+                estado: 'encurso'
             };
             await fetch(URL_SCRIPT, {
                 method: 'POST',
