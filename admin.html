@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>--Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -110,7 +110,7 @@
         .modal-box .btn-cancel { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .modal-box .btn-cancel:hover { background: #f1f1f1; border-color: #ccc; }
         
-        /* ========== PRESUPUESTO - DISEÑO PROFESIONAL ========== */
+        /* ========== PRESUPUESTO - DISEÑO EXACTO AL PDF ========== */
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
@@ -120,75 +120,74 @@
             margin: 20px 0;
             font-family: 'Inter', Arial, sans-serif;
             color: #2c3e50;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.5;
             width: 100%;
             border: 1px solid #E9ECEF;
         }
         
-        /* HEADER DEL PDF */
+        /* HEADER */
         .pdf-header {
             background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%);
             color: white;
-            padding: 22px 28px;
+            padding: 20px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .pdf-header-left { display: flex; align-items: center; gap: 14px; }
-        .pdf-logo { height: 50px; background: white; padding: 5px; border-radius: 6px; }
-        .pdf-header-left h3 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
-        .pdf-header-left .tagline { font-size: 0.65rem; font-weight: 500; letter-spacing: 1.2px; margin-top: 3px; opacity: 0.85; text-transform: uppercase; }
+        .pdf-header-left { display: flex; align-items: center; gap: 12px; }
+        .pdf-logo { height: 45px; background: white; padding: 4px; border-radius: 5px; }
+        .pdf-header-left h3 { font-size: 1.2rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
+        .pdf-header-left .tagline { font-size: 0.6rem; font-weight: 500; letter-spacing: 1px; margin-top: 3px; opacity: 0.85; text-transform: uppercase; }
         .pdf-header-right { text-align: right; }
-        .pdf-header-right h2 { font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: #00A8FF; }
-        .pdf-header-right .numero { font-size: 0.95rem; font-weight: 700; margin-top: 4px; }
-        .pdf-header-right .fecha-emision { font-size: 0.8rem; margin-top: 4px; opacity: 0.9; }
+        .pdf-header-right h2 { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: #00A8FF; }
+        .pdf-header-right .numero { font-size: 0.9rem; font-weight: 700; margin-top: 3px; }
+        .pdf-header-right .fecha-emision { font-size: 0.75rem; margin-top: 3px; opacity: 0.9; }
         
-        /* CUERPO DEL PDF */
-        .pdf-body { padding: 22px 28px; }
+        /* CUERPO */
+        .pdf-body { padding: 20px 25px; }
         
-        .pdf-section { margin-bottom: 20px; }
+        .pdf-section { margin-bottom: 18px; }
         .pdf-section-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: #0A2E5C;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            letter-spacing: 1px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
             border-bottom: 2px solid #00A8FF;
             display: inline-block;
         }
         
-        .pdf-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 15px; font-size: 0.85rem; }
-        .pdf-info-grid .full-row { grid-column: 1 / -1; }
+        .pdf-info-grid { display: grid; grid-template-columns: auto auto; gap: 5px 20px; font-size: 0.8rem; }
         .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
         .pdf-info-grid .value { color: #4A4A4A; }
         
         /* TABLA DETALLE */
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.85rem; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.8rem; }
         .pdf-table thead tr { background: #0A2E5C; color: white; }
-        .pdf-table th { padding: 9px 12px; text-align: left; font-weight: 700; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; }
+        .pdf-table th { padding: 8px 10px; text-align: left; font-weight: 700; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; }
         .pdf-table th.text-right, .pdf-table td.text-right { text-align: right; }
-        .pdf-table td { padding: 12px; border-bottom: 1px solid #E9ECEF; vertical-align: top; }
-        .pdf-table .desc-titulo { font-weight: 700; color: #0A2E5C; margin-bottom: 5px; font-size: 0.9rem; }
-        .pdf-table .desc-detalle { color: #555; font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
-        .pdf-table .firma-row td { background: #F8FAFC; padding: 10px 12px; }
-        .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.85rem; }
-        .pdf-table .firma-sub { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .pdf-table td { padding: 10px; border-bottom: 1px solid #E9ECEF; vertical-align: top; }
+        .pdf-table .desc-titulo { font-weight: 700; color: #0A2E5C; margin-bottom: 4px; font-size: 0.85rem; }
+        .pdf-table .desc-detalle { color: #555; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .pdf-table .firma-row td { background: #F8FAFC; padding: 8px 10px; }
+        .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.8rem; }
+        .pdf-table .firma-sub { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
         
         /* TOTALES */
-        .pdf-totales { margin-top: 15px; margin-left: auto; width: 280px; background: #F4F6F9; border-radius: 8px; padding: 12px 15px; }
-        .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.85rem; border-bottom: 1px solid #E9ECEF; }
+        .pdf-totales { margin-top: 12px; margin-left: auto; width: 250px; background: #F4F6F9; border-radius: 6px; padding: 10px 12px; }
+        .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.8rem; border-bottom: 1px solid #E9ECEF; }
         .pdf-totales .total-row:last-child { border-bottom: none; }
         .pdf-totales .total-row span:first-child { color: #4A4A4A; font-weight: 500; }
         .pdf-totales .total-row span:last-child { font-weight: 600; color: #0A2E5C; }
-        .pdf-totales .total-final { background: #0A2E5C; margin: 8px -15px -12px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
-        .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.95rem; }
+        .pdf-totales .total-final { background: #0A2E5C; margin: 6px -12px -10px -12px; padding: 10px 12px; border-radius: 0 0 6px 6px; }
+        .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.85rem; }
         
         /* CONDICIONES */
-        .pdf-condiciones { list-style: none; padding: 0; font-size: 0.8rem; color: #555; }
-        .pdf-condiciones li { padding: 4px 0; padding-left: 15px; position: relative; }
+        .pdf-condiciones { list-style: none; padding: 0; font-size: 0.75rem; color: #555; }
+        .pdf-condiciones li { padding: 3px 0; padding-left: 12px; position: relative; }
         .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
         
         /* FOOTER */
@@ -196,8 +195,8 @@
             background: #0A2E5C;
             color: white;
             text-align: center;
-            padding: 12px 20px;
-            font-size: 0.7rem;
+            padding: 10px 15px;
+            font-size: 0.65rem;
             letter-spacing: 0.5px;
         }
         
@@ -316,7 +315,7 @@
             </div>
         </div>
 
-        <!-- ========== PREVIEW DEL PDF - DISEÑO PROFESIONAL ========== -->
+        <!-- ========== PREVIEW DEL PDF - DISEÑO EXACTO ========== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <!-- HEADER CON LOGO -->
             <div class="pdf-header">
@@ -339,9 +338,9 @@
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">INFORMACIÓN DEL CLIENTE</h4>
                     <div class="pdf-info-grid">
-                        <div><span class="label">Cliente:</span> <span class="value" id="previewNombre">-</span></div>
-                        <div><span class="label">Teléfono:</span> <span class="value" id="previewTelefono">-</span></div>
-                        <div class="full-row"><span class="label">Email:</span> <span class="value" id="previewEmail">-</span></div>
+                        <span class="label">Cliente:</span> <span class="value" id="previewNombre">-</span>
+                        <span class="label">Teléfono:</span> <span class="value" id="previewTelefono">-</span>
+                        <span class="label">Email:</span> <span class="value" id="previewEmail">-</span>
                     </div>
                 </div>
 
@@ -349,9 +348,9 @@
                 <div class="pdf-section">
                     <h4 class="pdf-section-title">DETALLES DEL SERVICIO</h4>
                     <div class="pdf-info-grid">
-                        <div><span class="label">Servicio Requerido:</span> <span class="value" id="previewServicio">-</span></div>
-                        <div><span class="label">Materiales Incluidos:</span> <span class="value" id="previewMateriales">No incluidos</span></div>
-                        <div class="full-row"><span class="label">Validez de Oferta:</span> <span class="value" id="previewValidez">-</span></div>
+                        <span class="label">Servicio Requerido:</span> <span class="value" id="previewServicio">-</span>
+                        <span class="label">Materiales Incluidos:</span> <span class="value" id="previewMateriales">No incluidos</span>
+                        <span class="label">Validez de Oferta:</span> <span class="value" id="previewValidez">-</span>
                     </div>
                 </div>
 
