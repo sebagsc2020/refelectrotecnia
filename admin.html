@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ===== Estilos originales del dashboard (se mantienen) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -124,65 +125,548 @@
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
-        .presupuesto-box .presupuesto-preview { background: #ffffff; margin: 20px 0; font-family: 'Inter', Arial, sans-serif; color: #2c3e50; font-size: 0.85rem; line-height: 1.5; width: 100%; border: 1px solid #E9ECEF; }
-        .pdf-header { background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .pdf-header-left { display: flex; align-items: center; gap: 12px; }
-        .pdf-logo { height: 45px; background: white; padding: 4px; border-radius: 5px; }
-        .pdf-header-left h3 { font-size: 1.2rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
-        .pdf-header-left .tagline { font-size: 0.6rem; font-weight: 500; letter-spacing: 1px; margin-top: 3px; opacity: 0.85; text-transform: uppercase; }
-        .pdf-header-right { text-align: right; }
-        .pdf-header-right h2 { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: #00A8FF; }
-        .pdf-header-right .numero { font-size: 0.9rem; font-weight: 700; margin-top: 3px; }
-        .pdf-header-right .fecha-emision { font-size: 0.75rem; margin-top: 3px; opacity: 0.9; }
-        .pdf-body { padding: 20px 25px; }
-        .pdf-section { margin-bottom: 18px; }
-        .pdf-section-title { font-size: 0.7rem; font-weight: 700; color: #0A2E5C; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px; margin-bottom: 8px; border-bottom: 2px solid #00A8FF; display: inline-block; }
-        .pdf-info-grid { display: grid; grid-template-columns: auto auto; gap: 5px 20px; font-size: 0.8rem; }
-        .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
-        .pdf-info-grid .value { color: #4A4A4A; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.8rem; }
-        .pdf-table thead tr { background: #0A2E5C; color: white; }
-        .pdf-table th { padding: 8px 10px; text-align: left; font-weight: 700; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; }
-        .pdf-table th.text-right, .pdf-table td.text-right { text-align: right; }
-        .pdf-table td { padding: 10px; border-bottom: 1px solid #E9ECEF; vertical-align: top; }
-        .pdf-table .desc-titulo { font-weight: 700; color: #0A2E5C; margin-bottom: 4px; font-size: 0.85rem; }
-        .pdf-table .desc-detalle { color: #555; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
-        .pdf-table .firma-row td { background: #F8FAFC; padding: 8px 10px; }
-        .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.8rem; }
-        .pdf-table .firma-sub { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-        .pdf-totales { margin-top: 12px; margin-left: auto; width: 250px; background: #F4F6F9; border-radius: 6px; padding: 10px 12px; }
-        .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.8rem; border-bottom: 1px solid #E9ECEF; }
-        .pdf-totales .total-row:last-child { border-bottom: none; }
-        .pdf-totales .total-row span:first-child { color: #4A4A4A; font-weight: 500; }
-        .pdf-totales .total-row span:last-child { font-weight: 600; color: #0A2E5C; }
-        .pdf-totales .total-final { background: #0A2E5C; margin: 6px -12px -10px -12px; padding: 10px 12px; border-radius: 0 0 6px 6px; }
-        .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.85rem; }
-        .pdf-condiciones { list-style: none; padding: 0; font-size: 0.75rem; color: #555; }
-        .pdf-condiciones li { padding: 3px 0; padding-left: 12px; position: relative; }
-        .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
-        .pdf-footer { background: #0A2E5C; color: white; text-align: center; padding: 10px 15px; font-size: 0.65rem; letter-spacing: 0.5px; }
         .presupuesto-box .presupuesto-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin-top: 10px; }
         .presupuesto-box .presupuesto-actions .btn-guardar { background: var(--primary-dark); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .presupuesto-box .presupuesto-actions .btn-guardar:hover { background: var(--primary-cyan); transform: translateY(-2px); }
         .presupuesto-box .presupuesto-actions .btn-guardar:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
+
+        /* ===== ESTILOS NUEVOS PARA EL DISEÑO DEL PRESUPUESTO ===== */
+        .presupuesto-preview {
+            --primary-dark: #0a1a2f;
+            --primary-mid: #1a365d;
+            --primary-blue: #2563eb;
+            --accent-gold: #d4af37;
+            --accent-gold-light: #fef3c7;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --white: #ffffff;
+            --shadow-card: 0 20px 60px -12px rgba(10, 26, 47, 0.25);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+            font-family: 'Inter', sans-serif;
+        }
+        .presupuesto-preview * { margin:0; padding:0; box-sizing:border-box; }
+        .presupuesto-preview .presupuesto {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+            position: relative;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+        .presupuesto-preview .marca-agua {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .presupuesto-preview .marca-agua img {
+            max-width: 50%;
+            max-height: 50%;
+            width: auto;
+            height: auto;
+            opacity: 0.10;
+            filter: grayscale(100%) brightness(1.5) contrast(0.6);
+            transform: rotate(-25deg);
+            user-select: none;
+            pointer-events: none;
+        }
+        .presupuesto-preview .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 60%, var(--primary-blue) 100%);
+            padding: 32px 40px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 4px solid var(--accent-gold);
+            position: relative;
+            z-index: 5;
+        }
+        .presupuesto-preview .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .presupuesto-preview .header .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.10);
+            padding: 4px;
+            border: 1px solid rgba(255,255,255,0.15);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .presupuesto-preview .header .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+        .presupuesto-preview .header .empresa {
+            color: var(--white);
+        }
+        .presupuesto-preview .header .empresa h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .presupuesto-preview .header .empresa h1 span {
+            color: var(--accent-gold);
+        }
+        .presupuesto-preview .header .empresa .subtitulo {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .presupuesto-preview .header .badge-presupuesto {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            padding: 10px 22px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.25);
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .numero {
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .numero-presupuesto {
+            color: var(--accent-gold-light);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .fecha {
+            color: var(--accent-gold-light);
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+        .presupuesto-preview .cuerpo {
+            padding: 32px 40px 28px;
+            position: relative;
+            z-index: 5;
+        }
+        .presupuesto-preview .seccion {
+            margin-bottom: 34px;
+        }
+        .presupuesto-preview .seccion:last-of-type {
+            margin-bottom: 0;
+        }
+        .presupuesto-preview .seccion-prestacion {
+            margin-bottom: 0;
+        }
+        .presupuesto-preview .seccion-titulo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--gray-200);
+            padding-bottom: 10px;
+        }
+        .presupuesto-preview .seccion-titulo .icono {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .presupuesto-preview .seccion-titulo .linea-aux {
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+        .presupuesto-preview .datos-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+            overflow: hidden;
+        }
+        .presupuesto-preview .datos-col {
+            padding: 14px 22px;
+        }
+        .presupuesto-preview .datos-col.izquierda {
+            border-right: 1px solid var(--gray-200);
+        }
+        .presupuesto-preview .datos-col .col-titulo {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--primary-blue);
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 4px;
+        }
+        .presupuesto-preview .datos-col .item {
+            display: flex;
+            align-items: baseline;
+            padding: 2px 0;
+            font-size: 14.5px;
+        }
+        .presupuesto-preview .datos-col .item .etiqueta {
+            font-weight: 600;
+            color: var(--gray-600);
+            min-width: 75px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .presupuesto-preview .datos-col .item .valor {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+        .presupuesto-preview .datos-col .item .valor.email {
+            word-break: break-all;
+        }
+        .presupuesto-preview .prestacion-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-top: 4px;
+        }
+        .presupuesto-preview .prestacion-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            background: var(--gray-50);
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-600);
+        }
+        .presupuesto-preview .prestacion-header .importe-label {
+            text-align: right;
+        }
+        .presupuesto-preview .prestacion-fila {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            padding: 18px 24px 12px;
+            border-bottom: 1px dashed var(--gray-200);
+            align-items: baseline;
+        }
+        .presupuesto-preview .prestacion-fila .servicio-nombre {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .prestacion-fila .servicio-importe {
+            text-align: right;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: -0.3px;
+        }
+        .presupuesto-preview .prestacion-detalle {
+            padding: 12px 24px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--gray-600);
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .presupuesto-preview .totales-container {
+            margin-top: 20px;
+            padding: 20px 28px;
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .presupuesto-preview .totales-firma {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+        .presupuesto-preview .totales-firma .firma-imagen {
+            max-width: 80px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 4px;
+        }
+        .presupuesto-preview .totales-firma .firma-texto {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .totales-firma .firma-digital {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+            margin: 0 auto;
+        }
+        .presupuesto-preview .totales-list {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .presupuesto-preview .totales-list .linea {
+            display: flex;
+            justify-content: space-between;
+            width: 280px;
+            font-size: 15px;
+            padding: 3px 0;
+            color: var(--gray-600);
+        }
+        .presupuesto-preview .totales-list .linea .label-total {
+            font-weight: 500;
+        }
+        .presupuesto-preview .totales-list .linea .valor-total {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        .presupuesto-preview .totales-list .linea.total-final {
+            width: 280px;
+            border-top: 2px solid var(--primary-dark);
+            margin-top: 6px;
+            padding-top: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .totales-list .linea.total-final .label-total {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .totales-list .linea.total-final .valor-total {
+            color: var(--primary-blue);
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+        .presupuesto-preview .footer-documento {
+            text-align: right;
+            font-size: 12px;
+            color: var(--gray-600);
+            margin: 4px 0 4px 0;
+            line-height: 1.5;
+        }
+        .presupuesto-preview .condiciones {
+            margin-top: 0;
+            padding: 8px 16px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--accent-gold);
+        }
+        .presupuesto-preview .condiciones .seccion-titulo {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 3px;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .condiciones ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .presupuesto-preview .condiciones ul li {
+            font-size: 13.5px;
+            padding: 0px 0 0px 24px;
+            position: relative;
+            line-height: 1.4;
+            color: var(--gray-600);
+        }
+        .presupuesto-preview .condiciones ul li::before {
+            content: "◆";
+            position: absolute;
+            left: 4px;
+            color: var(--accent-gold);
+            font-size: 11px;
+            top: 0px;
+        }
+
         @media (max-width: 768px) {
-            .chart-section { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .dashboard-header { flex-direction: column; align-items: stretch; }
-            .modal-box { padding: 25px 20px; }
-            .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
-            .pdf-header { flex-direction: column; text-align: center; gap: 15px; }
-            .pdf-header-right { text-align: center; }
-            .pdf-info-grid { grid-template-columns: 1fr; }
-            .pdf-totales { width: 100%; }
+            .presupuesto-preview .header {
+                padding: 24px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .presupuesto-preview .header .empresa h1 {
+                font-size: 24px;
+            }
+            .presupuesto-preview .header .badge-presupuesto {
+                align-self: flex-start;
+                padding: 6px 16px;
+                text-align: left;
+                align-items: flex-start;
+            }
+            .presupuesto-preview .header .badge-presupuesto .numero {
+                font-size: 16px;
+            }
+            .presupuesto-preview .header .badge-presupuesto .numero-presupuesto {
+                font-size: 13px;
+            }
+            .presupuesto-preview .header .badge-presupuesto .fecha {
+                font-size: 11px;
+            }
+            .presupuesto-preview .cuerpo {
+                padding: 24px 18px;
+            }
+            .presupuesto-preview .datos-wrapper {
+                grid-template-columns: 1fr;
+                border-left: none;
+                border-top: 4px solid var(--primary-blue);
+            }
+            .presupuesto-preview .datos-col.izquierda {
+                border-right: none;
+                border-bottom: 1px solid var(--gray-200);
+            }
+            .presupuesto-preview .datos-col .item .etiqueta {
+                min-width: 70px;
+                font-size: 12px;
+            }
+            .presupuesto-preview .prestacion-header,
+            .presupuesto-preview .prestacion-fila {
+                grid-template-columns: 1fr;
+                gap: 6px;
+                padding: 12px 16px;
+            }
+            .presupuesto-preview .prestacion-header .importe-label {
+                text-align: left;
+            }
+            .presupuesto-preview .prestacion-fila .servicio-importe {
+                text-align: left;
+                font-size: 18px;
+            }
+            .presupuesto-preview .prestacion-detalle {
+                padding: 12px 16px;
+            }
+            .presupuesto-preview .totales-container {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px;
+                margin-top: 16px;
+            }
+            .presupuesto-preview .totales-firma {
+                align-items: center;
+                flex: none;
+            }
+            .presupuesto-preview .totales-firma .firma-imagen {
+                max-width: 70px;
+            }
+            .presupuesto-preview .totales-list {
+                align-items: stretch;
+            }
+            .presupuesto-preview .totales-list .linea,
+            .presupuesto-preview .totales-list .linea.total-final {
+                width: 100%;
+            }
+            .presupuesto-preview .footer-documento {
+                margin: 3px 0 3px 0;
+                font-size: 11px;
+            }
+            .presupuesto-preview .condiciones {
+                padding: 6px 14px;
+                margin-top: 0;
+            }
+            .presupuesto-preview .condiciones ul li {
+                font-size: 13px;
+                padding: 0px 0 0px 22px;
+                line-height: 1.3;
+            }
+            .presupuesto-preview .marca-agua img {
+                max-width: 70%;
+                max-height: 70%;
+            }
         }
         @media print {
-            .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos { display: none !important; }
-            .modal-box { box-shadow: none !important; padding: 20px !important; max-height: none !important; }
-            .modal-overlay { background: white !important; position: static !important; padding: 0 !important; }
-            body { background: white !important; }
+            .presupuesto-preview .presupuesto {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                border-radius: 0 !important;
+            }
+            .presupuesto-preview .header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .presupuesto-preview .totales-firma .firma-digital {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .presupuesto-preview .marca-agua img {
+                opacity: 0.05 !important;
+            }
+        }
+
+        /* Ajustes para el modal (para que la vista previa no se desborde) */
+        .presupuesto-box .presupuesto-preview {
+            max-width: 100%;
+            overflow: auto;
+            margin: 15px 0;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .presupuesto-box .presupuesto-preview .presupuesto {
+            border-radius: 0;
+            box-shadow: none;
+            border: 1px solid #E9ECEF;
+        }
+        @media (max-width: 768px) {
+            .presupuesto-box .presupuesto-datos {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -287,88 +771,135 @@
             </div>
         </div>
 
+        <!-- ===== NUEVA VISTA PREVIA CON EL DISEÑO PROFESIONAL ===== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
-            <div class="pdf-header">
-                <div class="pdf-header-left">
-                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="pdf-logo" crossorigin="anonymous">
-                    <div>
-                        <h3>REF Electrotecnia</h3>
-                        <p class="tagline">SOLUCIONES ELÉCTRICAS & AUTOMATIZACIÓN</p>
+            <div class="presupuesto">
+                <!-- MARCA DE AGUA -->
+                <div class="marca-agua">
+                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-512.png" alt="Marca de agua" />
+                </div>
+
+                <!-- HEADER -->
+                <header class="header">
+                    <div class="header-left">
+                        <div class="logo">
+                            <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-192.png" alt="REF Electrotecnia" />
+                        </div>
+                        <div class="empresa">
+                            <h1>REF <span>Electrotecnia</span></h1>
+                            <div class="subtitulo">Soluciones pensadas.</div>
+                        </div>
                     </div>
+                    <div class="badge-presupuesto">
+                        <span class="numero">PRESUPUESTO</span>
+                        <span class="numero-presupuesto" id="previewNumero">N° -</span>
+                        <span class="fecha" id="previewFechaValidez">Válido hasta el -</span>
+                    </div>
+                </header>
+
+                <!-- CUERPO -->
+                <div class="cuerpo">
+
+                    <!-- DATOS CLIENTE + SERVICIO -->
+                    <section class="seccion">
+                        <div class="seccion-titulo" style="margin-bottom:12px;">
+                            <span class="icono"></span> DATOS DEL SERVICIO Y CLIENTE
+                            <span class="linea-aux"></span>
+                        </div>
+                        <div class="datos-wrapper">
+                            <div class="datos-col izquierda">
+                                <div class="col-titulo">Detalles del Servicio</div>
+                                <div class="item">
+                                    <span class="etiqueta">Servicio:</span> <span class="valor" id="previewServicio">-</span>
+                                </div>
+                                <div class="item">
+                                    <span class="etiqueta">Materiales:</span> <span class="valor" id="previewMateriales">-</span>
+                                </div>
+                                <div class="item">
+                                    <span class="etiqueta">Validez:</span> <span class="valor" id="previewValidez">-</span>
+                                </div>
+                            </div>
+                            <div class="datos-col derecha">
+                                <div class="col-titulo">Información del Cliente</div>
+                                <div class="item">
+                                    <span class="etiqueta">Cliente:</span> <span class="valor" id="previewNombre">-</span>
+                                </div>
+                                <div class="item">
+                                    <span class="etiqueta">Teléfono:</span> <span class="valor" id="previewTelefono">-</span>
+                                </div>
+                                <div class="item">
+                                    <span class="etiqueta">Email:</span> <span class="valor email" id="previewEmail">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- PRESTACIÓN -->
+                    <section class="seccion seccion-prestacion">
+                        <div class="seccion-titulo">
+                            <span class="icono"></span> DETALLE DE PRESTACIÓN / MANO DE OBRA
+                            <span class="linea-aux"></span>
+                        </div>
+                        <div class="prestacion-card">
+                            <div class="prestacion-header">
+                                <span>DESCRIPCIÓN DEL SERVICIO</span>
+                                <span class="importe-label">IMPORTE</span>
+                            </div>
+                            <div class="prestacion-fila">
+                                <span class="servicio-nombre" id="previewServicioTitulo">Servicio</span>
+                                <span class="servicio-importe" id="previewSubtotal">$ 0</span>
+                            </div>
+                            <div class="prestacion-detalle" id="previewDescripcion">-</div>
+                        </div>
+                    </section>
+
+                    <!-- TOTALES -->
+                    <div class="totales-container">
+                        <div class="totales-firma">
+                            <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
+                            <span class="firma-texto">R. Figueras - REF Electrotecnia</span>
+                            <span class="firma-digital">✓ Firmado digitalmente</span>
+                        </div>
+                        <div class="totales-list">
+                            <div class="linea">
+                                <span class="label-total">Subtotal Netos:</span>
+                                <span class="valor-total" id="previewSubtotalNetos">$ 0</span>
+                            </div>
+                            <div class="linea">
+                                <span class="label-total">IVA (21%):</span>
+                                <span class="valor-total" id="previewIva">$ 0</span>
+                            </div>
+                            <div class="linea total-final">
+                                <span class="label-total">Total con IVA</span>
+                                <span class="valor-total" id="previewTotal">$ 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER DOCUMENTO -->
+                    <div class="footer-documento">
+                        Documento generado electrónicamente a través de https://www.refelectrotecnia.com
+                    </div>
+
+                    <!-- CONDICIONES -->
+                    <section class="condiciones">
+                        <div class="seccion-titulo">
+                            <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
+                            <span class="linea-aux"></span>
+                        </div>
+                        <ul>
+                            <li id="condicionValidez">Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
+                            <li>Los precios incluyen el IVA 21% (detalle arriba).</li>
+                            <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span>. (Caso incluya materiales se requiere un adelanto de 50%)</li>
+                        </ul>
+                    </section>
+
                 </div>
-                <div class="pdf-header-right">
-                    <h2>PRESUPUESTO</h2>
-                    <p class="numero">N° <span id="previewNumero">-</span></p>
-                    <p class="fecha-emision">Fecha de emisión: <span id="previewFecha">-</span></p>
-                </div>
+                <!-- fin .cuerpo -->
             </div>
-
-            <div class="pdf-body">
-                <div class="pdf-section">
-                    <h4 class="pdf-section-title">INFORMACIÓN DEL CLIENTE</h4>
-                    <div class="pdf-info-grid">
-                        <span class="label">Cliente:</span> <span class="value" id="previewNombre">-</span>
-                        <span class="label">Teléfono:</span> <span class="value" id="previewTelefono">-</span>
-                        <span class="label">Email:</span> <span class="value" id="previewEmail">-</span>
-                    </div>
-                </div>
-
-                <div class="pdf-section">
-                    <h4 class="pdf-section-title">DETALLES DEL SERVICIO</h4>
-                    <div class="pdf-info-grid">
-                        <span class="label">Servicio Requerido:</span> <span class="value" id="previewServicio">-</span>
-                        <span class="label">Materiales Incluidos:</span> <span class="value" id="previewMateriales">No incluidos</span>
-                        <span class="label">Validez de Oferta:</span> <span class="value" id="previewValidez">-</span>
-                    </div>
-                </div>
-
-                <div class="pdf-section">
-                    <h4 class="pdf-section-title">DETALLE DE PRESTACIÓN / MANO DE OBRA</h4>
-                    <table class="pdf-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 70%;">DESCRIPCIÓN DEL SERVICIO</th>
-                                <th class="text-right" style="width: 30%;">IMPORTE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="desc-titulo" id="previewServicioTitulo">Servicio</div>
-                                    <div class="desc-detalle" id="previewDescripcion">-</div>
-                                </td>
-                                <td class="text-right" id="previewSubtotal">$ 0</td>
-                            </tr>
-                            <tr class="firma-row">
-                                <td colspan="2">
-                                    <div class="firma">R. Figueras - REF Electrotecnia</div>
-                                    <div class="firma-sub">FIRMADO DIGITALMENTE</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="pdf-totales">
-                        <div class="total-row"><span>Subtotal Netos:</span> <span id="previewSubtotalNetos">$ 0</span></div>
-                        <div class="total-row"><span>IVA (21%):</span> <span id="previewIva">$ 0</span></div>
-                        <div class="total-row total-final"><span>Total con IVA:</span> <span id="previewTotal">$ 0</span></div>
-                    </div>
-                </div>
-
-                <div class="pdf-section">
-                    <h4 class="pdf-section-title">CONDICIONES COMERCIALES & NOTAS</h4>
-                    <ul class="pdf-condiciones">
-                        <li>Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
-                        <li>Los precios incluyen el IVA 21% (detalle arriba).</li>
-                        <li>Materiales incluidos: <span id="previewCondMateriales">No</span>.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="pdf-footer">
-                REF Electrotecnia • Instalaciones Eléctricas Industriales, Comerciales y Domótica • Córdoba, Argentina
-            </div>
+            <!-- fin .presupuesto -->
         </div>
+        <!-- fin .presupuesto-preview -->
 
         <div class="presupuesto-actions">
             <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar y Descargar PDF</button>
@@ -670,7 +1201,7 @@
         const hour = String(ahora.getHours()).padStart(2, '0');
         const minute = String(ahora.getMinutes()).padStart(2, '0');
         const numero = `${year}-${day}${month}.${hour}${minute}`;
-        document.getElementById('previewNumero').textContent = numero;
+        document.getElementById('previewNumero').textContent = `N° ${numero}`;
         document.getElementById('presupuestoIndex').value = index;
         document.getElementById('presupuestoNombre').value = registro.Nombre || '';
         document.getElementById('presupuestoTelefono').value = registro.Teléfono || '';
@@ -688,6 +1219,9 @@
         document.body.style.overflow = 'hidden';
     }
 
+    // =============================================
+    // ACTUALIZAR VISTA PREVIA CON EL NUEVO DISEÑO
+    // =============================================
     function actualizarVistaPrevia() {
         const nombre = document.getElementById('presupuestoNombre').value || '-';
         const telefono = document.getElementById('presupuestoTelefono').value || '-';
@@ -699,44 +1233,53 @@
         const iva = subtotal * 0.21;
         const total = subtotal + iva;
 
+        // Cliente
         document.getElementById('previewNombre').textContent = nombre;
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
 
-        const descripcionHtml = descripcionRaw.replace(/\n/g, '<br>');
-        document.getElementById('previewDescripcion').innerHTML = descripcionHtml;
-
+        // Servicio y validez
+        const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
+        document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicio}`;
         document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
+
+        // Fecha de validez
+        const hoy = new Date();
+        const fechaValidez = new Date(hoy);
+        fechaValidez.setDate(fechaValidez.getDate() + validezDias);
+        const validezStr = fechaValidez.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+        document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
+        document.getElementById('previewFechaValidez').textContent = `Válido hasta el ${validezStr}`;
+        document.getElementById('previewValidezDias').textContent = validezDias;
+        document.getElementById('previewValidezFecha').textContent = validezStr;
+
+        // Descripción (con saltos de línea)
+        document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
+
+        // Totales
         document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
         document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
         document.getElementById('previewIva').textContent = formatearPrecio(iva);
         document.getElementById('previewTotal').textContent = formatearPrecio(total);
         document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
-
-        const hoy = new Date();
-        const fechaStr = hoy.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
-        const fechaValidez = new Date(hoy);
-        fechaValidez.setDate(fechaValidez.getDate() + validezDias);
-        const validezStr = fechaValidez.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
-
-        document.getElementById('previewFecha').textContent = fechaStr;
-        document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
-        document.getElementById('previewValidezDias').textContent = validezDias;
-        document.getElementById('previewValidezFecha').textContent = validezStr;
     }
 
+    // Eventos para actualizar vista previa en tiempo real
     document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
+    // =============================================
+    // GUARDAR PRESUPUESTO Y DESCARGAR PDF
+    // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
         const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
         const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
         const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
         const total = subtotal * 1.21;
-        const numero = document.getElementById('previewNumero').textContent;
+        const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
         const validez = document.getElementById('presupuestoValidez').value || 30;
         const materiales = document.getElementById('presupuestoMateriales').value;
 
@@ -873,7 +1416,6 @@
             const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
             const serviciosLista = contacto.servicios.join(', ');
 
-            // Verificar si tiene presupuesto vencido
             const nombreNormalizado = contacto.nombre.trim().toLowerCase();
             const presupuestosDelContacto = datosCache.presupuestos.filter(p => {
                 const nombrePres = p.Nombre ? p.Nombre.trim().toLowerCase() : '';
