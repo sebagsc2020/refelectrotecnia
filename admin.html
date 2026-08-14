@@ -7,25 +7,19 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-PLBWNLC0E2');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>--Admin | REF Electrotecnia</title>
-    <!-- Chart.js -->
+    <title>Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- html2canvas y jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== RESET Y VARIABLES ========== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -36,609 +30,199 @@
             --radius: 12px;
             --font: 'Inter', sans-serif;
         }
-        body {
-            font-family: var(--font);
-            background: var(--light-bg);
-            color: #1E1E1E;
-            min-height: 100vh;
-        }
+        body { font-family: var(--font); background: var(--light-bg); color: #1E1E1E; min-height: 100vh; }
         
-        /* ===== LOGIN ===== */
-        .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0A2E5C 0%, #00A8FF 100%);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 99999; padding: 20px;
-        }
-        .login-box {
-            background: white; padding: 40px 35px; border-radius: 16px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            max-width: 420px; width: 100%; text-align: center;
-        }
-        .login-box .logo {
-            height: 60px; margin-bottom: 20px;
-        }
-        .login-box h2 {
-            color: var(--primary-dark); font-size: 1.6rem;
-            font-weight: 800; margin-bottom: 8px;
-        }
-        .login-box .subtitle {
-            color: var(--gray-text); font-size: 0.9rem; margin-bottom: 25px;
-        }
-        .login-box input {
-            width: 100%; padding: 14px 16px; border: 2px solid #E9ECEF;
-            border-radius: 10px; font-size: 1rem; font-family: var(--font);
-            margin-bottom: 15px; background: var(--light-bg);
-        }
-        .login-box input:focus {
-            outline: none; border-color: var(--primary-cyan); background: white;
-            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
-        }
-        .login-box .btn-login {
-            width: 100%; background: var(--primary-cyan); color: white;
-            border: none; padding: 14px; border-radius: 10px;
-            font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s;
-        }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0A2E5C 0%, #00A8FF 100%); display: flex; justify-content: center; align-items: center; z-index: 99999; padding: 20px; }
+        .login-box { background: white; padding: 40px 35px; border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); max-width: 420px; width: 100%; text-align: center; }
+        .login-box .logo { height: 60px; margin-bottom: 20px; }
+        .login-box h2 { color: var(--primary-dark); font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+        .login-box .subtitle { color: var(--gray-text); font-size: 0.9rem; margin-bottom: 25px; }
+        .login-box input { width: 100%; padding: 14px 16px; border: 2px solid #E9ECEF; border-radius: 10px; font-size: 1rem; font-family: var(--font); margin-bottom: 15px; background: var(--light-bg); }
+        .login-box input:focus { outline: none; border-color: var(--primary-cyan); background: white; box-shadow: 0 0 0 4px rgba(0,168,255,0.1); }
+        .login-box .btn-login { width: 100%; background: var(--primary-cyan); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .login-box .btn-login:hover { background: var(--primary-dark); }
         .login-box .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
-        .login-box .error-msg {
-            color: #e74c3c; font-size: 0.9rem; margin-top: 10px;
-            display: none; font-weight: 600;
-        }
+        .login-box .error-msg { color: #e74c3c; font-size: 0.9rem; margin-top: 10px; display: none; font-weight: 600; }
         .dashboard-locked { display: none !important; }
         
-        .dashboard {
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            background: white;
-            padding: 16px 28px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-        }
-        .dashboard-header h2 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
+        .dashboard { padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: white; padding: 16px 28px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px; }
+        .dashboard-header h2 { font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); }
         .dashboard-header h2 span { color: var(--primary-cyan); }
-        .dashboard-header .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .dashboard-header .btn-refresh {
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .dashboard-header .btn-refresh:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        .dashboard-header .btn-logout {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .dashboard-header .btn-logout:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px 22px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border-left: 5px solid var(--primary-cyan);
-        }
-        .stat-card .stat-number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .stat-card .stat-label {
-            font-size: 0.9rem;
-            color: var(--gray-text);
-            margin-top: 4px;
-        }
-        .stat-card .stat-icon {
-            float: right;
-            font-size: 2rem;
-            color: var(--primary-cyan);
-            opacity: 0.4;
-        }
+        .dashboard-header .header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .dashboard-header .btn-refresh { background: var(--primary-cyan); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .dashboard-header .btn-refresh:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .dashboard-header .btn-logout { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.3s; }
+        .dashboard-header .btn-logout:hover { background: #f1f1f1; border-color: #ccc; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px 22px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 5px solid var(--primary-cyan); }
+        .stat-card .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--primary-dark); }
+        .stat-card .stat-label { font-size: 0.9rem; color: var(--gray-text); margin-top: 4px; }
+        .stat-card .stat-icon { float: right; font-size: 2rem; color: var(--primary-cyan); opacity: 0.4; }
         .stat-card.emergencia { border-left-color: #e74c3c; }
         .stat-card.emergencia .stat-icon { color: #e74c3c; }
         .stat-card.pendiente { border-left-color: #f39c12; }
         .stat-card.pendiente .stat-icon { color: #f39c12; }
-        .chart-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .chart-box {
-            background: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-        .chart-box h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 16px;
-        }
+        .chart-section { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
+        .chart-box { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .chart-box h4 { font-size: 1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 16px; }
         .chart-box canvas { max-height: 220px; max-width: 100%; }
-        .table-container {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            padding: 0 0 12px 0;
-            margin-bottom: 30px;
-        }
-        .table-container h4 {
-            padding: 18px 24px 10px 24px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-        }
-        .table-scroll {
-            overflow-x: auto;
-            padding: 0 16px 16px 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+        .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; padding: 0 0 12px 0; margin-bottom: 30px; }
+        .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
+        .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         table thead { background: var(--light-bg); }
-        table th {
-            text-align: left;
-            padding: 12px 14px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            border-bottom: 2px solid #E9ECEF;
-            white-space: nowrap;
-        }
-        table td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #E9ECEF;
-            color: var(--gray-text);
-            vertical-align: middle;
-        }
+        table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
+        table td { padding: 12px 14px; border-bottom: 1px solid #E9ECEF; color: var(--gray-text); vertical-align: middle; }
         table tbody tr:hover { background: #F8FAFC; }
-        .badge-emergencia {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 2px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .btn-edit {
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            padding: 5px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-right: 6px;
-        }
+        .badge-emergencia { background: #fee2e2; color: #b91c1c; padding: 2px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
         .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 6px;
-        }
+        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px; }
         .btn-delete:hover { background: #c0392b; transform: scale(1.05); }
-        .btn-presupuesto {
-            background: #2ecc71;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 6px;
-        }
+        .btn-presupuesto { background: #2ecc71; color: white; border: none; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px; }
         .btn-presupuesto:hover { background: #27ae60; transform: scale(1.05); }
-        .btn-whatsapp {
-            background: #25D366;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
+        .btn-whatsapp { background: #25D366; color: white; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; border: none; cursor: pointer; }
         .btn-whatsapp:hover { background: #1DA851; transform: scale(1.05); }
-        .badge {
-            display: inline-block;
-            padding: 2px 12px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        .maps-link {
-            color: var(--primary-cyan);
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: 0.2s;
-        }
+        .badge { display: inline-block; padding: 2px 12px; border-radius: 50px; font-weight: 600; }
+        .maps-link { color: var(--primary-cyan); font-size: 1.1rem; text-decoration: none; transition: 0.2s; }
         .maps-link:hover { color: var(--primary-dark); transform: scale(1.1); }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray-text);
-        }
-        .loading i {
-            font-size: 2rem;
-            color: var(--primary-cyan);
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray-text);
-        }
-        /* MODALES */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        .loading { text-align: center; padding: 40px; color: var(--gray-text); }
+        .loading i { font-size: 2rem; color: var(--primary-cyan); animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .no-data { text-align: center; padding: 40px; color: var(--gray-text); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-box {
-            background: white;
-            border-radius: var(--radius);
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 35px 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            animation: modalFade 0.3s ease;
-        }
-        @keyframes modalFade {
-            from { opacity:0; transform:scale(0.95) translateY(20px); }
-            to { opacity:1; transform:scale(1) translateY(0); }
-        }
-        .modal-box h3 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
-            padding-right: 30px;
-        }
+        .modal-box { background: white; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: modalFade 0.3s ease; }
+        @keyframes modalFade { from { opacity:0; transform:scale(0.95) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .modal-box h3 { font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 20px; padding-right: 30px; }
         .modal-box h3 span { color: var(--primary-cyan); }
-        .modal-box .close-modal {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: var(--gray-text);
-            cursor: pointer;
-            transition: 0.3s;
-            line-height: 1;
-        }
-        .modal-box .close-modal:hover {
-            color: var(--primary-dark);
-            transform: rotate(90deg);
-        }
-        .modal-box .form-group {
-            margin-bottom: 16px;
-        }
-        .modal-box label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary-dark);
-            margin-bottom: 4px;
-        }
-        .modal-box input,
-        .modal-box select,
-        .modal-box textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: var(--font);
-            transition: 0.2s;
-            background: var(--light-bg);
-        }
-        .modal-box input:focus,
-        .modal-box select:focus,
-        .modal-box textarea:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
-        }
-        .modal-box textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .modal-box .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        .modal-box .btn-save {
-            background: var(--primary-cyan);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .modal-box .btn-save:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        .modal-box .btn-cancel {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .modal-box .btn-cancel:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        /* Presupuesto */
-        .presupuesto-box { max-width: 850px; }
-        .presupuesto-box .presupuesto-datos {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .presupuesto-box .presupuesto-datos .full-width {
-            grid-column: 1 / -1;
-        }
+        .modal-box .close-modal { float: right; background: none; border: none; font-size: 2rem; color: var(--gray-text); cursor: pointer; transition: 0.3s; line-height: 1; }
+        .modal-box .close-modal:hover { color: var(--primary-dark); transform: rotate(90deg); }
+        .modal-box .form-group { margin-bottom: 16px; }
+        .modal-box label { display: block; font-weight: 600; font-size: 0.9rem; color: var(--primary-dark); margin-bottom: 4px; }
+        .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 12px 14px; border: 2px solid #E9ECEF; border-radius: 8px; font-size: 1rem; font-family: var(--font); transition: 0.2s; background: var(--light-bg); }
+        .modal-box input:focus, .modal-box select:focus, .modal-box textarea:focus { outline: none; border-color: var(--primary-cyan); background: white; box-shadow: 0 0 0 4px rgba(0,168,255,0.1); }
+        .modal-box textarea { resize: vertical; min-height: 80px; }
+        .modal-box .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+        .modal-box .btn-save { background: var(--primary-cyan); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .modal-box .btn-save:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .modal-box .btn-cancel { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .modal-box .btn-cancel:hover { background: #f1f1f1; border-color: #ccc; }
+        
+        /* ========== PRESUPUESTO - DISEÑO PROFESIONAL ========== */
+        .presupuesto-box { max-width: 900px; }
+        .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
+        
         .presupuesto-box .presupuesto-preview {
-            background: white;
-            padding: 25px;
-            border-radius: var(--radius);
+            background: #ffffff;
             margin: 20px 0;
-            border: 1px solid #E9ECEF;
-            font-size: 0.95rem;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary-cyan);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa img {
-            height: 45px;
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .empresa h4 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .presupuesto-header .numero {
+            font-family: 'Inter', Arial, sans-serif;
+            color: #2c3e50;
             font-size: 0.9rem;
-            color: var(--gray-text);
+            line-height: 1.5;
+            width: 100%;
+            border: 1px solid #E9ECEF;
         }
-        .presupuesto-box .presupuesto-preview .cliente-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: var(--light-bg);
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .presupuesto-box .presupuesto-preview .cliente-info .label {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item {
+        
+        /* HEADER DEL PDF */
+        .pdf-header {
+            background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%);
+            color: white;
+            padding: 22px 28px;
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #E9ECEF;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item:last-child {
-            border-bottom: none;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item .desc {
-            flex: 1;
-        }
-        .presupuesto-box .presupuesto-preview .detalle-item .precio {
-            font-weight: 600;
-        }
-        .presupuesto-box .presupuesto-preview .totales {
-            margin-top: 15px;
-            text-align: right;
-            border-top: 2px solid var(--primary-cyan);
-            padding-top: 15px;
-        }
-        .presupuesto-box .presupuesto-preview .totales .total {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-        .presupuesto-box .presupuesto-preview .validez {
-            font-size: 0.85rem;
-            color: var(--gray-text);
-            margin-top: 15px;
-            text-align: center;
-            border-top: 1px solid #E9ECEF;
-            padding-top: 15px;
-        }
-        .presupuesto-box .presupuesto-preview .condiciones {
-            font-size: 0.85rem;
-            color: var(--gray-text);
-            margin-top: 10px;
-            background: var(--light-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-        .presupuesto-box .presupuesto-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            margin-top: 10px;
-        }
-        .presupuesto-box .presupuesto-actions .btn-guardar {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
             align-items: center;
-            gap: 8px;
         }
-        .presupuesto-box .presupuesto-actions .btn-guardar:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
+        .pdf-header-left { display: flex; align-items: center; gap: 14px; }
+        .pdf-logo { height: 50px; background: white; padding: 5px; border-radius: 6px; }
+        .pdf-header-left h3 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: 0.5px; }
+        .pdf-header-left .tagline { font-size: 0.65rem; font-weight: 500; letter-spacing: 1.2px; margin-top: 3px; opacity: 0.85; text-transform: uppercase; }
+        .pdf-header-right { text-align: right; }
+        .pdf-header-right h2 { font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: #00A8FF; }
+        .pdf-header-right .numero { font-size: 0.95rem; font-weight: 700; margin-top: 4px; }
+        .pdf-header-right .fecha-emision { font-size: 0.8rem; margin-top: 4px; opacity: 0.9; }
+        
+        /* CUERPO DEL PDF */
+        .pdf-body { padding: 22px 28px; }
+        
+        .pdf-section { margin-bottom: 20px; }
+        .pdf-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #0A2E5C;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #00A8FF;
+            display: inline-block;
         }
-        .presupuesto-box .presupuesto-actions .btn-guardar:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
+        
+        .pdf-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 15px; font-size: 0.85rem; }
+        .pdf-info-grid .full-row { grid-column: 1 / -1; }
+        .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
+        .pdf-info-grid .value { color: #4A4A4A; }
+        
+        /* TABLA DETALLE */
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.85rem; }
+        .pdf-table thead tr { background: #0A2E5C; color: white; }
+        .pdf-table th { padding: 9px 12px; text-align: left; font-weight: 700; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; }
+        .pdf-table th.text-right, .pdf-table td.text-right { text-align: right; }
+        .pdf-table td { padding: 12px; border-bottom: 1px solid #E9ECEF; vertical-align: top; }
+        .pdf-table .desc-titulo { font-weight: 700; color: #0A2E5C; margin-bottom: 5px; font-size: 0.9rem; }
+        .pdf-table .desc-detalle { color: #555; font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
+        .pdf-table .firma-row td { background: #F8FAFC; padding: 10px 12px; }
+        .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.85rem; }
+        .pdf-table .firma-sub { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        
+        /* TOTALES */
+        .pdf-totales { margin-top: 15px; margin-left: auto; width: 280px; background: #F4F6F9; border-radius: 8px; padding: 12px 15px; }
+        .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.85rem; border-bottom: 1px solid #E9ECEF; }
+        .pdf-totales .total-row:last-child { border-bottom: none; }
+        .pdf-totales .total-row span:first-child { color: #4A4A4A; font-weight: 500; }
+        .pdf-totales .total-row span:last-child { font-weight: 600; color: #0A2E5C; }
+        .pdf-totales .total-final { background: #0A2E5C; margin: 8px -15px -12px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
+        .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.95rem; }
+        
+        /* CONDICIONES */
+        .pdf-condiciones { list-style: none; padding: 0; font-size: 0.8rem; color: #555; }
+        .pdf-condiciones li { padding: 4px 0; padding-left: 15px; position: relative; }
+        .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
+        
+        /* FOOTER */
+        .pdf-footer {
+            background: #0A2E5C;
+            color: white;
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
         }
-        .presupuesto-box .presupuesto-actions .btn-cancel {
-            background: transparent;
-            color: var(--gray-text);
-            border: 2px solid #E9ECEF;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .presupuesto-box .presupuesto-actions .btn-cancel:hover {
-            background: #f1f1f1;
-            border-color: #ccc;
-        }
-        /* Estilo para el tilde de presupuesto enviado */
-        .check-presupuesto {
-            color: #27ae60;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .no-presupuesto {
-            color: #ccc;
-            font-size: 1.2rem;
-        }
+        
+        .presupuesto-box .presupuesto-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin-top: 10px; }
+        .presupuesto-box .presupuesto-actions .btn-guardar { background: var(--primary-dark); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .presupuesto-box .presupuesto-actions .btn-guardar:hover { background: var(--primary-cyan); transform: translateY(-2px); }
+        .presupuesto-box .presupuesto-actions .btn-guardar:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
+        .no-presupuesto { color: #ccc; font-size: 1.2rem; }
+        
         @media (max-width: 768px) {
             .chart-section { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .dashboard-header { flex-direction: column; align-items: stretch; }
-            .dashboard-header .header-actions { flex-wrap: wrap; }
             .modal-box { padding: 25px 20px; }
             .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; }
-            .presupuesto-box .presupuesto-preview .cliente-info { grid-template-columns: 1fr; }
-            .presupuesto-box .presupuesto-actions { justify-content: center; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
+            .pdf-header { flex-direction: column; text-align: center; gap: 15px; }
+            .pdf-header-right { text-align: center; }
+            .pdf-info-grid { grid-template-columns: 1fr; }
+            .pdf-totales { width: 100%; }
         }
         @media print {
-            .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos {
-                display: none !important;
-            }
+            .dashboard-header, .header-actions, .presupuesto-actions, .close-modal, .presupuesto-datos { display: none !important; }
             .modal-box { box-shadow: none !important; padding: 20px !important; max-height: none !important; }
             .modal-overlay { background: white !important; position: static !important; padding: 0 !important; }
-            .presupuesto-box .presupuesto-preview { border: none !important; background: white !important; }
             body { background: white !important; }
         }
     </style>
@@ -652,9 +236,7 @@
         <h2>Panel Administrativo</h2>
         <p class="subtitle">REF Electrotecnia · Acceso restringido</p>
         <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password">
-        <button class="btn-login" id="btnLogin">
-            <i class="fas fa-lock"></i> Ingresar
-        </button>
+        <button class="btn-login" id="btnLogin"><i class="fas fa-lock"></i> Ingresar</button>
         <p class="error-msg" id="loginError"></p>
     </div>
 </div>
@@ -669,53 +251,20 @@
     </div>
 
     <div class="stats-grid" id="statsGrid">
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-users"></i></span>
-            <div class="stat-number" id="totalContactos">0</div>
-            <div class="stat-label">Total de contactos</div>
-        </div>
-        <div class="stat-card">
-            <span class="stat-icon"><i class="fas fa-calendar-week"></i></span>
-            <div class="stat-number" id="contactosSemana">0</div>
-            <div class="stat-label">Últimos 7 días</div>
-        </div>
-        <div class="stat-card emergencia">
-            <span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span>
-            <div class="stat-number" id="emergencias">0</div>
-            <div class="stat-label">Emergencias 24/7</div>
-        </div>
-        <div class="stat-card pendiente">
-            <span class="stat-icon"><i class="fas fa-clock"></i></span>
-            <div class="stat-number" id="pendientesPresupuesto">0</div>
-            <div class="stat-label">Pendientes de presupuesto</div>
-        </div>
+        <div class="stat-card"><span class="stat-icon"><i class="fas fa-users"></i></span><div class="stat-number" id="totalContactos">0</div><div class="stat-label">Total de contactos</div></div>
+        <div class="stat-card"><span class="stat-icon"><i class="fas fa-calendar-week"></i></span><div class="stat-number" id="contactosSemana">0</div><div class="stat-label">Últimos 7 días</div></div>
+        <div class="stat-card emergencia"><span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span><div class="stat-number" id="emergencias">0</div><div class="stat-label">Emergencias 24/7</div></div>
+        <div class="stat-card pendiente"><span class="stat-icon"><i class="fas fa-clock"></i></span><div class="stat-number" id="pendientesPresupuesto">0</div><div class="stat-label">Pendientes de presupuesto</div></div>
     </div>
 
     <div class="chart-section">
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4>
-            <canvas id="serviciosChart"></canvas>
-        </div>
-        <div class="chart-box">
-            <h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4>
-            <div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div>
-        </div>
+        <div class="chart-box"><h4><i class="fas fa-chart-bar" style="color:var(--primary-cyan);"></i> Servicios más solicitados</h4><canvas id="serviciosChart"></canvas></div>
+        <div class="chart-box"><h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4><div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p>Cargando...</p></div></div>
     </div>
 
-    <div class="table-container">
-        <h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
-    </div>
-
-    <div class="table-container">
-        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
-        <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
-    </div>
-
-    <div class="table-container">
-        <h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
-    </div>
+    <div class="table-container"><h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4><div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div></div>
+    <div class="table-container"><h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4><div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div></div>
+    <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
 <!-- MODAL EDITAR -->
@@ -727,8 +276,7 @@
         <div class="form-group"><label>Nombre completo</label><input type="text" id="editNombre" placeholder="Nombre completo"></div>
         <div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="editTelefono" placeholder="Teléfono"></div>
         <div class="form-group"><label>Correo electrónico</label><input type="email" id="editEmail" placeholder="Correo electrónico"></div>
-        <div class="form-group">
-            <label>Servicio</label>
+        <div class="form-group"><label>Servicio</label>
             <select id="editServicio">
                 <option value="">Selecciona el servicio</option>
                 <option>Instalación eléctrica</option>
@@ -760,7 +308,7 @@
             <div class="form-group"><label>Nombre</label><input type="text" id="presupuestoNombre" readonly></div>
             <div class="form-group"><label>Teléfono</label><input type="text" id="presupuestoTelefono" readonly></div>
             <div class="form-group full-width"><label>Email</label><input type="text" id="presupuestoEmail" readonly></div>
-            <div class="form-group full-width"><label>Descripción del servicio</label><textarea id="presupuestoDescripcion" rows="3" placeholder="Describe el trabajo a realizar"></textarea></div>
+            <div class="form-group full-width"><label>Descripción del servicio</label><textarea id="presupuestoDescripcion" rows="4" placeholder="Describe el trabajo a realizar (los saltos de línea se respetarán en el PDF)"></textarea></div>
             <div class="form-group"><label>Precio ($)</label><input type="number" id="presupuestoPrecio" placeholder="0" step="0.01"></div>
             <div class="form-group"><label>Validez (días)</label><input type="number" id="presupuestoValidez" value="30" step="1" min="1"></div>
             <div class="form-group full-width"><label>Materiales incluidos</label>
@@ -768,433 +316,263 @@
             </div>
         </div>
 
+        <!-- ========== PREVIEW DEL PDF - DISEÑO PROFESIONAL ========== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
-            <div class="presupuesto-header">
-                <div class="empresa">
-                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia">
-                    <h4>REF Electrotecnia</h4>
+            <!-- HEADER CON LOGO -->
+            <div class="pdf-header">
+                <div class="pdf-header-left">
+                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF Electrotecnia" class="pdf-logo" crossorigin="anonymous">
+                    <div>
+                        <h3>REF Electrotecnia</h3>
+                        <p class="tagline">SOLUCIONES ELÉCTRICAS & AUTOMATIZACIÓN</p>
+                    </div>
                 </div>
-                <div class="numero"><strong>Presupuesto N°</strong> <span id="previewNumero">-</span></div>
+                <div class="pdf-header-right">
+                    <h2>PRESUPUESTO</h2>
+                    <p class="numero">N° <span id="previewNumero">-</span></p>
+                    <p class="fecha-emision">Fecha de emisión: <span id="previewFecha">-</span></p>
+                </div>
             </div>
-            <div class="cliente-info">
-                <div style="grid-column: 1 / -1; margin-bottom: 2px;"><span class="label">Servicio:</span> <span id="previewServicio" style="font-weight: 600; color: var(--primary-dark);">-</span></div>
-                <div><span class="label">Cliente:</span> <span id="previewNombre">-</span></div>
-                <div><span class="label">Teléfono:</span> <span id="previewTelefono">-</span></div>
-                <div><span class="label">Email:</span> <span id="previewEmail">-</span></div>
-                <div><span class="label">Fecha:</span> <span id="previewFecha">-</span></div>
-                <div style="grid-column: 1 / -1; margin-top: 4px;"><span class="label">Materiales incluidos:</span> <span id="previewMateriales" style="font-weight: 500;">No</span></div>
+
+            <div class="pdf-body">
+                <!-- INFORMACIÓN DEL CLIENTE -->
+                <div class="pdf-section">
+                    <h4 class="pdf-section-title">INFORMACIÓN DEL CLIENTE</h4>
+                    <div class="pdf-info-grid">
+                        <div><span class="label">Cliente:</span> <span class="value" id="previewNombre">-</span></div>
+                        <div><span class="label">Teléfono:</span> <span class="value" id="previewTelefono">-</span></div>
+                        <div class="full-row"><span class="label">Email:</span> <span class="value" id="previewEmail">-</span></div>
+                    </div>
+                </div>
+
+                <!-- DETALLES DEL SERVICIO -->
+                <div class="pdf-section">
+                    <h4 class="pdf-section-title">DETALLES DEL SERVICIO</h4>
+                    <div class="pdf-info-grid">
+                        <div><span class="label">Servicio Requerido:</span> <span class="value" id="previewServicio">-</span></div>
+                        <div><span class="label">Materiales Incluidos:</span> <span class="value" id="previewMateriales">No incluidos</span></div>
+                        <div class="full-row"><span class="label">Validez de Oferta:</span> <span class="value" id="previewValidez">-</span></div>
+                    </div>
+                </div>
+
+                <!-- DETALLE DE PRESTACIÓN / MANO DE OBRA -->
+                <div class="pdf-section">
+                    <h4 class="pdf-section-title">DETALLE DE PRESTACIÓN / MANO DE OBRA</h4>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;">DESCRIPCIÓN DEL SERVICIO</th>
+                                <th class="text-right" style="width: 30%;">IMPORTE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="desc-titulo" id="previewServicioTitulo">Servicio de Domótica / Automatización</div>
+                                    <div class="desc-detalle" id="previewDescripcion">-</div>
+                                </td>
+                                <td class="text-right" id="previewSubtotal">$ 0</td>
+                            </tr>
+                            <tr class="firma-row">
+                                <td colspan="2">
+                                    <div class="firma">R. Figueras - REF Electrotecnia</div>
+                                    <div class="firma-sub">FIRMADO DIGITALMENTE</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- TOTALES -->
+                    <div class="pdf-totales">
+                        <div class="total-row"><span>Subtotal Netos:</span> <span id="previewSubtotalNetos">$ 0</span></div>
+                        <div class="total-row"><span>IVA (21%):</span> <span id="previewIva">$ 0</span></div>
+                        <div class="total-row total-final"><span>Total con IVA:</span> <span id="previewTotal">$ 0</span></div>
+                    </div>
+                </div>
+
+                <!-- CONDICIONES COMERCIALES -->
+                <div class="pdf-section">
+                    <h4 class="pdf-section-title">CONDICIONES COMERCIALES & NOTAS</h4>
+                    <ul class="pdf-condiciones">
+                        <li>Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
+                        <li>Los precios incluyen el IVA 21% (detalle arriba).</li>
+                        <li>Materiales incluidos: <span id="previewCondMateriales">No</span>.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="detalle-item" style="font-weight: 600; border-bottom: 2px solid var(--primary-cyan);">
-                <span class="desc">Descripción del Servicio</span>
-                <span class="precio">Importe</span>
-            </div>
-            <div class="detalle-item">
-                <span class="desc" id="previewDescripcion">-</span>
-                <span class="precio" id="previewSubtotal">$ 0</span>
-            </div>
-            <div class="detalle-item" style="font-size:0.9rem; color:var(--gray-text); border-bottom: 2px solid #E9ECEF;">
-                <span class="desc">IVA 21%</span>
-                <span class="precio" id="previewIva">$ 0</span>
-            </div>
-            <div class="totales">
-                <div><strong>Total con IVA</strong> <span class="total" id="previewTotal">$ 0</span></div>
-            </div>
-            <div class="validez">
-                <strong>Validez del presupuesto:</strong> <span id="previewValidez">-</span>
-            </div>
-            <div class="condiciones">
-                <i class="fas fa-info-circle"></i> Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días. Los precios incluyen el IVA 21% (detallado arriba). Materiales incluidos: <span id="previewCondMateriales">No</span>.
+
+            <!-- FOOTER -->
+            <div class="pdf-footer">
+                REF Electrotecnia • Instalaciones Eléctricas Industriales, Comerciales y Domótica • Córdoba, Argentina
             </div>
         </div>
 
         <div class="presupuesto-actions">
-            <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar</button>
+            <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar y Descargar PDF</button>
         </div>
     </div>
 </div>
 
 <script>
-    // =============================================
-    // SISTEMA DE AUTENTICACIÓN
-    // =============================================
     const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwU-kKJfIR9RNnFxjouNHSxQ-28uH9At-i4N5Ou4YEyTooxnvWRrYzHT1V0A2qr4U9Q/exec';
 
     function getToken() { return sessionStorage.getItem('admin_token'); }
     function setToken(token) { sessionStorage.setItem('admin_token', token); }
     function clearToken() { sessionStorage.removeItem('admin_token'); }
 
-    function showLogin() {
-        document.getElementById('loginOverlay').style.display = 'flex';
-        document.getElementById('dashboard').classList.add('dashboard-locked');
-    }
-
-    function showDashboard() {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('dashboard').classList.remove('dashboard-locked');
-    }
+    function showLogin() { document.getElementById('loginOverlay').style.display = 'flex'; document.getElementById('dashboard').classList.add('dashboard-locked'); }
+    function showDashboard() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('dashboard').classList.remove('dashboard-locked'); }
 
     async function handleLogin() {
         const password = document.getElementById('loginPassword').value;
         const errorEl = document.getElementById('loginError');
         const btn = document.getElementById('btnLogin');
-        
-        if (!password) {
-            errorEl.textContent = 'Ingresa una contraseña';
-            errorEl.style.display = 'block';
-            return;
-        }
-        
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-        errorEl.style.display = 'none';
-        
+        if (!password) { errorEl.textContent = 'Ingresa una contraseña'; errorEl.style.display = 'block'; return; }
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...'; errorEl.style.display = 'none';
         try {
-            const response = await fetch(URL_SCRIPT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'login', password: password })
-            });
+            const response = await fetch(URL_SCRIPT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'login', password: password }) });
             const result = await response.json();
-            
-            if (result.success && result.token) {
-                setToken(result.token);
-                showDashboard();
-                cargarDatos();
-            } else {
-                errorEl.textContent = result.error || 'Contraseña incorrecta';
-                errorEl.style.display = 'block';
-                document.getElementById('loginPassword').value = '';
-            }
-        } catch (err) {
-            errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
-            errorEl.style.display = 'block';
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
-        }
+            if (result.success && result.token) { setToken(result.token); showDashboard(); cargarDatos(); }
+            else { errorEl.textContent = result.error || 'Contraseña incorrecta'; errorEl.style.display = 'block'; document.getElementById('loginPassword').value = ''; }
+        } catch (err) { errorEl.textContent = 'Error de conexión. Intenta de nuevo.'; errorEl.style.display = 'block'; }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar'; }
     }
 
     document.getElementById('btnLogin').addEventListener('click', handleLogin);
-    document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleLogin();
-    });
+    document.getElementById('loginPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
 
-    // =============================================
-    // CONFIGURACIÓN
-    // =============================================
     let chartInstance = null;
     let datosCache = { contactos: [], presupuestos: [] };
-    let contadorPresupuesto = 0;
     let intervaloAuto = null;
 
-    // =============================================
-    // FUNCIÓN PARA FORMATEAR PRECIOS
-    // =============================================
     function formatearPrecio(valor) {
         if (isNaN(valor)) return '$ 0';
-        const entero = Math.round(valor);
-        const conPuntos = entero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        return '$ ' + conPuntos;
+        return '$ ' + Math.round(valor).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
     }
 
-    // =============================================
-    // FUNCIÓN PARA FORMATEAR FECHA EN 24 HORAS
-    // =============================================
     function formatearFechaHora(fechaISO) {
         if (!fechaISO) return '';
         const fecha = new Date(fechaISO);
-        return fecha.toLocaleString('es-AR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        });
+        return fecha.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
     }
 
     function formatearFecha(fechaISO) {
         if (!fechaISO) return '';
         const fecha = new Date(fechaISO);
-        return fecha.toLocaleDateString('es-AR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+        return fecha.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
-    // =============================================
-    // CARGAR DATOS DESDE SHEETS (con token)
-    // =============================================
     async function cargarDatos() {
         const token = getToken();
         if (!token) { showLogin(); return; }
-        
-        const tablaContainer = document.getElementById('tablaContainer');
-        tablaContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
+        document.getElementById('tablaContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
         document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
         document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
-
         try {
-            const response = await fetch(URL_SCRIPT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: 'get_data', token: token })
-            });
+            const response = await fetch(URL_SCRIPT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'get_data', token: token }) });
             const json = await response.json();
-            
             if (json.error) {
-                if (json.error.includes('expirada') || json.error.includes('inválida')) {
-                    clearToken();
-                    showLogin();
-                    alert('Tu sesión ha expirado. Inicia sesión nuevamente.');
-                    return;
-                }
+                if (json.error.includes('expirada') || json.error.includes('inválida')) { clearToken(); showLogin(); alert('Tu sesión ha expirado. Inicia sesión nuevamente.'); return; }
                 throw new Error(json.error);
             }
-
             datosCache.contactos = json.contactos || [];
             datosCache.presupuestos = json.presupuestos || [];
-
             actualizarStats(datosCache.contactos);
             actualizarGrafico(datosCache.contactos);
             actualizarUltimos(datosCache.contactos);
             renderizarTabla(datosCache.contactos);
             actualizarResumenContactos(datosCache.contactos);
             renderizarPresupuestos(datosCache.presupuestos);
-
         } catch (error) {
             console.error(error);
-            tablaContainer.innerHTML = `
-                <div class="no-data">
-                    <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i>
-                    <p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p>
-                    <button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button>
-                </div>
-            `;
+            document.getElementById('tablaContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p><button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button></div>`;
             document.getElementById('resumenContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al procesar contactos.</p></div>`;
             document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos.</p></div>`;
         }
     }
 
-    // =============================================
-    // ESTADÍSTICAS (con "Pendientes de presupuesto")
-    // =============================================
     function actualizarStats(data) {
-        const total = data.length;
-        document.getElementById('totalContactos').textContent = total;
-
-        const hoy = new Date();
-        const semana = new Date(hoy);
-        semana.setDate(hoy.getDate() - 7);
-        const contactosSemana = data.filter(item => {
-            if (!item.Fecha) return false;
-            const fecha = new Date(item.Fecha);
-            return fecha >= semana && fecha <= hoy;
-        });
-        document.getElementById('contactosSemana').textContent = contactosSemana.length;
-
-        const emergencias = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia'));
-        document.getElementById('emergencias').textContent = emergencias.length;
-
-        // Pendientes de presupuesto: contactos que NO tienen presupuesto
+        document.getElementById('totalContactos').textContent = data.length;
+        const hoy = new Date(); const semana = new Date(hoy); semana.setDate(hoy.getDate() - 7);
+        document.getElementById('contactosSemana').textContent = data.filter(item => { if (!item.Fecha) return false; const fecha = new Date(item.Fecha); return fecha >= semana && fecha <= hoy; }).length;
+        document.getElementById('emergencias').textContent = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia')).length;
         const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
-        const pendientes = data.filter(item => {
-            const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : '';
-            return nombre !== '' && !nombresConPresupuesto.includes(nombre);
-        });
-        document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
+        document.getElementById('pendientesPresupuesto').textContent = data.filter(item => { const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : ''; return nombre !== '' && !nombresConPresupuesto.includes(nombre); }).length;
     }
 
-    // =============================================
-    // GRÁFICO
-    // =============================================
     function actualizarGrafico(data) {
         const servicioCount = {};
-        data.forEach(item => {
-            let servicio = item.Servicio || 'No especificado';
-            if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
-            servicioCount[servicio] = (servicioCount[servicio] || 0) + 1;
-        });
-
+        data.forEach(item => { let servicio = item.Servicio || 'No especificado'; if (servicio === 'emergencia') servicio = 'Emergencia 24/7'; servicioCount[servicio] = (servicioCount[servicio] || 0) + 1; });
         const sorted = Object.entries(servicioCount).sort((a,b) => b[1] - a[1]);
-        const labels = sorted.map(item => item[0]);
-        const values = sorted.map(item => item[1]);
-
+        const labels = sorted.map(item => item[0]); const values = sorted.map(item => item[1]);
         const ctx = document.getElementById('serviciosChart').getContext('2d');
         if (chartInstance) chartInstance.destroy();
-
-        if (labels.length === 0) {
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: ['Sin datos'], datasets: [{ label: 'Solicitudes', data: [0], backgroundColor: ['#E9ECEF'], borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
-            });
-            return;
-        }
-
+        if (labels.length === 0) { chartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Sin datos'], datasets: [{ label: 'Solicitudes', data: [0], backgroundColor: ['#E9ECEF'], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } } }); return; }
         const colores = ['#00A8FF','#0A2E5C','#FFB800','#FF7A00','#34A853','#E4405F','#9B59B6','#1ABC9C','#F39C12','#E74C3C'];
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: { labels, datasets: [{ label: 'Solicitudes', data: values, backgroundColor: colores.slice(0, labels.length), borderRadius: 6 }] },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
-        });
+        chartInstance = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Solicitudes', data: values, backgroundColor: colores.slice(0, labels.length), borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } } });
     }
 
-    // =============================================
-    // ÚLTIMOS 5 REGISTROS (con fecha en 24h)
-    // =============================================
     function actualizarUltimos(data) {
         const container = document.getElementById('ultimosRegistros');
-        if (data.length === 0) {
-            container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
-            return;
-        }
+        if (data.length === 0) { container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>'; return; }
         const ultimos = data.slice(-5).reverse();
         let html = '<ul style="list-style:none; padding:0; margin:0;">';
         ultimos.forEach(item => {
-            const nombre = item.Nombre || 'Anónimo';
-            const servicio = item.Servicio || 'No especificado';
-            const fecha = formatearFecha(item.Fecha);
+            const nombre = item.Nombre || 'Anónimo'; const servicio = item.Servicio || 'No especificado'; const fecha = formatearFecha(item.Fecha);
             const esEmergencia = servicio.toLowerCase().includes('emergencia');
-            html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
-                <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
-                <span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span>
-            </li>`;
+            html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;"><span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span><span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span></li>`;
         });
-        html += '</ul>';
-        container.innerHTML = html;
+        html += '</ul>'; container.innerHTML = html;
     }
 
-    // =============================================
-    // TABLA COMPLETA (CONTACTOS) con columna "Presupuesto" y fecha en 24h
-    // =============================================
     function renderizarTabla(data) {
         const container = document.getElementById('tablaContainer');
-        if (data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
-            return;
-        }
-
+        if (data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`; return; }
         const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
-
         const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Email', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
         let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-
-        const sorted = [...data].sort((a,b) => {
-            if (!a.Fecha) return 1;
-            if (!b.Fecha) return -1;
-            return new Date(b.Fecha) - new Date(a.Fecha);
-        });
-
+        const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
         sorted.forEach((row) => {
             const originalIndex = data.indexOf(row);
-            const fecha = formatearFechaHora(row.Fecha);
-            const nombre = row.Nombre || '';
-            const telefono = row.Teléfono || '';
-            const email = row.Email || '';
-            let servicio = row.Servicio || '';
-            if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
-            const ubicacion = row.Ubicación || '';
-            const mensaje = row.Mensaje || '';
+            const fecha = formatearFechaHora(row.Fecha); const nombre = row.Nombre || ''; const telefono = row.Teléfono || ''; const email = row.Email || '';
+            let servicio = row.Servicio || ''; if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
+            const ubicacion = row.Ubicación || ''; const mensaje = row.Mensaje || '';
             const esEmergencia = servicio.toLowerCase().includes('emergencia');
-
-            const nombreNormalizado = nombre.trim().toLowerCase();
-            const tienePresupuesto = nombresConPresupuesto.includes(nombreNormalizado);
-            const checkHtml = tienePresupuesto
-                ? '<span class="check-presupuesto">✅</span>'
-                : '<span class="no-presupuesto">❌</span>';
-
+            const tienePresupuesto = nombresConPresupuesto.includes(nombre.trim().toLowerCase());
+            const checkHtml = tienePresupuesto ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
             let mapsHtml = '';
             if (ubicacion) {
-                let url = '';
-                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
-                if (esCoordenada) {
-                    const coords = ubicacion.match(/-?\d+\.\d+/g);
-                    if (coords && coords.length >= 2) url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
-                } else {
-                    url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`;
-                }
+                let url = ''; const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
+                if (esCoordenada) { const coords = ubicacion.match(/-?\d+\.\d+/g); if (coords && coords.length >= 2) url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`; }
+                else { url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`; }
                 if (url) mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
             }
-
-            html += `<tr>
-                <td>${fecha}</td>
-                <td><strong>${nombre}</strong></td>
-                <td>${telefono}</td>
-                <td>${email}</td>
-                <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
-                <td>${mapsHtml || '—'}</td>
-                <td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td>
-                <td style="text-align:center;">${checkHtml}</td>
-                <td style="text-align:center; white-space:nowrap;">
-                    <button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
-                    <button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
-                </td>
-            </tr>`;
+            html += `<tr><td>${fecha}</td><td><strong>${nombre}</strong></td><td>${telefono}</td><td>${email}</td><td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td><td>${mapsHtml || '—'}</td><td style="max-width:250px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${mensaje}</td><td style="text-align:center;">${checkHtml}</td><td style="text-align:center; white-space:nowrap;"><button class="btn-edit" onclick="editarRegistro(${originalIndex})"><i class="fas fa-edit"></i> Editar</button><button class="btn-delete" onclick="eliminarRegistro(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button><button class="btn-presupuesto" onclick="abrirPresupuesto(${originalIndex})" title="Presupuesto"><i class="fas fa-file-invoice"></i></button></td></tr>`;
         });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
+        html += `</tbody></table>`; container.innerHTML = html;
     }
 
-    // =============================================
-    // RENDERIZAR PRESUPUESTOS ENVIADOS (con fecha en 24h)
-    // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
-        if (!data || data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
-            return;
-        }
-
-        const sorted = [...data].sort((a,b) => {
-            if (!a.Fecha) return 1;
-            if (!b.Fecha) return -1;
-            return new Date(b.Fecha) - new Date(a.Fecha);
-        });
-
+        if (!data || data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`; return; }
+        const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
         let html = `<table><thead><tr><th>Nombre</th><th>Servicio</th><th>Descripción</th><th>Precio</th><th>Fecha de envío</th><th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-
         sorted.forEach((row, index) => {
-            const nombre = row.Nombre || '-';
-            const servicio = row.Servicio || '-';
-            const descripcion = row.Descripción || '-';
-            const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0';
-            const fecha = formatearFecha(row.Fecha);
-
-            html += `<tr>
-                <td><strong>${nombre}</strong></td>
-                <td>${servicio}</td>
-                <td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td>
-                <td>${precio}</td>
-                <td>${fecha}</td>
-                <td style="text-align:center;">
-                    <button class="btn-delete" onclick="eliminarPresupuesto(${index})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
+            const nombre = row.Nombre || '-'; const servicio = row.Servicio || '-'; const descripcion = row.Descripción || '-';
+            const precio = row.Precio ? formatearPrecio(parseFloat(row.Precio)) : '$ 0'; const fecha = formatearFecha(row.Fecha);
+            html += `<tr><td><strong>${nombre}</strong></td><td>${servicio}</td><td style="max-width:300px; word-wrap:break-word; white-space:pre-wrap; line-height:1.4;">${descripcion}</td><td>${precio}</td><td>${fecha}</td><td style="text-align:center;"><button class="btn-delete" onclick="eliminarPresupuesto(${index})" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button></td></tr>`;
         });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
+        html += `</tbody></table>`; container.innerHTML = html;
     }
 
-    // =============================================
-    // ELIMINAR PRESUPUESTO
-    // =============================================
     async function eliminarPresupuesto(index) {
         const presupuesto = datosCache.presupuestos[index];
         if (!presupuesto) return;
-        const confirmar = confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.Nombre || 'Anónimo'}"?`);
-        if (!confirmar) return;
-        const datos = { action: 'delete_budget', index };
-        await enviarAccion(datos);
+        if (!confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.Nombre || 'Anónimo'}"?`)) return;
+        await enviarAccion({ action: 'delete_budget', index });
         cargarDatos();
     }
 
-    // =============================================
-    // EDITAR REGISTRO
-    // =============================================
     function editarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1213,38 +591,21 @@
         const index = parseInt(document.getElementById('editIndex').value);
         const nombre = document.getElementById('editNombre').value.trim();
         const telefono = document.getElementById('editTelefono').value.trim();
-        const email = document.getElementById('editEmail').value.trim();
-        const servicio = document.getElementById('editServicio').value;
-        const ubicacion = document.getElementById('editUbicacion').value.trim();
-        const mensaje = document.getElementById('editMensaje').value.trim();
         if (!nombre || !telefono) { alert('El nombre y el teléfono son obligatorios.'); return; }
-        const datos = { action: 'update', index, nombre, telefono, email, servicio, ubicacion, mensaje };
-        await enviarAccion(datos);
-        cerrarModal('editModal');
-        cargarDatos();
+        await enviarAccion({ action: 'update', index, nombre, telefono, email: document.getElementById('editEmail').value.trim(), servicio: document.getElementById('editServicio').value, ubicacion: document.getElementById('editUbicacion').value.trim(), mensaje: document.getElementById('editMensaje').value.trim() });
+        cerrarModal('editModal'); cargarDatos();
     }
 
-    // =============================================
-    // ELIMINAR REGISTRO (contacto)
-    // =============================================
     async function eliminarRegistro(index) {
         const registro = datosCache.contactos[index];
         if (!registro) return;
-        const confirmar = confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"?`);
-        if (!confirmar) return;
-        const datos = { action: 'delete', index };
-        await enviarAccion(datos);
-        cargarDatos();
+        if (!confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.Nombre || 'Anónimo'}"?`)) return;
+        await enviarAccion({ action: 'delete', index }); cargarDatos();
     }
 
-    // =============================================
-    // PRESUPUESTO (✅ MODIFICADO: número basado en fecha/hora)
-    // =============================================
     function abrirPresupuesto(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
-        
-        // ✅ Generar número basado en fecha y hora actual: YYYY-DDMM.HHMM
         const ahora = new Date();
         const year = ahora.getFullYear();
         const day = String(ahora.getDate()).padStart(2, '0');
@@ -1252,7 +613,6 @@
         const hour = String(ahora.getHours()).padStart(2, '0');
         const minute = String(ahora.getMinutes()).padStart(2, '0');
         const numero = `${year}-${day}${month}.${hour}${minute}`;
-        
         document.getElementById('previewNumero').textContent = numero;
         document.getElementById('presupuestoIndex').value = index;
         document.getElementById('presupuestoNombre').value = registro.Nombre || '';
@@ -1261,6 +621,7 @@
         let servicioMostrar = registro.Servicio || 'No especificado';
         if (servicioMostrar === 'emergencia') servicioMostrar = 'Emergencia 24/7';
         document.getElementById('previewServicio').textContent = servicioMostrar;
+        document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicioMostrar}`;
         document.getElementById('presupuestoDescripcion').value = '';
         document.getElementById('presupuestoPrecio').value = '';
         document.getElementById('presupuestoValidez').value = 30;
@@ -1274,23 +635,27 @@
         const nombre = document.getElementById('presupuestoNombre').value || '-';
         const telefono = document.getElementById('presupuestoTelefono').value || '-';
         const email = document.getElementById('presupuestoEmail').value || '-';
-        const descripcion = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
+        const descripcionRaw = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
         const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
         const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
         const materiales = document.getElementById('presupuestoMateriales').value;
-
         const iva = subtotal * 0.21;
         const total = subtotal + iva;
 
         document.getElementById('previewNombre').textContent = nombre;
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
-        document.getElementById('previewDescripcion').textContent = descripcion;
-        document.getElementById('previewMateriales').textContent = materiales;
+        
+        // ✅ RESOLUCIÓN: Convertir saltos de línea a <br> para el PDF
+        const descripcionHtml = descripcionRaw.replace(/\n/g, '<br>');
+        document.getElementById('previewDescripcion').innerHTML = descripcionHtml;
+        
+        document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
         document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
+        document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
         document.getElementById('previewIva').textContent = formatearPrecio(iva);
         document.getElementById('previewTotal').textContent = formatearPrecio(total);
-        document.getElementById('previewCondMateriales').textContent = materiales;
+        document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
 
         const hoy = new Date();
         const fechaStr = hoy.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
@@ -1301,6 +666,7 @@
         document.getElementById('previewFecha').textContent = fechaStr;
         document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
         document.getElementById('previewValidezDias').textContent = validezDias;
+        document.getElementById('previewValidezFecha').textContent = validezStr;
     }
 
     document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
@@ -1308,9 +674,6 @@
     document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
     document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
-    // =============================================
-    // GUARDAR PRESUPUESTO (✅ CORREGIDO)
-    // =============================================
     async function guardarPresupuesto() {
         const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
         const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
@@ -1327,50 +690,39 @@
 
         try {
             const element = document.getElementById('presupuestoPreview');
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
 
             const canvas = await html2canvas(element, {
-                scale: 1.5,
+                scale: 2,
                 useCORS: true,
-                allowTaint: false,
+                allowTaint: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                willReadFrequently: true,
                 width: element.scrollWidth,
                 height: element.scrollHeight
             });
 
-            if (canvas.width === 0 || canvas.height === 0) {
-                throw new Error('El canvas generado está vacío.');
-            }
+            if (canvas.width === 0 || canvas.height === 0) throw new Error('El canvas generado está vacío.');
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.85);
-
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-
-            const marginX = 10;
-            const marginY = 20;
+            const marginX = 0;
+            const marginY = 0;
             const maxWidth = pdfWidth - 2 * marginX;
             const maxHeight = pdfHeight - marginY;
-
-            const scaleX = maxWidth / canvas.width;
-            const scaleY = maxHeight / canvas.height;
-            const scale = Math.min(scaleX, scaleY);
-
+            const scale = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
             const xOffset = (pdfWidth - imgWidth) / 2;
             const yOffset = marginY;
 
             pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
-
             const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
             pdf.save(filename);
 
-            // ✅ CORREGIDO: se incluye el token y se usa text/plain
             const datos = {
                 action: 'save_budget',
                 token: getToken(),
@@ -1381,7 +733,7 @@
             await fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(datos)
             });
 
@@ -1389,10 +741,10 @@
 
         } catch (error) {
             console.error('Error al generar el PDF:', error);
-            alert('El presupuesto se guardó en la hoja, pero hubo un error al generar el PDF.\nRevisa la consola para más detalles.');
+            alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
             cerrarModal('presupuestoModal');
             cargarDatos();
         }
@@ -1400,21 +752,12 @@
 
     document.getElementById('guardarPresupuestoBtn').addEventListener('click', guardarPresupuesto);
 
-    // =============================================
-    // FUNCIÓN GENÉRICA PARA ENVIAR ACCIONES A SHEETS (✅ CORREGIDO)
-    // =============================================
     async function enviarAccion(datos) {
         const token = getToken();
         if (!token) { showLogin(); return false; }
         datos.token = token;
-        
         try {
-            await fetch(URL_SCRIPT, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
-                body: JSON.stringify(datos)
-            });
+            await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(datos) });
             return true;
         } catch (error) {
             console.error('Error al enviar acción:', error);
@@ -1423,136 +766,52 @@
         }
     }
 
-    // =============================================
-    // CERRAR MODALES
-    // =============================================
-    function cerrarModal(id) {
-        document.getElementById(id).classList.remove('active');
-        document.body.style.overflow = '';
-    }
+    function cerrarModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
 
     document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
     document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
     document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
-
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', function(e) {
-            if (e.target === this) { this.classList.remove('active'); document.body.style.overflow = ''; }
-        });
+        overlay.addEventListener('click', function(e) { if (e.target === this) { this.classList.remove('active'); document.body.style.overflow = ''; } });
     });
-
     document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
 
-    // =============================================
-    // RESUMEN POR CONTACTO
-    // =============================================
     function actualizarResumenContactos(data) {
         const container = document.getElementById('resumenContainer');
-        if (!data || data.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
-            return;
-        }
-
+        if (!data || data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`; return; }
         const contactosMap = new Map();
         data.forEach(item => {
-            const nombre = item.Nombre || 'Anónimo';
-            const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
+            const nombre = item.Nombre || 'Anónimo'; const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
             if (!telefono) return;
             const key = `${nombre}|${telefono}`;
-            if (contactosMap.has(key)) {
-                const contacto = contactosMap.get(key);
-                contacto.cantidad += 1;
-                if (item.Servicio && !contacto.servicios.includes(item.Servicio)) {
-                    contacto.servicios.push(item.Servicio);
-                }
-            } else {
-                contactosMap.set(key, {
-                    nombre,
-                    telefono,
-                    cantidad: 1,
-                    servicios: item.Servicio ? [item.Servicio] : []
-                });
-            }
+            if (contactosMap.has(key)) { const contacto = contactosMap.get(key); contacto.cantidad += 1; if (item.Servicio && !contacto.servicios.includes(item.Servicio)) contacto.servicios.push(item.Servicio); }
+            else { contactosMap.set(key, { nombre, telefono, cantidad: 1, servicios: item.Servicio ? [item.Servicio] : [] }); }
         });
-
         const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
-        if (contactos.length === 0) {
-            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
-            return;
-        }
-
+        if (contactos.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`; return; }
         let html = `<table><thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th style="text-align:center;">Servicios</th><th style="text-align:center;">Contactar</th></tr></thead><tbody>`;
         contactos.forEach((contacto, index) => {
             const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
             const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
             const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
             const serviciosLista = contacto.servicios.join(', ');
-
-            html += `<tr>
-                <td>${index + 1}</td>
-                <td><strong>${contacto.nombre}</strong></td>
-                <td>${contacto.telefono}</td>
-                <td style="text-align:center;">
-                    <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
-                    <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
-                </td>
-                <td style="text-align:center;">
-                    <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a>
-                </td>
-            </tr>`;
+            html += `<tr><td>${index + 1}</td><td><strong>${contacto.nombre}</strong></td><td>${contacto.telefono}</td><td style="text-align:center;"><span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span><span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span></td><td style="text-align:center;"><a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a></td></tr>`;
         });
-        html += `</tbody></table>`;
-        container.innerHTML = html;
+        html += `</tbody></table>`; container.innerHTML = html;
     }
 
-    // =============================================
-    // ACTUALIZACIÓN AUTOMÁTICA CADA 5 MINUTOS
-    // =============================================
-    function iniciarAutoRefresh() {
-        if (intervaloAuto) clearInterval(intervaloAuto);
-        intervaloAuto = setInterval(cargarDatos, 300000);
-        console.log('Auto-refresh cada 5 minutos activado.');
-    }
-
-    // =============================================
-    // REFRESCAR MANUAL
-    // =============================================
+    function iniciarAutoRefresh() { if (intervaloAuto) clearInterval(intervaloAuto); intervaloAuto = setInterval(cargarDatos, 300000); }
     document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
-
-    // =============================================
-    // LOGOUT (✅ CORREGIDO)
-    // =============================================
     document.getElementById('logoutBtn').addEventListener('click', function() {
         if (confirm('¿Cerrar sesión?')) {
             const token = getToken();
-            if (token) {
-                fetch(URL_SCRIPT, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ CORREGIDO: antes era 'application/json'
-                    body: JSON.stringify({ action: 'logout', token: token })
-                });
-            }
-            clearToken();
-            showLogin();
+            if (token) fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'logout', token: token }) });
+            clearToken(); showLogin();
         }
     });
 
-    // =============================================
-    // INICIALIZACIÓN
-    // =============================================
-    if (getToken()) {
-        showDashboard();
-        cargarDatos().then(() => {
-            iniciarAutoRefresh();
-        });
-    } else {
-        showLogin();
-    }
-
-    window.addEventListener('beforeunload', function() {
-        if (intervaloAuto) clearInterval(intervaloAuto);
-    });
+    if (getToken()) { showDashboard(); cargarDatos().then(() => iniciarAutoRefresh()); } else { showLogin(); }
+    window.addEventListener('beforeunload', function() { if (intervaloAuto) clearInterval(intervaloAuto); });
 </script>
 </body>
 </html>
