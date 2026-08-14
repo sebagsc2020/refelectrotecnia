@@ -31,7 +31,6 @@
             --font: 'Inter', sans-serif;
         }
         body { font-family: var(--font); background: var(--light-bg); color: #1E1E1E; min-height: 100vh; }
-        
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0A2E5C 0%, #00A8FF 100%); display: flex; justify-content: center; align-items: center; z-index: 99999; padding: 20px; }
         .login-box { background: white; padding: 40px 35px; border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); max-width: 420px; width: 100%; text-align: center; }
         .login-box .logo { height: 60px; margin-bottom: 20px; }
@@ -44,7 +43,6 @@
         .login-box .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
         .login-box .error-msg { color: #e74c3c; font-size: 0.9rem; margin-top: 10px; display: none; font-weight: 600; }
         .dashboard-locked { display: none !important; }
-        
         .dashboard { padding: 20px; max-width: 1400px; margin: 0 auto; }
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: white; padding: 16px 28px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px; }
         .dashboard-header h2 { font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); }
@@ -70,12 +68,10 @@
         .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; padding: 0 0 12px 0; margin-bottom: 30px; }
         .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
-        
         .filtro-container { display: flex; gap: 10px; padding: 10px 24px; align-items: center; flex-wrap: wrap; }
         .filtro-container label { font-weight: 600; font-size: 0.85rem; color: var(--primary-dark); }
         .filtro-container select { padding: 8px 12px; border: 2px solid #E9ECEF; border-radius: 8px; font-family: var(--font); font-size: 0.85rem; background: white; cursor: pointer; }
         .filtro-container select:focus { outline: none; border-color: var(--primary-cyan); }
-        
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         table thead { background: var(--light-bg); }
         table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
@@ -91,6 +87,10 @@
         .btn-presupuesto:hover { background: #27ae60; transform: scale(1.05); }
         .btn-whatsapp { background: #25D366; color: white; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; border: none; cursor: pointer; }
         .btn-whatsapp:hover { background: #1DA851; transform: scale(1.05); }
+        .btn-whatsapp-alerta { background: #e74c3c; color: white; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; border: none; cursor: pointer; }
+        .btn-whatsapp-alerta:hover { background: #c0392b; transform: scale(1.05); }
+        .alerta-vencido { color: #e74c3c; font-size: 1rem; margin-left: 6px; animation: pulso 1.5s infinite; }
+        @keyframes pulso { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .badge { display: inline-block; padding: 2px 12px; border-radius: 50px; font-weight: 600; }
         .maps-link { color: var(--primary-cyan); font-size: 1.1rem; text-decoration: none; transition: 0.2s; }
         .maps-link:hover { color: var(--primary-dark); transform: scale(1.1); }
@@ -116,19 +116,15 @@
         .modal-box .btn-save:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .modal-box .btn-cancel { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .modal-box .btn-cancel:hover { background: #f1f1f1; border-color: #ccc; }
-        
         .estado-select { padding: 5px 10px; border: 2px solid #E9ECEF; border-radius: 6px; font-size: 0.8rem; font-family: var(--font); font-weight: 600; cursor: pointer; min-width: 110px; }
         .estado-select.estado-aprobado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; }
         .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
         .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
         .estado-select.estado-cancelado { border-color: #7f8c8d; color: #555; background: #f5f5f5; }
-        
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
-        
         .presupuesto-box .presupuesto-preview { background: #ffffff; margin: 20px 0; font-family: 'Inter', Arial, sans-serif; color: #2c3e50; font-size: 0.85rem; line-height: 1.5; width: 100%; border: 1px solid #E9ECEF; }
-        
         .pdf-header { background: linear-gradient(135deg, #0A2E5C 0%, #0d3a72 100%); color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; }
         .pdf-header-left { display: flex; align-items: center; gap: 12px; }
         .pdf-logo { height: 45px; background: white; padding: 4px; border-radius: 5px; }
@@ -138,14 +134,12 @@
         .pdf-header-right h2 { font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: #00A8FF; }
         .pdf-header-right .numero { font-size: 0.9rem; font-weight: 700; margin-top: 3px; }
         .pdf-header-right .fecha-emision { font-size: 0.75rem; margin-top: 3px; opacity: 0.9; }
-        
         .pdf-body { padding: 20px 25px; }
         .pdf-section { margin-bottom: 18px; }
         .pdf-section-title { font-size: 0.7rem; font-weight: 700; color: #0A2E5C; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px; margin-bottom: 8px; border-bottom: 2px solid #00A8FF; display: inline-block; }
         .pdf-info-grid { display: grid; grid-template-columns: auto auto; gap: 5px 20px; font-size: 0.8rem; }
         .pdf-info-grid .label { font-weight: 700; color: #0A2E5C; }
         .pdf-info-grid .value { color: #4A4A4A; }
-        
         .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.8rem; }
         .pdf-table thead tr { background: #0A2E5C; color: white; }
         .pdf-table th { padding: 8px 10px; text-align: left; font-weight: 700; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; }
@@ -156,7 +150,6 @@
         .pdf-table .firma-row td { background: #F8FAFC; padding: 8px 10px; }
         .pdf-table .firma { font-weight: 600; color: #0A2E5C; font-size: 0.8rem; }
         .pdf-table .firma-sub { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-        
         .pdf-totales { margin-top: 12px; margin-left: auto; width: 250px; background: #F4F6F9; border-radius: 6px; padding: 10px 12px; }
         .pdf-totales .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.8rem; border-bottom: 1px solid #E9ECEF; }
         .pdf-totales .total-row:last-child { border-bottom: none; }
@@ -164,20 +157,16 @@
         .pdf-totales .total-row span:last-child { font-weight: 600; color: #0A2E5C; }
         .pdf-totales .total-final { background: #0A2E5C; margin: 6px -12px -10px -12px; padding: 10px 12px; border-radius: 0 0 6px 6px; }
         .pdf-totales .total-final span { color: white !important; font-weight: 700; font-size: 0.85rem; }
-        
         .pdf-condiciones { list-style: none; padding: 0; font-size: 0.75rem; color: #555; }
         .pdf-condiciones li { padding: 3px 0; padding-left: 12px; position: relative; }
         .pdf-condiciones li::before { content: "•"; color: #00A8FF; font-weight: bold; position: absolute; left: 0; }
-        
         .pdf-footer { background: #0A2E5C; color: white; text-align: center; padding: 10px 15px; font-size: 0.65rem; letter-spacing: 0.5px; }
-        
         .presupuesto-box .presupuesto-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin-top: 10px; }
         .presupuesto-box .presupuesto-actions .btn-guardar { background: var(--primary-dark); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .presupuesto-box .presupuesto-actions .btn-guardar:hover { background: var(--primary-cyan); transform: translateY(-2px); }
         .presupuesto-box .presupuesto-actions .btn-guardar:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
-        
         @media (max-width: 768px) {
             .chart-section { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -199,7 +188,6 @@
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
         <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF" class="logo">
@@ -252,7 +240,6 @@
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
-<!-- MODAL EDITAR -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="close-modal" id="closeEditModal">&times;</button>
@@ -283,7 +270,6 @@
     </div>
 </div>
 
-<!-- MODAL PRESUPUESTO -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -348,7 +334,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <div class="desc-titulo" id="previewServicioTitulo">Servicio de Domótica / Automatización</div>
+                                    <div class="desc-titulo" id="previewServicioTitulo">Servicio</div>
                                     <div class="desc-detalle" id="previewDescripcion">-</div>
                                 </td>
                                 <td class="text-right" id="previewSubtotal">$ 0</td>
@@ -391,12 +377,11 @@
 </div>
 
 <script>
-    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxlvSiNNSNq2TrgFPCilpsxAbO9Yj6iJmiSFjW62Vpc1O4D3xyOsxGKJ4EWe_ezXFWe/exec';
+    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzdN04NAoOLRW3M_iJtYFzZpoSiwdFrBjooM8u6M5ZIf9BNoD4wbZCDx-6pNqgN3G9T/exec';
 
     function getToken() { return sessionStorage.getItem('admin_token'); }
     function setToken(token) { sessionStorage.setItem('admin_token', token); }
     function clearToken() { sessionStorage.removeItem('admin_token'); }
-
     function showLogin() { document.getElementById('loginOverlay').style.display = 'flex'; document.getElementById('dashboard').classList.add('dashboard-locked'); }
     function showDashboard() { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('dashboard').classList.remove('dashboard-locked'); }
 
@@ -439,9 +424,6 @@
         return fecha.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
-    // =============================================
-    // CALCULAR ESTADO DEL PRESUPUESTO
-    // =============================================
     function calcularEstadoPresupuesto(presupuesto) {
         if (presupuesto.Estado === 'cancelado') return 'cancelado';
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
@@ -544,7 +526,7 @@
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS (✅ ÍNDICE CORREGIDO)
+    // RENDERIZAR PRESUPUESTOS CON ESTADO Y FILTRO
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -554,8 +536,6 @@
         }
 
         const filtroEstado = document.getElementById('filtroEstado').value;
-
-        // ✅ CLAVE: agregar índice original ANTES de ordenar
         const dataConIndice = data.map((item, idx) => ({...item, _originalIndex: idx}));
 
         const sorted = [...dataConIndice].sort((a,b) => {
@@ -577,17 +557,10 @@
 
         let totalFiltrado = 0;
         let html = `<table><thead><tr>
-            <th>Nombre</th>
-            <th>Servicio</th>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Precio</th>
-            <th>Fecha de envío</th>
-            <th style="text-align:center;">Acciones</th>
+            <th>Nombre</th><th>Servicio</th><th>Descripción</th><th>Estado</th><th>Precio</th><th>Fecha de envío</th><th style="text-align:center;">Acciones</th>
         </tr></thead><tbody>`;
 
         filtrados.forEach((row) => {
-            // ✅ USAR EL ÍNDICE ORIGINAL (posición real en la hoja)
             const originalIndex = row._originalIndex;
             const nombre = row.Nombre || '-';
             const servicio = row.Servicio || '-';
@@ -628,7 +601,7 @@
     }
 
     // =============================================
-    // CAMBIAR ESTADO (✅ GUARDA EN SHEETS COLUMNA I)
+    // CAMBIAR ESTADO DE PRESUPUESTO (GUARDA EN SHEETS)
     // =============================================
     async function cambiarEstadoPresupuesto(index, nuevoEstado) {
         const presupuesto = datosCache.presupuestos[index];
@@ -637,10 +610,8 @@
             return;
         }
 
-        // Actualizar localmente
         datosCache.presupuestos[index].Estado = nuevoEstado;
 
-        // ✅ Enviar índice Y número como respaldo
         await enviarAccion({
             action: 'update_budget_status',
             index: index,
@@ -732,7 +703,6 @@
         document.getElementById('previewTelefono').textContent = telefono;
         document.getElementById('previewEmail').textContent = email;
 
-        // ✅ Convertir saltos de línea a <br>
         const descripcionHtml = descripcionRaw.replace(/\n/g, '<br>');
         document.getElementById('previewDescripcion').innerHTML = descripcionHtml;
 
@@ -795,9 +765,7 @@
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            const maxWidth = pdfWidth;
-            const maxHeight = pdfHeight;
-            const scale = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+            const scale = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
             const imgWidth = canvas.width * scale;
             const imgHeight = canvas.height * scale;
             const xOffset = (pdfWidth - imgWidth) / 2;
@@ -860,28 +828,82 @@
     });
     document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
 
+    // =============================================
+    // RESUMEN POR CONTACTO (CON ALERTA DE VENCIDO)
+    // =============================================
     function actualizarResumenContactos(data) {
         const container = document.getElementById('resumenContainer');
-        if (!data || data.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`; return; }
+        if (!data || data.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
+            return;
+        }
+
         const contactosMap = new Map();
         data.forEach(item => {
-            const nombre = item.Nombre || 'Anónimo'; const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
+            const nombre = item.Nombre || 'Anónimo';
+            const telefono = item.Teléfono ? String(item.Teléfono).trim() : '';
             if (!telefono) return;
             const key = `${nombre}|${telefono}`;
-            if (contactosMap.has(key)) { const contacto = contactosMap.get(key); contacto.cantidad += 1; if (item.Servicio && !contacto.servicios.includes(item.Servicio)) contacto.servicios.push(item.Servicio); }
-            else { contactosMap.set(key, { nombre, telefono, cantidad: 1, servicios: item.Servicio ? [item.Servicio] : [] }); }
+            if (contactosMap.has(key)) {
+                const contacto = contactosMap.get(key);
+                contacto.cantidad += 1;
+                if (item.Servicio && !contacto.servicios.includes(item.Servicio)) {
+                    contacto.servicios.push(item.Servicio);
+                }
+            } else {
+                contactosMap.set(key, {
+                    nombre,
+                    telefono,
+                    cantidad: 1,
+                    servicios: item.Servicio ? [item.Servicio] : []
+                });
+            }
         });
+
         const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
-        if (contactos.length === 0) { container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`; return; }
+        if (contactos.length === 0) {
+            container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
+            return;
+        }
+
         let html = `<table><thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th style="text-align:center;">Servicios</th><th style="text-align:center;">Contactar</th></tr></thead><tbody>`;
         contactos.forEach((contacto, index) => {
             const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
             const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
             const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
             const serviciosLista = contacto.servicios.join(', ');
-            html += `<tr><td>${index + 1}</td><td><strong>${contacto.nombre}</strong></td><td>${contacto.telefono}</td><td style="text-align:center;"><span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span><span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span></td><td style="text-align:center;"><a href="${whatsappUrl}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Contactar</a></td></tr>`;
+
+            // Verificar si tiene presupuesto vencido
+            const nombreNormalizado = contacto.nombre.trim().toLowerCase();
+            const presupuestosDelContacto = datosCache.presupuestos.filter(p => {
+                const nombrePres = p.Nombre ? p.Nombre.trim().toLowerCase() : '';
+                return nombrePres === nombreNormalizado;
+            });
+
+            const tieneVencido = presupuestosDelContacto.some(p => calcularEstadoPresupuesto(p) === 'vencido');
+
+            const alertaHtml = tieneVencido
+                ? '<i class="fas fa-exclamation-triangle alerta-vencido" title="Presupuesto vencido"></i>'
+                : '';
+
+            const btnClase = tieneVencido ? 'btn-whatsapp-alerta' : 'btn-whatsapp';
+            const btnTexto = tieneVencido ? 'Contactar URGENTE' : 'Contactar';
+
+            html += `<tr>
+                <td>${index + 1}</td>
+                <td><strong>${contacto.nombre}</strong>${alertaHtml}</td>
+                <td>${contacto.telefono}</td>
+                <td style="text-align:center;">
+                    <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
+                    <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
+                </td>
+                <td style="text-align:center;">
+                    <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
+                </td>
+            </tr>`;
         });
-        html += `</tbody></table>`; container.innerHTML = html;
+        html += `</tbody></table>`;
+        container.innerHTML = html;
     }
 
     function iniciarAutoRefresh() { if (intervaloAuto) clearInterval(intervaloAuto); intervaloAuto = setInterval(cargarDatos, 300000); }
