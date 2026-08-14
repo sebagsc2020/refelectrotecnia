@@ -146,11 +146,10 @@
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
 
-        /* ===== ESTILOS PARA EXPANDIR FILAS ===== */
+        /* ===== ESTILOS PARA EXPANDIR FILAS CON ÍCONO EN VEZ DE PUNTOS ===== */
         .mensaje-cell,
         .descripcion-cell {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
+            position: relative;
             overflow: hidden;
             white-space: pre-wrap;
             word-wrap: break-word;
@@ -158,22 +157,40 @@
             transition: max-height 0.3s ease;
         }
         .mensaje-cell {
-            max-height: 3em;
-            -webkit-line-clamp: 2;
+            max-height: 3em; /* 2 líneas */
         }
         .descripcion-cell {
-            max-height: 1.5em;
-            -webkit-line-clamp: 1;
+            max-height: 1.5em; /* 1 línea */
         }
         .mensaje-cell.expandido,
         .descripcion-cell.expandido {
             max-height: none;
-            -webkit-line-clamp: unset;
-            display: block;
         }
-        .table-scroll tbody tr {
-            cursor: pointer;
+
+        /* Ícono de flecha hacia abajo, solo cuando la celda está truncada Y colapsada */
+        .mensaje-cell.truncado:not(.expandido)::after,
+        .descripcion-cell.truncado:not(.expandido)::after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            padding: 0 4px 0 8px;
+            box-shadow: -10px 0 10px -5px white;
+            pointer-events: none;
+            color: var(--primary-cyan);
+            font-size: 0.9rem;
         }
+
+        /* Ajuste para el hover de la fila: el fondo del ícono debe coincidir */
+        table tbody tr:hover .mensaje-cell.truncado:not(.expandido)::after,
+        table tbody tr:hover .descripcion-cell.truncado:not(.expandido)::after {
+            background: #F8FAFC;
+            box-shadow: -10px 0 10px -5px #F8FAFC;
+        }
+
         .table-scroll tbody tr td:last-child {
             cursor: default;
         }
@@ -188,7 +205,6 @@
         #presupuestosContainer table td {
             padding: 8px 10px;
         }
-        /* Ajuste de anchos con la nueva columna Vencimiento */
         #presupuestosContainer table th:nth-child(1),
         #presupuestosContainer table td:nth-child(1) { width: 11%; }  /* Nombre */
         #presupuestosContainer table th:nth-child(2),
@@ -203,7 +219,7 @@
         #presupuestosContainer table th:nth-child(4),
         #presupuestosContainer table td:nth-child(4) { width: 12%; }  /* Estado */
         #presupuestosContainer table th:nth-child(5),
-        #presupuestosContainer table td:nth-child(5) { width: 14%; }  /* Vencimiento (días) */
+        #presupuestosContainer table td:nth-child(5) { width: 14%; }  /* Vencimiento */
         #presupuestosContainer table th:nth-child(6),
         #presupuestosContainer table td:nth-child(6) { width: 10%; }  /* Precio */
         #presupuestosContainer table th:nth-child(7),
@@ -224,13 +240,13 @@
             padding: 3px 6px;
         }
 
-        /* ===== RESPONSIVE: MÓVIL (scroll horizontal) ===== */
+        /* ===== RESPONSIVE: MÓVIL ===== */
         @media (max-width: 600px) {
             #presupuestosContainer table {
                 display: table;
                 table-layout: auto;
                 font-size: 0.8rem;
-                min-width: 700px; /* Aumentado para acomodar nueva columna */
+                min-width: 700px;
                 width: auto;
             }
             #presupuestosContainer table thead {
@@ -283,7 +299,6 @@
             }
             .descripcion-cell {
                 max-height: 2.5em;
-                -webkit-line-clamp: 2;
             }
             .filtro-container {
                 flex-direction: column;
@@ -1130,15 +1145,13 @@
         return presupuesto.Estado || 'encurso';
     }
 
-    // Nueva función para calcular días restantes (o vencidos)
     function calcularDiasRestantes(presupuesto) {
-        if (presupuesto.Estado === 'cancelado') return null; // no aplica
+        if (presupuesto.Estado === 'cancelado') return null;
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
         const validez = parseInt(presupuesto.Validez) || 30;
         const fechaVencimiento = new Date(fecha);
         fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
         const hoy = new Date();
-        // Diferencia en días (redondeado hacia arriba para mostrar días completos)
         const diff = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
         return diff;
     }
@@ -1206,6 +1219,23 @@
         html += '</ul>'; container.innerHTML = html;
     }
 
+    // ===== FUNCIÓN PARA DETECTAR DESBORDAMIENTO Y AGREGAR CLASE .truncado =====
+    function aplicarIndicadoresDesbordamiento(container) {
+        if (!container) return;
+        // Buscar todas las celdas con clase mensaje-cell o descripcion-cell dentro del contenedor
+        const celdas = container.querySelectorAll('.mensaje-cell, .descripcion-cell');
+        celdas.forEach(celda => {
+            // Forzar un reflujo para obtener dimensiones correctas
+            void celda.offsetHeight;
+            // Si el contenido se desborda verticalmente (scrollHeight > clientHeight)
+            if (celda.scrollHeight > celda.clientHeight) {
+                celda.classList.add('truncado');
+            } else {
+                celda.classList.remove('truncado');
+            }
+        });
+    }
+
     // =============================================
     // RENDERIZAR TABLA "TODOS LOS REGISTROS" (SIN EMAIL)
     // =============================================
@@ -1257,6 +1287,10 @@
         });
         html += `</tbody></table>`;
         container.innerHTML = html;
+
+        // Aplicar indicadores de desbordamiento después de renderizar
+        aplicarIndicadoresDesbordamiento(container);
+
         container.querySelector('table tbody').addEventListener('click', function(e) {
             if (e.target.closest('button, a')) return;
             const fila = e.target.closest('tr');
@@ -1264,12 +1298,16 @@
             const celdaMensaje = fila.querySelector('.mensaje-cell');
             if (celdaMensaje) {
                 celdaMensaje.classList.toggle('expandido');
+                // Después de toggle, volver a verificar el desbordamiento (puede cambiar)
+                // Pero al expandir, el scrollHeight ya no será mayor, así que quitamos truncado si está expandido
+                // Y al colapsar, si vuelve a desbordarse, lo detectamos
+                setTimeout(() => aplicarIndicadoresDesbordamiento(container), 50);
             }
         });
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS (CON NUEVA COLUMNA VENCIMIENTO)
+    // RENDERIZAR PRESUPUESTOS (CON COLUMNA VENCIMIENTO)
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -1328,7 +1366,6 @@
 
             totalFiltrado += precio;
 
-            // Calcular días restantes
             let diasHtml = '';
             const dias = calcularDiasRestantes(row);
             if (dias === null) {
@@ -1370,6 +1407,9 @@
         </tr></tfoot></table>`;
         container.innerHTML = html;
 
+        // Aplicar indicadores de desbordamiento después de renderizar
+        aplicarIndicadoresDesbordamiento(container);
+
         container.querySelector('table tbody').addEventListener('click', function(e) {
             if (e.target.closest('button, a, select')) return;
             const fila = e.target.closest('tr');
@@ -1377,6 +1417,7 @@
             const celdaDesc = fila.querySelector('.descripcion-cell');
             if (celdaDesc) {
                 celdaDesc.classList.toggle('expandido');
+                setTimeout(() => aplicarIndicadoresDesbordamiento(container), 50);
             }
         });
     }
@@ -1613,7 +1654,7 @@
     document.getElementById('saveEditBtn').addEventListener('click', guardarEdicion);
 
     // =============================================
-    // RESUMEN POR CONTACTO (CON EMAIL Y UBICACIÓN)
+    // RESUMEN POR CONTACTO
     // =============================================
     function actualizarResumenContactos(data) {
         const container = document.getElementById('resumenContainer');
