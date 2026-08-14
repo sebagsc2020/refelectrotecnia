@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | REF Electrotecnia</title>
+    <title>--Admin | REF Electrotecnia</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- html2canvas y jsPDF -->
@@ -1238,14 +1238,21 @@
     }
 
     // =============================================
-    // PRESUPUESTO
+    // PRESUPUESTO (✅ MODIFICADO: número basado en fecha/hora)
     // =============================================
     function abrirPresupuesto(index) {
         const registro = datosCache.contactos[index];
         if (!registro) { alert('Registro no encontrado.'); return; }
-        contadorPresupuesto++;
-        const year = new Date().getFullYear();
-        const numero = `${year}-${String(contadorPresupuesto).padStart(4, '0')}`;
+        
+        // ✅ Generar número basado en fecha y hora actual: YYYY-DDMM.HHMM
+        const ahora = new Date();
+        const year = ahora.getFullYear();
+        const day = String(ahora.getDate()).padStart(2, '0');
+        const month = String(ahora.getMonth() + 1).padStart(2, '0');
+        const hour = String(ahora.getHours()).padStart(2, '0');
+        const minute = String(ahora.getMinutes()).padStart(2, '0');
+        const numero = `${year}-${day}${month}.${hour}${minute}`;
+        
         document.getElementById('previewNumero').textContent = numero;
         document.getElementById('presupuestoIndex').value = index;
         document.getElementById('presupuestoNombre').value = registro.Nombre || '';
