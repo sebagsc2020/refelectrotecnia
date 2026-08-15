@@ -92,7 +92,7 @@
         table th { text-align: left; padding: 12px 14px; font-weight: 600; color: var(--primary-dark); border-bottom: 2px solid #E9ECEF; white-space: nowrap; }
         table td { padding: 12px 14px; border-bottom: 1px solid #E9ECEF; color: var(--gray-text); vertical-align: middle; }
         table tbody tr:hover { background: #F8FAFC; }
-        table tfoot td { font-weight: 700; color: var(--primary-dark); background: var(--light-bg); border-top: 2px solid #E9ECEF; padding: 12px 14px; }
+        table tfoot td { font-weight: 700; color: var(--primary-dark); background: var(--light-bg); border-top: 2px solid #E9ECEF; padding: 12px 14px; white-space: nowrap; } /* ← total en una línea */
         .badge-emergencia { background: #fee2e2; color: #b91c1c; padding: 2px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
         .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
         .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
@@ -136,6 +136,7 @@
         .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
         .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
         .estado-select.estado-cancelado { border-color: #7f8c8d; color: #555; background: #f5f5f5; }
+        .estado-select.estado-realizado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; } /* nuevo */
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
@@ -146,7 +147,7 @@
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
 
-        /* ===== ESTILOS PARA EXPANDIR FILAS CON ÍCONO EN VEZ DE PUNTOS ===== */
+        /* ===== ESTILOS PARA EXPANDIR FILAS CON ÍCONO ===== */
         .mensaje-cell,
         .descripcion-cell {
             position: relative;
@@ -167,9 +168,8 @@
             max-height: none;
         }
 
-        /* Ícono de flecha hacia abajo, solo cuando la celda está truncada Y colapsada */
-        .mensaje-cell.truncado:not(.expandido)::after,
-        .descripcion-cell.truncado:not(.expandido)::after {
+        .mensaje-cell:not(.expandido).has-more::after,
+        .descripcion-cell:not(.expandido).has-more::after {
             content: "\f078";
             font-family: "Font Awesome 6 Free";
             font-weight: 900;
@@ -184,9 +184,8 @@
             font-size: 0.9rem;
         }
 
-        /* Ajuste para el hover de la fila: el fondo del ícono debe coincidir */
-        table tbody tr:hover .mensaje-cell.truncado:not(.expandido)::after,
-        table tbody tr:hover .descripcion-cell.truncado:not(.expandido)::after {
+        table tbody tr:hover .mensaje-cell:not(.expandido).has-more::after,
+        table tbody tr:hover .descripcion-cell:not(.expandido).has-more::after {
             background: #F8FAFC;
             box-shadow: -10px 0 10px -5px #F8FAFC;
         }
@@ -195,7 +194,7 @@
             cursor: default;
         }
 
-        /* ===== ESTILOS ESPECÍFICOS PARA TABLA DE PRESUPUESTOS (escritorio) ===== */
+        /* ===== ESTILOS ESPECÍFICOS PARA TABLA DE PRESUPUESTOS ===== */
         #presupuestosContainer table {
             table-layout: fixed;
             width: 100%;
@@ -206,24 +205,24 @@
             padding: 8px 10px;
         }
         #presupuestosContainer table th:nth-child(1),
-        #presupuestosContainer table td:nth-child(1) { width: 11%; }  /* Nombre */
+        #presupuestosContainer table td:nth-child(1) { width: 11%; }
         #presupuestosContainer table th:nth-child(2),
-        #presupuestosContainer table td:nth-child(2) { width: 12%; }  /* Servicio */
+        #presupuestosContainer table td:nth-child(2) { width: 12%; }
         #presupuestosContainer table th:nth-child(3),
         #presupuestosContainer table td:nth-child(3) {
             width: 22%;
             max-width: 150px;
             word-wrap: break-word;
             white-space: pre-wrap;
-        }  /* Descripción */
+        }
         #presupuestosContainer table th:nth-child(4),
-        #presupuestosContainer table td:nth-child(4) { width: 12%; }  /* Estado */
+        #presupuestosContainer table td:nth-child(4) { width: 12%; }
         #presupuestosContainer table th:nth-child(5),
-        #presupuestosContainer table td:nth-child(5) { width: 14%; }  /* Vencimiento */
+        #presupuestosContainer table td:nth-child(5) { width: 14%; }
         #presupuestosContainer table th:nth-child(6),
-        #presupuestosContainer table td:nth-child(6) { width: 10%; }  /* Precio */
+        #presupuestosContainer table td:nth-child(6) { width: 10%; }
         #presupuestosContainer table th:nth-child(7),
-        #presupuestosContainer table td:nth-child(7) { width: 10%; }  /* Fecha envío */
+        #presupuestosContainer table td:nth-child(7) { width: 10%; }
         #presupuestosContainer table th:nth-child(8),
         #presupuestosContainer table td:nth-child(8) {
             width: 8%;
@@ -231,7 +230,7 @@
             text-align: center;
             white-space: normal;
             word-break: keep-all;
-        }  /* Acciones */
+        }
 
         .estado-select {
             max-width: 100%;
@@ -240,7 +239,6 @@
             padding: 3px 6px;
         }
 
-        /* ===== RESPONSIVE: MÓVIL ===== */
         @media (max-width: 600px) {
             #presupuestosContainer table {
                 display: table;
@@ -287,6 +285,7 @@
                 display: table-cell;
                 padding: 8px 10px;
                 border-top: 2px solid #E9ECEF;
+                white-space: nowrap;
             }
             .estado-select {
                 min-width: 70px;
@@ -872,7 +871,7 @@
 
     <div class="stats-grid" id="statsGrid">
         <div class="stat-card"><span class="stat-icon"><i class="fas fa-users"></i></span><div class="stat-number" id="totalContactos">0</div><div class="stat-label">Total de contactos</div></div>
-        <div class="stat-card"><span class="stat-icon"><i class="fas fa-calendar-week"></i></span><div class="stat-number" id="contactosSemana">0</div><div class="stat-label">Últimos 7 días</div></div>
+        <div class="stat-card"><span class="stat-icon"><i class="fas fa-calendar-week"></i></span><div class="stat-number" id="contactosMes">0</div><div class="stat-label">Registros del mes</div></div>
         <div class="stat-card emergencia"><span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span><div class="stat-number" id="emergencias">0</div><div class="stat-label">Emergencias 24/7</div></div>
         <div class="stat-card pendiente"><span class="stat-icon"><i class="fas fa-clock"></i></span><div class="stat-number" id="pendientesPresupuesto">0</div><div class="stat-label">Pendientes de presupuesto</div></div>
     </div>
@@ -892,6 +891,7 @@
                 <option value="todos">Todos</option>
                 <option value="aprobado">Aprobado</option>
                 <option value="encurso">En Curso</option>
+                <option value="realizado">Realizado</option>
                 <option value="vencido">Vencido</option>
                 <option value="cancelado">Cancelado</option>
             </select>
@@ -1135,7 +1135,10 @@
     }
 
     function calcularEstadoPresupuesto(presupuesto) {
+        // Si el estado es 'realizado' o 'cancelado', retornarlo tal cual (sin calcular vencimiento)
+        if (presupuesto.Estado === 'realizado') return 'realizado';
         if (presupuesto.Estado === 'cancelado') return 'cancelado';
+        // Para otros estados, calcular vencimiento
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
         const validez = parseInt(presupuesto.Validez) || 30;
         const fechaVencimiento = new Date(fecha);
@@ -1146,7 +1149,8 @@
     }
 
     function calcularDiasRestantes(presupuesto) {
-        if (presupuesto.Estado === 'cancelado') return null;
+        // Si está cancelado o realizado, no mostrar días
+        if (presupuesto.Estado === 'cancelado' || presupuesto.Estado === 'realizado') return null;
         const fecha = presupuesto.Fecha ? new Date(presupuesto.Fecha) : new Date();
         const validez = parseInt(presupuesto.Validez) || 30;
         const fechaVencimiento = new Date(fecha);
@@ -1187,8 +1191,18 @@
 
     function actualizarStats(data) {
         document.getElementById('totalContactos').textContent = data.length;
-        const hoy = new Date(); const semana = new Date(hoy); semana.setDate(hoy.getDate() - 7);
-        document.getElementById('contactosSemana').textContent = data.filter(item => { if (!item.Fecha) return false; const fecha = new Date(item.Fecha); return fecha >= semana && fecha <= hoy; }).length;
+
+        // Contar contactos del mes actual
+        const hoy = new Date();
+        const mesActual = hoy.getMonth();
+        const anioActual = hoy.getFullYear();
+        const contactosMes = data.filter(item => {
+            if (!item.Fecha) return false;
+            const fecha = new Date(item.Fecha);
+            return fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual;
+        });
+        document.getElementById('contactosMes').textContent = contactosMes.length;
+
         document.getElementById('emergencias').textContent = data.filter(item => item.Servicio && item.Servicio.toLowerCase().includes('emergencia')).length;
         const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
         document.getElementById('pendientesPresupuesto').textContent = data.filter(item => { const nombre = item.Nombre ? item.Nombre.trim().toLowerCase() : ''; return nombre !== '' && !nombresConPresupuesto.includes(nombre); }).length;
@@ -1217,23 +1231,6 @@
             html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;"><span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span><span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span></li>`;
         });
         html += '</ul>'; container.innerHTML = html;
-    }
-
-    // ===== FUNCIÓN PARA DETECTAR DESBORDAMIENTO Y AGREGAR CLASE .truncado =====
-    function aplicarIndicadoresDesbordamiento(container) {
-        if (!container) return;
-        // Buscar todas las celdas con clase mensaje-cell o descripcion-cell dentro del contenedor
-        const celdas = container.querySelectorAll('.mensaje-cell, .descripcion-cell');
-        celdas.forEach(celda => {
-            // Forzar un reflujo para obtener dimensiones correctas
-            void celda.offsetHeight;
-            // Si el contenido se desborda verticalmente (scrollHeight > clientHeight)
-            if (celda.scrollHeight > celda.clientHeight) {
-                celda.classList.add('truncado');
-            } else {
-                celda.classList.remove('truncado');
-            }
-        });
     }
 
     // =============================================
@@ -1287,10 +1284,6 @@
         });
         html += `</tbody></table>`;
         container.innerHTML = html;
-
-        // Aplicar indicadores de desbordamiento después de renderizar
-        aplicarIndicadoresDesbordamiento(container);
-
         container.querySelector('table tbody').addEventListener('click', function(e) {
             if (e.target.closest('button, a')) return;
             const fila = e.target.closest('tr');
@@ -1298,16 +1291,28 @@
             const celdaMensaje = fila.querySelector('.mensaje-cell');
             if (celdaMensaje) {
                 celdaMensaje.classList.toggle('expandido');
-                // Después de toggle, volver a verificar el desbordamiento (puede cambiar)
-                // Pero al expandir, el scrollHeight ya no será mayor, así que quitamos truncado si está expandido
-                // Y al colapsar, si vuelve a desbordarse, lo detectamos
-                setTimeout(() => aplicarIndicadoresDesbordamiento(container), 50);
+                actualizarIndicadorDesbordamiento(celdaMensaje);
             }
         });
+        document.querySelectorAll('.mensaje-cell').forEach(celda => actualizarIndicadorDesbordamiento(celda));
+    }
+
+    function actualizarIndicadorDesbordamiento(elemento) {
+        if (!elemento) return;
+        if (!elemento.classList.contains('expandido')) {
+            const maxHeight = parseFloat(getComputedStyle(elemento).maxHeight);
+            if (maxHeight && elemento.scrollHeight > maxHeight) {
+                elemento.classList.add('has-more');
+            } else {
+                elemento.classList.remove('has-more');
+            }
+        } else {
+            elemento.classList.remove('has-more');
+        }
     }
 
     // =============================================
-    // RENDERIZAR PRESUPUESTOS (CON COLUMNA VENCIMIENTO)
+    // RENDERIZAR PRESUPUESTOS (CON NUEVO ESTADO "REALIZADO")
     // =============================================
     function renderizarPresupuestos(data) {
         const container = document.getElementById('presupuestosContainer');
@@ -1368,19 +1373,22 @@
 
             let diasHtml = '';
             const dias = calcularDiasRestantes(row);
-            if (dias === null) {
-                diasHtml = '<span style="color:#7f8c8d;">Cancelado</span>';
-            } else if (dias > 0) {
+            if (estado === 'realizado') {
+                diasHtml = '<span style="color:#27ae60; font-weight:600;">✅ Realizado</span>';
+            } else if (estado === 'cancelado') {
+                diasHtml = '<span style="color:#7f8c8d; font-weight:600;">Cancelado</span>';
+            } else if (dias !== null && dias > 0) {
                 diasHtml = `<span style="color:#27ae60; font-weight:600;">Vence en ${dias} día${dias !== 1 ? 's' : ''}</span>`;
-            } else if (dias === 0) {
+            } else if (dias !== null && dias === 0) {
                 diasHtml = '<span style="color:#f39c12; font-weight:600;">Vence hoy</span>';
-            } else {
+            } else if (dias !== null && dias < 0) {
                 diasHtml = `<span style="color:#e74c3c; font-weight:600;">Vencido hace ${Math.abs(dias)} día${Math.abs(dias) !== 1 ? 's' : ''}</span>`;
             }
 
             let estadoSelect = `<select class="estado-select estado-${estado}" onchange="cambiarEstadoPresupuesto(${originalIndex}, this.value)">`;
             estadoSelect += `<option value="aprobado" ${estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>`;
             estadoSelect += `<option value="encurso" ${estado === 'encurso' ? 'selected' : ''}>En Curso</option>`;
+            estadoSelect += `<option value="realizado" ${estado === 'realizado' ? 'selected' : ''}>Realizado</option>`;
             estadoSelect += `<option value="vencido" ${estado === 'vencido' ? 'selected' : ''}>Vencido</option>`;
             estadoSelect += `<option value="cancelado" ${estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>`;
             estadoSelect += `</select>`;
@@ -1407,9 +1415,6 @@
         </tr></tfoot></table>`;
         container.innerHTML = html;
 
-        // Aplicar indicadores de desbordamiento después de renderizar
-        aplicarIndicadoresDesbordamiento(container);
-
         container.querySelector('table tbody').addEventListener('click', function(e) {
             if (e.target.closest('button, a, select')) return;
             const fila = e.target.closest('tr');
@@ -1417,9 +1422,10 @@
             const celdaDesc = fila.querySelector('.descripcion-cell');
             if (celdaDesc) {
                 celdaDesc.classList.toggle('expandido');
-                setTimeout(() => aplicarIndicadoresDesbordamiento(container), 50);
+                actualizarIndicadorDesbordamiento(celdaDesc);
             }
         });
+        document.querySelectorAll('.descripcion-cell').forEach(celda => actualizarIndicadorDesbordamiento(celda));
     }
 
     // =============================================
