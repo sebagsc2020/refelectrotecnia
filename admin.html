@@ -136,7 +136,7 @@
         .estado-select.estado-encurso { border-color: #f39c12; color: #e67e22; background: #fff8f0; }
         .estado-select.estado-vencido { border-color: #e74c3c; color: #c0392b; background: #fff5f5; }
         .estado-select.estado-cancelado { border-color: #7f8c8d; color: #555; background: #f5f5f5; }
-        .estado-select.estado-realizado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; } /* nuevo */
+        .estado-select.estado-realizado { border-color: #2ecc71; color: #27ae60; background: #f0fff4; }
         .presupuesto-box { max-width: 900px; }
         .presupuesto-box .presupuesto-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .presupuesto-box .presupuesto-datos .full-width { grid-column: 1 / -1; }
@@ -1242,7 +1242,8 @@
             container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
             return;
         }
-        const nombresConPresupuesto = datosCache.presupuestos.map(p => p.Nombre ? p.Nombre.trim().toLowerCase() : '').filter(n => n !== '');
+
+        // 🔥 NUEVA LÓGICA: solo mostrar ✅ si el presupuesto está activo (no vencido ni cancelado)
         const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
         let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
         const sorted = [...data].sort((a,b) => { if (!a.Fecha) return 1; if (!b.Fecha) return -1; return new Date(b.Fecha) - new Date(a.Fecha); });
@@ -1252,8 +1253,17 @@
             let servicio = row.Servicio || ''; if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
             const ubicacion = row.Ubicación || ''; const mensaje = row.Mensaje || '';
             const esEmergencia = servicio.toLowerCase().includes('emergencia');
-            const tienePresupuesto = nombresConPresupuesto.includes(nombre.trim().toLowerCase());
-            const checkHtml = tienePresupuesto ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
+
+            // --- NUEVO: verificar presupuesto activo (no vencido ni cancelado) ---
+            const nombreLimpio = nombre.trim().toLowerCase();
+            const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
+                const nombrePres = p.Nombre ? p.Nombre.trim().toLowerCase() : '';
+                if (nombrePres !== nombreLimpio) return false;
+                const estado = calcularEstadoPresupuesto(p);
+                return estado !== 'vencido' && estado !== 'cancelado';
+            });
+            const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
+
             let mapsHtml = '';
             if (ubicacion && ubicacion.trim() !== '' && ubicacion.trim() !== '-') {
                 let url = '';
