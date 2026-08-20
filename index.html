@@ -1,0 +1,815 @@
+<script type="importmap">
+{
+  "imports": {
+    "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
+  }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+
+// Configuración de Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
+  authDomain: "refelectrotecnia.firebaseapp.com",
+  projectId: "refelectrotecnia",
+  storageBucket: "refelectrotecnia.firebasestorage.app",
+  messagingSenderId: "204883844019",
+  appId: "1:204883844019:web:176d2973209b0cc98fc9c6",
+  measurementId: "G-8FDNZ6GJZD"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ============================================================
+//  VARIABLES GLOBALES
+// ============================================================
+let datosCache = { contactos: [], presupuestos: [] };
+let chartInstance = null;
+let intervaloAuto = null;
+
+// ============================================================
+//  FUNCIONES AUXILIARES (formateo, fechas, etc.) - SIN CAMBIOS
+// ============================================================
+function formatearPrecio(valor) {
+    if (isNaN(valor)) return '$ 0';
+    return '$ ' + Math.round(valor).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00';
+}
+
+function formatearFechaHora(fecha) {
+    if (!fecha) return '';
+    const d = fecha.toDate ? fecha.toDate() : new Date(fecha);
+    return d.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+}
+
+function formatearFecha(fecha) {
+    if (!fecha) return '';
+    const d = fecha.toDate ? fecha.toDate() : new Date(fecha);
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function calcularEstadoPresupuesto(presupuesto) {
+    if (presupuesto.Estado === 'realizado') return 'realizado';
+    if (presupuesto.Estado === 'cancelado') return 'cancelado';
+    const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
+    const validez = parseInt(presupuesto.Validez) || 30;
+    const fechaVencimiento = new Date(fecha);
+    fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
+    const hoy = new Date();
+    if (hoy > fechaVencimiento) return 'vencido';
+    return presupuesto.Estado || 'encurso';
+}
+
+function calcularDiasRestantes(presupuesto) {
+    if (presupuesto.Estado === 'cancelado' || presupuesto.Estado === 'realizado') return null;
+    const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
+    const validez = parseInt(presupuesto.Validez) || 30;
+    const fechaVencimiento = new Date(fecha);
+    fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
+    const hoy = new Date();
+    const diff = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
+    return diff;
+}
+
+// ============================================================
+//  FUNCIONES DE INTERFAZ (showLogin, showDashboard, etc.)
+// ============================================================
+function showLogin() {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('dashboard').classList.add('dashboard-locked');
+}
+function showDashboard() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('dashboard').classList.remove('dashboard-locked');
+}
+
+// ============================================================
+//  AUTENTICACIÓN
+// ============================================================
+document.getElementById('btnLogin').addEventListener('click', async () => {
+    const password = document.getElementById('loginPassword').value;
+    const errorEl = document.getElementById('loginError');
+    const btn = document.getElementById('btnLogin');
+    if (!password) { errorEl.textContent = 'Ingresa una contraseña'; errorEl.style.display = 'block'; return; }
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...'; errorEl.style.display = 'none';
+    try {
+        // Usamos un email fijo (puedes cambiarlo por el que creaste en Firebase Auth)
+        await signInWithEmailAndPassword(auth, 'admin@refelectrotecnia.com', password);
+        // El éxito se maneja en onAuthStateChanged
+    } catch (error) {
+        errorEl.textContent = 'Contraseña incorrecta o usuario no existe.';
+        errorEl.style.display = 'block';
+        document.getElementById('loginPassword').value = '';
+    }
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
+});
+
+document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('btnLogin').click();
+});
+
+// Observador de autenticación
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        showDashboard();
+        cargarDatos();
+        iniciarAutoRefresh();
+    } else {
+        showLogin();
+        if (intervaloAuto) clearInterval(intervaloAuto);
+    }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    if (confirm('¿Cerrar sesión?')) {
+        signOut(auth);
+    }
+});
+
+// ============================================================
+//  CARGAR DATOS DESDE FIRESTORE
+// ============================================================
+async function cargarDatos() {
+    const token = localStorage.getItem('firebase_token'); // no usado, pero mantenemos por compatibilidad
+    document.getElementById('tablaContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div>';
+    document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
+    document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
+    try {
+        // Obtener contactos
+        const contactosSnapshot = await getDocs(collection(db, 'contactos'));
+        const contactos = [];
+        contactosSnapshot.forEach(doc => {
+            const data = doc.data();
+            contactos.push({ id: doc.id, ...data });
+        });
+        // Ordenar por fecha descendente (si existe)
+        contactos.sort((a, b) => {
+            const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
+            const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
+            return fechaB - fechaA;
+        });
+
+        // Obtener presupuestos
+        const presupuestosSnapshot = await getDocs(collection(db, 'presupuestos'));
+        const presupuestos = [];
+        presupuestosSnapshot.forEach(doc => {
+            const data = doc.data();
+            presupuestos.push({ id: doc.id, ...data });
+        });
+
+        datosCache.contactos = contactos;
+        datosCache.presupuestos = presupuestos;
+
+        actualizarStats(contactos);
+        actualizarGrafico(contactos);
+        actualizarUltimos(contactos);
+        renderizarTabla(contactos);
+        actualizarResumenContactos(contactos);
+        renderizarPresupuestos(presupuestos);
+    } catch (error) {
+        console.error('Error al cargar datos:', error);
+        document.getElementById('tablaContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p><button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button></div>`;
+        document.getElementById('resumenContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al procesar contactos.</p></div>`;
+        document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos.</p></div>`;
+    }
+}
+
+// ============================================================
+//  ACTUALIZAR ESTADÍSTICAS (sin cambios)
+// ============================================================
+function actualizarStats(data) {
+    document.getElementById('totalContactos').textContent = data.length;
+    const hoy = new Date();
+    const mesActual = hoy.getMonth();
+    const anioActual = hoy.getFullYear();
+    const contactosMes = data.filter(item => {
+        if (!item.fecha) return false;
+        const fecha = item.fecha.toDate ? item.fecha.toDate() : new Date(item.fecha);
+        return fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual;
+    });
+    document.getElementById('contactosMes').textContent = contactosMes.length;
+    document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
+    const nombresConPresupuesto = datosCache.presupuestos.map(p => p.nombre ? p.nombre.trim().toLowerCase() : '').filter(n => n !== '');
+    document.getElementById('pendientesPresupuesto').textContent = data.filter(item => {
+        const nombre = item.nombre ? item.nombre.trim().toLowerCase() : '';
+        return nombre !== '' && !nombresConPresupuesto.includes(nombre);
+    }).length;
+}
+
+// ============================================================
+//  GRÁFICO (sin cambios)
+// ============================================================
+function actualizarGrafico(data) {
+    const servicioCount = {};
+    data.forEach(item => {
+        let servicio = item.servicio || 'No especificado';
+        if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
+        servicioCount[servicio] = (servicioCount[servicio] || 0) + 1;
+    });
+    const sorted = Object.entries(servicioCount).sort((a,b) => b[1] - a[1]);
+    const labels = sorted.map(item => item[0]);
+    const values = sorted.map(item => item[1]);
+    const ctx = document.getElementById('serviciosChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    if (labels.length === 0) {
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['Sin datos'], datasets: [{ label: 'Solicitudes', data: [0], backgroundColor: ['#E9ECEF'], borderRadius: 6 }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
+        });
+        return;
+    }
+    const colores = ['#00A8FF','#0A2E5C','#FFB800','#FF7A00','#34A853','#E4405F','#9B59B6','#1ABC9C','#F39C12','#E74C3C'];
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Solicitudes', data: values, backgroundColor: colores.slice(0, labels.length), borderRadius: 6 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f1f1' } }, x: { grid: { display: false } } } }
+    });
+}
+
+// ============================================================
+//  ÚLTIMOS REGISTROS (sin cambios)
+// ============================================================
+function actualizarUltimos(data) {
+    const container = document.getElementById('ultimosRegistros');
+    if (data.length === 0) { container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>'; return; }
+    const ultimos = data.slice(-5).reverse();
+    let html = '<ul style="list-style:none; padding:0; margin:0;">';
+    ultimos.forEach(item => {
+        const nombre = item.nombre || 'Anónimo';
+        const servicio = item.servicio || 'No especificado';
+        const fecha = formatearFecha(item.fecha);
+        const esEmergencia = servicio.toLowerCase().includes('emergencia');
+        html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;"><span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span><span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span></li>`;
+    });
+    html += '</ul>'; container.innerHTML = html;
+}
+
+// ============================================================
+//  RENDERIZAR TABLA DE CONTACTOS (con IDs)
+// ============================================================
+function renderizarTabla(data) {
+    const container = document.getElementById('tablaContainer');
+    if (data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
+        return;
+    }
+
+    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
+    let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
+    const sorted = [...data].sort((a,b) => {
+        const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
+        const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
+        return fechaB - fechaA;
+    });
+    sorted.forEach((row) => {
+        const docId = row.id;
+        const fecha = formatearFechaHora(row.fecha);
+        const nombre = row.nombre || '';
+        const telefono = row.telefono || '';
+        let servicio = row.servicio || '';
+        if (servicio === 'emergencia') servicio = 'Emergencia 24/7';
+        const ubicacion = row.ubicacion || '';
+        const mensaje = row.mensaje || '';
+        const esEmergencia = servicio.toLowerCase().includes('emergencia');
+
+        // Verificar presupuesto activo
+        const nombreLimpio = nombre.trim().toLowerCase();
+        const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
+            const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+            if (nombrePres !== nombreLimpio) return false;
+            const estado = calcularEstadoPresupuesto(p);
+            return estado !== 'vencido' && estado !== 'cancelado';
+        });
+        const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
+
+        let mapsHtml = '';
+        if (ubicacion && ubicacion.trim() !== '' && ubicacion.trim() !== '-') {
+            let url = '';
+            const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(ubicacion);
+            if (esCoordenada) {
+                const coords = ubicacion.match(/-?\d+\.\d+/g);
+                if (coords && coords.length >= 2) url = `https://www.google.com/maps?q=${coords[0]},${coords[1]}`;
+            } else {
+                url = `https://www.google.com/maps?q=${encodeURIComponent(ubicacion)}`;
+            }
+            if (url) mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
+        }
+        const mensajeEscapado = mensaje.replace(/"/g, '&quot;');
+        html += `<tr data-id="${docId}">
+            <td>${fecha}</td>
+            <td><strong>${nombre}</strong></td>
+            <td>${telefono}</td>
+            <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
+            <td>${mapsHtml || '—'}</td>
+            <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
+            <td style="text-align:center;">${checkHtml}</td>
+            <td style="text-align:center; white-space:nowrap;">
+                <button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn-delete" onclick="eliminarRegistro('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                <button class="btn-presupuesto" onclick="abrirPresupuesto('${docId}')" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
+            </td>
+        </tr>`;
+    });
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+
+    // Evento para expandir mensaje
+    container.querySelector('table tbody').addEventListener('click', function(e) {
+        if (e.target.closest('button, a')) return;
+        const fila = e.target.closest('tr');
+        if (!fila) return;
+        const celdaMensaje = fila.querySelector('.mensaje-cell');
+        if (celdaMensaje) {
+            celdaMensaje.classList.toggle('expandido');
+            actualizarIndicadorDesbordamiento(celdaMensaje);
+        }
+    });
+    document.querySelectorAll('.mensaje-cell').forEach(celda => actualizarIndicadorDesbordamiento(celda));
+}
+
+function actualizarIndicadorDesbordamiento(elemento) {
+    if (!elemento) return;
+    if (!elemento.classList.contains('expandido')) {
+        const maxHeight = parseFloat(getComputedStyle(elemento).maxHeight);
+        if (maxHeight && elemento.scrollHeight > maxHeight) {
+            elemento.classList.add('has-more');
+        } else {
+            elemento.classList.remove('has-more');
+        }
+    } else {
+        elemento.classList.remove('has-more');
+    }
+}
+
+// ============================================================
+//  RENDERIZAR PRESUPUESTOS (con IDs)
+// ============================================================
+function renderizarPresupuestos(data) {
+    const container = document.getElementById('presupuestosContainer');
+    if (!data || data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
+        return;
+    }
+
+    const filtroEstado = document.getElementById('filtroEstado').value;
+    const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
+
+    const sorted = [...data].sort((a,b) => {
+        const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
+        const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
+        return fechaB - fechaA;
+    });
+
+    const filtrados = sorted.filter((presupuesto) => {
+        const estado = calcularEstadoPresupuesto(presupuesto);
+        if (filtroEstado !== 'todos' && estado !== filtroEstado) return false;
+        if (busqueda !== '') {
+            const nombre = (presupuesto.nombre || '').toLowerCase();
+            const servicio = (presupuesto.servicio || '').toLowerCase();
+            if (!nombre.includes(busqueda) && !servicio.includes(busqueda)) return false;
+        }
+        return true;
+    });
+
+    if (filtrados.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-filter" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos que coincidan con los filtros.</p></div>`;
+        return;
+    }
+
+    let totalFiltrado = 0;
+    let html = `<table><thead><tr>
+        <th>Nombre</th>
+        <th>Servicio</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Vencimiento</th>
+        <th>Precio</th>
+        <th>Fecha envío</th>
+        <th style="text-align:center;">Acciones</th>
+    </tr></thead><tbody>`;
+
+    filtrados.forEach((row) => {
+        const docId = row.id;
+        const nombre = row.nombre || '-';
+        const servicio = row.servicio || '-';
+        const descripcion = row.descripcion || '-';
+        const precio = row.precio ? parseFloat(row.precio) : 0;
+        const fecha = formatearFecha(row.fecha);
+        const estado = calcularEstadoPresupuesto(row);
+
+        totalFiltrado += precio;
+
+        let diasHtml = '';
+        const dias = calcularDiasRestantes(row);
+        if (estado === 'realizado') {
+            diasHtml = '<span style="color:#27ae60; font-weight:600;">✅ Realizado</span>';
+        } else if (estado === 'cancelado') {
+            diasHtml = '<span style="color:#7f8c8d; font-weight:600;">Cancelado</span>';
+        } else if (dias !== null && dias > 0) {
+            diasHtml = `<span style="color:#27ae60; font-weight:600;">Vence en ${dias} día${dias !== 1 ? 's' : ''}</span>`;
+        } else if (dias !== null && dias === 0) {
+            diasHtml = '<span style="color:#f39c12; font-weight:600;">Vence hoy</span>';
+        } else if (dias !== null && dias < 0) {
+            diasHtml = `<span style="color:#e74c3c; font-weight:600;">Vencido hace ${Math.abs(dias)} día${Math.abs(dias) !== 1 ? 's' : ''}</span>`;
+        }
+
+        let estadoSelect = `<select class="estado-select estado-${estado}" onchange="cambiarEstadoPresupuesto('${docId}', this.value)">`;
+        estadoSelect += `<option value="aprobado" ${estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>`;
+        estadoSelect += `<option value="encurso" ${estado === 'encurso' ? 'selected' : ''}>En Curso</option>`;
+        estadoSelect += `<option value="realizado" ${estado === 'realizado' ? 'selected' : ''}>Realizado</option>`;
+        estadoSelect += `<option value="vencido" ${estado === 'vencido' ? 'selected' : ''}>Vencido</option>`;
+        estadoSelect += `<option value="cancelado" ${estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>`;
+        estadoSelect += `</select>`;
+
+        const descripcionEscapada = descripcion.replace(/"/g, '&quot;');
+        html += `<tr data-id="${docId}">
+            <td><strong>${nombre}</strong></td>
+            <td>${servicio}</td>
+            <td class="descripcion-td"><div class="descripcion-cell" title="Haz clic para expandir/colapsar">${descripcionEscapada}</div></td>
+            <td>${estadoSelect}</td>
+            <td>${diasHtml}</td>
+            <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
+            <td>${fecha}</td>
+            <td style="text-align:center;">
+                <button class="btn-delete" onclick="eliminarPresupuesto('${docId}')" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`;
+    });
+
+    html += `</tbody><tfoot><tr>
+        <td colspan="5" style="text-align:right; font-weight:700;">TOTAL ${filtroEstado !== 'todos' ? '(' + filtroEstado.toUpperCase() + ')' : ''}:</td>
+        <td style="font-weight:700; color:var(--primary-dark); font-size:1rem;">${formatearPrecio(totalFiltrado)}</td>
+        <td colspan="2"></td>
+    </tr></tfoot></table>`;
+    container.innerHTML = html;
+
+    container.querySelector('table tbody').addEventListener('click', function(e) {
+        if (e.target.closest('button, a, select')) return;
+        const fila = e.target.closest('tr');
+        if (!fila) return;
+        const celdaDesc = fila.querySelector('.descripcion-cell');
+        if (celdaDesc) {
+            celdaDesc.classList.toggle('expandido');
+            actualizarIndicadorDesbordamiento(celdaDesc);
+        }
+    });
+    document.querySelectorAll('.descripcion-cell').forEach(celda => actualizarIndicadorDesbordamiento(celda));
+}
+
+// ============================================================
+//  ACCIONES CRUD
+// ============================================================
+// Editar registro
+window.editarRegistro = async function(docId) {
+    const registro = datosCache.contactos.find(c => c.id === docId);
+    if (!registro) { alert('Registro no encontrado.'); return; }
+    document.getElementById('editIndex').value = docId;
+    document.getElementById('editNombre').value = registro.nombre || '';
+    document.getElementById('editTelefono').value = registro.telefono || '';
+    document.getElementById('editEmail').value = registro.email || '';
+    document.getElementById('editServicio').value = registro.servicio || '';
+    document.getElementById('editUbicacion').value = registro.ubicacion || '';
+    document.getElementById('editMensaje').value = registro.mensaje || '';
+    document.getElementById('editModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.guardarEdicion = async function() {
+    const docId = document.getElementById('editIndex').value;
+    const nombre = document.getElementById('editNombre').value.trim();
+    const telefono = document.getElementById('editTelefono').value.trim();
+    if (!nombre || !telefono) { alert('El nombre y el teléfono son obligatorios.'); return; }
+    try {
+        await updateDoc(doc(db, 'contactos', docId), {
+            nombre,
+            telefono,
+            email: document.getElementById('editEmail').value.trim(),
+            servicio: document.getElementById('editServicio').value,
+            ubicacion: document.getElementById('editUbicacion').value.trim(),
+            mensaje: document.getElementById('editMensaje').value.trim()
+        });
+        cerrarModal('editModal');
+        cargarDatos();
+    } catch (error) {
+        alert('Error al actualizar: ' + error.message);
+    }
+};
+
+window.eliminarRegistro = async function(docId) {
+    const registro = datosCache.contactos.find(c => c.id === docId);
+    if (!registro) return;
+    if (!confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.nombre || 'Anónimo'}"?`)) return;
+    try {
+        await deleteDoc(doc(db, 'contactos', docId));
+        cargarDatos();
+    } catch (error) {
+        alert('Error al eliminar: ' + error.message);
+    }
+};
+
+// ============================================================
+//  PRESUPUESTOS
+// ============================================================
+window.abrirPresupuesto = function(docId) {
+    const registro = datosCache.contactos.find(c => c.id === docId);
+    if (!registro) { alert('Registro no encontrado.'); return; }
+    const ahora = new Date();
+    const year = ahora.getFullYear();
+    const day = String(ahora.getDate()).padStart(2, '0');
+    const month = String(ahora.getMonth() + 1).padStart(2, '0');
+    const hour = String(ahora.getHours()).padStart(2, '0');
+    const minute = String(ahora.getMinutes()).padStart(2, '0');
+    const numero = `${year}-${day}${month}.${hour}${minute}`;
+    document.getElementById('previewNumero').textContent = `N° ${numero}`;
+    document.getElementById('presupuestoIndex').value = docId; // Guardamos el ID del contacto
+    document.getElementById('presupuestoNombre').value = registro.nombre || '';
+    document.getElementById('presupuestoTelefono').value = registro.telefono || '';
+    document.getElementById('presupuestoEmail').value = registro.email || '';
+    let servicioMostrar = registro.servicio || 'No especificado';
+    if (servicioMostrar === 'emergencia') servicioMostrar = 'Emergencia 24/7';
+    document.getElementById('previewServicio').textContent = servicioMostrar;
+    document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicioMostrar}`;
+    document.getElementById('presupuestoDescripcion').value = '';
+    document.getElementById('presupuestoPrecio').value = '';
+    document.getElementById('presupuestoValidez').value = 30;
+    document.getElementById('presupuestoMateriales').value = 'No';
+    actualizarVistaPrevia();
+    document.getElementById('presupuestoModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.actualizarVistaPrevia = function() {
+    const nombre = document.getElementById('presupuestoNombre').value || '-';
+    const telefono = document.getElementById('presupuestoTelefono').value || '-';
+    const email = document.getElementById('presupuestoEmail').value || '-';
+    const descripcionRaw = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
+    const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+    const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
+    const materiales = document.getElementById('presupuestoMateriales').value;
+    const iva = subtotal * 0.21;
+    const total = subtotal + iva;
+
+    document.getElementById('previewNombre').textContent = nombre;
+    document.getElementById('previewTelefono').textContent = telefono;
+    document.getElementById('previewEmail').textContent = email;
+
+    const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
+    document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicio}`;
+    document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
+
+    const hoy = new Date();
+    const fechaValidez = new Date(hoy);
+    fechaValidez.setDate(fechaValidez.getDate() + validezDias);
+    const validezStr = fechaValidez.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+    document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
+    document.getElementById('previewFechaValidez').textContent = `Válido hasta el ${validezStr}`;
+    document.getElementById('previewValidezDias').textContent = validezDias;
+    document.getElementById('previewValidezFecha').textContent = validezStr;
+
+    document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
+
+    document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
+    document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
+    document.getElementById('previewIva').textContent = formatearPrecio(iva);
+    document.getElementById('previewTotal').textContent = formatearPrecio(total);
+    document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
+};
+
+// Eventos para actualizar vista previa
+document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoPrecio').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoValidez').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoMateriales').addEventListener('change', window.actualizarVistaPrevia);
+
+// Guardar presupuesto
+window.guardarPresupuesto = async function() {
+    const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
+    const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
+    const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
+    const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+    const total = subtotal * 1.21;
+    const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
+    const validez = document.getElementById('presupuestoValidez').value || 30;
+    const materiales = document.getElementById('presupuestoMateriales').value;
+
+    const btn = document.getElementById('guardarPresupuestoBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+
+    try {
+        // Generar PDF (usando html2canvas)
+        const element = document.getElementById('presupuestoPreview');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            width: element.scrollWidth,
+            height: element.scrollHeight
+        });
+        if (canvas.width === 0 || canvas.height === 0) throw new Error('El canvas generado está vacío.');
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const scale = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
+        const imgWidth = canvas.width * scale;
+        const imgHeight = canvas.height * scale;
+        const xOffset = (pdfWidth - imgWidth) / 2;
+        pdf.addImage(imgData, 'JPEG', xOffset, 0, imgWidth, imgHeight);
+        const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
+        pdf.save(filename);
+
+        // Guardar en Firestore
+        await addDoc(collection(db, 'presupuestos'), {
+            nombre,
+            servicio,
+            descripcion,
+            precio: total.toFixed(2),
+            numero,
+            validez,
+            materiales,
+            estado: 'encurso',
+            fecha: serverTimestamp()
+        });
+
+        alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
+    } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
+        cerrarModal('presupuestoModal');
+        cargarDatos();
+    }
+};
+
+document.getElementById('guardarPresupuestoBtn').addEventListener('click', window.guardarPresupuesto);
+
+// Cambiar estado de presupuesto
+window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
+    try {
+        await updateDoc(doc(db, 'presupuestos', docId), { estado: nuevoEstado });
+        // Actualizar localmente para no recargar todo
+        const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+        if (presupuesto) presupuesto.Estado = nuevoEstado;
+        renderizarPresupuestos(datosCache.presupuestos);
+    } catch (error) {
+        alert('Error al cambiar estado: ' + error.message);
+    }
+};
+
+window.eliminarPresupuesto = async function(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) return;
+    if (!confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`)) return;
+    try {
+        await deleteDoc(doc(db, 'presupuestos', docId));
+        cargarDatos();
+    } catch (error) {
+        alert('Error al eliminar: ' + error.message);
+    }
+};
+
+// ============================================================
+//  RESUMEN POR CONTACTO (con IDs)
+// ============================================================
+function actualizarResumenContactos(data) {
+    const container = document.getElementById('resumenContainer');
+    if (!data || data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
+        return;
+    }
+
+    const contactosMap = new Map();
+    data.forEach(item => {
+        const nombre = item.nombre || 'Anónimo';
+        const telefono = item.telefono ? String(item.telefono).trim() : '';
+        if (!telefono) return;
+        const key = `${nombre}|${telefono}`;
+        if (contactosMap.has(key)) {
+            const contacto = contactosMap.get(key);
+            contacto.cantidad += 1;
+            if (item.servicio && !contacto.servicios.includes(item.servicio)) {
+                contacto.servicios.push(item.servicio);
+            }
+            contacto.email = item.email || contacto.email;
+            contacto.ubicacion = item.ubicacion || contacto.ubicacion;
+        } else {
+            contactosMap.set(key, {
+                nombre,
+                telefono,
+                email: item.email || '',
+                ubicacion: item.ubicacion || '',
+                cantidad: 1,
+                servicios: item.servicio ? [item.servicio] : []
+            });
+        }
+    });
+
+    const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
+    if (contactos.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
+        return;
+    }
+
+    let html = `<table><thead><tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Ubicación</th>
+        <th style="text-align:center;">Servicios</th>
+        <th style="text-align:center;">Contactar</th>
+    </tr></thead><tbody>`;
+    contactos.forEach((contacto, index) => {
+        const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
+        const mensaje = encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu solicitud de presupuesto. ¿Podemos conversar?');
+        const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
+        const serviciosLista = contacto.servicios.join(', ');
+
+        const nombreNormalizado = contacto.nombre.trim().toLowerCase();
+        const presupuestosDelContacto = datosCache.presupuestos.filter(p => {
+            const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+            return nombrePres === nombreNormalizado;
+        });
+        const tieneVencido = presupuestosDelContacto.some(p => calcularEstadoPresupuesto(p) === 'vencido');
+        const alertaHtml = tieneVencido
+            ? '<i class="fas fa-exclamation-triangle alerta-vencido" title="Presupuesto vencido"></i>'
+            : '';
+        const btnClase = tieneVencido ? 'btn-whatsapp-alerta' : 'btn-whatsapp';
+        const btnTexto = tieneVencido ? 'Contactar URGENTE' : 'Contactar';
+
+        html += `<tr>
+            <td>${index + 1}</td>
+            <td><strong>${contacto.nombre}</strong>${alertaHtml}</td>
+            <td>${contacto.telefono}</td>
+            <td>${contacto.email || '—'}</td>
+            <td>${contacto.ubicacion || '—'}</td>
+            <td style="text-align:center;">
+                <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
+                <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
+            </td>
+            <td style="text-align:center;">
+                <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
+            </td>
+        </tr>`;
+    });
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+// ============================================================
+//  MODALES
+// ============================================================
+function cerrarModal(id) {
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+}
+window.cerrarModal = cerrarModal;
+
+document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
+document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
+document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+});
+document.getElementById('saveEditBtn').addEventListener('click', window.guardarEdicion);
+
+// ============================================================
+//  AUTO REFRESH
+// ============================================================
+function iniciarAutoRefresh() {
+    if (intervaloAuto) clearInterval(intervaloAuto);
+    intervaloAuto = setInterval(cargarDatos, 300000);
+}
+document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
+
+// ============================================================
+//  FILTROS PRESUPUESTOS (eventos)
+// ============================================================
+document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
+document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
+
+// ============================================================
+//  INICIO
+// ============================================================
+// El observador de autenticación maneja la carga inicial.
+</script>
