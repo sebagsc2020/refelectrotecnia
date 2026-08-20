@@ -158,10 +158,10 @@
             transition: max-height 0.3s ease;
         }
         .mensaje-cell {
-            max-height: 3em; /* 2 líneas */
+            max-height: 3em;
         }
         .descripcion-cell {
-            max-height: 1.5em; /* 1 línea */
+            max-height: 1.5em;
         }
         .mensaje-cell.expandido,
         .descripcion-cell.expandido {
@@ -310,7 +310,7 @@
             }
         }
 
-        /* ===== ESTILOS PARA EL DISEÑO DEL PRESUPUESTO (sin cambios) ===== */
+        /* ===== ESTILOS PARA EL DISEÑO DEL PRESUPUESTO ===== */
         .presupuesto-preview {
             --primary-dark: #0a1a2f;
             --primary-mid: #1a365d;
@@ -854,7 +854,9 @@
         <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF" class="logo">
         <h2>Panel Administrativo</h2>
         <p class="subtitle">REF Electrotecnia · Acceso restringido</p>
-        <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password">
+        <!-- 📧 CAMPO EMAIL AGREGADO -->
+        <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="email">
+        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password">
         <button class="btn-login" id="btnLogin"><i class="fas fa-lock"></i> Ingresar</button>
         <p class="error-msg" id="loginError"></p>
     </div>
@@ -950,15 +952,12 @@
             </div>
         </div>
 
-        <!-- ===== VISTA PREVIA CON DISEÑO PROFESIONAL ===== -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO (sin cambios) -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
-                <!-- MARCA DE AGUA -->
                 <div class="marca-agua">
                     <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-512.png" alt="Marca de agua" />
                 </div>
-
-                <!-- HEADER -->
                 <header class="header">
                     <div class="header-left">
                         <div class="logo">
@@ -975,11 +974,7 @@
                         <span class="fecha" id="previewFechaValidez">Válido hasta el -</span>
                     </div>
                 </header>
-
-                <!-- CUERPO -->
                 <div class="cuerpo">
-
-                    <!-- DATOS CLIENTE + SERVICIO -->
                     <section class="seccion">
                         <div class="seccion-titulo" style="margin-bottom:12px;">
                             <span class="icono"></span> DATOS DEL SERVICIO Y CLIENTE
@@ -1012,8 +1007,6 @@
                             </div>
                         </div>
                     </section>
-
-                    <!-- PRESTACIÓN -->
                     <section class="seccion seccion-prestacion">
                         <div class="seccion-titulo">
                             <span class="icono"></span> DETALLE DE PRESTACIÓN / MANO DE OBRA
@@ -1031,8 +1024,6 @@
                             <div class="prestacion-detalle" id="previewDescripcion">-</div>
                         </div>
                     </section>
-
-                    <!-- TOTALES -->
                     <div class="totales-container">
                         <div class="totales-firma">
                             <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
@@ -1054,13 +1045,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- FOOTER DOCUMENTO -->
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
-
-                    <!-- CONDICIONES -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
                             <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
@@ -1072,13 +1059,9 @@
                             <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span>. (Caso incluya materiales se requiere un adelanto de 50%)</li>
                         </ul>
                     </section>
-
                 </div>
-                <!-- fin .cuerpo -->
             </div>
-            <!-- fin .presupuesto -->
         </div>
-        <!-- fin .presupuesto-preview -->
 
         <div class="presupuesto-actions">
             <button class="btn-guardar" id="guardarPresupuestoBtn"><i class="fas fa-save"></i> Guardar y Descargar PDF</button>
@@ -1102,7 +1085,7 @@
 <script type="module">
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 // Configuración de Firebase (la que proporcionaste)
 const firebaseConfig = {
@@ -1127,7 +1110,7 @@ let chartInstance = null;
 let intervaloAuto = null;
 
 // ============================================================
-//  FUNCIONES AUXILIARES (formateo, fechas, etc.)
+//  FUNCIONES AUXILIARES
 // ============================================================
 function formatearPrecio(valor) {
     if (isNaN(valor)) return '$ 0';
@@ -1170,7 +1153,7 @@ function calcularDiasRestantes(presupuesto) {
 }
 
 // ============================================================
-//  FUNCIONES DE INTERFAZ (showLogin, showDashboard, etc.)
+//  FUNCIONES DE INTERFAZ
 // ============================================================
 function showLogin() {
     document.getElementById('loginOverlay').style.display = 'flex';
@@ -1182,26 +1165,48 @@ function showDashboard() {
 }
 
 // ============================================================
-//  AUTENTICACIÓN
+//  AUTENTICACIÓN (con email y password dinámicos)
 // ============================================================
 document.getElementById('btnLogin').addEventListener('click', async () => {
+    const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errorEl = document.getElementById('loginError');
     const btn = document.getElementById('btnLogin');
-    if (!password) { errorEl.textContent = 'Ingresa una contraseña'; errorEl.style.display = 'block'; return; }
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...'; errorEl.style.display = 'none';
+    
+    if (!email || !password) {
+        errorEl.textContent = 'Por favor, completa ambos campos.';
+        errorEl.style.display = 'block';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    errorEl.style.display = 'none';
+    
     try {
-        // Usamos un email fijo; asegúrate de crear este usuario en Firebase Auth
-        await signInWithEmailAndPassword(auth, 'admin@refelectrotecnia.com', password);
+        await signInWithEmailAndPassword(auth, email, password);
         // El éxito se maneja en onAuthStateChanged
     } catch (error) {
-        errorEl.textContent = 'Contraseña incorrecta o usuario no existe.';
+        let mensaje = 'Credenciales incorrectas. Intenta de nuevo.';
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            mensaje = 'Email o contraseña incorrectos.';
+        } else if (error.code === 'auth/invalid-email') {
+            mensaje = 'El formato del email no es válido.';
+        } else if (error.code === 'auth/too-many-requests') {
+            mensaje = 'Demasiados intentos fallidos. Espera un momento.';
+        }
+        errorEl.textContent = mensaje;
         errorEl.style.display = 'block';
         document.getElementById('loginPassword').value = '';
     }
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
 });
 
+// Permitir presionar Enter en los campos
+document.getElementById('loginEmail').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('btnLogin').click();
+});
 document.getElementById('loginPassword').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') document.getElementById('btnLogin').click();
 });
@@ -1232,21 +1237,18 @@ async function cargarDatos() {
     document.getElementById('resumenContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div>';
     document.getElementById('presupuestosContainer').innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div>';
     try {
-        // Obtener contactos
         const contactosSnapshot = await getDocs(collection(db, 'contactos'));
         const contactos = [];
         contactosSnapshot.forEach(doc => {
             const data = doc.data();
             contactos.push({ id: doc.id, ...data });
         });
-        // Ordenar por fecha descendente (si existe)
         contactos.sort((a, b) => {
             const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
             const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
             return fechaB - fechaA;
         });
 
-        // Obtener presupuestos
         const presupuestosSnapshot = await getDocs(collection(db, 'presupuestos'));
         const presupuestos = [];
         presupuestosSnapshot.forEach(doc => {
@@ -1343,7 +1345,7 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS (con IDs)
+//  RENDERIZAR TABLA DE CONTACTOS
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1370,7 +1372,6 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        // Verificar presupuesto activo
         const nombreLimpio = nombre.trim().toLowerCase();
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
@@ -1411,7 +1412,6 @@ function renderizarTabla(data) {
     html += `</tbody></table>`;
     container.innerHTML = html;
 
-    // Evento para expandir mensaje
     container.querySelector('table tbody').addEventListener('click', function(e) {
         if (e.target.closest('button, a')) return;
         const fila = e.target.closest('tr');
@@ -1440,7 +1440,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (con IDs)
+//  RENDERIZAR PRESUPUESTOS
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1557,7 +1557,6 @@ function renderizarPresupuestos(data) {
 // ============================================================
 //  ACCIONES CRUD
 // ============================================================
-// Editar registro
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
     if (!registro) { alert('Registro no encontrado.'); return; }
@@ -1619,7 +1618,7 @@ window.abrirPresupuesto = function(docId) {
     const minute = String(ahora.getMinutes()).padStart(2, '0');
     const numero = `${year}-${day}${month}.${hour}${minute}`;
     document.getElementById('previewNumero').textContent = `N° ${numero}`;
-    document.getElementById('presupuestoIndex').value = docId; // Guardamos el ID del contacto
+    document.getElementById('presupuestoIndex').value = docId;
     document.getElementById('presupuestoNombre').value = registro.nombre || '';
     document.getElementById('presupuestoTelefono').value = registro.telefono || '';
     document.getElementById('presupuestoEmail').value = registro.email || '';
@@ -1673,13 +1672,11 @@ window.actualizarVistaPrevia = function() {
     document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
 };
 
-// Eventos para actualizar vista previa
 document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoPrecio').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoValidez').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoMateriales').addEventListener('change', window.actualizarVistaPrevia);
 
-// Guardar presupuesto
 window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
@@ -1695,7 +1692,6 @@ window.guardarPresupuesto = async function() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
     try {
-        // Generar PDF (usando html2canvas)
         const element = document.getElementById('presupuestoPreview');
         await new Promise(resolve => setTimeout(resolve, 300));
         const canvas = await html2canvas(element, {
@@ -1721,7 +1717,6 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        // Guardar en Firestore
         await addDoc(collection(db, 'presupuestos'), {
             nombre,
             servicio,
@@ -1748,11 +1743,9 @@ window.guardarPresupuesto = async function() {
 
 document.getElementById('guardarPresupuestoBtn').addEventListener('click', window.guardarPresupuesto);
 
-// Cambiar estado de presupuesto
 window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
     try {
         await updateDoc(doc(db, 'presupuestos', docId), { estado: nuevoEstado });
-        // Actualizar localmente para no recargar todo
         const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
         if (presupuesto) presupuesto.Estado = nuevoEstado;
         renderizarPresupuestos(datosCache.presupuestos);
@@ -1893,13 +1886,13 @@ function iniciarAutoRefresh() {
 document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
 
 // ============================================================
-//  FILTROS PRESUPUESTOS (eventos)
+//  FILTROS
 // ============================================================
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
 
 // ============================================================
-//  INICIO: el observador de autenticación maneja la carga.
+//  INICIO
 // ============================================================
 </script>
 </body>
