@@ -2603,6 +2603,8 @@
                 trackEvent('generate_lead', { metodo: 'firestore', servicio: servicio || 'no_especificado' });
                 formSuccess.classList.add('visible');
                 setTimeout(() => formSuccess.classList.remove('visible'), 6000);
+                // Limpiar el formulario después de enviar exitosamente
+                contactForm.reset();
             } else {
                 console.error('Error al guardar en Firestore:', result.error);
                 alert('Hubo un problema al guardar tu solicitud, pero igual abriremos WhatsApp para que puedas contactarnos.');
