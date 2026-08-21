@@ -284,6 +284,17 @@
         }
         .table-scroll tbody tr td:last-child { cursor: default; }
 
+        /* ===== FIJAR ANCHO DE LA COLUMNA MENSAJE ===== */
+        #tablaContainer table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        #tablaContainer table td:nth-child(6) {
+            max-width: 200px;
+            word-break: break-word;
+            white-space: normal;
+        }
+
         /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
             table-layout: fixed;
