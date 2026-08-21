@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== Estilos (sin cambios) ===== */
+        /* ===== Estilos generales (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -226,64 +226,400 @@
             .filtro-container input[type="text"] { width: 100%; min-width: unset; }
         }
 
-        /* ===== DISEÑO DEL PRESUPUESTO (sin cambios) ===== */
-        .presupuesto-preview { --primary-dark: #0a1a2f; --primary-mid: #1a365d; --primary-blue: #2563eb; --accent-gold: #d4af37; --accent-gold-light: #fef3c7; --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-600: #475569; --gray-800: #1e293b; --white: #ffffff; --shadow-card: 0 20px 60px -12px rgba(10, 26, 47, 0.25); --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05); --radius: 16px; font-family: 'Inter', sans-serif; }
+        /* ===== DISEÑO DEL PRESUPUESTO (MODIFICADO: SIN IVA, NUEVAS CONDICIONES) ===== */
+        .presupuesto-preview {
+            --primary-dark: #0a1a2f;
+            --primary-mid: #1a365d;
+            --primary-blue: #2563eb;
+            --accent-gold: #d4af37;
+            --accent-gold-light: #fef3c7;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --white: #ffffff;
+            --shadow-card: 0 20px 60px -12px rgba(10, 26, 47, 0.25);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+            font-family: 'Inter', sans-serif;
+        }
         .presupuesto-preview * { margin:0; padding:0; box-sizing:border-box; }
-        .presupuesto-preview .presupuesto { background: var(--white); border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.3); overflow: hidden; position: relative; max-width: 920px; margin: 0 auto; }
-        .presupuesto-preview .marca-agua { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .presupuesto-preview .marca-agua img { max-width: 50%; max-height: 50%; width: auto; height: auto; opacity: 0.10; filter: grayscale(100%) brightness(1.5) contrast(0.6); transform: rotate(-25deg); user-select: none; pointer-events: none; }
-        .presupuesto-preview .header { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 60%, var(--primary-blue) 100%); padding: 32px 40px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 4px solid var(--accent-gold); position: relative; z-index: 5; }
-        .presupuesto-preview .header-left { display: flex; align-items: center; gap: 18px; }
-        .presupuesto-preview .header .logo { width: 64px; height: 64px; border-radius: 12px; background: rgba(255,255,255,0.10); padding: 4px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .presupuesto-preview .header .logo img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 8px; }
-        .presupuesto-preview .header .empresa { color: var(--white); }
-        .presupuesto-preview .header .empresa h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
-        .presupuesto-preview .header .empresa h1 span { color: var(--accent-gold); }
-        .presupuesto-preview .header .empresa .subtitulo { font-size: 15px; font-weight: 400; color: rgba(255,255,255,0.8); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
-        .presupuesto-preview .header .badge-presupuesto { background: rgba(255,255,255,0.12); backdrop-filter: blur(4px); padding: 10px 22px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.25); text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-        .presupuesto-preview .header .badge-presupuesto .numero { color: var(--white); font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-        .presupuesto-preview .header .badge-presupuesto .numero-presupuesto { color: var(--accent-gold-light); font-size: 14px; font-weight: 600; letter-spacing: 0.3px; }
-        .presupuesto-preview .header .badge-presupuesto .fecha { color: var(--accent-gold-light); font-size: 12px; font-weight: 500; opacity: 0.8; }
-        .presupuesto-preview .cuerpo { padding: 32px 40px 28px; position: relative; z-index: 5; }
-        .presupuesto-preview .seccion { margin-bottom: 34px; }
-        .presupuesto-preview .seccion:last-of-type { margin-bottom: 0; }
-        .presupuesto-preview .seccion-prestacion { margin-bottom: 0; }
-        .presupuesto-preview .seccion-titulo { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--primary-blue); margin-bottom: 16px; border-bottom: 2px solid var(--gray-200); padding-bottom: 10px; }
-        .presupuesto-preview .seccion-titulo .icono { display: inline-block; width: 6px; height: 6px; background: var(--accent-gold); border-radius: 50%; flex-shrink: 0; }
-        .presupuesto-preview .seccion-titulo .linea-aux { flex: 1; height: 1px; background: var(--gray-200); }
-        .presupuesto-preview .datos-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--gray-50); border-radius: 12px; border-left: 4px solid var(--primary-blue); overflow: hidden; }
-        .presupuesto-preview .datos-col { padding: 14px 22px; }
-        .presupuesto-preview .datos-col.izquierda { border-right: 1px solid var(--gray-200); }
-        .presupuesto-preview .datos-col .col-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary-blue); margin-bottom: 6px; border-bottom: 1px solid var(--gray-200); padding-bottom: 4px; }
-        .presupuesto-preview .datos-col .item { display: flex; align-items: baseline; padding: 2px 0; font-size: 14.5px; }
-        .presupuesto-preview .datos-col .item .etiqueta { font-weight: 600; color: var(--gray-600); min-width: 75px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
-        .presupuesto-preview .datos-col .item .valor { font-weight: 500; color: var(--gray-800); }
-        .presupuesto-preview .datos-col .item .valor.email { word-break: break-all; }
-        .presupuesto-preview .prestacion-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); margin-top: 4px; }
-        .presupuesto-preview .prestacion-header { display: grid; grid-template-columns: 2fr 1fr; background: var(--gray-50); padding: 12px 24px; border-bottom: 1px solid var(--gray-200); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); }
-        .presupuesto-preview .prestacion-header .importe-label { text-align: right; }
-        .presupuesto-preview .prestacion-fila { display: grid; grid-template-columns: 2fr 1fr; padding: 18px 24px 12px; border-bottom: 1px dashed var(--gray-200); align-items: baseline; }
-        .presupuesto-preview .prestacion-fila .servicio-nombre { font-size: 17px; font-weight: 700; color: var(--primary-dark); }
-        .presupuesto-preview .prestacion-fila .servicio-importe { text-align: right; font-size: 20px; font-weight: 800; color: var(--primary-blue); letter-spacing: -0.3px; }
-        .presupuesto-preview .prestacion-detalle { padding: 12px 24px 20px; font-size: 14px; line-height: 1.6; color: var(--gray-600); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); white-space: pre-wrap; word-wrap: break-word; }
-        .presupuesto-preview .totales-container { margin-top: 20px; padding: 20px 28px; background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%); border-radius: 12px; border: 1px solid var(--gray-200); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
-        .presupuesto-preview .totales-firma { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
-        .presupuesto-preview .totales-firma .firma-imagen { max-width: 80px; width: 100%; height: auto; display: block; margin: 0 auto 4px; }
-        .presupuesto-preview .totales-firma .firma-texto { font-weight: 600; font-size: 15px; color: var(--primary-dark); }
-        .presupuesto-preview .totales-firma .firma-digital { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4px 16px; border-radius: 40px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: inline-block; width: fit-content; box-shadow: 0 2px 8px rgba(16,185,129,0.3); margin: 0 auto; }
-        .presupuesto-preview .totales-list { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-        .presupuesto-preview .totales-list .linea { display: flex; justify-content: space-between; width: 280px; font-size: 15px; padding: 3px 0; color: var(--gray-600); }
-        .presupuesto-preview .totales-list .linea .label-total { font-weight: 500; }
-        .presupuesto-preview .totales-list .linea .valor-total { font-weight: 600; color: var(--gray-800); }
-        .presupuesto-preview .totales-list .linea.total-final { width: 280px; border-top: 2px solid var(--primary-dark); margin-top: 6px; padding-top: 10px; font-size: 20px; font-weight: 800; color: var(--primary-dark); }
-        .presupuesto-preview .totales-list .linea.total-final .label-total { font-weight: 700; color: var(--primary-dark); }
-        .presupuesto-preview .totales-list .linea.total-final .valor-total { color: var(--primary-blue); font-size: 22px; letter-spacing: -0.5px; }
-        .presupuesto-preview .footer-documento { text-align: right; font-size: 12px; color: var(--gray-600); margin: 4px 0 4px 0; line-height: 1.5; }
-        .presupuesto-preview .condiciones { margin-top: 0; padding: 8px 16px; background: var(--gray-50); border-radius: 12px; border: 1px solid var(--gray-200); border-left: 4px solid var(--accent-gold); }
-        .presupuesto-preview .condiciones .seccion-titulo { border-bottom: none; padding-bottom: 0; margin-bottom: 3px; color: var(--primary-dark); }
-        .presupuesto-preview .condiciones ul { list-style: none; padding: 0; margin: 0; }
-        .presupuesto-preview .condiciones ul li { font-size: 13.5px; padding: 0px 0 0px 24px; position: relative; line-height: 1.4; color: var(--gray-600); }
-        .presupuesto-preview .condiciones ul li::before { content: "◆"; position: absolute; left: 4px; color: var(--accent-gold); font-size: 11px; top: 0px; }
+        .presupuesto-preview .presupuesto {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+            position: relative;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+        .presupuesto-preview .marca-agua {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .presupuesto-preview .marca-agua img {
+            max-width: 50%;
+            max-height: 50%;
+            width: auto;
+            height: auto;
+            opacity: 0.10;
+            filter: grayscale(100%) brightness(1.5) contrast(0.6);
+            transform: rotate(-25deg);
+            user-select: none;
+            pointer-events: none;
+        }
+        .presupuesto-preview .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 60%, var(--primary-blue) 100%);
+            padding: 32px 40px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 4px solid var(--accent-gold);
+            position: relative;
+            z-index: 5;
+        }
+        .presupuesto-preview .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .presupuesto-preview .header .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.10);
+            padding: 4px;
+            border: 1px solid rgba(255,255,255,0.15);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .presupuesto-preview .header .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+        .presupuesto-preview .header .empresa {
+            color: var(--white);
+        }
+        .presupuesto-preview .header .empresa h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .presupuesto-preview .header .empresa h1 span {
+            color: var(--accent-gold);
+        }
+        .presupuesto-preview .header .empresa .subtitulo {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .presupuesto-preview .header .badge-presupuesto {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            padding: 10px 22px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.25);
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .numero {
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .numero-presupuesto {
+            color: var(--accent-gold-light);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .presupuesto-preview .header .badge-presupuesto .fecha {
+            color: var(--accent-gold-light);
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+        .presupuesto-preview .cuerpo {
+            padding: 32px 40px 28px;
+            position: relative;
+            z-index: 5;
+        }
+        .presupuesto-preview .seccion {
+            margin-bottom: 34px;
+        }
+        .presupuesto-preview .seccion:last-of-type {
+            margin-bottom: 0;
+        }
+        .presupuesto-preview .seccion-prestacion {
+            margin-bottom: 0;
+        }
+        .presupuesto-preview .seccion-titulo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--gray-200);
+            padding-bottom: 10px;
+        }
+        .presupuesto-preview .seccion-titulo .icono {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .presupuesto-preview .seccion-titulo .linea-aux {
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+        .presupuesto-preview .datos-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+            overflow: hidden;
+        }
+        .presupuesto-preview .datos-col {
+            padding: 14px 22px;
+        }
+        .presupuesto-preview .datos-col.izquierda {
+            border-right: 1px solid var(--gray-200);
+        }
+        .presupuesto-preview .datos-col .col-titulo {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--primary-blue);
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 4px;
+        }
+        .presupuesto-preview .datos-col .item {
+            display: flex;
+            align-items: baseline;
+            padding: 2px 0;
+            font-size: 14.5px;
+        }
+        .presupuesto-preview .datos-col .item .etiqueta {
+            font-weight: 600;
+            color: var(--gray-600);
+            min-width: 75px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .presupuesto-preview .datos-col .item .valor {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+        .presupuesto-preview .datos-col .item .valor.email {
+            word-break: break-all;
+        }
+        .presupuesto-preview .prestacion-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-top: 4px;
+        }
+        .presupuesto-preview .prestacion-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            background: var(--gray-50);
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-600);
+        }
+        .presupuesto-preview .prestacion-header .importe-label {
+            text-align: right;
+        }
+        .presupuesto-preview .prestacion-fila {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            padding: 18px 24px 12px;
+            border-bottom: 1px dashed var(--gray-200);
+            align-items: baseline;
+        }
+        .presupuesto-preview .prestacion-fila .servicio-nombre {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .prestacion-fila .servicio-importe {
+            text-align: right;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: -0.3px;
+        }
+        .presupuesto-preview .prestacion-detalle {
+            padding: 12px 24px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--gray-600);
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* ==== TOTALES: solo una línea con el precio final ==== */
+        .presupuesto-preview .totales-container {
+            margin-top: 20px;
+            padding: 20px 28px;
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .presupuesto-preview .totales-firma {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+        .presupuesto-preview .totales-firma .firma-imagen {
+            max-width: 80px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 4px;
+        }
+        .presupuesto-preview .totales-firma .firma-texto {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .totales-firma .firma-digital {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+            margin: 0 auto;
+        }
+        .presupuesto-preview .totales-list {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        /* Línea única: Total final */
+        .presupuesto-preview .totales-list .linea.total-final {
+            width: 280px;
+            border-top: 2px solid var(--primary-dark);
+            padding-top: 10px;
+            margin-top: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            display: flex;
+            justify-content: space-between;
+        }
+        .presupuesto-preview .totales-list .linea.total-final .label-total {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .totales-list .linea.total-final .valor-total {
+            color: var(--primary-blue);
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+        .presupuesto-preview .footer-documento {
+            text-align: right;
+            font-size: 12px;
+            color: var(--gray-600);
+            margin: 4px 0 4px 0;
+            line-height: 1.5;
+        }
+        /* ==== CONDICIONES COMERCIALES (actualizadas) ==== */
+        .presupuesto-preview .condiciones {
+            margin-top: 0;
+            padding: 8px 16px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--accent-gold);
+        }
+        .presupuesto-preview .condiciones .seccion-titulo {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 3px;
+            color: var(--primary-dark);
+        }
+        .presupuesto-preview .condiciones ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .presupuesto-preview .condiciones ul li {
+            font-size: 13.5px;
+            padding: 0px 0 2px 24px;
+            position: relative;
+            line-height: 1.4;
+            color: var(--gray-600);
+        }
+        .presupuesto-preview .condiciones ul li::before {
+            content: "◆";
+            position: absolute;
+            left: 4px;
+            color: var(--accent-gold);
+            font-size: 11px;
+            top: 0px;
+        }
+
         @media (max-width: 768px) {
             .presupuesto-preview .header { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
             .presupuesto-preview .header .empresa h1 { font-size: 24px; }
@@ -303,10 +639,10 @@
             .presupuesto-preview .totales-firma { align-items: center; flex: none; }
             .presupuesto-preview .totales-firma .firma-imagen { max-width: 70px; }
             .presupuesto-preview .totales-list { align-items: stretch; }
-            .presupuesto-preview .totales-list .linea, .presupuesto-preview .totales-list .linea.total-final { width: 100%; }
+            .presupuesto-preview .totales-list .linea.total-final { width: 100%; }
             .presupuesto-preview .footer-documento { margin: 3px 0 3px 0; font-size: 11px; }
             .presupuesto-preview .condiciones { padding: 6px 14px; margin-top: 0; }
-            .presupuesto-preview .condiciones ul li { font-size: 13px; padding: 0px 0 0px 22px; line-height: 1.3; }
+            .presupuesto-preview .condiciones ul li { font-size: 13px; padding: 0px 0 2px 22px; line-height: 1.3; }
             .presupuesto-preview .marca-agua img { max-width: 70%; max-height: 70%; }
         }
         @media print {
@@ -425,7 +761,7 @@
             </div>
         </div>
 
-        <!-- VISTA PREVIA DEL PRESUPUESTO -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO (MODIFICADA) -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
@@ -485,6 +821,7 @@
                             <div class="prestacion-detalle" id="previewDescripcion">-</div>
                         </div>
                     </section>
+                    <!-- TOTALES: solo línea de precio final -->
                     <div class="totales-container">
                         <div class="totales-firma">
                             <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
@@ -492,14 +829,16 @@
                             <span class="firma-digital">✓ Firmado digitalmente</span>
                         </div>
                         <div class="totales-list">
-                            <div class="linea"><span class="label-total">Subtotal Netos:</span><span class="valor-total" id="previewSubtotalNetos">$ 0</span></div>
-                            <div class="linea"><span class="label-total">IVA (21%):</span><span class="valor-total" id="previewIva">$ 0</span></div>
-                            <div class="linea total-final"><span class="label-total">Total con IVA</span><span class="valor-total" id="previewTotal">$ 0</span></div>
+                            <div class="linea total-final">
+                                <span class="label-total">Total</span>
+                                <span class="valor-total" id="previewTotal">$ 0</span>
+                            </div>
                         </div>
                     </div>
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
+                    <!-- CONDICIONES COMERCIALES (actualizadas) -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
                             <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
@@ -507,8 +846,8 @@
                         </div>
                         <ul>
                             <li id="condicionValidez">Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
-                            <li>Los precios incluyen el IVA 21% (detalle arriba).</li>
-                            <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span>. (Caso incluya materiales se requiere un adelanto de 50%)</li>
+                            <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span></li>
+                            <li>Para la conformidad de este presupuesto se exige el 100% del pago de los materiales (si fueran por cuenta de la empresa) + 50% de la mano de obra.</li>
                         </ul>
                     </section>
                 </div>
@@ -583,27 +922,27 @@ function formatearFecha(fecha) {
 }
 
 function calcularEstadoPresupuesto(presupuesto) {
-    if (presupuesto.Estado === 'realizado') return 'realizado';
-    if (presupuesto.Estado === 'cancelado') return 'cancelado';
-    const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
-    const validez = parseInt(presupuesto.Validez) || 30;
+    if (presupuesto.estado === 'realizado') return 'realizado';
+    if (presupuesto.estado === 'cancelado') return 'cancelado';
+    const fecha = presupuesto.fecha ? (presupuesto.fecha.toDate ? presupuesto.fecha.toDate() : new Date(presupuesto.fecha)) : new Date();
+    const validez = parseInt(presupuesto.validez) || 30;
     const fechaVencimiento = new Date(fecha);
     fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
     const hoy = new Date();
     if (hoy > fechaVencimiento) return 'vencido';
-    return presupuesto.Estado || 'encurso';
+    return presupuesto.estado || 'encurso';
 }
 
 function obtenerFechaVencimiento(presupuesto) {
-    const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
-    const validez = parseInt(presupuesto.Validez) || 30;
+    const fecha = presupuesto.fecha ? (presupuesto.fecha.toDate ? presupuesto.fecha.toDate() : new Date(presupuesto.fecha)) : new Date();
+    const validez = parseInt(presupuesto.validez) || 30;
     const fechaVencimiento = new Date(fecha);
     fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
     return fechaVencimiento;
 }
 
 function calcularDiasRestantes(presupuesto) {
-    if (presupuesto.Estado === 'cancelado' || presupuesto.Estado === 'realizado') return null;
+    if (presupuesto.estado === 'cancelado' || presupuesto.estado === 'realizado') return null;
     const fechaVencimiento = obtenerFechaVencimiento(presupuesto);
     const hoy = new Date();
     const diff = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
@@ -667,25 +1006,17 @@ document.getElementById('loginPassword').addEventListener('keypress', function(e
     if (e.key === 'Enter') document.getElementById('btnLogin').click();
 });
 
-// Observador de autenticación → inicia/cancela escuchas en tiempo real
 onAuthStateChanged(auth, (user) => {
     if (user) {
         showDashboard();
-        // Iniciar escuchas (si ya existían, cancelarlas primero)
         if (unsubscribeContactos) unsubscribeContactos();
         if (unsubscribePresupuestos) unsubscribePresupuestos();
         unsubscribeContactos = escucharContactos();
         unsubscribePresupuestos = escucharPresupuestos();
     } else {
         showLogin();
-        if (unsubscribeContactos) {
-            unsubscribeContactos();
-            unsubscribeContactos = null;
-        }
-        if (unsubscribePresupuestos) {
-            unsubscribePresupuestos();
-            unsubscribePresupuestos = null;
-        }
+        if (unsubscribeContactos) { unsubscribeContactos(); unsubscribeContactos = null; }
+        if (unsubscribePresupuestos) { unsubscribePresupuestos(); unsubscribePresupuestos = null; }
     }
 });
 
@@ -696,7 +1027,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 });
 
 // ============================================================
-//  ESCUCHAS EN TIEMPO REAL (onSnapshot)
+//  ESCUCHAS EN TIEMPO REAL
 // ============================================================
 function escucharContactos() {
     return onSnapshot(collection(db, 'contactos'), (snapshot) => {
@@ -705,7 +1036,6 @@ function escucharContactos() {
             const data = doc.data();
             contactos.push({ id: doc.id, ...data });
         });
-        // Ordenar por fecha descendente
         contactos.sort((a, b) => {
             const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
             const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
@@ -741,7 +1071,7 @@ function escucharPresupuestos() {
 }
 
 // ============================================================
-//  ACTUALIZAR ESTADÍSTICAS
+//  ESTADÍSTICAS, GRÁFICO, ETC.
 // ============================================================
 function actualizarStats(data) {
     document.getElementById('totalContactos').textContent = data.length;
@@ -762,9 +1092,6 @@ function actualizarStats(data) {
     }).length;
 }
 
-// ============================================================
-//  GRÁFICO
-// ============================================================
 function actualizarGrafico(data) {
     const servicioCount = {};
     data.forEach(item => {
@@ -793,9 +1120,6 @@ function actualizarGrafico(data) {
     });
 }
 
-// ============================================================
-//  ÚLTIMOS REGISTROS
-// ============================================================
 function actualizarUltimos(data) {
     const container = document.getElementById('ultimosRegistros');
     if (data.length === 0) { container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>'; return; }
@@ -907,7 +1231,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (ordenados por vencimiento)
+//  RENDERIZAR PRESUPUESTOS
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -930,7 +1254,6 @@ function renderizarPresupuestos(data) {
         return true;
     });
 
-    // Ordenar por fecha de vencimiento ascendente (más próximo primero)
     filtrados.sort((a, b) => {
         const fechaA = obtenerFechaVencimiento(a);
         const fechaB = obtenerFechaVencimiento(b);
@@ -1023,7 +1346,7 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD (sin recargar, onSnapshot lo hará)
+//  ACCIONES CRUD
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -1054,7 +1377,6 @@ window.guardarEdicion = async function() {
             mensaje: document.getElementById('editMensaje').value.trim()
         });
         cerrarModal('editModal');
-        // No llamamos a cargarDatos() porque onSnapshot actualizará
     } catch (error) {
         alert('Error al actualizar: ' + error.message);
     }
@@ -1066,14 +1388,13 @@ window.eliminarRegistro = async function(docId) {
     if (!confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.nombre || 'Anónimo'}"?`)) return;
     try {
         await deleteDoc(doc(db, 'contactos', docId));
-        // onSnapshot actualizará
     } catch (error) {
         alert('Error al eliminar: ' + error.message);
     }
 };
 
 // ============================================================
-//  PRESUPUESTOS
+//  PRESUPUESTOS (con vista previa actualizada)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -1111,8 +1432,7 @@ window.actualizarVistaPrevia = function() {
     const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
     const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const iva = subtotal * 0.21;
-    const total = subtotal + iva;
+    const total = subtotal * 1.21; // Precio final con IVA
 
     document.getElementById('previewNombre').textContent = nombre;
     document.getElementById('previewTelefono').textContent = telefono;
@@ -1121,11 +1441,16 @@ window.actualizarVistaPrevia = function() {
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     document.getElementById('previewServicioTitulo').textContent = `Servicio de ${servicio}`;
     document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
+    document.getElementById('previewCondMateriales').textContent = materiales;
 
-    const hoy = new Date();
-    const fechaValidez = new Date(hoy);
+    // Fecha de vencimiento
+    const docId = document.getElementById('presupuestoIndex').value;
+    const registro = datosCache.contactos.find(c => c.id === docId);
+    const fechaCreacion = registro && registro.fecha ? (registro.fecha.toDate ? registro.fecha.toDate() : new Date(registro.fecha)) : new Date();
+    const fechaValidez = new Date(fechaCreacion);
     fechaValidez.setDate(fechaValidez.getDate() + validezDias);
     const validezStr = fechaValidez.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+
     document.getElementById('previewValidez').textContent = `${validezStr} (${validezDias} días)`;
     document.getElementById('previewFechaValidez').textContent = `Válido hasta el ${validezStr}`;
     document.getElementById('previewValidezDias').textContent = validezDias;
@@ -1133,11 +1458,10 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
 
-    document.getElementById('previewSubtotal').textContent = formatearPrecio(subtotal);
-    document.getElementById('previewSubtotalNetos').textContent = formatearPrecio(subtotal);
-    document.getElementById('previewIva').textContent = formatearPrecio(iva);
+    // Solo asignar el total final (sin IVA por separado)
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
-    document.getElementById('previewCondMateriales').textContent = materiales === 'Sí' ? 'Sí' : 'No';
+    // También actualizar el importe de la prestación (subtotal)
+    document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 };
 
 document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
@@ -1205,7 +1529,6 @@ window.guardarPresupuesto = async function() {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
         cerrarModal('presupuestoModal');
-        // No llamamos a cargarDatos() porque onSnapshot actualizará
     }
 };
 
@@ -1214,7 +1537,6 @@ document.getElementById('guardarPresupuestoBtn').addEventListener('click', windo
 window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
     try {
         await updateDoc(doc(db, 'presupuestos', docId), { estado: nuevoEstado });
-        // onSnapshot actualizará
     } catch (error) {
         alert('Error al cambiar estado: ' + error.message);
     }
@@ -1226,7 +1548,6 @@ window.eliminarPresupuesto = async function(docId) {
     if (!confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`)) return;
     try {
         await deleteDoc(doc(db, 'presupuestos', docId));
-        // onSnapshot actualizará
     } catch (error) {
         alert('Error al eliminar: ' + error.message);
     }
@@ -1321,7 +1642,7 @@ function actualizarResumenContactos(data) {
 }
 
 // ============================================================
-//  MODALES
+//  MODALES Y FILTROS
 // ============================================================
 function cerrarModal(id) {
     document.getElementById(id).classList.remove('active');
@@ -1342,9 +1663,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 document.getElementById('saveEditBtn').addEventListener('click', window.guardarEdicion);
 
-// ============================================================
-//  FILTROS PRESUPUESTOS
-// ============================================================
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
 
