@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -111,6 +111,7 @@
         .loading i { font-size: 2rem; color: var(--primary-cyan); animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .no-data { text-align: center; padding: 40px; color: var(--gray-text); }
+        /* ===== MODALES EXISTENTES (edit y presupuesto) ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: white; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: modalFade 0.3s ease; }
@@ -144,6 +145,95 @@
         .presupuesto-box .presupuesto-actions .btn-guardar:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
+
+        /* ===== NUEVO MODAL PERSONALIZADO (alert/confirm) ===== */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .custom-modal-overlay.active {
+            display: flex;
+        }
+        .custom-modal-box {
+            background: white;
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            padding: 30px 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            animation: modalFade 0.25s ease;
+            text-align: center;
+        }
+        .custom-modal-box .icon {
+            font-size: 3.2rem;
+            margin-bottom: 12px;
+        }
+        .custom-modal-box .icon.success { color: #27ae60; }
+        .custom-modal-box .icon.error { color: #e74c3c; }
+        .custom-modal-box .icon.warning { color: #f39c12; }
+        .custom-modal-box .icon.info { color: var(--primary-cyan); }
+        .custom-modal-box h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+        .custom-modal-box p {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .custom-modal-box .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .custom-modal-box .buttons .btn-custom {
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 100px;
+            font-family: var(--font);
+        }
+        .custom-modal-box .buttons .btn-custom.primary {
+            background: var(--primary-cyan);
+            color: white;
+        }
+        .custom-modal-box .buttons .btn-custom.primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .custom-modal-box .buttons .btn-custom.danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .custom-modal-box .buttons .btn-custom.danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        .custom-modal-box .buttons .btn-custom.secondary {
+            background: transparent;
+            color: var(--gray-text);
+            border: 2px solid #E9ECEF;
+        }
+        .custom-modal-box .buttons .btn-custom.secondary:hover {
+            background: #f1f1f1;
+            border-color: #ccc;
+        }
 
         /* ===== EXPANDIR FILAS ===== */
         .mensaje-cell,
@@ -710,6 +800,16 @@
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
+<!-- ===== NUEVO MODAL PERSONALIZADO ===== -->
+<div class="custom-modal-overlay" id="customModal">
+    <div class="custom-modal-box">
+        <div class="icon" id="customModalIcon">⚠️</div>
+        <h3 id="customModalTitle">Título</h3>
+        <p id="customModalMessage">Mensaje</p>
+        <div class="buttons" id="customModalButtons"></div>
+    </div>
+</div>
+
 <!-- ===== MODAL EDITAR ===== -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
@@ -759,7 +859,7 @@
             </div>
         </div>
 
-        <!-- ===== VISTA PREVIA DEL PRESUPUESTO (PDF) ===== -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
@@ -819,7 +919,6 @@
                             <div class="prestacion-detalle" id="previewDescripcion">-</div>
                         </div>
                     </section>
-                    <!-- TOTALES: solo una línea -->
                     <div class="totales-container">
                         <div class="totales-firma">
                             <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
@@ -836,7 +935,6 @@
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
-                    <!-- CONDICIONES COMERCIALES -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
                             <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
@@ -949,6 +1047,91 @@ function calcularDiasRestantes(presupuesto) {
 }
 
 // ============================================================
+//  MODAL PERSONALIZADO (reemplaza alert y confirm)
+// ============================================================
+function mostrarModal(opciones) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('customModal');
+        const icon = document.getElementById('customModalIcon');
+        const title = document.getElementById('customModalTitle');
+        const message = document.getElementById('customModalMessage');
+        const buttons = document.getElementById('customModalButtons');
+
+        // Configurar según tipo
+        const tipo = opciones.tipo || 'info';
+        const iconos = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        icon.textContent = opciones.icon || iconos[tipo] || 'ℹ️';
+        title.textContent = opciones.titulo || 'Aviso';
+        message.textContent = opciones.mensaje || '';
+
+        // Limpiar botones
+        buttons.innerHTML = '';
+
+        if (opciones.botones) {
+            opciones.botones.forEach((btn) => {
+                const b = document.createElement('button');
+                b.className = `btn-custom ${btn.clase || 'primary'}`;
+                b.textContent = btn.texto;
+                b.addEventListener('click', () => {
+                    cerrarModalPersonalizado();
+                    resolve(btn.valor || true);
+                });
+                buttons.appendChild(b);
+            });
+        } else {
+            // Botón por defecto (Aceptar)
+            const b = document.createElement('button');
+            b.className = 'btn-custom primary';
+            b.textContent = 'Aceptar';
+            b.addEventListener('click', () => {
+                cerrarModalPersonalizado();
+                resolve(true);
+            });
+            buttons.appendChild(b);
+        }
+
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        function cerrarModalPersonalizado() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// Función para mostrar error (atajo)
+async function mostrarError(mensaje) {
+    await mostrarModal({
+        tipo: 'error',
+        icon: '❌',
+        titulo: 'Error',
+        mensaje: mensaje,
+        botones: [{ texto: 'Entendido', clase: 'primary' }]
+    });
+}
+
+// Función para mostrar confirmación
+async function mostrarConfirmacion(mensaje) {
+    const result = await mostrarModal({
+        tipo: 'warning',
+        icon: '⚠️',
+        titulo: 'Confirmar',
+        mensaje: mensaje,
+        botones: [
+            { texto: 'Cancelar', clase: 'secondary', valor: false },
+            { texto: 'Aceptar', clase: 'danger', valor: true }
+        ]
+    });
+    return result;
+}
+
+// ============================================================
 //  FUNCIONES DE INTERFAZ
 // ============================================================
 function showLogin() {
@@ -1019,8 +1202,9 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    if (confirm('¿Cerrar sesión?')) {
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    const confirmado = await mostrarConfirmacion('¿Estás seguro de que quieres cerrar sesión?');
+    if (confirmado) {
         signOut(auth);
     }
 });
@@ -1062,9 +1246,7 @@ function escucharPresupuestos() {
         });
 
         datosCache.presupuestos = presupuestos;
-        // Actualizar todo lo que depende de presupuestos
         renderizarPresupuestos(presupuestos);
-        // ¡IMPORTANTE! Actualizar la tabla de contactos para que el check verde se actualice
         renderizarTabla(datosCache.contactos);
         actualizarStats(datosCache.contactos);
         actualizarResumenContactos(datosCache.contactos);
@@ -1140,7 +1322,7 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS (con check por contactoId)
+//  RENDERIZAR TABLA DE CONTACTOS
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1167,13 +1349,11 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        // --- LÓGICA CORREGIDA: verificar por contactoId ---
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             if (p.contactoId && p.contactoId === docId) {
                 const estado = calcularEstadoPresupuesto(p);
                 return estado !== 'vencido' && estado !== 'cancelado';
             }
-            // Fallback por nombre (para presupuestos antiguos)
             const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
             const nombreLimpio = nombre.trim().toLowerCase();
             if (nombrePres === nombreLimpio) {
@@ -1243,7 +1423,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (ordenados por vencimiento)
+//  RENDERIZAR PRESUPUESTOS
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1358,11 +1538,14 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD
+//  ACCIONES CRUD (con modal personalizado)
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
-    if (!registro) { alert('Registro no encontrado.'); return; }
+    if (!registro) {
+        await mostrarError('Registro no encontrado.');
+        return;
+    }
     document.getElementById('editIndex').value = docId;
     document.getElementById('editNombre').value = registro.nombre || '';
     document.getElementById('editTelefono').value = registro.telefono || '';
@@ -1378,7 +1561,10 @@ window.guardarEdicion = async function() {
     const docId = document.getElementById('editIndex').value;
     const nombre = document.getElementById('editNombre').value.trim();
     const telefono = document.getElementById('editTelefono').value.trim();
-    if (!nombre || !telefono) { alert('El nombre y el teléfono son obligatorios.'); return; }
+    if (!nombre || !telefono) {
+        await mostrarError('El nombre y el teléfono son obligatorios.');
+        return;
+    }
     try {
         await updateDoc(doc(db, 'contactos', docId), {
             nombre,
@@ -1390,27 +1576,32 @@ window.guardarEdicion = async function() {
         });
         cerrarModal('editModal');
     } catch (error) {
-        alert('Error al actualizar: ' + error.message);
+        await mostrarError('Error al actualizar: ' + error.message);
     }
 };
 
 window.eliminarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
     if (!registro) return;
-    if (!confirm(`¿Estás seguro de que quieres eliminar el registro de "${registro.nombre || 'Anónimo'}"?`)) return;
-    try {
-        await deleteDoc(doc(db, 'contactos', docId));
-    } catch (error) {
-        alert('Error al eliminar: ' + error.message);
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar el registro de "${registro.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'contactos', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
     }
 };
 
 // ============================================================
-//  PRESUPUESTOS (vista previa y guardado con contactoId)
+//  PRESUPUESTOS
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
-    if (!registro) { alert('Registro no encontrado.'); return; }
+    if (!registro) {
+        mostrarError('Registro no encontrado.');
+        return;
+    }
     window.contactoIdActual = docId;
     const ahora = new Date();
     const year = ahora.getFullYear();
@@ -1538,7 +1729,7 @@ window.guardarPresupuesto = async function() {
 
     } catch (error) {
         console.error('Error al generar el PDF:', error);
-        alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
+        await mostrarError('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
@@ -1551,18 +1742,20 @@ window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
     try {
         await updateDoc(doc(db, 'presupuestos', docId), { estado: nuevoEstado });
     } catch (error) {
-        alert('Error al cambiar estado: ' + error.message);
+        await mostrarError('Error al cambiar estado: ' + error.message);
     }
 };
 
 window.eliminarPresupuesto = async function(docId) {
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
     if (!presupuesto) return;
-    if (!confirm(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`)) return;
-    try {
-        await deleteDoc(doc(db, 'presupuestos', docId));
-    } catch (error) {
-        alert('Error al eliminar: ' + error.message);
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'presupuestos', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
     }
 };
 
@@ -1668,7 +1861,7 @@ function actualizarResumenContactos(data) {
 }
 
 // ============================================================
-//  MODALES Y FILTROS
+//  MODALES EXISTENTES
 // ============================================================
 function cerrarModal(id) {
     document.getElementById(id).classList.remove('active');
@@ -1691,10 +1884,6 @@ document.getElementById('saveEditBtn').addEventListener('click', window.guardarE
 
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
-
-// ============================================================
-//  INICIO
-// ============================================================
 </script>
 </body>
 </html>
