@@ -1427,10 +1427,9 @@ window.actualizarVistaPrevia = function() {
     const telefono = document.getElementById('presupuestoTelefono').value || '-';
     const email = document.getElementById('presupuestoEmail').value || '-';
     const descripcionRaw = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
-    const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0; // Precio final directo
     const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const total = subtotal * 1.21;
 
     document.getElementById('previewNombre').textContent = nombre;
     document.getElementById('previewTelefono').textContent = telefono;
@@ -1455,6 +1454,7 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
 
+    // El total final es el precio ingresado (sin IVA extra)
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 };
@@ -1468,8 +1468,7 @@ window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-    const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-    const total = subtotal * 1.21;
+    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0; // Precio final directo
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
@@ -1516,7 +1515,6 @@ window.guardarPresupuesto = async function() {
             fecha: serverTimestamp()
         });
 
-        // Sin alert: solo cerramos el modal
         cerrarModal('presupuestoModal');
 
     } catch (error) {
