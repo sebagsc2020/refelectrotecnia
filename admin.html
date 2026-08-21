@@ -49,8 +49,6 @@
         .dashboard-header h2 { font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); }
         .dashboard-header h2 span { color: var(--primary-cyan); }
         .dashboard-header .header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-        .dashboard-header .btn-refresh { background: var(--primary-cyan); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .dashboard-header .btn-refresh:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .dashboard-header .btn-logout { background: transparent; color: var(--gray-text); border: 2px solid #E9ECEF; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.3s; }
         .dashboard-header .btn-logout:hover { background: #f1f1f1; border-color: #ccc; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 15px; }
@@ -854,7 +852,6 @@
         <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF" class="logo">
         <h2>Panel Administrativo</h2>
         <p class="subtitle">REF Electrotecnia · Acceso restringido</p>
-        <!-- 📧 CAMPO EMAIL AGREGADO -->
         <input type="email" id="loginEmail" placeholder="Correo electrónico" autocomplete="email">
         <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password">
         <button class="btn-login" id="btnLogin"><i class="fas fa-lock"></i> Ingresar</button>
@@ -866,7 +863,6 @@
     <div class="dashboard-header">
         <h2><span>📊</span> Panel de Administración</h2>
         <div class="header-actions">
-            <button class="btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i> Actualizar</button>
             <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
     </div>
@@ -905,6 +901,7 @@
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
+<!-- Modal Editar -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="close-modal" id="closeEditModal">&times;</button>
@@ -935,6 +932,7 @@
     </div>
 </div>
 
+<!-- Modal Presupuesto -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -952,7 +950,7 @@
             </div>
         </div>
 
-        <!-- VISTA PREVIA DEL PRESUPUESTO (sin cambios) -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
@@ -1087,7 +1085,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
-// Configuración de Firebase (la que proporcionaste)
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
     authDomain: "refelectrotecnia.firebaseapp.com",
@@ -1107,7 +1105,6 @@ const db = getFirestore(app);
 // ============================================================
 let datosCache = { contactos: [], presupuestos: [] };
 let chartInstance = null;
-let intervaloAuto = null;
 
 // ============================================================
 //  FUNCIONES AUXILIARES
@@ -1129,9 +1126,11 @@ function formatearFecha(fecha) {
     return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+// Calcula el estado del presupuesto (aprobado, encurso, vencido, realizado, cancelado)
 function calcularEstadoPresupuesto(presupuesto) {
     if (presupuesto.Estado === 'realizado') return 'realizado';
     if (presupuesto.Estado === 'cancelado') return 'cancelado';
+    // Si tiene estado 'aprobado' o 'encurso', verificamos vencimiento
     const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
     const validez = parseInt(presupuesto.Validez) || 30;
     const fechaVencimiento = new Date(fecha);
@@ -1141,12 +1140,18 @@ function calcularEstadoPresupuesto(presupuesto) {
     return presupuesto.Estado || 'encurso';
 }
 
-function calcularDiasRestantes(presupuesto) {
-    if (presupuesto.Estado === 'cancelado' || presupuesto.Estado === 'realizado') return null;
+// Calcula la fecha de vencimiento como Date
+function obtenerFechaVencimiento(presupuesto) {
     const fecha = presupuesto.Fecha ? (presupuesto.Fecha.toDate ? presupuesto.Fecha.toDate() : new Date(presupuesto.Fecha)) : new Date();
     const validez = parseInt(presupuesto.Validez) || 30;
     const fechaVencimiento = new Date(fecha);
     fechaVencimiento.setDate(fechaVencimiento.getDate() + validez);
+    return fechaVencimiento;
+}
+
+function calcularDiasRestantes(presupuesto) {
+    if (presupuesto.Estado === 'cancelado' || presupuesto.Estado === 'realizado') return null;
+    const fechaVencimiento = obtenerFechaVencimiento(presupuesto);
     const hoy = new Date();
     const diff = Math.ceil((fechaVencimiento - hoy) / (1000 * 60 * 60 * 24));
     return diff;
@@ -1165,7 +1170,7 @@ function showDashboard() {
 }
 
 // ============================================================
-//  AUTENTICACIÓN (con email y password dinámicos)
+//  AUTENTICACIÓN (con email y password)
 // ============================================================
 document.getElementById('btnLogin').addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value.trim();
@@ -1185,7 +1190,7 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
     
     try {
         await signInWithEmailAndPassword(auth, email, password);
-        // El éxito se maneja en onAuthStateChanged
+        // Éxito -> onAuthStateChanged
     } catch (error) {
         let mensaje = 'Credenciales incorrectas. Intenta de nuevo.';
         if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -1203,7 +1208,6 @@ document.getElementById('btnLogin').addEventListener('click', async () => {
     btn.innerHTML = '<i class="fas fa-lock"></i> Ingresar';
 });
 
-// Permitir presionar Enter en los campos
 document.getElementById('loginEmail').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') document.getElementById('btnLogin').click();
 });
@@ -1216,10 +1220,8 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         showDashboard();
         cargarDatos();
-        iniciarAutoRefresh();
     } else {
         showLogin();
-        if (intervaloAuto) clearInterval(intervaloAuto);
     }
 });
 
@@ -1243,6 +1245,7 @@ async function cargarDatos() {
             const data = doc.data();
             contactos.push({ id: doc.id, ...data });
         });
+        // Ordenar contactos por fecha descendente (más reciente primero)
         contactos.sort((a, b) => {
             const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
             const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
@@ -1267,7 +1270,7 @@ async function cargarDatos() {
         renderizarPresupuestos(presupuestos);
     } catch (error) {
         console.error('Error al cargar datos:', error);
-        document.getElementById('tablaContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p><button class="btn-refresh" style="margin-top:12px;" onclick="cargarDatos()">Intentar de nuevo</button></div>`;
+        document.getElementById('tablaContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar los datos: ${error.message}</p></div>`;
         document.getElementById('resumenContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al procesar contactos.</p></div>`;
         document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos.</p></div>`;
     }
@@ -1440,7 +1443,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS
+//  RENDERIZAR PRESUPUESTOS (ordenados por fecha de vencimiento)
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1452,13 +1455,8 @@ function renderizarPresupuestos(data) {
     const filtroEstado = document.getElementById('filtroEstado').value;
     const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
 
-    const sorted = [...data].sort((a,b) => {
-        const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
-        const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
-        return fechaB - fechaA;
-    });
-
-    const filtrados = sorted.filter((presupuesto) => {
+    // Primero filtramos, luego ordenamos por vencimiento (más próximo primero)
+    let filtrados = data.filter((presupuesto) => {
         const estado = calcularEstadoPresupuesto(presupuesto);
         if (filtroEstado !== 'todos' && estado !== filtroEstado) return false;
         if (busqueda !== '') {
@@ -1467,6 +1465,13 @@ function renderizarPresupuestos(data) {
             if (!nombre.includes(busqueda) && !servicio.includes(busqueda)) return false;
         }
         return true;
+    });
+
+    // Ordenar por fecha de vencimiento ascendente (más cercano primero)
+    filtrados.sort((a, b) => {
+        const fechaA = obtenerFechaVencimiento(a);
+        const fechaB = obtenerFechaVencimiento(b);
+        return fechaA - fechaB;
     });
 
     if (filtrados.length === 0) {
@@ -1767,7 +1772,7 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO
+//  RESUMEN POR CONTACTO (ordenado por cantidad descendente)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -1802,6 +1807,7 @@ function actualizarResumenContactos(data) {
         }
     });
 
+    // Ordenar de mayor a menor cantidad
     const contactos = Array.from(contactosMap.values()).sort((a,b) => b.cantidad - a.cantidad);
     if (contactos.length === 0) {
         container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos con teléfono registrado.</p></div>`;
@@ -1877,16 +1883,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 document.getElementById('saveEditBtn').addEventListener('click', window.guardarEdicion);
 
 // ============================================================
-//  AUTO REFRESH
-// ============================================================
-function iniciarAutoRefresh() {
-    if (intervaloAuto) clearInterval(intervaloAuto);
-    intervaloAuto = setInterval(cargarDatos, 300000);
-}
-document.getElementById('refreshBtn').addEventListener('click', cargarDatos);
-
-// ============================================================
-//  FILTROS
+//  FILTROS PRESUPUESTOS
 // ============================================================
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
