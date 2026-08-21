@@ -898,7 +898,7 @@ let datosCache = { contactos: [], presupuestos: [] };
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
-window.contactoIdActual = null; // Para guardar el ID del contacto al generar presupuesto
+window.contactoIdActual = null;
 
 // ============================================================
 //  FUNCIONES AUXILIARES
@@ -1062,7 +1062,12 @@ function escucharPresupuestos() {
         });
 
         datosCache.presupuestos = presupuestos;
+        // Actualizar todo lo que depende de presupuestos
         renderizarPresupuestos(presupuestos);
+        // ¡IMPORTANTE! Actualizar la tabla de contactos para que el check verde se actualice
+        renderizarTabla(datosCache.contactos);
+        actualizarStats(datosCache.contactos);
+        actualizarResumenContactos(datosCache.contactos);
     }, (error) => {
         console.error('Error en onSnapshot presupuestos:', error);
         document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos: ${error.message}</p></div>`;
@@ -1164,12 +1169,11 @@ function renderizarTabla(data) {
 
         // --- LÓGICA CORREGIDA: verificar por contactoId ---
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
-            // Primero intentamos por contactoId
             if (p.contactoId && p.contactoId === docId) {
                 const estado = calcularEstadoPresupuesto(p);
                 return estado !== 'vencido' && estado !== 'cancelado';
             }
-            // Fallback: por nombre (para presupuestos antiguos sin contactoId)
+            // Fallback por nombre (para presupuestos antiguos)
             const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
             const nombreLimpio = nombre.trim().toLowerCase();
             if (nombrePres === nombreLimpio) {
@@ -1407,7 +1411,6 @@ window.eliminarRegistro = async function(docId) {
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
     if (!registro) { alert('Registro no encontrado.'); return; }
-    // Guardar el ID del contacto para usarlo al guardar el presupuesto
     window.contactoIdActual = docId;
     const ahora = new Date();
     const year = ahora.getFullYear();
@@ -1483,7 +1486,7 @@ window.guardarPresupuesto = async function() {
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const contactoId = window.contactoIdActual || null; // Obtener el ID guardado
+    const contactoId = window.contactoIdActual || null;
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -1515,7 +1518,6 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        // Guardar con contactoId
         const datosPresupuesto = {
             nombre,
             servicio,
@@ -1565,7 +1567,7 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO (también usa contactoId cuando sea posible)
+//  RESUMEN POR CONTACTO
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -1621,9 +1623,7 @@ function actualizarResumenContactos(data) {
         const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
         const serviciosLista = contacto.servicios.join(', ');
 
-        // Buscar si tiene presupuesto vencido (fallback por nombre, o idealmente por ID)
         const nombreNormalizado = contacto.nombre.trim().toLowerCase();
-        // Intentar encontrar un contacto con ese nombre para obtener su ID (si existe)
         const contactoEncontrado = datosCache.contactos.find(c => c.nombre && c.nombre.trim().toLowerCase() === nombreNormalizado);
         const contactoId = contactoEncontrado ? contactoEncontrado.id : null;
         let tieneVencido = false;
@@ -1632,12 +1632,10 @@ function actualizarResumenContactos(data) {
                 if (p.contactoId && p.contactoId === contactoId) {
                     return calcularEstadoPresupuesto(p) === 'vencido';
                 }
-                // Fallback por nombre
                 const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
                 return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
             });
         } else {
-            // Fallback solo por nombre
             tieneVencido = datosCache.presupuestos.some(p => {
                 const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
                 return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
