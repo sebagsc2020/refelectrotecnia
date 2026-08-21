@@ -156,11 +156,42 @@
     }
     </script>
 
-    <!-- ===== SCHEMA.ORG: FAQPage ===== -->
+    <!-- ===== SCHEMA.ORG: WEBPAGE (con speakable y mainEntity) ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": "https://www.refelectrotecnia.com/#webpage",
+      "url": "https://www.refelectrotecnia.com/",
+      "name": "REF Electrotecnia | Electricista Matriculado en Córdoba",
+      "description": "Servicios eléctricos profesionales en Córdoba. Instalaciones, reparaciones, domótica, emergencias 24/7 y certificaciones.",
+      "inLanguage": "es",
+      "isPartOf": {
+        "@id": "https://www.refelectrotecnia.com/#website"
+      },
+      "about": {
+        "@id": "https://www.refelectrotecnia.com/#organization"
+      },
+      "mainEntity": {
+        "@id": "https://www.refelectrotecnia.com/#faq"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "xPath": [
+          "/html/head/title",
+          "/html/body/main/section[1]",
+          "/html/body/main/section[5]"
+        ]
+      }
+    }
+    </script>
+
+    <!-- ===== SCHEMA.ORG: FAQPage (con @id para enlazar) ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "@id": "https://www.refelectrotecnia.com/#faq",
       "mainEntity": [
         {"@type":"Question","name":"¿REF Electrotecnia realiza presupuestos sin cargo?","acceptedAnswer":{"@type":"Answer","text":"Sí, REF Electrotecnia realiza presupuestos estimativos sin cargo, para un presupuesto exhaustivo con visita técnica y evaluar el trabajo de manera detallada será cobrado como Día de Campo teniendo en cuenta el dislocamiento hasta el local establecido por el cliente."}},
         {"@type":"Question","name":"¿REF Electrotecnia cuenta con matrícula habilitante?","acceptedAnswer":{"@type":"Answer","text":"Sí, REF Electrotecnia cuenta con matrícula habilitante 5617/1 y está autorizada para realizar todo tipo de instalaciones y certificaciones eléctricas en Córdoba."}},
@@ -234,13 +265,13 @@
       },
       "datePublished": "2026-08-21",
       "mainEntityOfPage": {
-        "@id": "https://www.refelectrotecnia.com/"
+        "@id": "https://www.refelectrotecnia.com/#webpage"
       }
     }
     </script>
 
     <!-- ============================================================== -->
-    <!-- ===== ESTILOS (los mismos que tenías, sin cambios) ===== -->
+    <!-- ===== ESTILOS (sin cambios) ===== -->
     <style>
         /* ===== TODOS TUS ESTILOS EXISTENTES ===== */
         /* (copiar aquí exactamente igual) */
@@ -2738,7 +2769,7 @@
     }); // fin DOMContentLoaded
     </script>
 
-    <!-- ===== REGISTRO DEL SERVICE WORKER (SOLO PARA PWA) ===== -->
+    <!-- ===== REGISTRO DEL SERVICE WORKER ===== -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
