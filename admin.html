@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -58,8 +58,21 @@
         .stat-card .stat-icon { float: right; font-size: 2rem; color: var(--primary-cyan); opacity: 0.4; }
         .stat-card.emergencia { border-left-color: #e74c3c; }
         .stat-card.emergencia .stat-icon { color: #e74c3c; }
-        .stat-card.pendiente { border-left-color: #f39c12; }
-        .stat-card.pendiente .stat-icon { color: #f39c12; }
+        /* ===== TARJETA PENDIENTE (ROJA CON LETRAS BLANCAS) ===== */
+        .stat-card.pendiente { 
+            border-left-color: #e74c3c; 
+            background-color: #e74c3c; 
+            color: #ffffff;
+        }
+        .stat-card.pendiente .stat-number,
+        .stat-card.pendiente .stat-label,
+        .stat-card.pendiente .stat-icon {
+            color: #ffffff;
+        }
+        .stat-card.pendiente .stat-icon {
+            opacity: 0.7;
+        }
+        /* ===== FIN TARJETA ROJA ===== */
         .chart-section { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 15px; }
         .chart-box { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); }
         .chart-box h4 { font-size: 1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 16px; }
@@ -770,6 +783,7 @@
         <div class="stat-card"><span class="stat-icon"><i class="fas fa-users"></i></span><div class="stat-number" id="totalContactos">0</div><div class="stat-label">Total de contactos</div></div>
         <div class="stat-card"><span class="stat-icon"><i class="fas fa-calendar-week"></i></span><div class="stat-number" id="contactosMes">0</div><div class="stat-label">Registros del mes</div></div>
         <div class="stat-card emergencia"><span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span><div class="stat-number" id="emergencias">0</div><div class="stat-label">Emergencias 24/7</div></div>
+        <!-- ===== TARJETA PENDIENTE (ROJA) ===== -->
         <div class="stat-card pendiente"><span class="stat-icon"><i class="fas fa-clock"></i></span><div class="stat-number" id="pendientesPresupuesto">0</div><div class="stat-label">Pendientes de presupuesto</div></div>
     </div>
 
@@ -1047,7 +1061,7 @@ function calcularDiasRestantes(presupuesto) {
 }
 
 // ============================================================
-//  MODAL PERSONALIZADO (reemplaza alert y confirm)
+//  MODAL PERSONALIZADO
 // ============================================================
 function mostrarModal(opciones) {
     return new Promise((resolve) => {
@@ -1057,7 +1071,6 @@ function mostrarModal(opciones) {
         const message = document.getElementById('customModalMessage');
         const buttons = document.getElementById('customModalButtons');
 
-        // Configurar según tipo
         const tipo = opciones.tipo || 'info';
         const iconos = {
             success: '✅',
@@ -1069,7 +1082,6 @@ function mostrarModal(opciones) {
         title.textContent = opciones.titulo || 'Aviso';
         message.textContent = opciones.mensaje || '';
 
-        // Limpiar botones
         buttons.innerHTML = '';
 
         if (opciones.botones) {
@@ -1084,7 +1096,6 @@ function mostrarModal(opciones) {
                 buttons.appendChild(b);
             });
         } else {
-            // Botón por defecto (Aceptar)
             const b = document.createElement('button');
             b.className = 'btn-custom primary';
             b.textContent = 'Aceptar';
@@ -1105,7 +1116,6 @@ function mostrarModal(opciones) {
     });
 }
 
-// Función para mostrar error (atajo)
 async function mostrarError(mensaje) {
     await mostrarModal({
         tipo: 'error',
@@ -1116,7 +1126,6 @@ async function mostrarError(mensaje) {
     });
 }
 
-// Función para mostrar confirmación
 async function mostrarConfirmacion(mensaje) {
     const result = await mostrarModal({
         tipo: 'warning',
@@ -1538,7 +1547,7 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD (con modal personalizado)
+//  ACCIONES CRUD
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
