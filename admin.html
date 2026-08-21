@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== Estilos generales (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -145,7 +145,7 @@
         .check-presupuesto { color: #27ae60; font-size: 1.2rem; font-weight: bold; }
         .no-presupuesto { color: #ccc; font-size: 1.2rem; }
 
-        /* ===== ESTILOS PARA EXPANDIR FILAS ===== */
+        /* ===== EXPANDIR FILAS ===== */
         .mensaje-cell,
         .descripcion-cell {
             position: relative;
@@ -181,7 +181,7 @@
         }
         .table-scroll tbody tr td:last-child { cursor: default; }
 
-        /* ===== ESTILOS TABLA PRESUPUESTOS ===== */
+        /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
             table-layout: fixed;
             width: 100%;
@@ -226,7 +226,7 @@
             .filtro-container input[type="text"] { width: 100%; min-width: unset; }
         }
 
-        /* ===== DISEÑO DEL PRESUPUESTO (MODIFICADO: SIN IVA, NUEVAS CONDICIONES) ===== */
+        /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
         .presupuesto-preview {
             --primary-dark: #0a1a2f;
             --primary-mid: #1a365d;
@@ -502,7 +502,6 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        /* ==== TOTALES: solo una línea con el precio final ==== */
         .presupuesto-preview .totales-container {
             margin-top: 20px;
             padding: 20px 28px;
@@ -556,7 +555,6 @@
             gap: 4px;
             flex-shrink: 0;
         }
-        /* Línea única: Total final */
         .presupuesto-preview .totales-list .linea.total-final {
             width: 280px;
             border-top: 2px solid var(--primary-dark);
@@ -584,7 +582,6 @@
             margin: 4px 0 4px 0;
             line-height: 1.5;
         }
-        /* ==== CONDICIONES COMERCIALES (actualizadas) ==== */
         .presupuesto-preview .condiciones {
             margin-top: 0;
             padding: 8px 16px;
@@ -619,7 +616,6 @@
             font-size: 11px;
             top: 0px;
         }
-
         @media (max-width: 768px) {
             .presupuesto-preview .header { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
             .presupuesto-preview .header .empresa h1 { font-size: 24px; }
@@ -658,6 +654,7 @@
 </head>
 <body>
 
+<!-- ===== LOGIN ===== -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
         <img src="https://sebagsc2020.github.io/refelectrotecnia/images/logoref.png" alt="REF" class="logo">
@@ -670,6 +667,7 @@
     </div>
 </div>
 
+<!-- ===== DASHBOARD ===== -->
 <div class="dashboard dashboard-locked" id="dashboard">
     <div class="dashboard-header">
         <h2><span>📊</span> Panel de Administración</h2>
@@ -712,7 +710,7 @@
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
-<!-- Modal Editar -->
+<!-- ===== MODAL EDITAR ===== -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="close-modal" id="closeEditModal">&times;</button>
@@ -743,7 +741,7 @@
     </div>
 </div>
 
-<!-- Modal Presupuesto -->
+<!-- ===== MODAL PRESUPUESTO ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -761,7 +759,7 @@
             </div>
         </div>
 
-        <!-- VISTA PREVIA DEL PRESUPUESTO (MODIFICADA) -->
+        <!-- ===== VISTA PREVIA DEL PRESUPUESTO (PDF) ===== -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
@@ -821,7 +819,7 @@
                             <div class="prestacion-detalle" id="previewDescripcion">-</div>
                         </div>
                     </section>
-                    <!-- TOTALES: solo línea de precio final -->
+                    <!-- TOTALES: solo una línea -->
                     <div class="totales-container">
                         <div class="totales-firma">
                             <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
@@ -838,7 +836,7 @@
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
-                    <!-- CONDICIONES COMERCIALES (actualizadas) -->
+                    <!-- CONDICIONES COMERCIALES -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
                             <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
@@ -1071,7 +1069,7 @@ function escucharPresupuestos() {
 }
 
 // ============================================================
-//  ESTADÍSTICAS, GRÁFICO, ETC.
+//  ESTADÍSTICAS, GRÁFICO, ÚLTIMOS REGISTROS
 // ============================================================
 function actualizarStats(data) {
     document.getElementById('totalContactos').textContent = data.length;
@@ -1231,7 +1229,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS
+//  RENDERIZAR PRESUPUESTOS (ordenados por vencimiento)
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1394,7 +1392,7 @@ window.eliminarRegistro = async function(docId) {
 };
 
 // ============================================================
-//  PRESUPUESTOS (con vista previa actualizada)
+//  PRESUPUESTOS (vista previa y guardado)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -1432,7 +1430,7 @@ window.actualizarVistaPrevia = function() {
     const subtotal = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
     const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const total = subtotal * 1.21; // Precio final con IVA
+    const total = subtotal * 1.21;
 
     document.getElementById('previewNombre').textContent = nombre;
     document.getElementById('previewTelefono').textContent = telefono;
@@ -1443,7 +1441,6 @@ window.actualizarVistaPrevia = function() {
     document.getElementById('previewMateriales').textContent = materiales === 'Sí' ? 'Incluidos' : 'No incluidos';
     document.getElementById('previewCondMateriales').textContent = materiales;
 
-    // Fecha de vencimiento
     const docId = document.getElementById('presupuestoIndex').value;
     const registro = datosCache.contactos.find(c => c.id === docId);
     const fechaCreacion = registro && registro.fecha ? (registro.fecha.toDate ? registro.fecha.toDate() : new Date(registro.fecha)) : new Date();
@@ -1458,9 +1455,7 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
 
-    // Solo asignar el total final (sin IVA por separado)
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
-    // También actualizar el importe de la prestación (subtotal)
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 };
 
@@ -1521,14 +1516,15 @@ window.guardarPresupuesto = async function() {
             fecha: serverTimestamp()
         });
 
-        alert(`✅ Presupuesto N° ${numero} guardado correctamente.\nCliente: ${nombre}\nServicio: ${servicio}\nTotal: ${formatearPrecio(total)}\n\nEl archivo PDF ha sido descargado.`);
+        // Sin alert: solo cerramos el modal
+        cerrarModal('presupuestoModal');
+
     } catch (error) {
         console.error('Error al generar el PDF:', error);
         alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
-        cerrarModal('presupuestoModal');
     }
 };
 
