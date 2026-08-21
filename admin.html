@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES ===== */
+        /* ===== ESTILOS (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -898,6 +898,7 @@ let datosCache = { contactos: [], presupuestos: [] };
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
+window.contactoIdActual = null; // Para guardar el ID del contacto al generar presupuesto
 
 // ============================================================
 //  FUNCIONES AUXILIARES
@@ -1134,7 +1135,7 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS
+//  RENDERIZAR TABLA DE CONTACTOS (con check por contactoId)
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1161,12 +1162,21 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        const nombreLimpio = nombre.trim().toLowerCase();
+        // --- LÓGICA CORREGIDA: verificar por contactoId ---
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
+            // Primero intentamos por contactoId
+            if (p.contactoId && p.contactoId === docId) {
+                const estado = calcularEstadoPresupuesto(p);
+                return estado !== 'vencido' && estado !== 'cancelado';
+            }
+            // Fallback: por nombre (para presupuestos antiguos sin contactoId)
             const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
-            if (nombrePres !== nombreLimpio) return false;
-            const estado = calcularEstadoPresupuesto(p);
-            return estado !== 'vencido' && estado !== 'cancelado';
+            const nombreLimpio = nombre.trim().toLowerCase();
+            if (nombrePres === nombreLimpio) {
+                const estado = calcularEstadoPresupuesto(p);
+                return estado !== 'vencido' && estado !== 'cancelado';
+            }
+            return false;
         });
         const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
 
@@ -1392,11 +1402,13 @@ window.eliminarRegistro = async function(docId) {
 };
 
 // ============================================================
-//  PRESUPUESTOS (vista previa y guardado)
+//  PRESUPUESTOS (vista previa y guardado con contactoId)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
     if (!registro) { alert('Registro no encontrado.'); return; }
+    // Guardar el ID del contacto para usarlo al guardar el presupuesto
+    window.contactoIdActual = docId;
     const ahora = new Date();
     const year = ahora.getFullYear();
     const day = String(ahora.getDate()).padStart(2, '0');
@@ -1427,7 +1439,7 @@ window.actualizarVistaPrevia = function() {
     const telefono = document.getElementById('presupuestoTelefono').value || '-';
     const email = document.getElementById('presupuestoEmail').value || '-';
     const descripcionRaw = document.getElementById('presupuestoDescripcion').value || 'Sin descripción';
-    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0; // Precio final directo
+    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
     const validezDias = parseInt(document.getElementById('presupuestoValidez').value) || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
 
@@ -1454,7 +1466,6 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewDescripcion').innerHTML = descripcionRaw.replace(/\n/g, '<br>');
 
-    // El total final es el precio ingresado (sin IVA extra)
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 };
@@ -1468,10 +1479,11 @@ window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0; // Precio final directo
+    const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
+    const contactoId = window.contactoIdActual || null; // Obtener el ID guardado
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -1503,7 +1515,8 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        await addDoc(collection(db, 'presupuestos'), {
+        // Guardar con contactoId
+        const datosPresupuesto = {
             nombre,
             servicio,
             descripcion,
@@ -1513,7 +1526,11 @@ window.guardarPresupuesto = async function() {
             materiales,
             estado: 'encurso',
             fecha: serverTimestamp()
-        });
+        };
+        if (contactoId) {
+            datosPresupuesto.contactoId = contactoId;
+        }
+        await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
 
         cerrarModal('presupuestoModal');
 
@@ -1548,7 +1565,7 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO
+//  RESUMEN POR CONTACTO (también usa contactoId cuando sea posible)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -1604,12 +1621,29 @@ function actualizarResumenContactos(data) {
         const whatsappUrl = `https://wa.me/${telefonoLimpio}?text=${mensaje}`;
         const serviciosLista = contacto.servicios.join(', ');
 
+        // Buscar si tiene presupuesto vencido (fallback por nombre, o idealmente por ID)
         const nombreNormalizado = contacto.nombre.trim().toLowerCase();
-        const presupuestosDelContacto = datosCache.presupuestos.filter(p => {
-            const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
-            return nombrePres === nombreNormalizado;
-        });
-        const tieneVencido = presupuestosDelContacto.some(p => calcularEstadoPresupuesto(p) === 'vencido');
+        // Intentar encontrar un contacto con ese nombre para obtener su ID (si existe)
+        const contactoEncontrado = datosCache.contactos.find(c => c.nombre && c.nombre.trim().toLowerCase() === nombreNormalizado);
+        const contactoId = contactoEncontrado ? contactoEncontrado.id : null;
+        let tieneVencido = false;
+        if (contactoId) {
+            tieneVencido = datosCache.presupuestos.some(p => {
+                if (p.contactoId && p.contactoId === contactoId) {
+                    return calcularEstadoPresupuesto(p) === 'vencido';
+                }
+                // Fallback por nombre
+                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
+            });
+        } else {
+            // Fallback solo por nombre
+            tieneVencido = datosCache.presupuestos.some(p => {
+                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
+            });
+        }
+
         const alertaHtml = tieneVencido
             ? '<i class="fas fa-exclamation-triangle alerta-vencido" title="Presupuesto vencido"></i>'
             : '';
