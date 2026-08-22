@@ -1,6 +1,6 @@
 {
-  "name": "REF Electrotecnia - Solicitud",
-  "short_name": "REF Solicitud",
+  "name": "REF Electrotecnia - Clientes",
+  "short_name": "REF Clientes",
   "description": "Formulario de solicitud de servicio",
   "start_url": "/201/form.html",
   "display": "standalone",
