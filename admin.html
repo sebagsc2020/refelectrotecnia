@@ -814,7 +814,7 @@
         .presupuesto-box .presupuesto-preview .presupuesto { border-radius: 0; box-shadow: none; border: 1px solid #E9ECEF; }
         @media (max-width: 768px) { .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; } }
 
-        /* ===== NUEVOS ESTILOS PARA CONTACTOS AGENDA ===== */
+        /* ===== NUEVOS ESTILOS PARA CONTACTOS AGENDA Y NUEVO REGISTRO ===== */
         .contact-actions-bar {
             display: flex;
             gap: 12px;
@@ -883,6 +883,43 @@
             height: 16px;
             cursor: pointer;
         }
+        .btn-add-record {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-add-record:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+        }
+        .btn-create-solicitud {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 4px;
+        }
+        .btn-create-solicitud:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -921,7 +958,16 @@
         <div class="chart-box"><h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4><div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p class="loading"><i class="fas fa-spinner"></i> Cargando...</p></div></div>
     </div>
 
-    <div class="table-container"><h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4><div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div></div>
+    <!-- ===== SECCIÓN TODOS LOS REGISTROS (con botón agregar manual) ===== -->
+    <div class="table-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
+            <h4 style="margin:0;"><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
+            <button class="btn-add-record" onclick="abrirNuevoRegistro()">
+                <i class="fas fa-plus"></i> Agregar manual
+            </button>
+        </div>
+        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
+    </div>
     
     <div class="table-container">
         <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
@@ -1011,7 +1057,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL EDITAR CONTACTO AGENDA (NUEVO) ===== -->
+<!-- ===== MODAL EDITAR CONTACTO AGENDA ===== -->
 <div class="modal-overlay" id="editAgendaModal">
     <div class="modal-box">
         <button class="close-modal" id="closeAgendaModal">&times;</button>
@@ -1024,6 +1070,36 @@
         <div class="modal-actions">
             <button class="btn-cancel" id="cancelAgendaBtn">Cancelar</button>
             <button class="btn-save" id="saveAgendaBtn"><i class="fas fa-save"></i> Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL NUEVO REGISTRO (para agregar manual o desde agenda) ===== -->
+<div class="modal-overlay" id="nuevoRegistroModal">
+    <div class="modal-box">
+        <button class="close-modal" id="closeNuevoRegistroModal">&times;</button>
+        <h3><span>📝</span> Nuevo registro</h3>
+        <div class="form-group"><label>Nombre completo *</label><input type="text" id="nuevoNombre" placeholder="Nombre completo"></div>
+        <div class="form-group"><label>Teléfono / WhatsApp *</label><input type="text" id="nuevoTelefono" placeholder="Teléfono"></div>
+        <div class="form-group"><label>Correo electrónico</label><input type="email" id="nuevoEmail" placeholder="Correo electrónico"></div>
+        <div class="form-group"><label>Servicio</label>
+            <select id="nuevoServicio">
+                <option value="">Selecciona el servicio</option>
+                <option>Instalación eléctrica</option>
+                <option>Reparación / Mantenimiento</option>
+                <option>Domótica / Automatización</option>
+                <option>Tableros / Puesta a tierra</option>
+                <option>Iluminación</option>
+                <option>Certificación / Habilitación</option>
+                <option value="emergencia">Emergencia 24/7</option>
+                <option>Otro</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Ubicación</label><input type="text" id="nuevoUbicacion" placeholder="Ubicación o dirección"></div>
+        <div class="form-group"><label>Mensaje</label><textarea id="nuevoMensaje" placeholder="Mensaje"></textarea></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelNuevoBtn">Cancelar</button>
+            <button class="btn-save" id="saveNuevoBtn"><i class="fas fa-save"></i> Guardar registro</button>
         </div>
     </div>
 </div>
@@ -1180,7 +1256,7 @@ const db = getFirestore(app);
 //  VARIABLES GLOBALES
 // ============================================================
 let datosCache = { contactos: [], presupuestos: [] };
-let contactosAgenda = []; // para búsqueda y selección
+let contactosAgenda = [];
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
@@ -1443,7 +1519,6 @@ function escucharPresupuestos() {
     });
 }
 
-// ===== ESCUCHA PARA CONTACTOS_AGENDA =====
 function escucharContactosAgenda() {
     return onSnapshot(collection(db, 'contactos_agenda'), (snapshot) => {
         const contactos = [];
@@ -1793,6 +1868,60 @@ window.eliminarRegistro = async function(docId) {
 };
 
 // ============================================================
+//  NUEVO REGISTRO MANUAL / DESDE AGENDA
+// ============================================================
+window.abrirNuevoRegistro = function(datosPrecargados = null) {
+    // Limpiar modal
+    document.getElementById('nuevoNombre').value = datosPrecargados?.nombre || '';
+    document.getElementById('nuevoTelefono').value = datosPrecargados?.telefono || '';
+    document.getElementById('nuevoEmail').value = datosPrecargados?.email || '';
+    document.getElementById('nuevoUbicacion').value = datosPrecargados?.direccion || '';
+    document.getElementById('nuevoServicio').value = '';
+    document.getElementById('nuevoMensaje').value = '';
+    document.getElementById('nuevoRegistroModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+document.getElementById('closeNuevoRegistroModal').addEventListener('click', () => cerrarModal('nuevoRegistroModal'));
+document.getElementById('cancelNuevoBtn').addEventListener('click', () => cerrarModal('nuevoRegistroModal'));
+
+document.getElementById('saveNuevoBtn').addEventListener('click', async function() {
+    const nombre = document.getElementById('nuevoNombre').value.trim();
+    const telefono = document.getElementById('nuevoTelefono').value.trim();
+    const email = document.getElementById('nuevoEmail').value.trim();
+    const servicio = document.getElementById('nuevoServicio').value;
+    const ubicacion = document.getElementById('nuevoUbicacion').value.trim();
+    const mensaje = document.getElementById('nuevoMensaje').value.trim();
+
+    if (!nombre || !telefono) {
+        await mostrarError('El nombre y el teléfono son obligatorios.');
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, 'contactos'), {
+            nombre,
+            telefono,
+            email: email || '',
+            servicio: servicio || '',
+            ubicacion: ubicacion || '',
+            mensaje: mensaje || '',
+            fecha: serverTimestamp()
+        });
+        cerrarModal('nuevoRegistroModal');
+        await mostrarModal({
+            tipo: 'success',
+            icon: '✅',
+            titulo: 'Registro creado',
+            mensaje: 'El registro se agregó correctamente a "Todos los registros".',
+            botones: [{ texto: 'Aceptar', clase: 'primary' }]
+        });
+    } catch (error) {
+        await mostrarError('Error al guardar: ' + error.message);
+    }
+});
+
+// ============================================================
 //  PRESUPUESTOS (sin cambios)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
@@ -1959,10 +2088,9 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  FUNCIONES PARA CONTACTOS_AGENDA (MEJORADAS)
+//  FUNCIONES PARA CONTACTOS_AGENDA (con botón "Crear solicitud")
 // ============================================================
 
-// Renderizar tabla con checkbox, dirección, búsqueda y selección múltiple
 function renderizarContactos(contactos) {
     const container = document.getElementById('contactosContainer');
     if (!contactos || contactos.length === 0) {
@@ -1970,7 +2098,6 @@ function renderizarContactos(contactos) {
         return;
     }
 
-    // Aplicar filtro de búsqueda
     const busqueda = document.getElementById('busquedaAgenda').value.toLowerCase().trim();
     let filtrados = contactos;
     if (busqueda !== '') {
@@ -2014,6 +2141,9 @@ function renderizarContactos(contactos) {
             <td>${telefono}</td>
             <td>${direccion || '—'}</td>
             <td style="text-align:center; white-space:nowrap;">
+                <button class="btn-create-solicitud" onclick="crearSolicitudDesdeAgenda('${docId}')" title="Crear registro en Todos los registros">
+                    <i class="fas fa-plus"></i> Solicitud
+                </button>
                 <button class="btn-edit" onclick="editarContactoAgenda('${docId}')" style="padding: 5px 10px; font-size: 0.8rem;">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -2035,7 +2165,23 @@ function renderizarContactos(contactos) {
     actualizarBotonEliminar();
 }
 
-// Filtrar contactos en tiempo real (se llama desde el input)
+// Función para crear solicitud desde agenda
+window.crearSolicitudDesdeAgenda = function(docId) {
+    const contacto = contactosAgenda.find(c => c.id === docId);
+    if (!contacto) {
+        mostrarError('Contacto no encontrado.');
+        return;
+    }
+    // Precargar datos en el modal de nuevo registro
+    abrirNuevoRegistro({
+        nombre: contacto.nombre || '',
+        telefono: contacto.telefono || '',
+        email: contacto.email || '',
+        direccion: contacto.direccion || ''
+    });
+};
+
+// Filtrar contactos en tiempo real
 window.filtrarContactosAgenda = function() {
     renderizarContactos(contactosAgenda);
 };
@@ -2073,7 +2219,6 @@ window.eliminarSeleccionados = async function() {
         for (const id of ids) {
             await deleteDoc(doc(db, 'contactos_agenda', id));
         }
-        // Desmarcar "Seleccionar todos"
         document.getElementById('selectAllAgenda').checked = false;
         await mostrarModal({
             tipo: 'success',
@@ -2087,7 +2232,7 @@ window.eliminarSeleccionados = async function() {
     }
 };
 
-// Editar contacto de agenda (abre modal específico)
+// Editar contacto de agenda
 window.editarContactoAgenda = function(docId) {
     const contacto = contactosAgenda.find(c => c.id === docId);
     if (!contacto) {
@@ -2145,7 +2290,7 @@ window.eliminarContactoAgenda = async function(docId) {
     }
 };
 
-// --- Importar contactos desde .vcf (actualizado para incluir dirección) ---
+// --- Importar contactos desde .vcf ---
 document.getElementById('importVcfBtn').addEventListener('click', function() {
     document.getElementById('vcfFileInput').click();
 });
@@ -2153,7 +2298,7 @@ document.getElementById('importVcfBtn').addEventListener('click', function() {
 document.getElementById('vcfFileInput').addEventListener('change', async function(e) {
     const file = this.files[0];
     if (!file) return;
-    this.value = ''; // reset
+    this.value = '';
 
     try {
         const text = await file.text();
@@ -2172,7 +2317,7 @@ document.getElementById('vcfFileInput').addEventListener('change', async functio
                 nombre: c.nombre || '',
                 email: c.email || '',
                 telefono: c.telefono || '',
-                direccion: c.direccion || '', // Nuevo campo
+                direccion: c.direccion || '',
                 fecha: serverTimestamp()
             });
             importados++;
@@ -2210,11 +2355,9 @@ function parseVCard(vcfText) {
                 const emailMatch = trimmed.match(/EMAIL[^:]*:([^\s]+)/);
                 if (emailMatch) email = emailMatch[1].trim();
             } else if (trimmed.startsWith('ADR;')) {
-                // Dirección simple: tomar el valor después de los dos puntos
                 const adrMatch = trimmed.match(/ADR[^:]*:(.*)/);
                 if (adrMatch) {
                     let raw = adrMatch[1].trim();
-                    // Reemplazar punto y coma por coma para legibilidad
                     raw = raw.replace(/;/g, ', ').replace(/,,/g, ', ');
                     direccion = raw;
                 }
