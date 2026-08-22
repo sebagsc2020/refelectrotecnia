@@ -9,8 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* (estilos exactamente iguales a los que ya tenías) */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --primary-dark: #0A2E5C;
             --primary-cyan: #0099E8;
@@ -25,6 +29,7 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --font: 'Inter', sans-serif;
         }
+
         body {
             font-family: var(--font);
             background: var(--light-bg);
@@ -35,10 +40,12 @@
             padding: 40px 20px;
             margin: 0;
         }
+
         .container {
             max-width: 700px;
             width: 100%;
         }
+
         .contact-form {
             background: var(--white);
             padding: 32px 28px;
@@ -46,12 +53,14 @@
             box-shadow: var(--shadow);
             position: relative;
         }
+
         .contact-form h4 {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary-dark);
             margin-bottom: 20px;
         }
+
         .field-group {
             border-bottom: 1px solid #E9ECEF;
             margin-bottom: 4px;
@@ -59,6 +68,7 @@
         .field-group:last-of-type {
             border-bottom: none;
         }
+
         .field-header {
             display: flex;
             justify-content: space-between;
@@ -73,15 +83,30 @@
         .field-header:hover {
             color: var(--primary-cyan);
         }
-        .field-header i {
+        .field-header .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .field-header .title-wrapper .section-check {
+            color: var(--success-green);
+            font-size: 1.1rem;
+            display: none;
+            /* oculto por defecto */
+        }
+        .field-header .title-wrapper .section-check.visible {
+            display: inline;
+        }
+        .field-header i.chevron {
             transition: var(--transition);
             font-size: 0.9rem;
             color: var(--gray-text);
         }
-        .field-group.active .field-header i {
+        .field-group.active .field-header i.chevron {
             transform: rotate(180deg);
             color: var(--primary-cyan);
         }
+
         .field-content {
             max-height: 0;
             overflow: hidden;
@@ -92,6 +117,7 @@
             max-height: 600px;
             padding: 0 4px 16px 4px;
         }
+
         .field-content input,
         .field-content select,
         .field-content textarea {
@@ -112,11 +138,13 @@
             background: white;
             box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
         }
+
         .field-content textarea {
             resize: vertical;
             min-height: 100px;
             padding-right: 64px;
         }
+
         .textarea-wrapper {
             position: relative;
         }
@@ -150,6 +178,7 @@
             70% { box-shadow: 0 0 0 14px rgba(229, 57, 53, 0); }
             100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
         }
+
         .mic-hint {
             display: block;
             margin-top: 6px;
@@ -159,6 +188,7 @@
         .mic-hint i {
             color: var(--danger-red);
         }
+
         .form-success {
             display: none;
             background: #E8F5E9;
@@ -175,6 +205,7 @@
             display: flex;
             animation: fadeIn 0.4s ease;
         }
+
         .ubicacion-group {
             display: block;
         }
@@ -188,6 +219,7 @@
             flex: 1;
             min-width: 200px;
         }
+
         .btn-ubicacion {
             background: var(--primary-cyan);
             color: white;
@@ -213,6 +245,7 @@
             cursor: not-allowed;
             transform: none;
         }
+
         .btn-maps {
             background: #34A853;
             color: white;
@@ -235,12 +268,14 @@
         .btn-maps.hidden {
             display: none;
         }
+
         .ubicacion-group small {
             display: block;
             margin-top: 6px;
             color: var(--gray-text);
             font-size: 0.8rem;
         }
+
         .btn-submit {
             background: var(--primary-dark);
             color: white;
@@ -267,10 +302,18 @@
             opacity: 0.7;
             cursor: not-allowed;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @media (max-width: 768px) {
             .contact-form {
                 padding: 20px 16px;
@@ -293,14 +336,17 @@
 
             <div class="form-success" id="formSuccess">
                 <i class="fas fa-check-circle"></i>
-                <span>¡Solicitud guardada!</span>
+                <span>¡Solicitud guardada! Te responderemos a la brevedad.</span>
             </div>
 
-            <!-- Datos personales -->
-            <div class="field-group">
+            <!-- ===== DATOS PERSONALES ===== -->
+            <div class="field-group" data-section="personal">
                 <div class="field-header" data-target="field-personal">
-                    <span><i class="fas fa-user" style="margin-right:10px; color:var(--primary-cyan);"></i>Datos personales</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <span class="title-wrapper">
+                        <i class="fas fa-user" style="margin-right:6px; color:var(--primary-cyan);"></i>Datos personales
+                        <span class="section-check" id="check-personal">✔</span>
+                    </span>
+                    <i class="fas fa-chevron-down chevron"></i>
                 </div>
                 <div class="field-content" id="field-personal">
                     <div style="margin-bottom:12px;">
@@ -315,11 +361,14 @@
                 </div>
             </div>
 
-            <!-- Servicio -->
-            <div class="field-group">
+            <!-- ===== SERVICIO ===== -->
+            <div class="field-group" data-section="servicio">
                 <div class="field-header" data-target="field-servicio">
-                    <span><i class="fas fa-tools" style="margin-right:10px; color:var(--primary-cyan);"></i>Servicio requerido</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <span class="title-wrapper">
+                        <i class="fas fa-tools" style="margin-right:6px; color:var(--primary-cyan);"></i>Servicio requerido
+                        <span class="section-check" id="check-servicio">✔</span>
+                    </span>
+                    <i class="fas fa-chevron-down chevron"></i>
                 </div>
                 <div class="field-content" id="field-servicio">
                     <select id="servicio" name="servicio" autocomplete="off">
@@ -336,11 +385,14 @@
                 </div>
             </div>
 
-            <!-- Ubicación -->
-            <div class="field-group">
+            <!-- ===== UBICACIÓN ===== -->
+            <div class="field-group" data-section="ubicacion">
                 <div class="field-header" data-target="field-ubicacion">
-                    <span><i class="fas fa-map-marker-alt" style="margin-right:10px; color:var(--accent-yellow);"></i>Ubicación</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <span class="title-wrapper">
+                        <i class="fas fa-map-marker-alt" style="margin-right:6px; color:var(--accent-yellow);"></i>Ubicación
+                        <span class="section-check" id="check-ubicacion">✔</span>
+                    </span>
+                    <i class="fas fa-chevron-down chevron"></i>
                 </div>
                 <div class="field-content" id="field-ubicacion">
                     <div class="ubicacion-group">
@@ -358,11 +410,14 @@
                 </div>
             </div>
 
-            <!-- Mensaje -->
-            <div class="field-group">
+            <!-- ===== MENSAJE ===== -->
+            <div class="field-group" data-section="mensaje">
                 <div class="field-header" data-target="field-mensaje">
-                    <span><i class="fas fa-comment" style="margin-right:10px; color:var(--primary-cyan);"></i>Mensaje</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <span class="title-wrapper">
+                        <i class="fas fa-comment" style="margin-right:6px; color:var(--primary-cyan);"></i>Mensaje
+                        <span class="section-check" id="check-mensaje">✔</span>
+                    </span>
+                    <i class="fas fa-chevron-down chevron"></i>
                 </div>
                 <div class="field-content" id="field-mensaje">
                     <div class="textarea-wrapper">
@@ -423,7 +478,41 @@
         }
 
         // ============================================================
-        // LÓGICA DEL ACORDEÓN (todos cerrados)
+        // FUNCIÓN PARA ACTUALIZAR EL CHECK DE UNA SECCIÓN
+        // ============================================================
+        function updateSectionCheck(sectionId) {
+            const group = document.querySelector(`.field-group[data-section="${sectionId}"]`);
+            if (!group) return;
+            const checkSpan = group.querySelector('.section-check');
+            let hasData = false;
+
+            // Según la sección, revisamos sus campos
+            if (sectionId === 'personal') {
+                const nombre = group.querySelector('#nombre')?.value.trim();
+                const telefono = group.querySelector('#telefono')?.value.trim();
+                // Si tiene nombre o teléfono (o email, pero al menos uno)
+                hasData = !!(nombre || telefono);
+            } else if (sectionId === 'servicio') {
+                const select = group.querySelector('#servicio');
+                hasData = select && select.value !== '';
+            } else if (sectionId === 'ubicacion') {
+                const input = group.querySelector('#ubicacion');
+                hasData = !!(input && input.value.trim() !== '');
+            } else if (sectionId === 'mensaje') {
+                const textarea = group.querySelector('#mensaje');
+                hasData = !!(textarea && textarea.value.trim() !== '');
+            }
+
+            // Mostrar u ocultar el check
+            if (hasData) {
+                checkSpan.classList.add('visible');
+            } else {
+                checkSpan.classList.remove('visible');
+            }
+        }
+
+        // ============================================================
+        // LÓGICA DEL ACORDEÓN (con actualización de check al cerrar)
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const headers = document.querySelectorAll('.field-header');
@@ -433,8 +522,17 @@
                     const currentGroup = this.closest('.field-group');
                     const isActive = currentGroup.classList.contains('active');
 
+                    // Antes de cerrar, actualizamos el check si se va a cerrar
+                    if (isActive) {
+                        // Se va a cerrar -> actualizar check
+                        const section = currentGroup.dataset.section;
+                        updateSectionCheck(section);
+                    }
+
+                    // Cerrar todos los grupos
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
 
+                    // Si no estaba activo, lo activamos
                     if (!isActive) {
                         currentGroup.classList.add('active');
                     }
@@ -572,7 +670,7 @@
             });
 
             // ============================================================
-            // ENVÍO (SOLO FIRESTORE)
+            // ENVÍO (SOLO FIRESTORE) + RESETEO DE CHECKS
             // ============================================================
             const contactForm = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
@@ -611,12 +709,16 @@
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
 
-                    // --- LIMPIEZA COMPLETA DEL FORMULARIO ---
-                    contactForm.reset();             // vacía todos los campos
-                    document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active')); // cierra acordeones
-                    btnMaps.classList.add('hidden'); // oculta botón Maps
-                    ubicacionCompartida = false;     // resetea estado de ubicación
-                    // Enfoca el primer campo para nuevo registro
+                    // Resetear formulario
+                    contactForm.reset();
+                    // Cerrar todos los paneles
+                    document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+                    // Ocultar botón Maps
+                    btnMaps.classList.add('hidden');
+                    ubicacionCompartida = false;
+                    // OCULTAR TODOS LOS CHECKS
+                    document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
+                    // Enfocar nombre
                     document.getElementById('nombre').focus();
                 } else {
                     alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
@@ -624,6 +726,13 @@
 
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar solicitud';
+            });
+
+            // ============================================================
+            // INICIALIZAR: verificar si hay datos al cargar (por si el usuario recarga)
+            // ============================================================
+            ['personal', 'servicio', 'ubicacion', 'mensaje'].forEach(section => {
+                updateSectionCheck(section);
             });
 
         });
