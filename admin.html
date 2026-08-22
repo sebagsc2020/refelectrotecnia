@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -879,6 +879,26 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
+        /* Tabla dentro del modal de servicios */
+        .servicios-table th {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary-dark);
+        }
+        .servicios-table td {
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+        .servicios-table .estado-badge {
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -1029,10 +1049,10 @@
 
 <!-- ===== MODAL SERVICIOS (para mostrar lista de servicios de un contacto) ===== -->
 <div class="modal-overlay" id="serviciosModal">
-    <div class="modal-box" style="max-width: 500px;">
+    <div class="modal-box" style="max-width: 600px;">
         <button class="close-modal" id="closeServiciosModal">&times;</button>
         <h3><span>📋</span> Servicios de <span id="serviciosClienteNombre">-</span></h3>
-        <div id="serviciosListContainer">
+        <div id="serviciosListContainer" style="margin-top: 10px;">
             <p style="color: var(--gray-text);">Cargando...</p>
         </div>
         <div class="modal-actions">
@@ -2012,7 +2032,15 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO (con modal de servicios)
+//  FUNCIÓN AUXILIAR PARA ESCAPAR CARACTERES
+// ============================================================
+function escape(str) {
+    if (!str) return '';
+    return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+// ============================================================
+//  RESUMEN POR CONTACTO (con modal de servicios mejorado)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -2095,7 +2123,7 @@ function actualizarResumenContactos(data) {
             <td>${contacto.ubicacion || '—'}</td>
             <td style="text-align:center;">
                 <span class="badge servicios-clickable" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600; display:inline-block;"
-                      onclick="mostrarServicios('${contacto.nombre.replace(/'/g, "\\'")}', '${serviciosLista.replace(/'/g, "\\'")}')"
+                      onclick="mostrarServicios('${escape(contacto.nombre)}', '${escape(contacto.telefono)}')"
                       title="Haz clic para ver los servicios">
                     ${contacto.cantidad}
                 </span>
@@ -2110,55 +2138,91 @@ function actualizarResumenContactos(data) {
     container.innerHTML = html;
 }
 
-// ===== FUNCIÓN PARA MOSTRAR MODAL DE SERVICIOS =====
-window.mostrarServicios = function(nombre, serviciosRaw) {
+// ===== FUNCIÓN PARA MOSTRAR MODAL DE SERVICIOS CON TABLA =====
+window.mostrarServicios = function(nombre, telefono) {
     const modal = document.getElementById('serviciosModal');
     const nombreSpan = document.getElementById('serviciosClienteNombre');
     const container = document.getElementById('serviciosListContainer');
 
-    nombreSpan.textContent = nombre;
+    nombreSpan.textContent = nombre || 'Sin nombre';
 
-    // Limpiar y mostrar lista
-    let listaHtml = '';
-    if (serviciosRaw && serviciosRaw.trim() !== '') {
-        const servicios = serviciosRaw.split(',').map(s => s.trim()).filter(s => s);
-        if (servicios.length > 0) {
-            listaHtml = '<ul class="servicios-modal-list">';
-            servicios.forEach(serv => {
-                listaHtml += `<li><span>${serv}</span><span class="badge-service">${servicioClase(serv)}</span></li>`;
-            });
-            listaHtml += '</ul>';
-        } else {
-            listaHtml = '<p style="color: var(--gray-text);">No hay servicios registrados para este contacto.</p>';
-        }
-    } else {
-        listaHtml = '<p style="color: var(--gray-text);">No hay servicios registrados para este contacto.</p>';
+    // Buscar todos los registros de este contacto
+    const registros = datosCache.contactos.filter(c => 
+        (c.nombre || '').trim().toLowerCase() === (nombre || '').trim().toLowerCase() &&
+        (c.telefono || '') === (telefono || '')
+    );
+
+    if (registros.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray-text);">No se encontraron registros para este contacto.</p>';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
     }
-    container.innerHTML = listaHtml;
+
+    let html = `<table class="servicios-table" style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <thead>
+            <tr style="background:var(--light-bg);">
+                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Servicio</th>
+                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Estado</th>
+                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Fecha de cambio</th>
+            </tr>
+        </thead><tbody>`;
+
+    registros.forEach(reg => {
+        const servicio = reg.servicio || 'No especificado';
+        // Buscar presupuesto asociado
+        let presupuesto = null;
+        if (reg.id) {
+            presupuesto = datosCache.presupuestos.find(p => p.contactoId === reg.id);
+        }
+        if (!presupuesto) {
+            presupuesto = datosCache.presupuestos.find(p => 
+                (p.nombre || '').trim().toLowerCase() === (nombre || '').trim().toLowerCase() &&
+                (p.telefono || '') === (telefono || '')
+            );
+        }
+
+        let estado = 'Sin presupuesto';
+        let fecha = formatearFechaHora(reg.fecha);
+        let colorEstado = '#ccc';
+        if (presupuesto) {
+            const estadoRaw = presupuesto.estado || 'encurso';
+            const estadoMap = {
+                'aprobado': { label: 'Aprobado', color: '#2ecc71' },
+                'encurso': { label: 'En Curso', color: '#f39c12' },
+                'realizado': { label: 'Realizado', color: '#2ecc71' },
+                'vencido': { label: 'Vencido', color: '#e74c3c' },
+                'cancelado': { label: 'Cancelado', color: '#7f8c8d' }
+            };
+            const info = estadoMap[estadoRaw] || { label: estadoRaw.charAt(0).toUpperCase() + estadoRaw.slice(1), color: '#00A8FF' };
+            estado = info.label;
+            colorEstado = info.color;
+            if (presupuesto.fecha) {
+                fecha = formatearFechaHora(presupuesto.fecha);
+            }
+        }
+
+        html += `<tr>
+            <td style="padding:8px; border-bottom:1px solid #E9ECEF;">${servicio}</td>
+            <td style="padding:8px; border-bottom:1px solid #E9ECEF;">
+                <span class="estado-badge" style="background:${colorEstado};">
+                    ${estado}
+                </span>
+            </td>
+            <td style="padding:8px; border-bottom:1px solid #E9ECEF; font-size:0.85rem;">${fecha}</td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 };
 
-// Función auxiliar para dar color a los badges según el servicio
-function servicioClase(servicio) {
-    const tipos = {
-        'Instalación eléctrica': '#0A2E5C',
-        'Reparación / Mantenimiento': '#F39C12',
-        'Domótica / Automatización': '#9B59B6',
-        'Tableros / Puesta a tierra': '#E67E22',
-        'Iluminación': '#2ECC71',
-        'Certificación / Habilitación': '#3498DB',
-        'Emergencia 24/7': '#E74C3C',
-        'Otro': '#7F8C8D'
-    };
-    return tipos[servicio] || '#00A8FF';
-}
-
 // Cerrar modal de servicios
 document.getElementById('closeServiciosModal').addEventListener('click', () => cerrarModal('serviciosModal'));
 document.getElementById('closeServiciosBtn').addEventListener('click', () => cerrarModal('serviciosModal'));
-// Cerrar al hacer clic fuera
 document.getElementById('serviciosModal').addEventListener('click', function(e) {
     if (e.target === this) {
         cerrarModal('serviciosModal');
