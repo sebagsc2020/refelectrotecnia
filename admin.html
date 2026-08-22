@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES ===== */
+        /* ===== ESTILOS GENERALES (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -286,7 +286,7 @@
         /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" ===== */
         #tablaContainer table {
             width: 100%;
-            table-layout: fixed; /* Fuerza los anchos */
+            table-layout: fixed;
             font-size: 0.9rem;
         }
         #tablaContainer table th,
@@ -294,7 +294,7 @@
             padding: 8px 10px;
             vertical-align: middle;
             text-align: left;
-            overflow: hidden; /* Evita desbordes */
+            overflow: hidden;
             text-overflow: ellipsis;
         }
         /* Anchos porcentuales que suman 100% */
@@ -321,7 +321,7 @@
             width: 28%; 
             word-break: break-word; 
             white-space: normal; 
-            text-overflow: clip; /* Permite que el texto se envuelva */
+            text-overflow: clip;
         }
         #tablaContainer table th:nth-child(7), /* Presupuesto */
         #tablaContainer table td:nth-child(7) { 
@@ -1385,7 +1385,7 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS
+//  RENDERIZAR TABLA DE CONTACTOS (CORREGIDO)
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1412,19 +1412,16 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
+        // ========== CORRECCIÓN AQUÍ: SOLO POR contactoId ==========
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             if (p.contactoId && p.contactoId === docId) {
                 const estado = calcularEstadoPresupuesto(p);
                 return estado !== 'vencido' && estado !== 'cancelado';
             }
-            const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
-            const nombreLimpio = nombre.trim().toLowerCase();
-            if (nombrePres === nombreLimpio) {
-                const estado = calcularEstadoPresupuesto(p);
-                return estado !== 'vencido' && estado !== 'cancelado';
-            }
             return false;
         });
+        // ==========================================================
+
         const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
 
         let mapsHtml = '';
@@ -1888,13 +1885,7 @@ function actualizarResumenContactos(data) {
                 if (p.contactoId && p.contactoId === contactoId) {
                     return calcularEstadoPresupuesto(p) === 'vencido';
                 }
-                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
-                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
-            });
-        } else {
-            tieneVencido = datosCache.presupuestos.some(p => {
-                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
-                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
+                return false;
             });
         }
 
