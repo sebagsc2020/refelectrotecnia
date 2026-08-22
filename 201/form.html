@@ -332,8 +332,8 @@
                 <span>¡Solicitud guardada! Te responderemos a la brevedad.</span>
             </div>
 
-            <!-- ===== ACORDEÓN: DATOS PERSONALES ===== -->
-            <div class="field-group active">
+            <!-- ===== ACORDEÓN: DATOS PERSONALES (cerrado por defecto) ===== -->
+            <div class="field-group">
                 <div class="field-header" data-target="field-personal">
                     <span><i class="fas fa-user" style="margin-right:10px; color:var(--primary-cyan);"></i>Datos personales</span>
                     <i class="fas fa-chevron-down"></i>
@@ -351,7 +351,7 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: SERVICIO ===== -->
+            <!-- ===== ACORDEÓN: SERVICIO (cerrado por defecto) ===== -->
             <div class="field-group">
                 <div class="field-header" data-target="field-servicio">
                     <span><i class="fas fa-tools" style="margin-right:10px; color:var(--primary-cyan);"></i>Servicio requerido</span>
@@ -372,7 +372,7 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: UBICACIÓN (condicional) ===== -->
+            <!-- ===== ACORDEÓN: UBICACIÓN (cerrado por defecto) ===== -->
             <div class="field-group">
                 <div class="field-header" data-target="field-ubicacion">
                     <span><i class="fas fa-map-marker-alt" style="margin-right:10px; color:var(--accent-yellow);"></i>Ubicación</span>
@@ -394,7 +394,7 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: MENSAJE ===== -->
+            <!-- ===== ACORDEÓN: MENSAJE (cerrado por defecto) ===== -->
             <div class="field-group">
                 <div class="field-header" data-target="field-mensaje">
                     <span><i class="fas fa-comment" style="margin-right:10px; color:var(--primary-cyan);"></i>Mensaje</span>
@@ -459,14 +459,13 @@
         }
 
         // ============================================================
-        // LÓGICA DEL ACORDEÓN
+        // LÓGICA DEL ACORDEÓN (todos cerrados al inicio)
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const headers = document.querySelectorAll('.field-header');
 
             headers.forEach(header => {
                 header.addEventListener('click', function(e) {
-                    const targetId = this.dataset.target;
                     const currentGroup = this.closest('.field-group');
                     const isActive = currentGroup.classList.contains('active');
 
@@ -480,13 +479,6 @@
                     // Si estaba activo, al cerrar todos queda cerrado (toggle)
                 });
             });
-
-            // Abrir el primero por defecto (ya tiene clase 'active' en el HTML)
-            // pero si no, forzar: 
-            const firstGroup = document.querySelector('.field-group');
-            if (firstGroup && !firstGroup.classList.contains('active')) {
-                firstGroup.classList.add('active');
-            }
 
             // ============================================================
             // DICTADO POR VOZ
@@ -572,9 +564,7 @@
             const btnMaps = document.getElementById('btnMaps');
             let ubicacionCompartida = false;
 
-            // Por defecto, la ubicación está visible porque la hemos puesto con clase 'visible' en el HTML,
-            // pero queremos que solo se vea si el servicio es emergencia.
-            // Inicialmente ocultamos
+            // Por defecto ocultamos la ubicación (solo se muestra si el servicio es emergencia)
             ubicacionGroup.classList.remove('visible');
 
             servicioSelect.addEventListener('change', function() {
@@ -679,10 +669,8 @@
                     // Ocultar ubicación si estaba visible
                     ubicacionGroup.classList.remove('visible');
                     btnMaps.classList.add('hidden');
-                    // Cerrar todos los paneles y abrir solo el primero
+                    // Cerrar todos los paneles (dejar todo colapsado)
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
-                    const first = document.querySelector('.field-group');
-                    if (first) first.classList.add('active');
                 } else {
                     alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
                 }
