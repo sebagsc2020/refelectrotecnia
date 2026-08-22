@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
+        /* ========== ESTILOS (sin cambios relevantes) ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --primary-dark: #0A2E5C;
             --primary-cyan: #0099E8;
@@ -29,7 +29,6 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --font: 'Inter', sans-serif;
         }
-
         body {
             font-family: var(--font);
             background: var(--light-bg);
@@ -40,12 +39,10 @@
             padding: 40px 20px;
             margin: 0;
         }
-
         .container {
             max-width: 700px;
             width: 100%;
         }
-
         .contact-form {
             background: var(--white);
             padding: 32px 28px;
@@ -53,14 +50,12 @@
             box-shadow: var(--shadow);
             position: relative;
         }
-
         .contact-form h4 {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary-dark);
             margin-bottom: 20px;
         }
-
         .field-group {
             border-bottom: 1px solid #E9ECEF;
             margin-bottom: 4px;
@@ -68,7 +63,6 @@
         .field-group:last-of-type {
             border-bottom: none;
         }
-
         .field-header {
             display: flex;
             justify-content: space-between;
@@ -92,7 +86,6 @@
             color: var(--success-green);
             font-size: 1.1rem;
             display: none;
-            /* oculto por defecto */
         }
         .field-header .title-wrapper .section-check.visible {
             display: inline;
@@ -106,7 +99,6 @@
             transform: rotate(180deg);
             color: var(--primary-cyan);
         }
-
         .field-content {
             max-height: 0;
             overflow: hidden;
@@ -117,7 +109,6 @@
             max-height: 600px;
             padding: 0 4px 16px 4px;
         }
-
         .field-content input,
         .field-content select,
         .field-content textarea {
@@ -138,13 +129,11 @@
             background: white;
             box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
         }
-
         .field-content textarea {
             resize: vertical;
             min-height: 100px;
             padding-right: 64px;
         }
-
         .textarea-wrapper {
             position: relative;
         }
@@ -178,7 +167,6 @@
             70% { box-shadow: 0 0 0 14px rgba(229, 57, 53, 0); }
             100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
         }
-
         .mic-hint {
             display: block;
             margin-top: 6px;
@@ -188,7 +176,6 @@
         .mic-hint i {
             color: var(--danger-red);
         }
-
         .form-success {
             display: none;
             background: #E8F5E9;
@@ -205,7 +192,6 @@
             display: flex;
             animation: fadeIn 0.4s ease;
         }
-
         .ubicacion-group {
             display: block;
         }
@@ -219,7 +205,6 @@
             flex: 1;
             min-width: 200px;
         }
-
         .btn-ubicacion {
             background: var(--primary-cyan);
             color: white;
@@ -245,7 +230,6 @@
             cursor: not-allowed;
             transform: none;
         }
-
         .btn-maps {
             background: #34A853;
             color: white;
@@ -268,14 +252,12 @@
         .btn-maps.hidden {
             display: none;
         }
-
         .ubicacion-group small {
             display: block;
             margin-top: 6px;
             color: var(--gray-text);
             font-size: 0.8rem;
         }
-
         .btn-submit {
             background: var(--primary-dark);
             color: white;
@@ -302,18 +284,10 @@
             opacity: 0.7;
             cursor: not-allowed;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         @media (max-width: 768px) {
             .contact-form {
                 padding: 20px 16px;
@@ -339,7 +313,7 @@
                 <span>¡Solicitud guardada! Te responderemos a la brevedad.</span>
             </div>
 
-            <!-- ===== DATOS PERSONALES ===== -->
+            <!-- PERSONAL -->
             <div class="field-group" data-section="personal">
                 <div class="field-header" data-target="field-personal">
                     <span class="title-wrapper">
@@ -361,7 +335,7 @@
                 </div>
             </div>
 
-            <!-- ===== SERVICIO ===== -->
+            <!-- SERVICIO -->
             <div class="field-group" data-section="servicio">
                 <div class="field-header" data-target="field-servicio">
                     <span class="title-wrapper">
@@ -385,7 +359,7 @@
                 </div>
             </div>
 
-            <!-- ===== UBICACIÓN ===== -->
+            <!-- UBICACIÓN -->
             <div class="field-group" data-section="ubicacion">
                 <div class="field-header" data-target="field-ubicacion">
                     <span class="title-wrapper">
@@ -410,7 +384,7 @@
                 </div>
             </div>
 
-            <!-- ===== MENSAJE ===== -->
+            <!-- MENSAJE -->
             <div class="field-group" data-section="mensaje">
                 <div class="field-header" data-target="field-mensaje">
                     <span class="title-wrapper">
@@ -486,11 +460,9 @@
             const checkSpan = group.querySelector('.section-check');
             let hasData = false;
 
-            // Según la sección, revisamos sus campos
             if (sectionId === 'personal') {
                 const nombre = group.querySelector('#nombre')?.value.trim();
                 const telefono = group.querySelector('#telefono')?.value.trim();
-                // Si tiene nombre o teléfono (o email, pero al menos uno)
                 hasData = !!(nombre || telefono);
             } else if (sectionId === 'servicio') {
                 const select = group.querySelector('#servicio');
@@ -503,7 +475,6 @@
                 hasData = !!(textarea && textarea.value.trim() !== '');
             }
 
-            // Mostrar u ocultar el check
             if (hasData) {
                 checkSpan.classList.add('visible');
             } else {
@@ -512,7 +483,41 @@
         }
 
         // ============================================================
-        // LÓGICA DEL ACORDEÓN (con actualización de check al cerrar)
+        // EVENTOS PARA ACTUALIZAR CHECK AL PERDER EL FOCO (blur) o cambiar (select)
+        // ============================================================
+        function setupFieldListeners() {
+            // Para inputs y textareas: al perder el foco
+            document.querySelectorAll('.field-content input:not([type="hidden"]), .field-content textarea').forEach(field => {
+                field.addEventListener('blur', function() {
+                    const group = this.closest('.field-group');
+                    if (group) {
+                        const section = group.dataset.section;
+                        if (section) updateSectionCheck(section);
+                    }
+                });
+            });
+
+            // Para selects: al cambiar y al perder el foco
+            document.querySelectorAll('.field-content select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const group = this.closest('.field-group');
+                    if (group) {
+                        const section = group.dataset.section;
+                        if (section) updateSectionCheck(section);
+                    }
+                });
+                select.addEventListener('blur', function() {
+                    const group = this.closest('.field-group');
+                    if (group) {
+                        const section = group.dataset.section;
+                        if (section) updateSectionCheck(section);
+                    }
+                });
+            });
+        }
+
+        // ============================================================
+        // LÓGICA DEL ACORDEÓN (con check al cerrar)
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const headers = document.querySelectorAll('.field-header');
@@ -522,22 +527,24 @@
                     const currentGroup = this.closest('.field-group');
                     const isActive = currentGroup.classList.contains('active');
 
-                    // Antes de cerrar, actualizamos el check si se va a cerrar
+                    // Si se va a cerrar, actualizar check
                     if (isActive) {
-                        // Se va a cerrar -> actualizar check
                         const section = currentGroup.dataset.section;
-                        updateSectionCheck(section);
+                        if (section) updateSectionCheck(section);
                     }
 
-                    // Cerrar todos los grupos
+                    // Cerrar todos
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
 
-                    // Si no estaba activo, lo activamos
+                    // Abrir si no estaba activo
                     if (!isActive) {
                         currentGroup.classList.add('active');
                     }
                 });
             });
+
+            // Configurar listeners para los campos
+            setupFieldListeners();
 
             // ============================================================
             // DICTADO POR VOZ
@@ -670,7 +677,7 @@
             });
 
             // ============================================================
-            // ENVÍO (SOLO FIRESTORE) + RESETEO DE CHECKS
+            // ENVÍO (SOLO FIRESTORE) + RESETEO
             // ============================================================
             const contactForm = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
@@ -709,16 +716,13 @@
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
 
-                    // Resetear formulario
+                    // Resetear todo
                     contactForm.reset();
-                    // Cerrar todos los paneles
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
-                    // Ocultar botón Maps
                     btnMaps.classList.add('hidden');
                     ubicacionCompartida = false;
-                    // OCULTAR TODOS LOS CHECKS
+                    // Ocultar todos los checks
                     document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
-                    // Enfocar nombre
                     document.getElementById('nombre').focus();
                 } else {
                     alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
@@ -729,7 +733,7 @@
             });
 
             // ============================================================
-            // INICIALIZAR: verificar si hay datos al cargar (por si el usuario recarga)
+            // INICIALIZAR: verificar datos al cargar
             // ============================================================
             ['personal', 'servicio', 'ubicacion', 'mensaje'].forEach(section => {
                 updateSectionCheck(section);
