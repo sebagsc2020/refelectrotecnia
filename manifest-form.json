@@ -1,0 +1,24 @@
+{
+  "name": "REF Electrotecnia - Solicitud",
+  "short_name": "REF Solicitud",
+  "description": "Formulario de solicitud de servicio",
+  "start_url": "/201/form.html",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#0099E8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
