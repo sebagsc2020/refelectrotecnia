@@ -1117,7 +1117,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas y contactoId por defecto) ===== -->
+<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas y corrección de precio) ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1934,7 +1934,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
 });
 
 // ============================================================
-//  PRESUPUESTOS (con corrección de imágenes y contactoId por defecto)
+//  PRESUPUESTOS (con corrección de imágenes y precio como número)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2013,13 +2013,23 @@ window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
+    // 🔥 Precio como número (no string)
     const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
+    const precioNumero = parseFloat(total.toFixed(2)); // Aseguramos 2 decimales como número
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
 
-    // 🔥 CORRECCIÓN: si no hay contactoId, enviamos 'sin_contacto' en lugar de cadena vacía
-    const contactoId = window.contactoIdActual || 'sin_contacto';
+    // 🔥 contactoId: si es null o vacío, usar 'sin_contacto'
+    let contactoId = window.contactoIdActual;
+    if (!contactoId || contactoId.trim() === '') {
+        contactoId = 'sin_contacto';
+    }
+
+    // Logs para depuración
+    console.log('📌 Guardando presupuesto:');
+    console.log('   - contactoId:', contactoId);
+    console.log('   - precio (número):', precioNumero);
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -2027,7 +2037,6 @@ window.guardarPresupuesto = async function() {
 
     try {
         const element = document.getElementById('presupuestoPreview');
-        // Esperamos un poco más para asegurar carga de imágenes
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const canvas = await html2canvas(element, {
@@ -2053,18 +2062,18 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        // Guardar en Firestore (siempre con contactoId no vacío)
+        // 🔥 Objeto con precio como número
         const datosPresupuesto = {
             nombre,
             servicio,
             descripcion,
-            precio: total.toFixed(2),
+            precio: precioNumero, // 👈 número, no string
             numero,
             validez,
             materiales,
             estado: 'encurso',
             fecha: serverTimestamp(),
-            contactoId: contactoId  // 🔥 Ahora siempre es una cadena no vacía
+            contactoId: contactoId  // 👈 siempre string no vacío
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
@@ -2072,8 +2081,8 @@ window.guardarPresupuesto = async function() {
         cerrarModal('presupuestoModal');
 
     } catch (error) {
-        console.error('Error al generar el PDF:', error);
-        await mostrarError('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
+        console.error('❌ Error al guardar presupuesto:', error);
+        await mostrarError('Hubo un error al guardar el presupuesto. Revisa la consola para más detalles.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
