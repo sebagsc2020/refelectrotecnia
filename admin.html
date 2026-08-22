@@ -1117,7 +1117,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas) ===== -->
+<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas y contactoId por defecto) ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1934,7 +1934,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
 });
 
 // ============================================================
-//  PRESUPUESTOS (con corrección de imágenes y contactoId)
+//  PRESUPUESTOS (con corrección de imágenes y contactoId por defecto)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2017,7 +2017,9 @@ window.guardarPresupuesto = async function() {
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const contactoId = window.contactoIdActual || ''; // 👈 siempre enviamos un valor (vacío si no existe)
+
+    // 🔥 CORRECCIÓN: si no hay contactoId, enviamos 'sin_contacto' en lugar de cadena vacía
+    const contactoId = window.contactoIdActual || 'sin_contacto';
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -2051,7 +2053,7 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        // Guardar en Firestore (siempre con contactoId)
+        // Guardar en Firestore (siempre con contactoId no vacío)
         const datosPresupuesto = {
             nombre,
             servicio,
@@ -2062,7 +2064,7 @@ window.guardarPresupuesto = async function() {
             materiales,
             estado: 'encurso',
             fecha: serverTimestamp(),
-            contactoId: contactoId // 👈 se envía siempre
+            contactoId: contactoId  // 🔥 Ahora siempre es una cadena no vacía
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
