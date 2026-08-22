@@ -402,7 +402,7 @@
             }
         }
 
-        /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
+        /* ===== DISEÑO DEL PRESUPUESTO (PDF) - IMÁGENES ACTUALIZADAS ===== */
         .presupuesto-preview {
             --primary-dark: #0a1a2f;
             --primary-mid: #1a365d;
@@ -1117,7 +1117,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO ===== -->
+<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas) ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1135,16 +1135,16 @@
             </div>
         </div>
 
-        <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) - imágenes con rutas relativas -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
-                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-512.png" alt="Marca de agua" />
+                    <img src="/images/icon-512.png" alt="Marca de agua" />
                 </div>
                 <header class="header">
                     <div class="header-left">
                         <div class="logo">
-                            <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-192.png" alt="REF Electrotecnia" />
+                            <img src="/images/icon-192.png" alt="REF Electrotecnia" />
                         </div>
                         <div class="empresa">
                             <h1>REF <span>Electrotecnia</span></h1>
@@ -1197,7 +1197,7 @@
                     </section>
                     <div class="totales-container">
                         <div class="totales-firma">
-                            <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
+                            <img class="firma-imagen" src="/images/firma.png" alt="Firma R. Figueras" />
                             <span class="firma-texto">R. Figueras - REF Electrotecnia</span>
                             <span class="firma-digital">✓ Firmado digitalmente</span>
                         </div>
@@ -1934,7 +1934,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
 });
 
 // ============================================================
-//  PRESUPUESTOS (sin cambios)
+//  PRESUPUESTOS (con corrección de imágenes y contactoId)
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2017,7 +2017,7 @@ window.guardarPresupuesto = async function() {
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const contactoId = window.contactoIdActual || null;
+    const contactoId = window.contactoIdActual || ''; // 👈 siempre enviamos un valor (vacío si no existe)
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -2025,7 +2025,9 @@ window.guardarPresupuesto = async function() {
 
     try {
         const element = document.getElementById('presupuestoPreview');
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Esperamos un poco más para asegurar carga de imágenes
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
@@ -2049,6 +2051,7 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
+        // Guardar en Firestore (siempre con contactoId)
         const datosPresupuesto = {
             nombre,
             servicio,
@@ -2058,11 +2061,10 @@ window.guardarPresupuesto = async function() {
             validez,
             materiales,
             estado: 'encurso',
-            fecha: serverTimestamp()
+            fecha: serverTimestamp(),
+            contactoId: contactoId // 👈 se envía siempre
         };
-        if (contactoId) {
-            datosPresupuesto.contactoId = contactoId;
-        }
+
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
 
         cerrarModal('presupuestoModal');
