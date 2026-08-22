@@ -370,6 +370,16 @@
         #presupuestosContainer table td:nth-child(8) { width: 8%; min-width: 65px; text-align: center; white-space: normal; word-break: keep-all; }
         .estado-select { max-width: 100%; min-width: 80px; font-size: 0.75rem; padding: 3px 6px; }
 
+        /* ===== ESTILOS PARA TABLA DE CONTACTOS (AGENDA) ===== */
+        #contactosContainer table {
+            min-width: 700px; /* Forzar scroll horizontal en móvil */
+        }
+        #contactosContainer table th:first-child,
+        #contactosContainer table td:first-child {
+            width: 40px;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
             #presupuestosContainer table { display: table; table-layout: auto; font-size: 0.8rem; min-width: 700px; width: auto; }
             #presupuestosContainer table thead { display: table-header-group; }
@@ -387,6 +397,9 @@
             .filtro-container { flex-direction: column; align-items: stretch; }
             .filtro-container select,
             .filtro-container input[type="text"] { width: 100%; min-width: unset; }
+            #contactosContainer table {
+                min-width: 600px;
+            }
         }
 
         /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
@@ -875,12 +888,21 @@
     <!-- ===== NUEVA SECCIÓN: CONTACTOS (AGENDA) ===== -->
     <div class="table-container">
         <h4><i class="fas fa-address-card" style="color:var(--primary-cyan);"></i> Contactos (Agenda)</h4>
-        <div style="padding: 12px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-            <button class="btn-edit" id="importVcfBtn" style="background: var(--primary-dark); padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
-                <i class="fas fa-file-import"></i> Importar desde .vcf
-            </button>
-            <input type="file" id="vcfFileInput" accept=".vcf" style="display: none;">
-            <span style="font-size: 0.85rem; color: var(--gray-text);">Selecciona un archivo .vcf para importar contactos.</span>
+        <div style="padding: 12px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <button class="btn-edit" id="importVcfBtn" style="background: var(--primary-dark); padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
+                    <i class="fas fa-file-import"></i> Importar .vcf
+                </button>
+                <input type="file" id="vcfFileInput" accept=".vcf" style="display: none;">
+                <input type="text" id="busquedaContactos" placeholder="Buscar por nombre, teléfono o email..." style="padding: 8px 14px; border: 2px solid #E9ECEF; border-radius: 8px; font-family: var(--font); font-size: 0.9rem; min-width: 200px;">
+                <button class="btn-delete" id="eliminarSeleccionadosBtn" style="background: #e74c3c; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; display: none;">
+                    <i class="fas fa-trash"></i> Eliminar seleccionados (<span id="seleccionadosCount">0</span>)
+                </button>
+                <button class="btn-delete" id="eliminarTodosBtn" style="background: #c0392b; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.85rem;">
+                    <i class="fas fa-trash-alt"></i> Eliminar todos
+                </button>
+            </div>
+            <span style="font-size: 0.85rem; color: var(--gray-text);">Selecciona contactos para eliminar en masa.</span>
         </div>
         <div class="table-scroll" id="contactosContainer">
             <div class="loading"><i class="fas fa-spinner"></i> Cargando contactos...</div>
@@ -1060,7 +1082,7 @@
 <script type="module">
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, onSnapshot, getDocs } from 'firebase/firestore';
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -1080,11 +1102,11 @@ const db = getFirestore(app);
 // ============================================================
 //  VARIABLES GLOBALES
 // ============================================================
-let datosCache = { contactos: [], presupuestos: [] };
+let datosCache = { contactos: [], presupuestos: [], contactosAgenda: [] };
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
-let unsubscribeContactosAgenda = null; // NUEVO
+let unsubscribeContactosAgenda = null;
 window.contactoIdActual = null;
 
 // ============================================================
@@ -1280,7 +1302,7 @@ onAuthStateChanged(auth, (user) => {
         if (unsubscribeContactosAgenda) unsubscribeContactosAgenda();
         unsubscribeContactos = escucharContactos();
         unsubscribePresupuestos = escucharPresupuestos();
-        unsubscribeContactosAgenda = escucharContactosAgenda(); // NUEVO
+        unsubscribeContactosAgenda = escucharContactosAgenda();
     } else {
         showLogin();
         if (unsubscribeContactos) { unsubscribeContactos(); unsubscribeContactos = null; }
@@ -1343,7 +1365,7 @@ function escucharPresupuestos() {
     });
 }
 
-// ===== NUEVA ESCUCHA PARA CONTACTOS_AGENDA =====
+// ESCUCHA PARA CONTACTOS_AGENDA
 function escucharContactosAgenda() {
     return onSnapshot(collection(db, 'contactos_agenda'), (snapshot) => {
         const contactos = [];
@@ -1351,8 +1373,8 @@ function escucharContactosAgenda() {
             const data = doc.data();
             contactos.push({ id: doc.id, ...data });
         });
-        // Ordenar por nombre
         contactos.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+        datosCache.contactosAgenda = contactos;
         renderizarContactos(contactos);
     }, (error) => {
         console.error('Error en onSnapshot contactos_agenda:', error);
@@ -1453,7 +1475,6 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        // ========== CORRECCIÓN AQUÍ: SOLO POR contactoId ==========
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             if (p.contactoId && p.contactoId === docId) {
                 const estado = calcularEstadoPresupuesto(p);
@@ -1461,7 +1482,6 @@ function renderizarTabla(data) {
             }
             return false;
         });
-        // ==========================================================
 
         const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
 
@@ -1861,39 +1881,60 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  NUEVAS FUNCIONES PARA CONTACTOS_AGENDA
+//  FUNCIONES PARA CONTACTOS_AGENDA
 // ============================================================
 
-// Renderizar tabla de contactos de agenda
+// Renderizar contactos con búsqueda, selección y columna dirección
 function renderizarContactos(contactos) {
     const container = document.getElementById('contactosContainer');
-    if (!contactos || contactos.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos importados aún.</p></div>`;
+    const busqueda = document.getElementById('busquedaContactos').value.toLowerCase().trim();
+    
+    // Filtrar por búsqueda
+    let contactosFiltrados = contactos;
+    if (busqueda !== '') {
+        contactosFiltrados = contactos.filter(c => {
+            const nombre = (c.nombre || '').toLowerCase();
+            const telefono = (c.telefono || '').toLowerCase();
+            const email = (c.email || '').toLowerCase();
+            const direccion = (c.direccion || '').toLowerCase();
+            return nombre.includes(busqueda) || telefono.includes(busqueda) || 
+                   email.includes(busqueda) || direccion.includes(busqueda);
+        });
+    }
+
+    if (!contactosFiltrados || contactosFiltrados.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos que coincidan con la búsqueda.</p></div>`;
+        document.getElementById('eliminarSeleccionadosBtn').style.display = 'none';
         return;
     }
 
     let html = `<table><thead><tr>
+        <th style="width:40px; text-align:center;"><input type="checkbox" id="selectAllCheckbox" title="Seleccionar todos"></th>
         <th>Nombre</th>
         <th>Email</th>
         <th>Teléfono</th>
+        <th>Dirección</th>
         <th style="text-align:center;">Acciones</th>
     </tr></thead><tbody>`;
 
-    contactos.forEach(contacto => {
+    contactosFiltrados.forEach(contacto => {
+        const docId = contacto.id;
         const nombre = contacto.nombre || 'Sin nombre';
         const email = contacto.email || '';
         const telefono = contacto.telefono || '';
-        const docId = contacto.id;
+        const direccion = contacto.direccion || '';
 
-        // Limpiar número para WhatsApp (solo dígitos)
+        // Limpiar número para WhatsApp
         const telefonoLimpio = telefono.replace(/\D/g, '');
         const waUrl = `https://wa.me/${telefonoLimpio}`;
         const waMsgUrl = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu consulta.')}`;
 
-        html += `<tr>
+        html += `<tr data-id="${docId}">
+            <td style="text-align:center;"><input type="checkbox" class="contact-checkbox" data-id="${docId}"></td>
             <td><strong>${nombre}</strong></td>
             <td>${email || '—'}</td>
             <td>${telefono}</td>
+            <td>${direccion || '—'}</td>
             <td style="text-align:center; white-space:nowrap;">
                 <a href="${waUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-right: 6px;">
                     <i class="fas fa-phone"></i> Llamar
@@ -1901,6 +1942,9 @@ function renderizarContactos(contactos) {
                 <a href="${waMsgUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #25D366;">
                     <i class="fab fa-whatsapp"></i> Mensaje
                 </a>
+                <button class="btn-edit" onclick="editarContactoAgenda('${docId}')" style="padding: 4px 8px; font-size: 0.8rem;" title="Editar contacto">
+                    <i class="fas fa-edit"></i>
+                </button>
                 <button class="btn-delete" onclick="eliminarContactoAgenda('${docId}')" style="padding: 4px 8px; font-size: 0.8rem;" title="Eliminar contacto">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -1910,9 +1954,130 @@ function renderizarContactos(contactos) {
 
     html += `</tbody></table>`;
     container.innerHTML = html;
+
+    // Actualizar contador de seleccionados
+    actualizarContadorSeleccionados();
+
+    // Evento para "Seleccionar todos"
+    const selectAll = document.getElementById('selectAllCheckbox');
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.contact-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            actualizarContadorSeleccionados();
+        });
+    }
+
+    // Evento para cada checkbox
+    document.querySelectorAll('.contact-checkbox').forEach(cb => {
+        cb.addEventListener('change', actualizarContadorSeleccionados);
+    });
 }
 
-// Eliminar contacto de agenda
+// Actualizar contador y visibilidad del botón "Eliminar seleccionados"
+function actualizarContadorSeleccionados() {
+    const checkboxes = document.querySelectorAll('.contact-checkbox:checked');
+    const count = checkboxes.length;
+    const btn = document.getElementById('eliminarSeleccionadosBtn');
+    const span = document.getElementById('seleccionadosCount');
+    if (span) span.textContent = count;
+    if (btn) {
+        btn.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+}
+
+// Eliminar contactos seleccionados
+document.getElementById('eliminarSeleccionadosBtn').addEventListener('click', async function() {
+    const checkboxes = document.querySelectorAll('.contact-checkbox:checked');
+    if (checkboxes.length === 0) return;
+    
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de eliminar ${checkboxes.length} contacto(s) seleccionado(s)?`);
+    if (!confirmado) return;
+    
+    let eliminados = 0;
+    for (const cb of checkboxes) {
+        const id = cb.dataset.id;
+        try {
+            await deleteDoc(doc(db, 'contactos_agenda', id));
+            eliminados++;
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+        }
+    }
+    await mostrarModal({
+        tipo: 'success',
+        icon: '✅',
+        titulo: 'Contactos eliminados',
+        mensaje: `Se eliminaron ${eliminados} contactos correctamente.`,
+        botones: [{ texto: 'Aceptar', clase: 'primary' }]
+    });
+});
+
+// Eliminar todos los contactos
+document.getElementById('eliminarTodosBtn').addEventListener('click', async function() {
+    if (!datosCache.contactosAgenda || datosCache.contactosAgenda.length === 0) {
+        await mostrarError('No hay contactos para eliminar.');
+        return;
+    }
+    const total = datosCache.contactosAgenda.length;
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de eliminar TODOS los ${total} contactos de la agenda? Esta acción no se puede deshacer.`);
+    if (!confirmado) return;
+    
+    let eliminados = 0;
+    for (const contacto of datosCache.contactosAgenda) {
+        try {
+            await deleteDoc(doc(db, 'contactos_agenda', contacto.id));
+            eliminados++;
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+        }
+    }
+    await mostrarModal({
+        tipo: 'success',
+        icon: '✅',
+        titulo: 'Agenda vaciada',
+        mensaje: `Se eliminaron ${eliminados} contactos de la agenda.`,
+        botones: [{ texto: 'Aceptar', clase: 'primary' }]
+    });
+});
+
+// Editar contacto de agenda
+window.editarContactoAgenda = async function(docId) {
+    const contacto = datosCache.contactosAgenda ? datosCache.contactosAgenda.find(c => c.id === docId) : null;
+    if (!contacto) {
+        await mostrarError('Contacto no encontrado.');
+        return;
+    }
+    
+    const nuevoNombre = prompt('Nombre:', contacto.nombre || '');
+    if (nuevoNombre === null) return;
+    const nuevoTelefono = prompt('Teléfono:', contacto.telefono || '');
+    if (nuevoTelefono === null) return;
+    const nuevoEmail = prompt('Email:', contacto.email || '');
+    if (nuevoEmail === null) return;
+    const nuevaDireccion = prompt('Dirección:', contacto.direccion || '');
+    if (nuevaDireccion === null) return;
+    
+    try {
+        await updateDoc(doc(db, 'contactos_agenda', docId), {
+            nombre: nuevoNombre.trim() || contacto.nombre,
+            telefono: nuevoTelefono.trim() || contacto.telefono,
+            email: nuevoEmail.trim() || contacto.email,
+            direccion: nuevaDireccion.trim() || contacto.direccion
+        });
+        await mostrarModal({
+            tipo: 'success',
+            icon: '✅',
+            titulo: 'Contacto actualizado',
+            mensaje: 'Los datos del contacto fueron actualizados correctamente.',
+            botones: [{ texto: 'Aceptar', clase: 'primary' }]
+        });
+    } catch (error) {
+        await mostrarError('Error al actualizar: ' + error.message);
+    }
+};
+
+// Eliminar contacto individual
 window.eliminarContactoAgenda = async function(docId) {
     const confirmado = await mostrarConfirmacion('¿Estás seguro de eliminar este contacto de la agenda?');
     if (confirmado) {
@@ -1932,11 +2097,10 @@ document.getElementById('importVcfBtn').addEventListener('click', function() {
 document.getElementById('vcfFileInput').addEventListener('change', async function(e) {
     const file = this.files[0];
     if (!file) return;
-    this.value = ''; // reset
+    this.value = '';
 
     try {
         const text = await file.text();
-        // Parsear vCard (versión simple)
         const contactos = parseVCard(text);
         if (contactos.length === 0) {
             await mostrarError('No se encontraron contactos válidos en el archivo.');
@@ -1948,11 +2112,11 @@ document.getElementById('vcfFileInput').addEventListener('change', async functio
 
         let importados = 0;
         for (const c of contactos) {
-            // Evitar duplicados: podrías agregar lógica para buscar por teléfono o email, pero aquí importamos todos
             await addDoc(collection(db, 'contactos_agenda'), {
                 nombre: c.nombre || '',
                 email: c.email || '',
                 telefono: c.telefono || '',
+                direccion: c.direccion || '',
                 fecha: serverTimestamp()
             });
             importados++;
@@ -1974,32 +2138,43 @@ document.getElementById('vcfFileInput').addEventListener('change', async functio
 
 function parseVCard(vcfText) {
     const contactos = [];
-    // Dividir por BEGIN:VCARD
     const blocks = vcfText.split('BEGIN:VCARD');
     for (const block of blocks) {
         if (!block.trim()) continue;
         const lines = block.split('\n');
-        let nombre = '', telefono = '', email = '';
+        let nombre = '', telefono = '', email = '', direccion = '';
         for (const line of lines) {
             const trimmed = line.trim();
             if (trimmed.startsWith('FN:')) {
                 nombre = trimmed.substring(3).trim();
             } else if (trimmed.startsWith('TEL')) {
-                // Puede tener parámetros; buscar el número
                 const telMatch = trimmed.match(/TEL[^:]*:([\d\s\+]+)/);
                 if (telMatch) telefono = telMatch[1].trim();
             } else if (trimmed.startsWith('EMAIL')) {
                 const emailMatch = trimmed.match(/EMAIL[^:]*:([^\s]+)/);
                 if (emailMatch) email = emailMatch[1].trim();
+            } else if (trimmed.startsWith('ADR')) {
+                // Extraer dirección simple (puede tener múltiples partes separadas por ;)
+                const adrMatch = trimmed.match(/ADR[^:]*:([^:]*)/);
+                if (adrMatch) {
+                    // Reemplazar ; por espacios y limpiar
+                    direccion = adrMatch[1].replace(/;/g, ' ').trim();
+                }
             }
         }
-        // Si al menos tiene nombre o teléfono, lo agregamos
-        if (nombre || telefono || email) {
-            contactos.push({ nombre, telefono, email });
+        if (nombre || telefono || email || direccion) {
+            contactos.push({ nombre, telefono, email, direccion });
         }
     }
     return contactos;
 }
+
+// --- Búsqueda en tiempo real ---
+document.getElementById('busquedaContactos').addEventListener('input', function() {
+    if (datosCache.contactosAgenda) {
+        renderizarContactos(datosCache.contactosAgenda);
+    }
+});
 
 // ============================================================
 //  RESUMEN POR CONTACTO (sin cambios)
