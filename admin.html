@@ -286,7 +286,7 @@
         /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" ===== */
         #tablaContainer table {
             width: 100%;
-            table-layout: auto;
+            table-layout: fixed; /* Fuerza los anchos */
             font-size: 0.9rem;
         }
         #tablaContainer table th,
@@ -294,9 +294,12 @@
             padding: 8px 10px;
             vertical-align: middle;
             text-align: left;
+            overflow: hidden; /* Evita desbordes */
+            text-overflow: ellipsis;
         }
+        /* Anchos porcentuales que suman 100% */
         #tablaContainer table th:nth-child(1), /* Fecha */
-        #tablaContainer table td:nth-child(1) { width: 12%; }
+        #tablaContainer table td:nth-child(1) { width: 10%; }
         #tablaContainer table th:nth-child(2), /* Nombre */
         #tablaContainer table td:nth-child(2) { width: 15%; }
         #tablaContainer table th:nth-child(3), /* Teléfono */
@@ -304,13 +307,37 @@
         #tablaContainer table th:nth-child(4), /* Servicio */
         #tablaContainer table td:nth-child(4) { width: 14%; }
         #tablaContainer table th:nth-child(5), /* Ubicación */
-        #tablaContainer table td:nth-child(5) { width: 5%; min-width: 35px; max-width: 50px; white-space: nowrap; text-align: center; }
+        #tablaContainer table td:nth-child(5) { 
+            width: 5%; 
+            min-width: 35px; 
+            max-width: 50px; 
+            white-space: nowrap; 
+            text-align: center; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         #tablaContainer table th:nth-child(6), /* Mensaje (más espacio) */
-        #tablaContainer table td:nth-child(6) { width: 30%; max-width: 400px; word-break: break-word; white-space: normal; }
+        #tablaContainer table td:nth-child(6) { 
+            width: 28%; 
+            word-break: break-word; 
+            white-space: normal; 
+            text-overflow: clip; /* Permite que el texto se envuelva */
+        }
         #tablaContainer table th:nth-child(7), /* Presupuesto */
-        #tablaContainer table td:nth-child(7) { width: 6%; min-width: 35px; max-width: 60px; text-align: center; white-space: nowrap; }
+        #tablaContainer table td:nth-child(7) { 
+            width: 6%; 
+            min-width: 35px; 
+            max-width: 60px; 
+            text-align: center; 
+            white-space: nowrap; 
+        }
         #tablaContainer table th:nth-child(8), /* Acciones */
-        #tablaContainer table td:nth-child(8) { width: 10%; min-width: 110px; white-space: nowrap; text-align: center; }
+        #tablaContainer table td:nth-child(8) { 
+            width: 10%; 
+            min-width: 110px; 
+            white-space: nowrap; 
+            text-align: center; 
+        }
 
         /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
