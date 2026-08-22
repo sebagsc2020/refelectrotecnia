@@ -58,7 +58,6 @@
         .stat-card .stat-icon { float: right; font-size: 2rem; color: var(--primary-cyan); opacity: 0.4; }
         .stat-card.emergencia { border-left-color: #e74c3c; }
         .stat-card.emergencia .stat-icon { color: #e74c3c; }
-        /* ===== TARJETA PENDIENTE (ROJA) ===== */
         .stat-card.pendiente { 
             border-left-color: #e74c3c; 
             background-color: #e74c3c; 
@@ -123,7 +122,8 @@
         .loading i { font-size: 2rem; color: var(--primary-cyan); animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .no-data { text-align: center; padding: 40px; color: var(--gray-text); }
-        /* ===== MODALES EXISTENTES (edit y presupuesto) ===== */
+
+        /* ===== MODALES ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: white; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: modalFade 0.3s ease; }
@@ -283,34 +283,34 @@
         }
         .table-scroll tbody tr td:last-child { cursor: default; }
 
-        /* ===== FIJAR ANCHO DE COLUMNAS EN "TODOS LOS REGISTROS" ===== */
+        /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" ===== */
         #tablaContainer table {
-            table-layout: fixed;
             width: 100%;
+            table-layout: auto;
+            font-size: 0.9rem;
         }
-        #tablaContainer table td:nth-child(6) { /* Mensaje */
-            max-width: 200px;
-            word-break: break-word;
-            white-space: normal;
+        #tablaContainer table th,
+        #tablaContainer table td {
+            padding: 8px 10px;
+            vertical-align: middle;
+            text-align: left;
         }
-        #tablaContainer table td:nth-child(5) { /* Ubicación */
-            width: 40px;
-            max-width: 40px;
-            min-width: 35px;
-            white-space: nowrap;
-            text-align: center;
-        }
-        #tablaContainer table td:nth-child(7) { /* Presupuesto */
-            width: 45px;
-            max-width: 45px;
-            min-width: 40px;
-            white-space: nowrap;
-            text-align: center;
-        }
-        #tablaContainer table td:nth-child(8) { /* Acciones */
-            width: auto;
-            white-space: nowrap;
-        }
+        #tablaContainer table th:nth-child(1), /* Fecha */
+        #tablaContainer table td:nth-child(1) { width: 12%; }
+        #tablaContainer table th:nth-child(2), /* Nombre */
+        #tablaContainer table td:nth-child(2) { width: 15%; }
+        #tablaContainer table th:nth-child(3), /* Teléfono */
+        #tablaContainer table td:nth-child(3) { width: 12%; }
+        #tablaContainer table th:nth-child(4), /* Servicio */
+        #tablaContainer table td:nth-child(4) { width: 14%; }
+        #tablaContainer table th:nth-child(5), /* Ubicación */
+        #tablaContainer table td:nth-child(5) { width: 5%; min-width: 35px; max-width: 50px; white-space: nowrap; text-align: center; }
+        #tablaContainer table th:nth-child(6), /* Mensaje (más espacio) */
+        #tablaContainer table td:nth-child(6) { width: 30%; max-width: 400px; word-break: break-word; white-space: normal; }
+        #tablaContainer table th:nth-child(7), /* Presupuesto */
+        #tablaContainer table td:nth-child(7) { width: 6%; min-width: 35px; max-width: 60px; text-align: center; white-space: nowrap; }
+        #tablaContainer table th:nth-child(8), /* Acciones */
+        #tablaContainer table td:nth-child(8) { width: 10%; min-width: 110px; white-space: nowrap; text-align: center; }
 
         /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
@@ -811,7 +811,6 @@
         <div class="stat-card"><span class="stat-icon"><i class="fas fa-users"></i></span><div class="stat-number" id="totalContactos">0</div><div class="stat-label">Total de contactos</div></div>
         <div class="stat-card"><span class="stat-icon"><i class="fas fa-calendar-week"></i></span><div class="stat-number" id="contactosMes">0</div><div class="stat-label">Registros del mes</div></div>
         <div class="stat-card emergencia"><span class="stat-icon"><i class="fas fa-exclamation-triangle"></i></span><div class="stat-number" id="emergencias">0</div><div class="stat-label">Emergencias 24/7</div></div>
-        <!-- ===== TARJETA PENDIENTE (ROJA) ===== -->
         <div class="stat-card pendiente"><span class="stat-icon"><i class="fas fa-clock"></i></span><div class="stat-number" id="pendientesPresupuesto">0</div><div class="stat-label">Pendientes de presupuesto</div></div>
     </div>
 
@@ -842,7 +841,7 @@
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
 </div>
 
-<!-- ===== NUEVO MODAL PERSONALIZADO ===== -->
+<!-- ===== MODAL PERSONALIZADO ===== -->
 <div class="custom-modal-overlay" id="customModal">
     <div class="custom-modal-box">
         <div class="icon" id="customModalIcon">⚠️</div>
