@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de contacto | REF Electrotecnia</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* ===== RESET & VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0A2E5C;
+            --primary-medium: #1A4B7A;
+            --primary-cyan: #0099E8;
+            --accent-yellow: #FFB800;
+            --accent-orange: #FF7A00;
+            --danger-red: #E53935;
+            --wa-green: #25D366;
+            --success-green: #2E7D32;
+            --light-bg: #F8F9FA;
+            --gray-text: #4A4A4A;
+            --white: #FFFFFF;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--light-bg);
+            color: #1E1E1E;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ===== FORM CARD ===== */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px 28px;
+            transition: var(--transition);
+        }
+
+        .form-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 16px; /* Reducido de 28px a 16px */
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .form-header h2 span {
+            color: var(--primary-cyan);
+        }
+
+        /* ===== COLLAPSIBLE SECTIONS ===== */
+        .collapsible-section {
+            border: 1px solid #E9ECEF;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .collapsible-section:hover {
+            border-color: var(--primary-cyan);
+        }
+
+        .section-header {
+            background: var(--light-bg);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .section-header:hover {
+            background: #e9ecef;
+        }
+
+        .section-header i {
+            color: var(--primary-cyan);
+            transition: transform 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .section-header .section-icon {
+            margin-right: 12px;
+            color: var(--primary-cyan);
+        }
+
+        .section-header .section-title {
+            flex: 1;
+        }
+
+        .collapsible-section.open .section-header i {
+            transform: rotate(180deg);
+        }
+
+        .section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 20px;
+        }
+
+        .collapsible-section.open .section-body {
+            max-height: 600px;
+            padding: 12px 20px 20px; /* Reducido padding-top de 20px a 12px */
+        }
+
+        /* ===== FORM FIELDS ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .form-group label .required {
+            color: var(--danger-red);
+            margin-left: 4px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+            color: #1E1E1E;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            padding-right: 64px;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+        }
+
+        .btn-mic {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-cyan);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
+        }
+
+        .btn-mic:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-mic.listening {
+            background: var(--danger-red);
+            animation: pulseMic 1.2s infinite;
+        }
+
+        @keyframes pulseMic {
+            0% {
+                box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 14px rgba(229, 57, 53, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+            }
+        }
+
+        .mic-hint {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .mic-hint i {
+            color: var(--danger-red);
+        }
+
+        /* Ubicación group */
+        .ubicacion-group {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ubicacion-group.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ubicacion-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .ubicacion-wrapper input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .btn-ubicacion {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            font-family: var(--font);
+        }
+
+        .btn-ubicacion:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-ubicacion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-maps {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-family: var(--font);
+        }
+
+        .btn-maps:hover {
+            background: #2D8F47;
+            transform: translateY(-2px);
+        }
+
+        .btn-maps.hidden {
+            display: none;
+        }
+
+        .ubicacion-group small {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        /* ===== SUBMIT ===== */
+        .btn-submit {
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: var(--font);
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* ===== SUCCESS MESSAGE ===== */
+        .form-success {
+            display: none;
+            background: #E8F5E9;
+            border: 2px solid var(--success-green);
+            color: var(--success-green);
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-success.visible {
+            display: flex;
+        }
+
+        .form-success i {
+            font-size: 1.4rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .form-card {
+                padding: 20px 16px;
+            }
+
+            .form-header h2 {
+                font-size: 1.6rem;
+            }
+
+            .section-header {
+                font-size: 0.95rem;
+                padding: 14px 16px;
+            }
+
+            .section-body {
+                padding: 0 16px;
+            }
+
+            .collapsible-section.open .section-body {
+                padding: 12px 16px 16px; /* Ajuste responsive */
+            }
+
+            .ubicacion-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-ubicacion,
+            .btn-maps {
+                justify-content: center;
+            }
+
+            .btn-submit {
+                font-size: 1rem;
+                padding: 14px 24px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+            }
+
+            .btn-mic {
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .form-card {
+                padding: 16px 12px;
+            }
+
+            .section-header {
+                font-size: 0.9rem;
+                padding: 12px 12px;
+            }
+
+            .section-body {
+                padding: 0 12px;
+            }
+
+            .collapsible-section.open .section-body {
+                padding: 10px 12px 14px; /* Ajuste responsive */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="form-card">
+
+            <!-- Header -->
+            <div class="form-header">
+                <h2>REF <span>Electrotecnia</span></h2>
+            </div>
+
+            <!-- Mensaje de éxito -->
+            <div class="form-success" id="formSuccess">
+                <i class="fas fa-check-circle"></i>
+                <span>¡Datos guardados correctamente!</span>
+            </div>
+
+            <!-- Formulario -->
+            <form id="contactForm" novalidate>
+
+                <!-- ===== SECCIÓN 1: DATOS DE CONTACTO ===== -->
+                <div class="collapsible-section open" id="sectionContacto">
+                    <button type="button" class="section-header" aria-expanded="true">
+                        <span class="section-icon"><i class="fas fa-user"></i></span>
+                        <span class="section-title">Datos de contacto</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label for="nombre">Nombre completo <span class="required">*</span></label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" autocomplete="given-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono / WhatsApp <span class="required">*</span></label>
+                            <input type="tel" id="telefono" name="telefono" placeholder="Ej: 351 123 4567" autocomplete="tel" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" autocomplete="email">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECCIÓN 2: SERVICIO Y UBICACIÓN ===== -->
+                <div class="collapsible-section" id="sectionServicio">
+                    <button type="button" class="section-header" aria-expanded="false">
+                        <span class="section-icon"><i class="fas fa-tools"></i></span>
+                        <span class="section-title">Servicio y ubicación</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label for="servicio">Servicio que necesitas</label>
+                            <select id="servicio" name="servicio" autocomplete="off">
+                                <option value="">Selecciona una opción</option>
+                                <option>Instalación eléctrica</option>
+                                <option>Reparación / Mantenimiento</option>
+                                <option>Domótica / Automatización</option>
+                                <option>Tableros / Puesta a tierra</option>
+                                <option>Iluminación</option>
+                                <option>Certificación / Habilitación</option>
+                                <option value="emergencia">Emergencia 24/7</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+
+                        <!-- Ubicación (visible solo si se selecciona emergencia) -->
+                        <div class="form-group ubicacion-group hidden" id="ubicacionGroup">
+                            <label for="ubicacion">
+                                <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i>
+                                Ubicación de la emergencia
+                            </label>
+                            <div class="ubicacion-wrapper">
+                                <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
+                                <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
+                                    <i class="fas fa-map"></i> Abrir en Maps
+                                </button>
+                            </div>
+                            <button type="button" class="btn-ubicacion" id="btnUbicacion">
+                                <i class="fas fa-location-dot"></i> Compartir ubicación actual
+                            </button>
+                            <small>Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SECCIÓN 3: MENSAJE ===== -->
+                <div class="collapsible-section" id="sectionMensaje">
+                    <button type="button" class="section-header" aria-expanded="false">
+                        <span class="section-icon"><i class="fas fa-comment"></i></span>
+                        <span class="section-title">Mensaje</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="section-body">
+                        <div class="form-group">
+                            <label for="mensaje">Describe brevemente el trabajo a realizar</label>
+                            <div class="textarea-wrapper">
+                                <textarea id="mensaje" name="mensaje" placeholder="Ej: Necesito instalar un toma corriente en la cocina..."></textarea>
+                                <button type="button" class="btn-mic" id="btnMic" title="Dictar por voz" aria-label="Dictar por voz">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                            </div>
+                            <small class="mic-hint" id="micHint"><i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de envío -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-save"></i> Guardar datos
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ============================================================
+            // 1) COLLAPSIBLE SECTIONS
+            // ============================================================
+            const sections = document.querySelectorAll('.collapsible-section');
+
+            sections.forEach(function(section) {
+                const header = section.querySelector('.section-header');
+                const body = section.querySelector('.section-body');
+
+                header.addEventListener('click', function(e) {
+                    const isOpen = section.classList.contains('open');
+
+                    // Cerrar todas las demás secciones (opcional, para mantener solo una abierta)
+                    // sections.forEach(function(other) {
+                    //     if (other !== section && other.classList.contains('open')) {
+                    //         other.classList.remove('open');
+                    //         other.querySelector('.section-header').setAttribute('aria-expanded', 'false');
+                    //     }
+                    // });
+
+                    if (isOpen) {
+                        section.classList.remove('open');
+                        header.setAttribute('aria-expanded', 'false');
+                    } else {
+                        section.classList.add('open');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+
+            // ============================================================
+            // 2) MOSTRAR/OCULTAR UBICACIÓN SEGÚN SERVICIO
+            // ============================================================
+            const servicioSelect = document.getElementById('servicio');
+            const ubicacionGroup = document.getElementById('ubicacionGroup');
+
+            servicioSelect.addEventListener('change', function() {
+                if (this.value === 'emergencia') {
+                    ubicacionGroup.classList.remove('hidden');
+                } else {
+                    ubicacionGroup.classList.add('hidden');
+                    document.getElementById('ubicacion').value = '';
+                    document.getElementById('btnMaps').classList.add('hidden');
+                }
+            });
+
+            // ============================================================
+            // 3) UBICACIÓN: COMPARTIR Y MAPS
+            // ============================================================
+            const ubicacionInput = document.getElementById('ubicacion');
+            const btnUbicacion = document.getElementById('btnUbicacion');
+            const btnMaps = document.getElementById('btnMaps');
+            let ubicacionCompartida = false;
+
+            ubicacionInput.addEventListener('input', function() {
+                if (ubicacionCompartida) ubicacionCompartida = false;
+                if (this.value.trim().length > 0 && !ubicacionCompartida) {
+                    btnMaps.classList.remove('hidden');
+                } else {
+                    btnMaps.classList.add('hidden');
+                }
+            });
+
+            btnMaps.addEventListener('click', function() {
+                const direccion = ubicacionInput.value.trim();
+                if (!direccion) return;
+                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
+                let url;
+                if (esCoordenada) {
+                    const coords = direccion.match(/-?\d+\.\d+/g);
+                    if (coords && coords.length >= 2) {
+                        url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
+                    } else {
+                        url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
+                    }
+                } else {
+                    url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
+                }
+                window.open(url, '_blank');
+            });
+
+            btnUbicacion.addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert('Tu navegador no soporta geolocalización.');
+                    return;
+                }
+                btnUbicacion.disabled = true;
+                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo ubicación...';
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsLink = 'https://www.google.com/maps?q=' + lat.toFixed(6) + ',' + lng.toFixed(6);
+                        ubicacionInput.value = mapsLink;
+                        ubicacionCompartida = true;
+                        btnMaps.classList.add('hidden');
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    },
+                    function(error) {
+                        alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // ============================================================
+            // 4) DICTADO POR VOZ
+            // ============================================================
+            const mensajeTextarea = document.getElementById('mensaje');
+            const btnMic = document.getElementById('btnMic');
+            const micHint = document.getElementById('micHint');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && btnMic) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                let listening = false,
+                    shouldListen = false,
+                    baseText = '',
+                    finalTranscript = '';
+
+                recognition.onstart = function() {
+                    listening = true;
+                    btnMic.classList.add('listening');
+                    btnMic.title = 'Detener dictado';
+                    baseText = mensajeTextarea.value.replace(/\s+$/, '');
+                    finalTranscript = '';
+                    if (micHint) micHint.innerHTML = '<i class="fas fa-circle" style="color: var(--danger-red); border-radius:50%;"></i> Escuchando... hablá con normalidad.';
+                };
+
+                recognition.onresult = function(event) {
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript.trim() + ' ';
+                        } else {
+                            interim += transcript;
+                        }
+                    }
+                    mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
+                };
+
+                recognition.onerror = function(event) {
+                    shouldListen = false;
+                    stopListening();
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        alert('Permiso de micrófono denegado.');
+                    }
+                };
+
+                recognition.onend = function() {
+                    if (shouldListen) {
+                        try { recognition.start(); } catch (e) {}
+                    } else {
+                        stopListening();
+                    }
+                };
+
+                btnMic.addEventListener('click', function() {
+                    if (listening) {
+                        shouldListen = false;
+                        recognition.stop();
+                        stopListening();
+                    } else {
+                        shouldListen = true;
+                        try { recognition.start(); } catch (e) {}
+                    }
+                });
+
+                function stopListening() {
+                    listening = false;
+                    btnMic.classList.remove('listening');
+                    btnMic.title = 'Dictar por voz';
+                    if (micHint) micHint.innerHTML = '<i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.';
+                }
+            } else if (btnMic) {
+                btnMic.style.display = 'none';
+                if (micHint) micHint.style.display = 'none';
+            }
+
+            // ============================================================
+            // 5) ENVÍO DEL FORMULARIO -> GUARDAR EN LOCALSTORAGE
+            // ============================================================
+            const contactForm = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSuccess = document.getElementById('formSuccess');
+
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Obtener datos
+                const nombre = document.getElementById('nombre').value.trim();
+                const telefono = document.getElementById('telefono').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const servicio = document.getElementById('servicio').value;
+                const ubicacion = document.getElementById('ubicacion').value.trim();
+                const mensaje = mensajeTextarea.value.trim();
+
+                // Validar campos requeridos
+                if (!nombre || !telefono) {
+                    alert('Por favor, completa tu nombre y teléfono.');
+                    return;
+                }
+
+                // Construir objeto de datos
+                const formData = {
+                    fecha: new Date().toLocaleString('es-AR'),
+                    nombre: nombre,
+                    telefono: telefono,
+                    email: email || '-',
+                    servicio: servicio || '-',
+                    ubicacion: ubicacion || '-',
+                    mensaje: mensaje || '-',
+                    origen: 'formulario_clone'
+                };
+
+                // Guardar en localStorage (como array de registros)
+                let stored = localStorage.getItem('formularios_ref');
+                let registros = stored ? JSON.parse(stored) : [];
+                registros.push(formData);
+                localStorage.setItem('formularios_ref', JSON.stringify(registros));
+
+                // Mostrar mensaje de éxito
+                formSuccess.classList.add('visible');
+                setTimeout(function() {
+                    formSuccess.classList.remove('visible');
+                }, 5000);
+
+                // Opcional: limpiar el formulario (excepto datos de contacto para agilidad)
+                // document.getElementById('nombre').value = '';
+                // document.getElementById('telefono').value = '';
+                // document.getElementById('email').value = '';
+                // document.getElementById('servicio').value = '';
+                // document.getElementById('ubicacion').value = '';
+                // mensajeTextarea.value = '';
+                // btnMaps.classList.add('hidden');
+
+                // También se puede notificar al usuario con un console.log
+                console.log('Datos guardados en localStorage:', formData);
+                console.log('Total de registros:', registros.length);
+            });
+
+            // ============================================================
+            // 6) (OPCIONAL) Mostrar en consola los datos guardados al cargar
+            // ============================================================
+            const storedData = localStorage.getItem('formularios_ref');
+            if (storedData) {
+                const parsed = JSON.parse(storedData);
+                console.log('Registros guardados en localStorage:', parsed.length);
+            }
+
+        });
+    </script>
+
+</body>
+</html>
