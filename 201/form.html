@@ -192,7 +192,7 @@
         }
 
         .ubicacion-group {
-            display: block; /* Siempre visible */
+            display: block;
         }
         .ubicacion-wrapper {
             display: flex;
@@ -311,7 +311,8 @@
 <body>
     <div class="container">
         <form class="contact-form" id="contactForm">
-            <h4>Presupuesto</h4>
+            <!-- TÍTULO ACTUALIZADO -->
+            <h4>Datos Cliente</h4>
 
             <div class="form-success" id="formSuccess">
                 <i class="fas fa-check-circle"></i>
@@ -358,7 +359,7 @@
                 </div>
             </div>
 
-            <!-- Ubicación (siempre visible) -->
+            <!-- Ubicación -->
             <div class="field-group">
                 <div class="field-header" data-target="field-ubicacion">
                     <span><i class="fas fa-map-marker-alt" style="margin-right:10px; color:var(--accent-yellow);"></i>Ubicación</span>
@@ -538,7 +539,7 @@
             }
 
             // ============================================================
-            // UBICACIÓN (siempre visible, sin condicional)
+            // UBICACIÓN (siempre visible)
             // ============================================================
             const ubicacionInput = document.getElementById('ubicacion');
             const btnUbicacion = document.getElementById('btnUbicacion');
@@ -633,9 +634,7 @@
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
                     contactForm.reset();
-                    // Cerrar todos los paneles
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
-                    // Ocultar botón Maps
                     btnMaps.classList.add('hidden');
                     ubicacionCompartida = false;
                 } else {
