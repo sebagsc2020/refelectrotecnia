@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REF Electrotecnia | Solicitar presupuesto</title>
-    <!-- Fuentes e iconos -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
@@ -55,19 +54,12 @@
         }
 
         .contact-form h4 {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary-dark);
-            margin-bottom: 4px;
+            margin-bottom: 20px;
         }
 
-        .contact-form .subtitle {
-            color: var(--gray-text);
-            margin-bottom: 24px;
-            font-size: 1rem;
-        }
-
-        /* ===== ACORDEÓN ===== */
         .field-group {
             border-bottom: 1px solid #E9ECEF;
             margin-bottom: 4px;
@@ -107,11 +99,10 @@
             padding: 0 4px;
         }
         .field-group.active .field-content {
-            max-height: 300px; /* suficiente para inputs */
+            max-height: 600px;
             padding: 0 4px 16px 4px;
         }
 
-        /* Campos dentro del contenido */
         .field-content input,
         .field-content select,
         .field-content textarea {
@@ -200,12 +191,8 @@
             animation: fadeIn 0.4s ease;
         }
 
-        /* Ubicación (condicional) */
         .ubicacion-group {
-            display: none;
-        }
-        .ubicacion-group.visible {
-            display: block;
+            display: block; /* Siempre visible */
         }
         .ubicacion-wrapper {
             display: flex;
@@ -324,15 +311,14 @@
 <body>
     <div class="container">
         <form class="contact-form" id="contactForm">
-            <h4>Solicita tu presupuesto</h4>
-            <p class="subtitle">Completa tus datos. Todos los campos son opcionales excepto nombre y teléfono.</p>
+            <h4>Presupuesto</h4>
 
             <div class="form-success" id="formSuccess">
                 <i class="fas fa-check-circle"></i>
                 <span>¡Solicitud guardada! Te responderemos a la brevedad.</span>
             </div>
 
-            <!-- ===== ACORDEÓN: DATOS PERSONALES (cerrado por defecto) ===== -->
+            <!-- Datos personales -->
             <div class="field-group">
                 <div class="field-header" data-target="field-personal">
                     <span><i class="fas fa-user" style="margin-right:10px; color:var(--primary-cyan);"></i>Datos personales</span>
@@ -351,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: SERVICIO (cerrado por defecto) ===== -->
+            <!-- Servicio -->
             <div class="field-group">
                 <div class="field-header" data-target="field-servicio">
                     <span><i class="fas fa-tools" style="margin-right:10px; color:var(--primary-cyan);"></i>Servicio requerido</span>
@@ -372,14 +358,14 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: UBICACIÓN (cerrado por defecto) ===== -->
+            <!-- Ubicación (siempre visible) -->
             <div class="field-group">
                 <div class="field-header" data-target="field-ubicacion">
                     <span><i class="fas fa-map-marker-alt" style="margin-right:10px; color:var(--accent-yellow);"></i>Ubicación</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="field-content" id="field-ubicacion">
-                    <div class="ubicacion-group visible" id="ubicacionGroup">
+                    <div class="ubicacion-group">
                         <div class="ubicacion-wrapper">
                             <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección o coordenadas" autocomplete="off" />
                             <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
@@ -394,7 +380,7 @@
                 </div>
             </div>
 
-            <!-- ===== ACORDEÓN: MENSAJE (cerrado por defecto) ===== -->
+            <!-- Mensaje -->
             <div class="field-group">
                 <div class="field-header" data-target="field-mensaje">
                     <span><i class="fas fa-comment" style="margin-right:10px; color:var(--primary-cyan);"></i>Mensaje</span>
@@ -459,7 +445,7 @@
         }
 
         // ============================================================
-        // LÓGICA DEL ACORDEÓN (todos cerrados al inicio)
+        // LÓGICA DEL ACORDEÓN (todos cerrados)
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const headers = document.querySelectorAll('.field-header');
@@ -469,14 +455,11 @@
                     const currentGroup = this.closest('.field-group');
                     const isActive = currentGroup.classList.contains('active');
 
-                    // Cerrar todos los grupos
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
 
-                    // Si el grupo clicado NO estaba activo, lo activamos
                     if (!isActive) {
                         currentGroup.classList.add('active');
                     }
-                    // Si estaba activo, al cerrar todos queda cerrado (toggle)
                 });
             });
 
@@ -555,28 +538,12 @@
             }
 
             // ============================================================
-            // UBICACIÓN (emergencia)
+            // UBICACIÓN (siempre visible, sin condicional)
             // ============================================================
-            const servicioSelect = document.getElementById('servicio');
-            const ubicacionGroup = document.getElementById('ubicacionGroup');
             const ubicacionInput = document.getElementById('ubicacion');
             const btnUbicacion = document.getElementById('btnUbicacion');
             const btnMaps = document.getElementById('btnMaps');
             let ubicacionCompartida = false;
-
-            // Por defecto ocultamos la ubicación (solo se muestra si el servicio es emergencia)
-            ubicacionGroup.classList.remove('visible');
-
-            servicioSelect.addEventListener('change', function() {
-                if (this.value === 'emergencia') {
-                    ubicacionGroup.classList.add('visible');
-                } else {
-                    ubicacionGroup.classList.remove('visible');
-                    ubicacionInput.value = '';
-                    btnMaps.classList.add('hidden');
-                    ubicacionCompartida = false;
-                }
-            });
 
             ubicacionInput.addEventListener('input', function() {
                 if (ubicacionCompartida) ubicacionCompartida = false;
@@ -666,11 +633,11 @@
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
                     contactForm.reset();
-                    // Ocultar ubicación si estaba visible
-                    ubicacionGroup.classList.remove('visible');
-                    btnMaps.classList.add('hidden');
-                    // Cerrar todos los paneles (dejar todo colapsado)
+                    // Cerrar todos los paneles
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+                    // Ocultar botón Maps
+                    btnMaps.classList.add('hidden');
+                    ubicacionCompartida = false;
                 } else {
                     alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
                 }
@@ -679,7 +646,7 @@
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar solicitud';
             });
 
-        }); // fin DOMContentLoaded
+        });
     </script>
 </body>
 </html>
