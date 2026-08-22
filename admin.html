@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -402,7 +402,7 @@
             }
         }
 
-        /* ===== DISEÑO DEL PRESUPUESTO (PDF) - IMÁGENES ACTUALIZADAS ===== */
+        /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
         .presupuesto-preview {
             --primary-dark: #0a1a2f;
             --primary-mid: #1a365d;
@@ -826,113 +826,6 @@
         .presupuesto-box .presupuesto-preview { max-width: 100%; overflow: auto; margin: 15px 0; background: white; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .presupuesto-box .presupuesto-preview .presupuesto { border-radius: 0; box-shadow: none; border: 1px solid #E9ECEF; }
         @media (max-width: 768px) { .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; } }
-
-        /* ===== NUEVOS ESTILOS PARA CONTACTOS AGENDA Y NUEVO REGISTRO ===== */
-        .contact-actions-bar {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 8px 16px 12px 16px;
-            border-bottom: 1px solid #E9ECEF;
-        }
-        .contact-actions-bar .search-wrapper {
-            flex: 1;
-            min-width: 180px;
-            position: relative;
-        }
-        .contact-actions-bar .search-wrapper input {
-            width: 100%;
-            padding: 8px 16px 8px 36px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-family: var(--font);
-            font-size: 0.85rem;
-            background: var(--light-bg);
-            transition: var(--transition);
-        }
-        .contact-actions-bar .search-wrapper input:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0,168,255,0.1);
-        }
-        .contact-actions-bar .search-wrapper i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-text);
-        }
-        .btn-delete-selected {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-delete-selected:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        .btn-delete-selected:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .checkbox-col {
-            width: 32px;
-            text-align: center;
-        }
-        .checkbox-col input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-        .btn-add-record {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-add-record:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
-        }
-        .btn-create-solicitud {
-            background: #2ecc71;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-right: 4px;
-        }
-        .btn-create-solicitud:hover {
-            background: #27ae60;
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body>
@@ -971,11 +864,10 @@
         <div class="chart-box"><h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4><div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p class="loading"><i class="fas fa-spinner"></i> Cargando...</p></div></div>
     </div>
 
-    <!-- ===== SECCIÓN TODOS LOS REGISTROS (con botón agregar manual) ===== -->
     <div class="table-container">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
             <h4 style="margin:0;"><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-            <button class="btn-add-record" onclick="abrirNuevoRegistro()">
+            <button class="btn-add-record" onclick="abrirNuevoRegistro()" style="background: var(--primary-dark); color: white; border: none; padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px;">
                 <i class="fas fa-plus"></i> Agregar manual
             </button>
         </div>
@@ -1000,33 +892,6 @@
     </div>
     
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
-
-    <!-- ===== SECCIÓN CONTACTOS (AGENDA) MEJORADA ===== -->
-    <div class="table-container">
-        <h4><i class="fas fa-address-card" style="color:var(--primary-cyan);"></i> Contactos (Agenda)</h4>
-        <div style="padding: 12px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #E9ECEF;">
-            <button class="btn-edit" id="importVcfBtn" style="background: var(--primary-dark); padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
-                <i class="fas fa-file-import"></i> Importar .vcf
-            </button>
-            <input type="file" id="vcfFileInput" accept=".vcf" style="display: none;">
-            <span style="font-size: 0.85rem; color: var(--gray-text);">Selecciona un archivo .vcf para importar contactos.</span>
-        </div>
-
-        <!-- Barra de búsqueda y acciones -->
-        <div class="contact-actions-bar">
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="busquedaAgenda" placeholder="Buscar por nombre, email o teléfono..." oninput="filtrarContactosAgenda()">
-            </div>
-            <button class="btn-delete-selected" id="deleteSelectedBtn" onclick="eliminarSeleccionados()" disabled>
-                <i class="fas fa-trash"></i> Eliminar seleccionados
-            </button>
-        </div>
-
-        <div class="table-scroll" id="contactosContainer">
-            <div class="loading"><i class="fas fa-spinner"></i> Cargando contactos...</div>
-        </div>
-    </div>
 </div>
 
 <!-- ===== MODAL PERSONALIZADO ===== -->
@@ -1070,24 +935,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL EDITAR CONTACTO AGENDA ===== -->
-<div class="modal-overlay" id="editAgendaModal">
-    <div class="modal-box">
-        <button class="close-modal" id="closeAgendaModal">&times;</button>
-        <h3><span>✏️</span> Editar contacto (Agenda)</h3>
-        <input type="hidden" id="editAgendaId">
-        <div class="form-group"><label>Nombre completo</label><input type="text" id="editAgendaNombre" placeholder="Nombre completo"></div>
-        <div class="form-group"><label>Teléfono / WhatsApp</label><input type="text" id="editAgendaTelefono" placeholder="Teléfono"></div>
-        <div class="form-group"><label>Correo electrónico</label><input type="email" id="editAgendaEmail" placeholder="Correo electrónico"></div>
-        <div class="form-group"><label>Dirección</label><input type="text" id="editAgendaDireccion" placeholder="Dirección"></div>
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelAgendaBtn">Cancelar</button>
-            <button class="btn-save" id="saveAgendaBtn"><i class="fas fa-save"></i> Guardar cambios</button>
-        </div>
-    </div>
-</div>
-
-<!-- ===== MODAL NUEVO REGISTRO (para agregar manual o desde agenda) ===== -->
+<!-- ===== MODAL NUEVO REGISTRO (para agregar manual) ===== -->
 <div class="modal-overlay" id="nuevoRegistroModal">
     <div class="modal-box">
         <button class="close-modal" id="closeNuevoRegistroModal">&times;</button>
@@ -1117,7 +965,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO (con imágenes actualizadas y corrección de precio) ===== -->
+<!-- ===== MODAL PRESUPUESTO ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1135,7 +983,7 @@
             </div>
         </div>
 
-        <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) - imágenes con rutas relativas -->
+        <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
@@ -1269,11 +1117,9 @@ const db = getFirestore(app);
 //  VARIABLES GLOBALES
 // ============================================================
 let datosCache = { contactos: [], presupuestos: [] };
-let contactosAgenda = [];
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
-let unsubscribeContactosAgenda = null;
 window.contactoIdActual = null;
 
 // ============================================================
@@ -1466,15 +1312,12 @@ onAuthStateChanged(auth, (user) => {
         showDashboard();
         if (unsubscribeContactos) unsubscribeContactos();
         if (unsubscribePresupuestos) unsubscribePresupuestos();
-        if (unsubscribeContactosAgenda) unsubscribeContactosAgenda();
         unsubscribeContactos = escucharContactos();
         unsubscribePresupuestos = escucharPresupuestos();
-        unsubscribeContactosAgenda = escucharContactosAgenda();
     } else {
         showLogin();
         if (unsubscribeContactos) { unsubscribeContactos(); unsubscribeContactos = null; }
         if (unsubscribePresupuestos) { unsubscribePresupuestos(); unsubscribePresupuestos = null; }
-        if (unsubscribeContactosAgenda) { unsubscribeContactosAgenda(); unsubscribeContactosAgenda = null; }
     }
 });
 
@@ -1529,22 +1372,6 @@ function escucharPresupuestos() {
     }, (error) => {
         console.error('Error en onSnapshot presupuestos:', error);
         document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos: ${error.message}</p></div>`;
-    });
-}
-
-function escucharContactosAgenda() {
-    return onSnapshot(collection(db, 'contactos_agenda'), (snapshot) => {
-        const contactos = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            contactos.push({ id: doc.id, ...data });
-        });
-        contactos.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
-        contactosAgenda = contactos;
-        renderizarContactos(contactos);
-    }, (error) => {
-        console.error('Error en onSnapshot contactos_agenda:', error);
-        document.getElementById('contactosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar contactos: ${error.message}</p></div>`;
     });
 }
 
@@ -1710,7 +1537,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (sin cambios)
+//  RENDERIZAR PRESUPUESTOS
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1881,13 +1708,13 @@ window.eliminarRegistro = async function(docId) {
 };
 
 // ============================================================
-//  NUEVO REGISTRO MANUAL / DESDE AGENDA
+//  NUEVO REGISTRO MANUAL
 // ============================================================
-window.abrirNuevoRegistro = function(datosPrecargados = null) {
-    document.getElementById('nuevoNombre').value = datosPrecargados?.nombre || '';
-    document.getElementById('nuevoTelefono').value = datosPrecargados?.telefono || '';
-    document.getElementById('nuevoEmail').value = datosPrecargados?.email || '';
-    document.getElementById('nuevoUbicacion').value = datosPrecargados?.direccion || '';
+window.abrirNuevoRegistro = function() {
+    document.getElementById('nuevoNombre').value = '';
+    document.getElementById('nuevoTelefono').value = '';
+    document.getElementById('nuevoEmail').value = '';
+    document.getElementById('nuevoUbicacion').value = '';
     document.getElementById('nuevoServicio').value = '';
     document.getElementById('nuevoMensaje').value = '';
     document.getElementById('nuevoRegistroModal').classList.add('active');
@@ -1934,7 +1761,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
 });
 
 // ============================================================
-//  PRESUPUESTOS (con corrección de imágenes y precio como número)
+//  PRESUPUESTOS
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2013,20 +1840,17 @@ window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
-    // 🔥 Precio como número (no string)
     const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-    const precioNumero = parseFloat(total.toFixed(2)); // Aseguramos 2 decimales como número
+    const precioNumero = parseFloat(total.toFixed(2));
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
 
-    // 🔥 contactoId: si es null o vacío, usar 'sin_contacto'
     let contactoId = window.contactoIdActual;
     if (!contactoId || contactoId.trim() === '') {
         contactoId = 'sin_contacto';
     }
 
-    // Logs para depuración
     console.log('📌 Guardando presupuesto:');
     console.log('   - contactoId:', contactoId);
     console.log('   - precio (número):', precioNumero);
@@ -2062,18 +1886,17 @@ window.guardarPresupuesto = async function() {
         const filename = `Presupuesto N° ${numero} - ${nombre} - ${new Date().toISOString().slice(0,10)}.pdf`;
         pdf.save(filename);
 
-        // 🔥 Objeto con precio como número
         const datosPresupuesto = {
             nombre,
             servicio,
             descripcion,
-            precio: precioNumero, // 👈 número, no string
+            precio: precioNumero,
             numero,
             validez,
             materiales,
             estado: 'encurso',
             fecha: serverTimestamp(),
-            contactoId: contactoId  // 👈 siempre string no vacío
+            contactoId: contactoId
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
@@ -2113,289 +1936,7 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  FUNCIONES PARA CONTACTOS_AGENDA (con botón "Crear solicitud")
-// ============================================================
-
-function renderizarContactos(contactos) {
-    const container = document.getElementById('contactosContainer');
-    if (!contactos || contactos.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos importados aún.</p></div>`;
-        return;
-    }
-
-    const busqueda = document.getElementById('busquedaAgenda').value.toLowerCase().trim();
-    let filtrados = contactos;
-    if (busqueda !== '') {
-        filtrados = contactos.filter(c => {
-            const nombre = (c.nombre || '').toLowerCase();
-            const email = (c.email || '').toLowerCase();
-            const telefono = (c.telefono || '');
-            return nombre.includes(busqueda) || email.includes(busqueda) || telefono.includes(busqueda);
-        });
-    }
-
-    if (filtrados.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-search" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos que coincidan con la búsqueda.</p></div>`;
-        return;
-    }
-
-    let html = `<table><thead><tr>
-        <th class="checkbox-col"><input type="checkbox" id="selectAllAgenda" onchange="toggleAllAgenda()"></th>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Dirección</th>
-        <th style="text-align:center;">Acciones</th>
-    </tr></thead><tbody>`;
-
-    filtrados.forEach(contacto => {
-        const docId = contacto.id;
-        const nombre = contacto.nombre || 'Sin nombre';
-        const email = contacto.email || '';
-        const telefono = contacto.telefono || '';
-        const direccion = contacto.direccion || '';
-
-        const telefonoLimpio = telefono.replace(/\D/g, '');
-        const waUrl = `https://wa.me/${telefonoLimpio}`;
-        const waMsgUrl = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu consulta.')}`;
-
-        html += `<tr data-id="${docId}">
-            <td class="checkbox-col"><input type="checkbox" class="agenda-checkbox" data-id="${docId}" onchange="actualizarBotonEliminar()"></td>
-            <td><strong>${nombre}</strong></td>
-            <td>${email || '—'}</td>
-            <td>${telefono}</td>
-            <td>${direccion || '—'}</td>
-            <td style="text-align:center; white-space:nowrap;">
-                <button class="btn-create-solicitud" onclick="crearSolicitudDesdeAgenda('${docId}')" title="Crear registro en Todos los registros">
-                    <i class="fas fa-plus"></i> Solicitud
-                </button>
-                <button class="btn-edit" onclick="editarContactoAgenda('${docId}')" style="padding: 5px 10px; font-size: 0.8rem;">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <a href="${waUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px;">
-                    <i class="fas fa-phone"></i> Llamar
-                </a>
-                <a href="${waMsgUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #25D366;">
-                    <i class="fab fa-whatsapp"></i> Mensaje
-                </a>
-                <button class="btn-delete" onclick="eliminarContactoAgenda('${docId}')" style="padding: 4px 8px; font-size: 0.8rem;" title="Eliminar contacto">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>`;
-    });
-
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-    actualizarBotonEliminar();
-}
-
-// Función para crear solicitud desde agenda
-window.crearSolicitudDesdeAgenda = function(docId) {
-    const contacto = contactosAgenda.find(c => c.id === docId);
-    if (!contacto) {
-        mostrarError('Contacto no encontrado.');
-        return;
-    }
-    abrirNuevoRegistro({
-        nombre: contacto.nombre || '',
-        telefono: contacto.telefono || '',
-        email: contacto.email || '',
-        direccion: contacto.direccion || ''
-    });
-};
-
-// Filtrar contactos en tiempo real
-window.filtrarContactosAgenda = function() {
-    renderizarContactos(contactosAgenda);
-};
-
-// Seleccionar/deseleccionar todos
-window.toggleAllAgenda = function() {
-    const checkboxes = document.querySelectorAll('.agenda-checkbox');
-    const selectAll = document.getElementById('selectAllAgenda');
-    checkboxes.forEach(cb => cb.checked = selectAll.checked);
-    actualizarBotonEliminar();
-};
-
-// Actualizar estado del botón "Eliminar seleccionados"
-window.actualizarBotonEliminar = function() {
-    const checkboxes = document.querySelectorAll('.agenda-checkbox:checked');
-    const btn = document.getElementById('deleteSelectedBtn');
-    btn.disabled = checkboxes.length === 0;
-    if (checkboxes.length > 0) {
-        btn.innerHTML = `<i class="fas fa-trash"></i> Eliminar seleccionados (${checkboxes.length})`;
-    } else {
-        btn.innerHTML = `<i class="fas fa-trash"></i> Eliminar seleccionados`;
-    }
-};
-
-// Eliminar contactos seleccionados
-window.eliminarSeleccionados = async function() {
-    const checkboxes = document.querySelectorAll('.agenda-checkbox:checked');
-    if (checkboxes.length === 0) return;
-    const confirmado = await mostrarConfirmacion(`¿Estás seguro de eliminar ${checkboxes.length} contactos seleccionados?`);
-    if (!confirmado) return;
-
-    const ids = [];
-    checkboxes.forEach(cb => ids.push(cb.dataset.id));
-    try {
-        for (const id of ids) {
-            await deleteDoc(doc(db, 'contactos_agenda', id));
-        }
-        document.getElementById('selectAllAgenda').checked = false;
-        await mostrarModal({
-            tipo: 'success',
-            icon: '✅',
-            titulo: 'Contactos eliminados',
-            mensaje: `Se eliminaron ${ids.length} contactos correctamente.`,
-            botones: [{ texto: 'Aceptar', clase: 'primary' }]
-        });
-    } catch (error) {
-        await mostrarError('Error al eliminar: ' + error.message);
-    }
-};
-
-// Editar contacto de agenda
-window.editarContactoAgenda = function(docId) {
-    const contacto = contactosAgenda.find(c => c.id === docId);
-    if (!contacto) {
-        mostrarError('Contacto no encontrado.');
-        return;
-    }
-    document.getElementById('editAgendaId').value = docId;
-    document.getElementById('editAgendaNombre').value = contacto.nombre || '';
-    document.getElementById('editAgendaTelefono').value = contacto.telefono || '';
-    document.getElementById('editAgendaEmail').value = contacto.email || '';
-    document.getElementById('editAgendaDireccion').value = contacto.direccion || '';
-    document.getElementById('editAgendaModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-};
-
-// Guardar edición de contacto agenda
-document.getElementById('saveAgendaBtn').addEventListener('click', async function() {
-    const docId = document.getElementById('editAgendaId').value;
-    const nombre = document.getElementById('editAgendaNombre').value.trim();
-    const telefono = document.getElementById('editAgendaTelefono').value.trim();
-    const email = document.getElementById('editAgendaEmail').value.trim();
-    const direccion = document.getElementById('editAgendaDireccion').value.trim();
-
-    if (!nombre && !telefono) {
-        await mostrarError('Debe completar al menos el nombre o el teléfono.');
-        return;
-    }
-
-    try {
-        await updateDoc(doc(db, 'contactos_agenda', docId), {
-            nombre: nombre || '',
-            telefono: telefono || '',
-            email: email || '',
-            direccion: direccion || ''
-        });
-        cerrarModal('editAgendaModal');
-    } catch (error) {
-        await mostrarError('Error al actualizar: ' + error.message);
-    }
-});
-
-// Cerrar modal agenda
-document.getElementById('closeAgendaModal').addEventListener('click', () => cerrarModal('editAgendaModal'));
-document.getElementById('cancelAgendaBtn').addEventListener('click', () => cerrarModal('editAgendaModal'));
-
-// Eliminar contacto agenda individual
-window.eliminarContactoAgenda = async function(docId) {
-    const confirmado = await mostrarConfirmacion('¿Estás seguro de eliminar este contacto de la agenda?');
-    if (confirmado) {
-        try {
-            await deleteDoc(doc(db, 'contactos_agenda', docId));
-        } catch (error) {
-            await mostrarError('Error al eliminar: ' + error.message);
-        }
-    }
-};
-
-// --- Importar contactos desde .vcf ---
-document.getElementById('importVcfBtn').addEventListener('click', function() {
-    document.getElementById('vcfFileInput').click();
-});
-
-document.getElementById('vcfFileInput').addEventListener('change', async function(e) {
-    const file = this.files[0];
-    if (!file) return;
-    this.value = '';
-
-    try {
-        const text = await file.text();
-        const contactos = parseVCard(text);
-        if (contactos.length === 0) {
-            await mostrarError('No se encontraron contactos válidos en el archivo.');
-            return;
-        }
-
-        const confirmado = await mostrarConfirmacion(`Se encontraron ${contactos.length} contactos. ¿Deseas importarlos?`);
-        if (!confirmado) return;
-
-        let importados = 0;
-        for (const c of contactos) {
-            await addDoc(collection(db, 'contactos_agenda'), {
-                nombre: c.nombre || '',
-                email: c.email || '',
-                telefono: c.telefono || '',
-                direccion: c.direccion || '',
-                fecha: serverTimestamp()
-            });
-            importados++;
-        }
-
-        await mostrarModal({
-            tipo: 'success',
-            icon: '✅',
-            titulo: 'Importación exitosa',
-            mensaje: `Se importaron ${importados} contactos correctamente.`,
-            botones: [{ texto: 'Aceptar', clase: 'primary' }]
-        });
-
-    } catch (error) {
-        console.error('Error al importar VCF:', error);
-        await mostrarError('Error al leer el archivo. Asegúrate de que sea un .vcf válido.');
-    }
-});
-
-function parseVCard(vcfText) {
-    const contactos = [];
-    const blocks = vcfText.split('BEGIN:VCARD');
-    for (const block of blocks) {
-        if (!block.trim()) continue;
-        const lines = block.split('\n');
-        let nombre = '', telefono = '', email = '', direccion = '';
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed.startsWith('FN:')) {
-                nombre = trimmed.substring(3).trim();
-            } else if (trimmed.startsWith('TEL')) {
-                const telMatch = trimmed.match(/TEL[^:]*:([\d\s\+]+)/);
-                if (telMatch) telefono = telMatch[1].trim();
-            } else if (trimmed.startsWith('EMAIL')) {
-                const emailMatch = trimmed.match(/EMAIL[^:]*:([^\s]+)/);
-                if (emailMatch) email = emailMatch[1].trim();
-            } else if (trimmed.startsWith('ADR;')) {
-                const adrMatch = trimmed.match(/ADR[^:]*:(.*)/);
-                if (adrMatch) {
-                    let raw = adrMatch[1].trim();
-                    raw = raw.replace(/;/g, ', ').replace(/,,/g, ', ');
-                    direccion = raw;
-                }
-            }
-        }
-        if (nombre || telefono || email) {
-            contactos.push({ nombre, telefono, email, direccion });
-        }
-    }
-    return contactos;
-}
-
-// ============================================================
-//  RESUMEN POR CONTACTO (sin cambios)
+//  RESUMEN POR CONTACTO
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
