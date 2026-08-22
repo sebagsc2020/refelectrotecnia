@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES ===== */
+        /* ===== ESTILOS GENERALES (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -826,6 +826,59 @@
         .presupuesto-box .presupuesto-preview { max-width: 100%; overflow: auto; margin: 15px 0; background: white; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .presupuesto-box .presupuesto-preview .presupuesto { border-radius: 0; box-shadow: none; border: 1px solid #E9ECEF; }
         @media (max-width: 768px) { .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; } }
+
+        /* ===== ESTILOS ADICIONALES PARA LA SECCIÓN RESUMEN ===== */
+        .btn-add-summary {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .btn-add-summary:hover {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+        }
+        .servicios-clickable {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .servicios-clickable:hover {
+            transform: scale(1.05);
+            background: var(--primary-cyan) !important;
+            color: white !important;
+        }
+        .servicios-modal-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        .servicios-modal-list li {
+            padding: 8px 12px;
+            border-bottom: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .servicios-modal-list li:last-child {
+            border-bottom: none;
+        }
+        .servicios-modal-list .badge-service {
+            background: var(--primary-cyan);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -867,7 +920,7 @@
     <div class="table-container">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
             <h4 style="margin:0;"><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-            <button class="btn-add-record" onclick="abrirNuevoRegistro()" style="background: var(--primary-dark); color: white; border: none; padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px;">
+            <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
                 <i class="fas fa-plus"></i> Agregar manual
             </button>
         </div>
@@ -891,7 +944,16 @@
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
     
-    <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
+    <!-- ===== SECCIÓN RESUMEN POR CONTACTO (mejorada) ===== -->
+    <div class="table-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
+            <h4 style="margin:0;"><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
+            <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
+                <i class="fas fa-user-plus"></i> Agregar contacto
+            </button>
+        </div>
+        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
+    </div>
 </div>
 
 <!-- ===== MODAL PERSONALIZADO ===== -->
@@ -935,7 +997,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL NUEVO REGISTRO (para agregar manual) ===== -->
+<!-- ===== MODAL NUEVO REGISTRO ===== -->
 <div class="modal-overlay" id="nuevoRegistroModal">
     <div class="modal-box">
         <button class="close-modal" id="closeNuevoRegistroModal">&times;</button>
@@ -961,6 +1023,20 @@
         <div class="modal-actions">
             <button class="btn-cancel" id="cancelNuevoBtn">Cancelar</button>
             <button class="btn-save" id="saveNuevoBtn"><i class="fas fa-save"></i> Guardar registro</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL SERVICIOS (para mostrar lista de servicios de un contacto) ===== -->
+<div class="modal-overlay" id="serviciosModal">
+    <div class="modal-box" style="max-width: 500px;">
+        <button class="close-modal" id="closeServiciosModal">&times;</button>
+        <h3><span>📋</span> Servicios de <span id="serviciosClienteNombre">-</span></h3>
+        <div id="serviciosListContainer">
+            <p style="color: var(--gray-text);">Cargando...</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="closeServiciosBtn">Cerrar</button>
         </div>
     </div>
 </div>
@@ -1936,7 +2012,7 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO
+//  RESUMEN POR CONTACTO (con modal de servicios)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -2018,7 +2094,11 @@ function actualizarResumenContactos(data) {
             <td>${contacto.email || '—'}</td>
             <td>${contacto.ubicacion || '—'}</td>
             <td style="text-align:center;">
-                <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
+                <span class="badge servicios-clickable" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600; display:inline-block;"
+                      onclick="mostrarServicios('${contacto.nombre.replace(/'/g, "\\'")}', '${serviciosLista.replace(/'/g, "\\'")}')"
+                      title="Haz clic para ver los servicios">
+                    ${contacto.cantidad}
+                </span>
                 <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
             </td>
             <td style="text-align:center;">
@@ -2029,6 +2109,61 @@ function actualizarResumenContactos(data) {
     html += `</tbody></table>`;
     container.innerHTML = html;
 }
+
+// ===== FUNCIÓN PARA MOSTRAR MODAL DE SERVICIOS =====
+window.mostrarServicios = function(nombre, serviciosRaw) {
+    const modal = document.getElementById('serviciosModal');
+    const nombreSpan = document.getElementById('serviciosClienteNombre');
+    const container = document.getElementById('serviciosListContainer');
+
+    nombreSpan.textContent = nombre;
+
+    // Limpiar y mostrar lista
+    let listaHtml = '';
+    if (serviciosRaw && serviciosRaw.trim() !== '') {
+        const servicios = serviciosRaw.split(',').map(s => s.trim()).filter(s => s);
+        if (servicios.length > 0) {
+            listaHtml = '<ul class="servicios-modal-list">';
+            servicios.forEach(serv => {
+                listaHtml += `<li><span>${serv}</span><span class="badge-service">${servicioClase(serv)}</span></li>`;
+            });
+            listaHtml += '</ul>';
+        } else {
+            listaHtml = '<p style="color: var(--gray-text);">No hay servicios registrados para este contacto.</p>';
+        }
+    } else {
+        listaHtml = '<p style="color: var(--gray-text);">No hay servicios registrados para este contacto.</p>';
+    }
+    container.innerHTML = listaHtml;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+// Función auxiliar para dar color a los badges según el servicio
+function servicioClase(servicio) {
+    const tipos = {
+        'Instalación eléctrica': '#0A2E5C',
+        'Reparación / Mantenimiento': '#F39C12',
+        'Domótica / Automatización': '#9B59B6',
+        'Tableros / Puesta a tierra': '#E67E22',
+        'Iluminación': '#2ECC71',
+        'Certificación / Habilitación': '#3498DB',
+        'Emergencia 24/7': '#E74C3C',
+        'Otro': '#7F8C8D'
+    };
+    return tipos[servicio] || '#00A8FF';
+}
+
+// Cerrar modal de servicios
+document.getElementById('closeServiciosModal').addEventListener('click', () => cerrarModal('serviciosModal'));
+document.getElementById('closeServiciosBtn').addEventListener('click', () => cerrarModal('serviciosModal'));
+// Cerrar al hacer clic fuera
+document.getElementById('serviciosModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarModal('serviciosModal');
+    }
+});
 
 // ============================================================
 //  MODALES EXISTENTES
