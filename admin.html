@@ -11,6 +11,11 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== PWA: MANIFEST Y THEME COLOR ===== -->
+    <link rel="manifest" href="/manifest-admin.json">
+    <meta name="theme-color" content="#00A8FF">
+
     <title>Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1939,5 +1944,23 @@ document.getElementById('saveEditBtn').addEventListener('click', window.guardarE
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
 </script>
+
+<!-- ========================================================== -->
+<!-- REGISTRO DEL SERVICE WORKER (PWA)                          -->
+<!-- ========================================================== -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function(reg) {
+                    console.log('✅ Service Worker registrado correctamente:', reg);
+                })
+                .catch(function(err) {
+                    console.error('❌ Error al registrar el Service Worker:', err);
+                });
+        });
+    }
+</script>
+
 </body>
 </html>
