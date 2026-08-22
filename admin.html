@@ -871,6 +871,21 @@
     </div>
     
     <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
+
+    <!-- ===== NUEVA SECCIÓN: CONTACTOS (AGENDA) ===== -->
+    <div class="table-container">
+        <h4><i class="fas fa-address-card" style="color:var(--primary-cyan);"></i> Contactos (Agenda)</h4>
+        <div style="padding: 12px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <button class="btn-edit" id="importVcfBtn" style="background: var(--primary-dark); padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
+                <i class="fas fa-file-import"></i> Importar desde .vcf
+            </button>
+            <input type="file" id="vcfFileInput" accept=".vcf" style="display: none;">
+            <span style="font-size: 0.85rem; color: var(--gray-text);">Selecciona un archivo .vcf para importar contactos.</span>
+        </div>
+        <div class="table-scroll" id="contactosContainer">
+            <div class="loading"><i class="fas fa-spinner"></i> Cargando contactos...</div>
+        </div>
+    </div>
 </div>
 
 <!-- ===== MODAL PERSONALIZADO ===== -->
@@ -1069,6 +1084,7 @@ let datosCache = { contactos: [], presupuestos: [] };
 let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
+let unsubscribeContactosAgenda = null; // NUEVO
 window.contactoIdActual = null;
 
 // ============================================================
@@ -1261,12 +1277,15 @@ onAuthStateChanged(auth, (user) => {
         showDashboard();
         if (unsubscribeContactos) unsubscribeContactos();
         if (unsubscribePresupuestos) unsubscribePresupuestos();
+        if (unsubscribeContactosAgenda) unsubscribeContactosAgenda();
         unsubscribeContactos = escucharContactos();
         unsubscribePresupuestos = escucharPresupuestos();
+        unsubscribeContactosAgenda = escucharContactosAgenda(); // NUEVO
     } else {
         showLogin();
         if (unsubscribeContactos) { unsubscribeContactos(); unsubscribeContactos = null; }
         if (unsubscribePresupuestos) { unsubscribePresupuestos(); unsubscribePresupuestos = null; }
+        if (unsubscribeContactosAgenda) { unsubscribeContactosAgenda(); unsubscribeContactosAgenda = null; }
     }
 });
 
@@ -1321,6 +1340,23 @@ function escucharPresupuestos() {
     }, (error) => {
         console.error('Error en onSnapshot presupuestos:', error);
         document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos: ${error.message}</p></div>`;
+    });
+}
+
+// ===== NUEVA ESCUCHA PARA CONTACTOS_AGENDA =====
+function escucharContactosAgenda() {
+    return onSnapshot(collection(db, 'contactos_agenda'), (snapshot) => {
+        const contactos = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            contactos.push({ id: doc.id, ...data });
+        });
+        // Ordenar por nombre
+        contactos.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+        renderizarContactos(contactos);
+    }, (error) => {
+        console.error('Error en onSnapshot contactos_agenda:', error);
+        document.getElementById('contactosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar contactos: ${error.message}</p></div>`;
     });
 }
 
@@ -1825,7 +1861,148 @@ window.eliminarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  RESUMEN POR CONTACTO
+//  NUEVAS FUNCIONES PARA CONTACTOS_AGENDA
+// ============================================================
+
+// Renderizar tabla de contactos de agenda
+function renderizarContactos(contactos) {
+    const container = document.getElementById('contactosContainer');
+    if (!contactos || contactos.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos importados aún.</p></div>`;
+        return;
+    }
+
+    let html = `<table><thead><tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th style="text-align:center;">Acciones</th>
+    </tr></thead><tbody>`;
+
+    contactos.forEach(contacto => {
+        const nombre = contacto.nombre || 'Sin nombre';
+        const email = contacto.email || '';
+        const telefono = contacto.telefono || '';
+        const docId = contacto.id;
+
+        // Limpiar número para WhatsApp (solo dígitos)
+        const telefonoLimpio = telefono.replace(/\D/g, '');
+        const waUrl = `https://wa.me/${telefonoLimpio}`;
+        const waMsgUrl = `https://wa.me/${telefonoLimpio}?text=${encodeURIComponent('Hola, me comunico de REF Electrotecnia en respuesta a tu consulta.')}`;
+
+        html += `<tr>
+            <td><strong>${nombre}</strong></td>
+            <td>${email || '—'}</td>
+            <td>${telefono}</td>
+            <td style="text-align:center; white-space:nowrap;">
+                <a href="${waUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-right: 6px;">
+                    <i class="fas fa-phone"></i> Llamar
+                </a>
+                <a href="${waMsgUrl}" target="_blank" class="btn-whatsapp" style="padding: 6px 12px; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #25D366;">
+                    <i class="fab fa-whatsapp"></i> Mensaje
+                </a>
+                <button class="btn-delete" onclick="eliminarContactoAgenda('${docId}')" style="padding: 4px 8px; font-size: 0.8rem;" title="Eliminar contacto">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+// Eliminar contacto de agenda
+window.eliminarContactoAgenda = async function(docId) {
+    const confirmado = await mostrarConfirmacion('¿Estás seguro de eliminar este contacto de la agenda?');
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'contactos_agenda', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
+    }
+};
+
+// --- Importar contactos desde .vcf ---
+document.getElementById('importVcfBtn').addEventListener('click', function() {
+    document.getElementById('vcfFileInput').click();
+});
+
+document.getElementById('vcfFileInput').addEventListener('change', async function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    this.value = ''; // reset
+
+    try {
+        const text = await file.text();
+        // Parsear vCard (versión simple)
+        const contactos = parseVCard(text);
+        if (contactos.length === 0) {
+            await mostrarError('No se encontraron contactos válidos en el archivo.');
+            return;
+        }
+
+        const confirmado = await mostrarConfirmacion(`Se encontraron ${contactos.length} contactos. ¿Deseas importarlos?`);
+        if (!confirmado) return;
+
+        let importados = 0;
+        for (const c of contactos) {
+            // Evitar duplicados: podrías agregar lógica para buscar por teléfono o email, pero aquí importamos todos
+            await addDoc(collection(db, 'contactos_agenda'), {
+                nombre: c.nombre || '',
+                email: c.email || '',
+                telefono: c.telefono || '',
+                fecha: serverTimestamp()
+            });
+            importados++;
+        }
+
+        await mostrarModal({
+            tipo: 'success',
+            icon: '✅',
+            titulo: 'Importación exitosa',
+            mensaje: `Se importaron ${importados} contactos correctamente.`,
+            botones: [{ texto: 'Aceptar', clase: 'primary' }]
+        });
+
+    } catch (error) {
+        console.error('Error al importar VCF:', error);
+        await mostrarError('Error al leer el archivo. Asegúrate de que sea un .vcf válido.');
+    }
+});
+
+function parseVCard(vcfText) {
+    const contactos = [];
+    // Dividir por BEGIN:VCARD
+    const blocks = vcfText.split('BEGIN:VCARD');
+    for (const block of blocks) {
+        if (!block.trim()) continue;
+        const lines = block.split('\n');
+        let nombre = '', telefono = '', email = '';
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('FN:')) {
+                nombre = trimmed.substring(3).trim();
+            } else if (trimmed.startsWith('TEL')) {
+                // Puede tener parámetros; buscar el número
+                const telMatch = trimmed.match(/TEL[^:]*:([\d\s\+]+)/);
+                if (telMatch) telefono = telMatch[1].trim();
+            } else if (trimmed.startsWith('EMAIL')) {
+                const emailMatch = trimmed.match(/EMAIL[^:]*:([^\s]+)/);
+                if (emailMatch) email = emailMatch[1].trim();
+            }
+        }
+        // Si al menos tiene nombre o teléfono, lo agregamos
+        if (nombre || telefono || email) {
+            contactos.push({ nombre, telefono, email });
+        }
+    }
+    return contactos;
+}
+
+// ============================================================
+//  RESUMEN POR CONTACTO (sin cambios)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
