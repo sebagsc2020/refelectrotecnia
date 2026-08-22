@@ -104,7 +104,7 @@
         table tbody tr:hover { background: #F8FAFC; }
         table tfoot td { font-weight: 700; color: var(--primary-dark); background: var(--light-bg); border-top: 2px solid #E9ECEF; padding: 12px 14px; white-space: nowrap; }
         .badge-emergencia { background: #fee2e2; color: #b91c1c; padding: 2px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
-        .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
+        .btn-edit { background: var(--primary-cyan); color: white; border: none; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 5px; margin-right: 6px; }
         .btn-edit:hover { background: var(--primary-dark); transform: scale(1.05); }
         .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px; }
         .btn-delete:hover { background: #c0392b; transform: scale(1.05); }
@@ -1423,7 +1423,7 @@ function renderizarTabla(data) {
             <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
             <td style="text-align:center;">${checkHtml}</td>
             <td style="text-align:center; white-space:nowrap;">
-                <button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i></button>
                 <button class="btn-delete" onclick="eliminarRegistro('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>
                 <button class="btn-presupuesto" onclick="abrirPresupuesto('${docId}')" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
             </td>
