@@ -4,12 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>Datos Cliente</title>
+    <!-- ===== PWA: Manifest ===== -->
+    <link rel="manifest" href="/manifest.json">
+    <!-- ===== PWA: Theme color ===== -->
+    <meta name="theme-color" content="#0A2E5C">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ========== ESTILOS (sin cambios relevantes) ========== */
+        /* ========== ESTILOS (sin cambios) ========== */
         * {
             margin: 0;
             padding: 0;
@@ -486,7 +490,6 @@
         // EVENTOS PARA ACTUALIZAR CHECK AL PERDER EL FOCO (blur) o cambiar (select)
         // ============================================================
         function setupFieldListeners() {
-            // Para inputs y textareas: al perder el foco
             document.querySelectorAll('.field-content input:not([type="hidden"]), .field-content textarea').forEach(field => {
                 field.addEventListener('blur', function() {
                     const group = this.closest('.field-group');
@@ -497,7 +500,6 @@
                 });
             });
 
-            // Para selects: al cambiar y al perder el foco
             document.querySelectorAll('.field-content select').forEach(select => {
                 select.addEventListener('change', function() {
                     const group = this.closest('.field-group');
@@ -527,23 +529,19 @@
                     const currentGroup = this.closest('.field-group');
                     const isActive = currentGroup.classList.contains('active');
 
-                    // Si se va a cerrar, actualizar check
                     if (isActive) {
                         const section = currentGroup.dataset.section;
                         if (section) updateSectionCheck(section);
                     }
 
-                    // Cerrar todos
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
 
-                    // Abrir si no estaba activo
                     if (!isActive) {
                         currentGroup.classList.add('active');
                     }
                 });
             });
 
-            // Configurar listeners para los campos
             setupFieldListeners();
 
             // ============================================================
@@ -716,12 +714,10 @@
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
 
-                    // Resetear todo
                     contactForm.reset();
                     document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
                     btnMaps.classList.add('hidden');
                     ubicacionCompartida = false;
-                    // Ocultar todos los checks
                     document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
                     document.getElementById('nombre').focus();
                 } else {
@@ -739,6 +735,14 @@
                 updateSectionCheck(section);
             });
 
+            // ============================================================
+            // REGISTRO DEL SERVICE WORKER (PWA)
+            // ============================================================
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registrado:', reg))
+                    .catch(err => console.log('❌ Error al registrar Service Worker:', err));
+            }
         });
     </script>
 </body>
