@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REF Electrotecnia | Solicitar presupuesto</title>
+    <!-- Fuentes e iconos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0A2E5C;
+            --primary-cyan: #0099E8;
+            --accent-yellow: #FFB800;
+            --danger-red: #E53935;
+            --success-green: #2E7D32;
+            --light-bg: #F8F9FA;
+            --gray-text: #4A4A4A;
+            --white: #FFFFFF;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 32px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .contact-form h4 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .contact-form .subtitle {
+            color: var(--gray-text);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        /* ===== ACORDEÓN ===== */
+        .field-group {
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 4px;
+        }
+        .field-group:last-of-type {
+            border-bottom: none;
+        }
+
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-dark);
+            transition: var(--transition);
+            user-select: none;
+        }
+        .field-header:hover {
+            color: var(--primary-cyan);
+        }
+        .field-header i {
+            transition: var(--transition);
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .field-group.active .field-header i {
+            transform: rotate(180deg);
+            color: var(--primary-cyan);
+        }
+
+        .field-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            padding: 0 4px;
+        }
+        .field-group.active .field-content {
+            max-height: 300px; /* suficiente para inputs */
+            padding: 0 4px 16px 4px;
+        }
+
+        /* Campos dentro del contenido */
+        .field-content input,
+        .field-content select,
+        .field-content textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+        .field-content input:focus,
+        .field-content select:focus,
+        .field-content textarea:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
+        }
+
+        .field-content textarea {
+            resize: vertical;
+            min-height: 100px;
+            padding-right: 64px;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+        }
+        .btn-mic {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-cyan);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
+        }
+        .btn-mic:hover {
+            background: var(--primary-dark);
+        }
+        .btn-mic.listening {
+            background: var(--danger-red);
+            animation: pulseMic 1.2s infinite;
+        }
+        @keyframes pulseMic {
+            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.5); }
+            70% { box-shadow: 0 0 0 14px rgba(229, 57, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+        }
+
+        .mic-hint {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+        .mic-hint i {
+            color: var(--danger-red);
+        }
+
+        .form-success {
+            display: none;
+            background: #E8F5E9;
+            border: 2px solid var(--success-green);
+            color: var(--success-green);
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-success.visible {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Ubicación (condicional) */
+        .ubicacion-group {
+            display: none;
+        }
+        .ubicacion-group.visible {
+            display: block;
+        }
+        .ubicacion-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ubicacion-wrapper input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-ubicacion {
+            background: var(--primary-cyan);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            margin-top: 8px;
+        }
+        .btn-ubicacion:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .btn-ubicacion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-maps {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .btn-maps:hover {
+            background: #2D8F47;
+            transform: translateY(-2px);
+        }
+        .btn-maps.hidden {
+            display: none;
+        }
+
+        .ubicacion-group small {
+            display: block;
+            margin-top: 6px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .btn-submit {
+            background: var(--primary-dark);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
+        }
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .contact-form {
+                padding: 20px 16px;
+            }
+            .ubicacion-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-maps,
+            .btn-ubicacion {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form class="contact-form" id="contactForm">
+            <h4>Solicita tu presupuesto</h4>
+            <p class="subtitle">Completa tus datos. Todos los campos son opcionales excepto nombre y teléfono.</p>
+
+            <div class="form-success" id="formSuccess">
+                <i class="fas fa-check-circle"></i>
+                <span>¡Solicitud guardada! Te responderemos a la brevedad.</span>
+            </div>
+
+            <!-- ===== ACORDEÓN: DATOS PERSONALES ===== -->
+            <div class="field-group active">
+                <div class="field-header" data-target="field-personal">
+                    <span><i class="fas fa-user" style="margin-right:10px; color:var(--primary-cyan);"></i>Datos personales</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="field-content" id="field-personal">
+                    <div style="margin-bottom:12px;">
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required />
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono / WhatsApp" autocomplete="tel" required />
+                    </div>
+                    <div>
+                        <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ACORDEÓN: SERVICIO ===== -->
+            <div class="field-group">
+                <div class="field-header" data-target="field-servicio">
+                    <span><i class="fas fa-tools" style="margin-right:10px; color:var(--primary-cyan);"></i>Servicio requerido</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="field-content" id="field-servicio">
+                    <select id="servicio" name="servicio" autocomplete="off">
+                        <option value="">Selecciona el servicio que necesitas</option>
+                        <option>Instalación eléctrica</option>
+                        <option>Reparación / Mantenimiento</option>
+                        <option>Domótica / Automatización</option>
+                        <option>Tableros / Puesta a tierra</option>
+                        <option>Iluminación</option>
+                        <option>Certificación / Habilitación</option>
+                        <option value="emergencia">Emergencia 24/7</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ===== ACORDEÓN: UBICACIÓN (condicional) ===== -->
+            <div class="field-group">
+                <div class="field-header" data-target="field-ubicacion">
+                    <span><i class="fas fa-map-marker-alt" style="margin-right:10px; color:var(--accent-yellow);"></i>Ubicación</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="field-content" id="field-ubicacion">
+                    <div class="ubicacion-group visible" id="ubicacionGroup">
+                        <div class="ubicacion-wrapper">
+                            <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección o coordenadas" autocomplete="off" />
+                            <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
+                                <i class="fas fa-map"></i> Maps
+                            </button>
+                        </div>
+                        <button type="button" class="btn-ubicacion" id="btnUbicacion">
+                            <i class="fas fa-location-dot"></i> Compartir ubicación actual
+                        </button>
+                        <small>Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ACORDEÓN: MENSAJE ===== -->
+            <div class="field-group">
+                <div class="field-header" data-target="field-mensaje">
+                    <span><i class="fas fa-comment" style="margin-right:10px; color:var(--primary-cyan);"></i>Mensaje</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="field-content" id="field-mensaje">
+                    <div class="textarea-wrapper">
+                        <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
+                        <button type="button" class="btn-mic" id="btnMic" title="Dictar por voz" aria-label="Dictar por voz">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <small class="mic-hint" id="micHint"><i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.</small>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-save"></i> Guardar solicitud
+            </button>
+        </form>
+    </div>
+
+    <!-- ===== FIREBASE ===== -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from 'firebase/app';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
+            authDomain: "refelectrotecnia.firebaseapp.com",
+            projectId: "refelectrotecnia",
+            storageBucket: "refelectrotecnia.firebasestorage.app",
+            messagingSenderId: "204883844019",
+            appId: "1:204883844019:web:176d2973209b0cc98fc9c6",
+            measurementId: "G-8FDNZ6GJZD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function guardarContactoFirestore(datos) {
+            try {
+                const docRef = await addDoc(collection(db, 'contactos'), {
+                    ...datos,
+                    fecha: serverTimestamp()
+                });
+                console.log('✅ Contacto guardado con ID:', docRef.id);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Error al guardar:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // ============================================================
+        // LÓGICA DEL ACORDEÓN
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const headers = document.querySelectorAll('.field-header');
+
+            headers.forEach(header => {
+                header.addEventListener('click', function(e) {
+                    const targetId = this.dataset.target;
+                    const currentGroup = this.closest('.field-group');
+                    const isActive = currentGroup.classList.contains('active');
+
+                    // Cerrar todos los grupos
+                    document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+
+                    // Si el grupo clicado NO estaba activo, lo activamos
+                    if (!isActive) {
+                        currentGroup.classList.add('active');
+                    }
+                    // Si estaba activo, al cerrar todos queda cerrado (toggle)
+                });
+            });
+
+            // Abrir el primero por defecto (ya tiene clase 'active' en el HTML)
+            // pero si no, forzar: 
+            const firstGroup = document.querySelector('.field-group');
+            if (firstGroup && !firstGroup.classList.contains('active')) {
+                firstGroup.classList.add('active');
+            }
+
+            // ============================================================
+            // DICTADO POR VOZ
+            // ============================================================
+            const mensajeTextarea = document.getElementById('mensaje');
+            const btnMic = document.getElementById('btnMic');
+            const micHint = document.getElementById('micHint');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition && btnMic) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'es-AR';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+
+                let listening = false,
+                    shouldListen = false,
+                    baseText = '',
+                    finalTranscript = '';
+
+                recognition.onstart = function() {
+                    listening = true;
+                    btnMic.classList.add('listening');
+                    btnMic.title = 'Detener dictado';
+                    baseText = mensajeTextarea.value.replace(/\s+$/, '');
+                    finalTranscript = '';
+                    if (micHint) micHint.innerHTML =
+                        '<i class="fas fa-circle" style="color: var(--danger-red); border-radius:50%;"></i> Escuchando... hablá con normalidad.';
+                };
+
+                recognition.onresult = function(event) {
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) finalTranscript += transcript.trim() + ' ';
+                        else interim += transcript;
+                    }
+                    mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
+                };
+
+                recognition.onerror = function(event) {
+                    shouldListen = false;
+                    stopListening();
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        alert('Permiso de micrófono denegado.');
+                    }
+                };
+
+                recognition.onend = function() {
+                    if (shouldListen) { try { recognition.start(); } catch (e) {} } else stopListening();
+                };
+
+                btnMic.addEventListener('click', function() {
+                    if (listening) {
+                        shouldListen = false;
+                        recognition.stop();
+                        stopListening();
+                    } else {
+                        shouldListen = true;
+                        try { recognition.start(); } catch (e) {}
+                    }
+                });
+
+                function stopListening() {
+                    listening = false;
+                    btnMic.classList.remove('listening');
+                    btnMic.title = 'Dictar por voz';
+                    if (micHint) micHint.innerHTML =
+                        '<i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.';
+                }
+            } else if (btnMic) {
+                btnMic.style.display = 'none';
+                if (micHint) micHint.style.display = 'none';
+            }
+
+            // ============================================================
+            // UBICACIÓN (emergencia)
+            // ============================================================
+            const servicioSelect = document.getElementById('servicio');
+            const ubicacionGroup = document.getElementById('ubicacionGroup');
+            const ubicacionInput = document.getElementById('ubicacion');
+            const btnUbicacion = document.getElementById('btnUbicacion');
+            const btnMaps = document.getElementById('btnMaps');
+            let ubicacionCompartida = false;
+
+            // Por defecto, la ubicación está visible porque la hemos puesto con clase 'visible' en el HTML,
+            // pero queremos que solo se vea si el servicio es emergencia.
+            // Inicialmente ocultamos
+            ubicacionGroup.classList.remove('visible');
+
+            servicioSelect.addEventListener('change', function() {
+                if (this.value === 'emergencia') {
+                    ubicacionGroup.classList.add('visible');
+                } else {
+                    ubicacionGroup.classList.remove('visible');
+                    ubicacionInput.value = '';
+                    btnMaps.classList.add('hidden');
+                    ubicacionCompartida = false;
+                }
+            });
+
+            ubicacionInput.addEventListener('input', function() {
+                if (ubicacionCompartida) ubicacionCompartida = false;
+                if (this.value.trim().length > 0 && !ubicacionCompartida) btnMaps.classList.remove('hidden');
+                else btnMaps.classList.add('hidden');
+            });
+
+            btnMaps.addEventListener('click', function() {
+                const direccion = ubicacionInput.value.trim();
+                if (!direccion) return;
+                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
+                let url;
+                if (esCoordenada) {
+                    const coords = direccion.match(/-?\d+\.\d+/g);
+                    if (coords && coords.length >= 2) url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
+                    else url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
+                } else {
+                    url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
+                }
+                window.open(url, '_blank');
+            });
+
+            btnUbicacion.addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert('Tu navegador no soporta geolocalización.');
+                    return;
+                }
+                btnUbicacion.disabled = true;
+                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo ubicación...';
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsLink = 'https://www.google.com/maps?q=' + lat.toFixed(6) + ',' + lng.toFixed(6);
+                        ubicacionInput.value = mapsLink;
+                        ubicacionCompartida = true;
+                        btnMaps.classList.add('hidden');
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    },
+                    function(error) {
+                        alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
+                        btnUbicacion.disabled = false;
+                        btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+
+            // ============================================================
+            // ENVÍO (SOLO FIRESTORE)
+            // ============================================================
+            const contactForm = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSuccess = document.getElementById('formSuccess');
+
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const nombre = document.getElementById('nombre').value.trim();
+                const telefono = document.getElementById('telefono').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const servicio = document.getElementById('servicio').value;
+                const mensaje = mensajeTextarea.value.trim();
+                const ubicacion = ubicacionInput.value.trim();
+
+                if (!nombre || !telefono) {
+                    alert('Por favor, completa tu nombre y teléfono.');
+                    return;
+                }
+
+                const datos = {
+                    nombre,
+                    telefono,
+                    email: email || '',
+                    servicio: servicio || '',
+                    ubicacion: ubicacion || '',
+                    mensaje: mensaje || ''
+                };
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+                const result = await guardarContactoFirestore(datos);
+
+                if (result.success) {
+                    formSuccess.classList.add('visible');
+                    setTimeout(() => formSuccess.classList.remove('visible'), 6000);
+                    contactForm.reset();
+                    // Ocultar ubicación si estaba visible
+                    ubicacionGroup.classList.remove('visible');
+                    btnMaps.classList.add('hidden');
+                    // Cerrar todos los paneles y abrir solo el primero
+                    document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+                    const first = document.querySelector('.field-group');
+                    if (first) first.classList.add('active');
+                } else {
+                    alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar solicitud';
+            });
+
+        }); // fin DOMContentLoaded
+    </script>
+</body>
+</html>
