@@ -336,10 +336,11 @@
             text-align: center; 
             white-space: nowrap; 
         }
+        /* ===== ACCIONES: más ancho para que no se corten los botones ===== */
         #tablaContainer table th:nth-child(8), /* Acciones */
         #tablaContainer table td:nth-child(8) { 
-            width: 10%; 
-            min-width: 110px; 
+            width: 12%; 
+            min-width: 170px; 
             white-space: nowrap; 
             text-align: center; 
         }
@@ -387,6 +388,18 @@
             .filtro-container { flex-direction: column; align-items: stretch; }
             .filtro-container select,
             .filtro-container input[type="text"] { width: 100%; min-width: unset; }
+            /* Ajustes móviles para acciones */
+            #tablaContainer table td:last-child {
+                white-space: nowrap;
+                min-width: 150px;
+            }
+            #tablaContainer table .btn-edit,
+            #tablaContainer table .btn-delete,
+            #tablaContainer table .btn-presupuesto {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+                margin-right: 3px;
+            }
         }
 
         /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
@@ -1871,7 +1884,6 @@ window.eliminarRegistro = async function(docId) {
 //  NUEVO REGISTRO MANUAL / DESDE AGENDA
 // ============================================================
 window.abrirNuevoRegistro = function(datosPrecargados = null) {
-    // Limpiar modal
     document.getElementById('nuevoNombre').value = datosPrecargados?.nombre || '';
     document.getElementById('nuevoTelefono').value = datosPrecargados?.telefono || '';
     document.getElementById('nuevoEmail').value = datosPrecargados?.email || '';
@@ -2172,7 +2184,6 @@ window.crearSolicitudDesdeAgenda = function(docId) {
         mostrarError('Contacto no encontrado.');
         return;
     }
-    // Precargar datos en el modal de nuevo registro
     abrirNuevoRegistro({
         nombre: contacto.nombre || '',
         telefono: contacto.telefono || '',
