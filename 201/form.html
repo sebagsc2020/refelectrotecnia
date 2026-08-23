@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ========== ESTILOS (sin cambios) ========== */
+        /* ========== ESTILOS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -88,6 +88,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .field-header .title-wrapper .section-check {
             color: var(--success-green);
@@ -96,6 +97,27 @@
         }
         .field-header .title-wrapper .section-check.visible {
             display: inline;
+        }
+        .field-header .title-wrapper .warning-icon {
+            color: var(--danger-red);
+            font-size: 1.1rem;
+            display: none;
+        }
+        .field-header .title-wrapper .warning-icon.visible {
+            display: inline;
+        }
+        .field-header .title-wrapper .warning-text {
+            color: var(--danger-red);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: none;
+            background: #FFEBEE;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+        .field-header .title-wrapper .warning-text.visible {
+            display: inline-block;
         }
         .field-header i.chevron {
             transition: var(--transition);
@@ -308,13 +330,6 @@
                 justify-content: center;
             }
         }
-        /* Estilo adicional para campo de 11 dígitos */
-        #cuitWrapper small {
-            display: block;
-            margin-top: 4px;
-            color: var(--gray-text);
-            font-size: 0.8rem;
-        }
         select:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -338,6 +353,8 @@
                     <span class="title-wrapper">
                         <i class="fas fa-user" style="margin-right:6px; color:var(--primary-cyan);"></i>Datos personales
                         <span class="section-check" id="check-personal">✔</span>
+                        <i class="fas fa-exclamation-triangle warning-icon" id="warning-personal"></i>
+                        <span class="warning-text" id="warning-text-personal">Datos inconclusos</span>
                     </span>
                     <i class="fas fa-chevron-down chevron"></i>
                 </div>
@@ -360,6 +377,8 @@
                     <span class="title-wrapper">
                         <i class="fas fa-tools" style="margin-right:6px; color:var(--primary-cyan);"></i>Servicio requerido
                         <span class="section-check" id="check-servicio">✔</span>
+                        <i class="fas fa-exclamation-triangle warning-icon" id="warning-servicio"></i>
+                        <span class="warning-text" id="warning-text-servicio">Datos inconclusos</span>
                     </span>
                     <i class="fas fa-chevron-down chevron"></i>
                 </div>
@@ -384,6 +403,8 @@
                     <span class="title-wrapper">
                         <i class="fas fa-map-marker-alt" style="margin-right:6px; color:var(--accent-yellow);"></i>Ubicación
                         <span class="section-check" id="check-ubicacion">✔</span>
+                        <i class="fas fa-exclamation-triangle warning-icon" id="warning-ubicacion"></i>
+                        <span class="warning-text" id="warning-text-ubicacion">Datos inconclusos</span>
                     </span>
                     <i class="fas fa-chevron-down chevron"></i>
                 </div>
@@ -403,17 +424,18 @@
                 </div>
             </div>
 
-            <!-- DATOS FISCALES (NUEVA SECCIÓN) -->
+            <!-- DATOS FISCALES -->
             <div class="field-group" data-section="fiscal">
                 <div class="field-header" data-target="field-fiscal">
                     <span class="title-wrapper">
                         <i class="fas fa-file-invoice" style="margin-right:6px; color:var(--accent-yellow);"></i>Datos fiscales
                         <span class="section-check" id="check-fiscal">✔</span>
+                        <i class="fas fa-exclamation-triangle warning-icon" id="warning-fiscal"></i>
+                        <span class="warning-text" id="warning-text-fiscal">Datos inconclusos</span>
                     </span>
                     <i class="fas fa-chevron-down chevron"></i>
                 </div>
                 <div class="field-content" id="field-fiscal">
-                    <!-- Tipo de Factura -->
                     <div style="margin-bottom:12px;">
                         <select id="tipoFactura" name="tipoFactura">
                             <option value="">Selecciona tipo de factura</option>
@@ -423,7 +445,6 @@
                             <option value="Consumidor Final">Consumidor Final</option>
                         </select>
                     </div>
-                    <!-- Situación Fiscal -->
                     <div style="margin-bottom:12px;" id="situacionFiscalWrapper">
                         <select id="situacionFiscal" name="situacionFiscal">
                             <option value="">Selecciona situación fiscal</option>
@@ -431,7 +452,6 @@
                             <option value="Consumidor Final">Consumidor Final</option>
                         </select>
                     </div>
-                    <!-- Campo de 11 dígitos (CUIT/CUIL) -->
                     <div style="margin-bottom:12px; display:none;" id="cuitWrapper">
                         <input type="text" id="cuit" name="cuit" placeholder="CUIT/CUIL (11 dígitos)" maxlength="11" inputmode="numeric" pattern="\d{11}" />
                         <small>Ingresá los 11 dígitos sin guiones ni espacios.</small>
@@ -445,6 +465,8 @@
                     <span class="title-wrapper">
                         <i class="fas fa-comment" style="margin-right:6px; color:var(--primary-cyan);"></i>Mensaje
                         <span class="section-check" id="check-mensaje">✔</span>
+                        <i class="fas fa-exclamation-triangle warning-icon" id="warning-mensaje"></i>
+                        <span class="warning-text" id="warning-text-mensaje">Datos inconclusos</span>
                     </span>
                     <i class="fas fa-chevron-down chevron"></i>
                 </div>
@@ -507,45 +529,114 @@
         }
 
         // ============================================================
-        // FUNCIÓN PARA ACTUALIZAR EL CHECK DE UNA SECCIÓN
+        // FUNCIÓN PARA OBTENER EL ESTADO DE UNA SECCIÓN
+        // Retorna 'complete', 'incomplete' o 'empty'
+        // ============================================================
+        function getSectionStatus(sectionId) {
+            const group = document.querySelector(`.field-group[data-section="${sectionId}"]`);
+            if (!group) return 'empty';
+
+            if (sectionId === 'personal') {
+                const nombre = group.querySelector('#nombre')?.value.trim() || '';
+                const telefono = group.querySelector('#telefono')?.value.trim() || '';
+                // Obligatorios: nombre y teléfono no vacíos
+                const hasData = !!(nombre || telefono);
+                const isComplete = !!(nombre && telefono);
+                if (!hasData) return 'empty';
+                return isComplete ? 'complete' : 'incomplete';
+            }
+
+            if (sectionId === 'servicio') {
+                const select = group.querySelector('#servicio');
+                const val = select?.value || '';
+                if (val === '') return 'empty';
+                return 'complete'; // Cualquier selección válida completa
+            }
+
+            if (sectionId === 'ubicacion') {
+                const input = group.querySelector('#ubicacion');
+                const val = input?.value.trim() || '';
+                if (val === '') return 'empty';
+                return 'complete'; // Si tiene texto, está completo
+            }
+
+            if (sectionId === 'fiscal') {
+                const tipoFactura = group.querySelector('#tipoFactura')?.value || '';
+                const situacionFiscal = group.querySelector('#situacionFiscal')?.value || '';
+                const cuitInput = group.querySelector('#cuit');
+                const cuitVal = cuitInput?.value.trim() || '';
+                const cuitVisible = cuitInput?.style.display !== 'none';
+
+                const hasData = !!(tipoFactura || situacionFiscal || cuitVal);
+                if (!hasData) return 'empty';
+
+                // Si tipoFactura es "Consumidor Final", solo se requiere ese campo
+                if (tipoFactura === 'Consumidor Final') {
+                    return 'complete';
+                }
+
+                // Si hay tipoFactura (A, B, C) o situacionFiscal seleccionado
+                let isComplete = false;
+                // Si tipoFactura es A, B o C y situacionFiscal está seleccionado
+                if (['A', 'B', 'C'].includes(tipoFactura) && situacionFiscal !== '') {
+                    // Si el campo CUIT es visible, debe tener 11 dígitos
+                    if (cuitVisible) {
+                        isComplete = /^\d{11}$/.test(cuitVal);
+                    } else {
+                        isComplete = true;
+                    }
+                } else if (tipoFactura === '' && situacionFiscal !== '') {
+                    // Si solo tiene situación fiscal, consideramos incompleto (falta tipoFactura)
+                    isComplete = false;
+                } else {
+                    isComplete = false;
+                }
+
+                return isComplete ? 'complete' : 'incomplete';
+            }
+
+            if (sectionId === 'mensaje') {
+                const textarea = group.querySelector('#mensaje');
+                const val = textarea?.value.trim() || '';
+                if (val === '') return 'empty';
+                return 'complete';
+            }
+
+            return 'empty';
+        }
+
+        // ============================================================
+        // FUNCIÓN PARA ACTUALIZAR EL CHECK Y ADVERTENCIA DE UNA SECCIÓN
         // ============================================================
         function updateSectionCheck(sectionId) {
             const group = document.querySelector(`.field-group[data-section="${sectionId}"]`);
             if (!group) return;
+
             const checkSpan = group.querySelector('.section-check');
-            let hasData = false;
+            const warningIcon = group.querySelector('.warning-icon');
+            const warningText = group.querySelector('.warning-text');
 
-            if (sectionId === 'personal') {
-                const nombre = group.querySelector('#nombre')?.value.trim();
-                const telefono = group.querySelector('#telefono')?.value.trim();
-                hasData = !!(nombre || telefono);
-            } else if (sectionId === 'servicio') {
-                const select = group.querySelector('#servicio');
-                hasData = select && select.value !== '';
-            } else if (sectionId === 'ubicacion') {
-                const input = group.querySelector('#ubicacion');
-                hasData = !!(input && input.value.trim() !== '');
-            } else if (sectionId === 'mensaje') {
-                const textarea = group.querySelector('#mensaje');
-                hasData = !!(textarea && textarea.value.trim() !== '');
-            } else if (sectionId === 'fiscal') {
-                const tipoFactura = group.querySelector('#tipoFactura')?.value;
-                const situacionFiscal = group.querySelector('#situacionFiscal')?.value;
-                const cuit = group.querySelector('#cuit')?.value.trim();
-                hasData = !!(tipoFactura || situacionFiscal || cuit);
-            }
+            const status = getSectionStatus(sectionId);
 
-            if (hasData) {
+            // Resetear todos los indicadores
+            checkSpan.classList.remove('visible');
+            warningIcon.classList.remove('visible');
+            warningText.classList.remove('visible');
+
+            if (status === 'complete') {
                 checkSpan.classList.add('visible');
-            } else {
-                checkSpan.classList.remove('visible');
+            } else if (status === 'incomplete') {
+                warningIcon.classList.add('visible');
+                warningText.classList.add('visible');
             }
+            // Si es 'empty', no mostramos nada
         }
 
         // ============================================================
-        // EVENTOS PARA ACTUALIZAR CHECK AL PERDER EL FOCO (blur) o cambiar (select)
+        // CONFIGURAR LISTENERS PARA ACTUALIZAR VALIDACIÓN
         // ============================================================
         function setupFieldListeners() {
+            // Inputs y textareas: al perder el foco
             document.querySelectorAll('.field-content input:not([type="hidden"]), .field-content textarea').forEach(field => {
                 field.addEventListener('blur', function() {
                     const group = this.closest('.field-group');
@@ -554,8 +645,17 @@
                         if (section) updateSectionCheck(section);
                     }
                 });
+                // También al escribir (para feedback inmediato) pero sin exagerar
+                field.addEventListener('input', function() {
+                    const group = this.closest('.field-group');
+                    if (group) {
+                        const section = group.dataset.section;
+                        if (section) updateSectionCheck(section);
+                    }
+                });
             });
 
+            // Selects: al cambiar y al blur
             document.querySelectorAll('.field-content select').forEach(select => {
                 select.addEventListener('change', function() {
                     const group = this.closest('.field-group');
@@ -575,7 +675,7 @@
         }
 
         // ============================================================
-        // LÓGICA DEL ACORDEÓN (con check al cerrar)
+        // LÓGICA DEL ACORDEÓN
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const headers = document.querySelectorAll('.field-header');
@@ -637,6 +737,8 @@
                         else interim += transcript;
                     }
                     mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
+                    // Actualizar validación después de dictar
+                    updateSectionCheck('mensaje');
                 };
 
                 recognition.onerror = function(event) {
@@ -675,7 +777,7 @@
             }
 
             // ============================================================
-            // UBICACIÓN (siempre visible)
+            // UBICACIÓN
             // ============================================================
             const ubicacionInput = document.getElementById('ubicacion');
             const btnUbicacion = document.getElementById('btnUbicacion');
@@ -686,6 +788,7 @@
                 if (ubicacionCompartida) ubicacionCompartida = false;
                 if (this.value.trim().length > 0 && !ubicacionCompartida) btnMaps.classList.remove('hidden');
                 else btnMaps.classList.add('hidden');
+                updateSectionCheck('ubicacion');
             });
 
             btnMaps.addEventListener('click', function() {
@@ -721,6 +824,7 @@
                         btnMaps.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                        updateSectionCheck('ubicacion');
                     },
                     function(error) {
                         alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
@@ -743,15 +847,12 @@
                 const isConsumidorFinal = (tipo === 'Consumidor Final');
 
                 if (isConsumidorFinal) {
-                    // Deshabilitar Situación Fiscal y ocultar CUIT
                     situacionFiscal.disabled = true;
-                    situacionFiscal.value = ''; // limpiar selección
+                    situacionFiscal.value = '';
                     cuitWrapper.style.display = 'none';
                     cuitInput.value = '';
                 } else {
-                    // Habilitar Situación Fiscal
                     situacionFiscal.disabled = false;
-                    // Si hay un valor en Situación Fiscal, mostrar CUIT
                     if (situacionFiscal.value !== '') {
                         cuitWrapper.style.display = 'block';
                     } else {
@@ -759,7 +860,6 @@
                         cuitInput.value = '';
                     }
                 }
-                // Actualizar check de la sección fiscal
                 updateSectionCheck('fiscal');
             }
 
@@ -773,12 +873,16 @@
                 }
                 updateSectionCheck('fiscal');
             });
+            // También cuando el usuario escriba en cuit
+            cuitInput.addEventListener('input', function() {
+                updateSectionCheck('fiscal');
+            });
 
             // Inicializar estado
             actualizarCamposFiscales();
 
             // ============================================================
-            // ENVÍO (SOLO FIRESTORE) + RESETEO
+            // ENVÍO
             // ============================================================
             const contactForm = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
@@ -794,18 +898,15 @@
                 const mensaje = mensajeTextarea.value.trim();
                 const ubicacion = ubicacionInput.value.trim();
 
-                // Datos fiscales
                 const tipoFacturaVal = tipoFactura.value;
                 const situacionFiscalVal = situacionFiscal.value;
                 const cuitVal = cuitInput.value.trim();
 
-                // Validación básica
                 if (!nombre || !telefono) {
                     alert('Por favor, completa tu nombre y teléfono.');
                     return;
                 }
 
-                // Si el campo CUIT está visible, debe ser obligatorio y tener 11 dígitos
                 const cuitVisible = cuitWrapper.style.display !== 'none';
                 if (cuitVisible) {
                     if (!/^\d{11}$/.test(cuitVal)) {
@@ -840,7 +941,9 @@
                     btnMaps.classList.add('hidden');
                     ubicacionCompartida = false;
                     document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
-                    // Restaurar estado de campos fiscales después del reset
+                    document.querySelectorAll('.warning-icon').forEach(el => el.classList.remove('visible'));
+                    document.querySelectorAll('.warning-text').forEach(el => el.classList.remove('visible'));
+                    // Restaurar estado fiscal
                     actualizarCamposFiscales();
                     document.getElementById('nombre').focus();
                 } else {
