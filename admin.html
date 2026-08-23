@@ -288,7 +288,7 @@
         }
         .table-scroll tbody tr td:last-child { cursor: default; }
 
-        /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" ===== */
+        /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" (9 columnas: incluye Tipo Factura) ===== */
         #tablaContainer table {
             width: 100%;
             table-layout: fixed;
@@ -302,31 +302,27 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /* Anchos porcentuales que suman 100% */
+        /* Anchos porcentuales (9 columnas) */
         #tablaContainer table th:nth-child(1), /* Fecha */
-        #tablaContainer table td:nth-child(1) { width: 8%; }
+        #tablaContainer table td:nth-child(1) { width: 9%; }
         #tablaContainer table th:nth-child(2), /* Nombre */
-        #tablaContainer table td:nth-child(2) { width: 12%; }
+        #tablaContainer table td:nth-child(2) { width: 14%; }
         #tablaContainer table th:nth-child(3), /* Teléfono */
-        #tablaContainer table td:nth-child(3) { width: 10%; }
+        #tablaContainer table td:nth-child(3) { width: 11%; }
         #tablaContainer table th:nth-child(4), /* Servicio */
-        #tablaContainer table td:nth-child(4) { width: 10%; }
+        #tablaContainer table td:nth-child(4) { width: 12%; }
         #tablaContainer table th:nth-child(5), /* Ubicación */
         #tablaContainer table td:nth-child(5) { width: 5%; min-width: 35px; max-width: 50px; white-space: nowrap; text-align: center; overflow: hidden; text-overflow: ellipsis; }
         #tablaContainer table th:nth-child(6), /* Mensaje */
-        #tablaContainer table td:nth-child(6) { width: 18%; word-break: break-word; white-space: normal; text-overflow: clip; }
+        #tablaContainer table td:nth-child(6) { width: 20%; word-break: break-word; white-space: normal; text-overflow: clip; }
         #tablaContainer table th:nth-child(7), /* Presupuesto */
-        #tablaContainer table td:nth-child(7) { width: 5%; min-width: 35px; max-width: 50px; text-align: center; white-space: nowrap; }
+        #tablaContainer table td:nth-child(7) { width: 6%; min-width: 35px; max-width: 50px; text-align: center; white-space: nowrap; }
         #tablaContainer table th:nth-child(8), /* Tipo Factura */
-        #tablaContainer table td:nth-child(8) { width: 7%; }
-        #tablaContainer table th:nth-child(9), /* Situación Fiscal */
-        #tablaContainer table td:nth-child(9) { width: 8%; }
-        #tablaContainer table th:nth-child(10), /* CUIT */
-        #tablaContainer table td:nth-child(10) { width: 7%; }
-        #tablaContainer table th:nth-child(11), /* Acciones */
-        #tablaContainer table td:nth-child(11) { width: 12%; min-width: 170px; white-space: nowrap; text-align: center; }
+        #tablaContainer table td:nth-child(8) { width: 8%; }
+        #tablaContainer table th:nth-child(9), /* Acciones */
+        #tablaContainer table td:nth-child(9) { width: 15%; min-width: 170px; white-space: nowrap; text-align: center; }
 
-        /* ===== TABLA PRESUPUESTOS (con columna de acciones ajustada) ===== */
+        /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
             table-layout: fixed;
             width: 100%;
@@ -618,7 +614,6 @@
         .presupuesto-preview .datos-col .item .valor.email {
             word-break: break-all;
         }
-        /* Líneas adicionales para datos fiscales (se muestran solo si existen) */
         .presupuesto-preview .datos-col .item.fiscal-item {
             display: flex;
             align-items: baseline;
@@ -1049,7 +1044,6 @@
             #busquedaResumen { min-width: 120px; width: 100%; }
             .btn-add-summary { margin-top: 5px; }
         }
-        /* Botones de presupuesto ocultar/restaurar */
         .btn-ocultar-presupuesto {
             background: #e67e22;
             color: white;
@@ -1251,7 +1245,7 @@
         <div class="form-group"><label>Ubicación</label><input type="text" id="editUbicacion" placeholder="Ubicación o dirección"></div>
         <div class="form-group"><label>Mensaje</label><textarea id="editMensaje" placeholder="Mensaje"></textarea></div>
 
-        <!-- CAMPOS FISCALES -->
+        <!-- CAMPOS FISCALES: tipo factura visible, situación y cuit ocultos en tabla pero presentes aquí -->
         <div class="form-group"><label>Tipo de Factura</label>
             <select id="editTipoFactura" onchange="toggleFiscales('edit')">
                 <option value="">Seleccionar</option>
@@ -1456,7 +1450,6 @@
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
-                    <!-- ===== SECCIÓN CONDICIONES MODIFICADA ===== -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
                             <span class="icono"></span> CONDICIONES COMERCIALES, NOTAS &amp; GARANTÍA
@@ -1466,7 +1459,6 @@
                             <li id="condicionValidez">Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
                             <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span></li>
                             <li>Para la conformidad de este presupuesto se exige el 100% del pago de los materiales (si fueran por cuenta de la empresa) + 50% de la mano de obra.</li>
-                            <!-- NUEVAS NOTAS DE GARANTÍA -->
                             <li><strong>GARANTIA:</strong> Mano de obra 100%</li>
                             <li><strong>GARANTIA MATERIALES:</strong> en el caso de materiales incluidos 100%</li>
                         </ul>
@@ -1986,7 +1978,7 @@ function initFiscales(prefix) {
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS (con filtro de ocultos)
+//  RENDERIZAR TABLA DE CONTACTOS (con filtro de ocultos) - INCLUYE TIPO FACTURA
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1999,7 +1991,8 @@ function renderizarTabla(data) {
         return;
     }
 
-    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto', 'Tipo Factura', 'Situación Fiscal', 'CUIT'];
+    // Columnas: Fecha, Nombre, Teléfono, Servicio, Ubicación, Mensaje, Presupuesto, Tipo Factura, Acciones
+    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto', 'Tipo Factura'];
     let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
     const sorted = [...dataFiltrada].sort((a,b) => {
         const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
@@ -2018,8 +2011,6 @@ function renderizarTabla(data) {
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
         const tipoFactura = row.tipoFactura || '';
-        const situacionFiscal = row.situacionFiscal || '';
-        const cuit = row.cuit || '';
         const oculto = row.oculto === true;
 
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
@@ -2061,8 +2052,6 @@ function renderizarTabla(data) {
             <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
             <td style="text-align:center;">${checkHtml}</td>
             <td>${tipoFactura || '—'}</td>
-            <td>${situacionFiscal || '—'}</td>
-            <td>${cuit || '—'}</td>
             <td style="text-align:center; white-space:nowrap;">${acciones}</td>
         </tr>`;
     });
@@ -2102,13 +2091,11 @@ function actualizarIndicadorDesbordamiento(elemento) {
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
 
-    // Filtrar por oculto
     let dataFiltrada = data;
     if (!mostrarOcultosPresupuestos) {
         dataFiltrada = data.filter(item => item.oculto !== true);
     }
 
-    // Aplicar filtros de estado y búsqueda
     const filtroEstado = document.getElementById('filtroEstado').value;
     const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
 
