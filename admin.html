@@ -1005,7 +1005,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL EDITAR REGISTRO (formulario) ===== -->
+<!-- ===== MODAL EDITAR REGISTRO ===== -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="close-modal" id="closeEditModal">&times;</button>
@@ -1106,7 +1106,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL SERVICIOS (para mostrar lista de servicios de un contacto) ===== -->
+<!-- ===== MODAL SERVICIOS ===== -->
 <div class="modal-overlay" id="serviciosModal">
     <div class="modal-box" style="max-width: 600px;">
         <button class="close-modal" id="closeServiciosModal">&times;</button>
@@ -1120,7 +1120,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO (con campos fiscales editables) ===== -->
+<!-- ===== MODAL PRESUPUESTO ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1136,7 +1136,7 @@
             <div class="form-group full-width"><label>Materiales incluidos</label>
                 <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
             </div>
-            <!-- CAMPOS FISCALES EDITABLES PARA ESTE PRESUPUESTO -->
+            <!-- ===== CAMPOS FISCALES EDITABLES EN EL PRESUPUESTO ===== -->
             <div class="form-group"><label>Tipo de Factura</label>
                 <select id="presupuestoTipoFactura" onchange="toggleFiscalesPresupuesto()">
                     <option value="">Seleccionar</option>
@@ -1147,7 +1147,7 @@
                 </select>
             </div>
             <div class="form-group fiscal-group" id="presupuestoSituacionFiscalWrapper"><label>Situación Fiscal</label>
-                <select id="presupuestoSituacionFiscal">
+                <select id="presupuestoSituacionFiscal" onchange="toggleFiscalesPresupuesto()">
                     <option value="">Seleccionar</option>
                     <option value="Monotributista">Monotributista</option>
                     <option value="Consumidor Final">Consumidor Final</option>
@@ -1568,32 +1568,35 @@ function actualizarStats(data) {
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
 
-    // --- CORREGIDO: Contar contactos sin presupuesto activo ---
-    // Crear un Set con los identificadores de contactos que tienen presupuesto activo (no vencido ni cancelado)
+    // === CORRECCIÓN: PENDIENTES DE PRESUPUESTO ===
     const contactosConPresupuestoActivo = new Set();
     datosCache.presupuestos.forEach(p => {
-        const estado = calcularEstadoPresupuesto(p);
-        if (estado !== 'vencido' && estado !== 'cancelado') {
-            if (p.contactoId) {
+        if (p.contactoId) {
+            const estado = calcularEstadoPresupuesto(p);
+            if (estado !== 'vencido' && estado !== 'cancelado') {
                 contactosConPresupuestoActivo.add(p.contactoId);
-            } else if (p.nombre && p.telefono) {
-                const key = `${p.nombre.trim().toLowerCase()}|${p.telefono.trim()}`;
-                contactosConPresupuestoActivo.add(key);
+            }
+        } else {
+            // Si no tiene contactoId, usar nombre+telefono como key
+            const key = (p.nombre || '') + '|' + (p.telefono || '');
+            if (key !== '|') {
+                const estado = calcularEstadoPresupuesto(p);
+                if (estado !== 'vencido' && estado !== 'cancelado') {
+                    contactosConPresupuestoActivo.add(key);
+                }
             }
         }
     });
 
     const pendientes = data.filter(item => {
-        // Si el contacto tiene id y está en el set de activos, no cuenta
-        if (item.id && contactosConPresupuestoActivo.has(item.id)) return false;
-        // Si no tiene id, usamos nombre+telefono
-        const key = `${(item.nombre || '').trim().toLowerCase()}|${(item.telefono || '').trim()}`;
-        if (contactosConPresupuestoActivo.has(key)) return false;
-        // Si no tiene presupuesto activo, es pendiente
-        return true;
-    }).length;
+        const id = item.id;
+        if (id && contactosConPresupuestoActivo.has(id)) return false;
+        // Si no tiene id, verificar por nombre+telefono
+        const key = (item.nombre || '') + '|' + (item.telefono || '');
+        return key !== '|' && !contactosConPresupuestoActivo.has(key);
+    });
 
-    document.getElementById('pendientesPresupuesto').textContent = pendientes;
+    document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
 }
 
 function actualizarGrafico(data) {
@@ -1654,7 +1657,6 @@ window.toggleFiscales = function(prefix) {
     const isConsumidorFinal = tipoFactura.value === 'Consumidor Final';
 
     if (isConsumidorFinal) {
-        // Deshabilitar situación fiscal y ocultar/limpiar CUIT
         situacionWrapper.classList.add('disabled');
         situacionSelect.disabled = true;
         situacionSelect.value = '';
@@ -1662,10 +1664,8 @@ window.toggleFiscales = function(prefix) {
         cuitInput.value = '';
         cuitInput.disabled = true;
     } else {
-        // Habilitar situación fiscal, mostrar CUIT si hay situación seleccionada
         situacionWrapper.classList.remove('disabled');
         situacionSelect.disabled = false;
-        // Si situación fiscal tiene valor, mostrar CUIT
         if (situacionSelect.value !== '') {
             cuitWrapper.classList.remove('hidden');
             cuitInput.disabled = false;
@@ -1677,7 +1677,7 @@ window.toggleFiscales = function(prefix) {
     }
 };
 
-// Función específica para el popup de presupuesto
+// Para el presupuesto (prefijo 'presupuesto')
 window.toggleFiscalesPresupuesto = function() {
     const tipoFactura = document.getElementById('presupuestoTipoFactura');
     const situacionWrapper = document.getElementById('presupuestoSituacionFiscalWrapper');
@@ -1708,40 +1708,58 @@ window.toggleFiscalesPresupuesto = function() {
             cuitInput.disabled = true;
         }
     }
+    // Actualizar vista previa
+    actualizarVistaPrevia();
 };
 
-// También escuchar cambios en situación fiscal para mostrar/ocultar CUIT
+// Escuchar cambios en situación fiscal para mostrar/ocultar CUIT (en los modales)
 document.addEventListener('DOMContentLoaded', function() {
-    ['edit', 'nuevo', 'presupuesto'].forEach(prefix => {
+    ['edit', 'nuevo'].forEach(prefix => {
         const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
         if (situacionSelect) {
             situacionSelect.addEventListener('change', function() {
                 const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
                 const cuitInput = document.getElementById(prefix + 'Cuit');
-                const tipoFactura = document.getElementById(prefix + 'TipoFactura');
-                // Solo actuar si no es consumidor final
-                if (tipoFactura && tipoFactura.value !== 'Consumidor Final') {
-                    if (this.value !== '') {
-                        cuitWrapper.classList.remove('hidden');
-                        cuitInput.disabled = false;
-                    } else {
-                        cuitWrapper.classList.add('hidden');
-                        cuitInput.value = '';
-                        cuitInput.disabled = true;
-                    }
+                if (this.value !== '') {
+                    cuitWrapper.classList.remove('hidden');
+                    cuitInput.disabled = false;
+                } else {
+                    cuitWrapper.classList.add('hidden');
+                    cuitInput.value = '';
+                    cuitInput.disabled = true;
                 }
             });
         }
     });
+    // Para presupuesto
+    const situacionPresupuesto = document.getElementById('presupuestoSituacionFiscal');
+    if (situacionPresupuesto) {
+        situacionPresupuesto.addEventListener('change', function() {
+            const cuitWrapper = document.getElementById('presupuestoCuitWrapper');
+            const cuitInput = document.getElementById('presupuestoCuit');
+            if (this.value !== '') {
+                cuitWrapper.classList.remove('hidden');
+                cuitInput.disabled = false;
+            } else {
+                cuitWrapper.classList.add('hidden');
+                cuitInput.value = '';
+                cuitInput.disabled = true;
+            }
+            actualizarVistaPrevia();
+        });
+    }
+    // Escuchar cambios en tipo factura y cuit para actualizar vista previa
+    document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
+    document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
 });
 
-// Inicializar estado de campos fiscales al abrir modales
+// Inicializar estado de campos fiscales
 function initFiscales(prefix) {
     toggleFiscales(prefix);
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS (formulario)
+//  RENDERIZAR TABLA DE CONTACTOS
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1750,7 +1768,6 @@ function renderizarTabla(data) {
         return;
     }
 
-    // Columnas: Fecha, Nombre, Teléfono, Servicio, Ubicación, Mensaje, Presupuesto, Tipo Factura, Situación Fiscal, CUIT, Acciones
     const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto', 'Tipo Factura', 'Situación Fiscal', 'CUIT'];
     let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
     const sorted = [...data].sort((a,b) => {
@@ -1769,7 +1786,6 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        // Campos fiscales
         const tipoFactura = row.tipoFactura || '';
         const situacionFiscal = row.situacionFiscal || '';
         const cuit = row.cuit || '';
@@ -1977,12 +1993,10 @@ window.editarRegistro = async function(docId) {
     document.getElementById('editUbicacion').value = registro.ubicacion || '';
     document.getElementById('editMensaje').value = registro.mensaje || '';
 
-    // Cargar campos fiscales
     document.getElementById('editTipoFactura').value = registro.tipoFactura || '';
     document.getElementById('editSituacionFiscal').value = registro.situacionFiscal || '';
     document.getElementById('editCuit').value = registro.cuit || '';
 
-    // Inicializar lógica fiscal
     initFiscales('edit');
 
     document.getElementById('editModal').classList.add('active');
@@ -1997,7 +2011,6 @@ window.guardarEdicion = async function() {
         await mostrarError('El nombre y el teléfono son obligatorios.');
         return;
     }
-    // Validar CUIT si está visible y tiene valor
     const cuitWrapper = document.getElementById('editCuitWrapper');
     const cuitInput = document.getElementById('editCuit');
     if (!cuitWrapper.classList.contains('hidden') && cuitInput.value.trim() !== '') {
@@ -2074,7 +2087,6 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
         return;
     }
 
-    // Validar CUIT si está visible y tiene valor
     const cuitWrapper = document.getElementById('nuevoCuitWrapper');
     if (!cuitWrapper.classList.contains('hidden') && cuit !== '') {
         if (!/^\d{11}$/.test(cuit)) {
@@ -2140,11 +2152,12 @@ window.abrirPresupuesto = function(docId) {
     document.getElementById('presupuestoValidez').value = 30;
     document.getElementById('presupuestoMateriales').value = 'No';
 
-    // Cargar datos fiscales del contacto como padrón
+    // Cargar datos fiscales del contacto en los campos del presupuesto (editables)
     document.getElementById('presupuestoTipoFactura').value = registro.tipoFactura || '';
     document.getElementById('presupuestoSituacionFiscal').value = registro.situacionFiscal || '';
     document.getElementById('presupuestoCuit').value = registro.cuit || '';
-    // Inicializar lógica fiscal para el popup
+
+    // Inicializar lógica fiscal del presupuesto
     toggleFiscalesPresupuesto();
 
     actualizarVistaPrevia();
@@ -2187,7 +2200,7 @@ window.actualizarVistaPrevia = function() {
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 
-    // --- Inyectar datos fiscales del presupuesto (editables) ---
+    // --- Inyectar datos fiscales desde los campos editables del presupuesto ---
     const fiscalContainer = document.getElementById('previewFiscalContainer');
     const tipoFactura = document.getElementById('presupuestoTipoFactura').value;
     const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value;
@@ -2205,14 +2218,14 @@ window.actualizarVistaPrevia = function() {
     fiscalContainer.innerHTML = fiscalHtml;
 };
 
-document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
-document.getElementById('presupuestoPrecio').addEventListener('input', window.actualizarVistaPrevia);
-document.getElementById('presupuestoValidez').addEventListener('input', window.actualizarVistaPrevia);
-document.getElementById('presupuestoMateriales').addEventListener('change', window.actualizarVistaPrevia);
-// Escuchar cambios en los campos fiscales del presupuesto
-document.getElementById('presupuestoTipoFactura').addEventListener('change', window.actualizarVistaPrevia);
-document.getElementById('presupuestoSituacionFiscal').addEventListener('change', window.actualizarVistaPrevia);
-document.getElementById('presupuestoCuit').addEventListener('input', window.actualizarVistaPrevia);
+// Listeners para actualizar vista previa al cambiar campos fiscales
+document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
+document.getElementById('presupuestoSituacionFiscal')?.addEventListener('change', actualizarVistaPrevia);
+document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
+document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
+document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
+document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
+document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
 
 window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -2224,7 +2237,7 @@ window.guardarPresupuesto = async function() {
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
 
-    // Obtener datos fiscales del presupuesto
+    // Obtener datos fiscales del presupuesto (editables)
     const tipoFactura = document.getElementById('presupuestoTipoFactura').value || '';
     const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value || '';
     const cuit = document.getElementById('presupuestoCuit').value.trim() || '';
@@ -2233,10 +2246,6 @@ window.guardarPresupuesto = async function() {
     if (!contactoId || contactoId.trim() === '') {
         contactoId = 'sin_contacto';
     }
-
-    console.log('📌 Guardando presupuesto:');
-    console.log('   - contactoId:', contactoId);
-    console.log('   - precio (número):', precioNumero);
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -2280,6 +2289,7 @@ window.guardarPresupuesto = async function() {
             estado: 'encurso',
             fecha: serverTimestamp(),
             contactoId: contactoId,
+            // Guardar también los datos fiscales del presupuesto
             tipoFactura: tipoFactura,
             situacionFiscal: situacionFiscal,
             cuit: cuit
@@ -2330,7 +2340,7 @@ function escape(str) {
 }
 
 // ============================================================
-//  RESUMEN POR CONTACTO (con modal de servicios mejorado)
+//  RESUMEN POR CONTACTO
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -2436,7 +2446,6 @@ window.mostrarServicios = function(nombre, telefono) {
 
     nombreSpan.textContent = nombre || 'Sin nombre';
 
-    // Buscar todos los registros de este contacto
     const registros = datosCache.contactos.filter(c => 
         (c.nombre || '').trim().toLowerCase() === (nombre || '').trim().toLowerCase() &&
         (c.telefono || '') === (telefono || '')
@@ -2460,7 +2469,6 @@ window.mostrarServicios = function(nombre, telefono) {
 
     registros.forEach(reg => {
         const servicio = reg.servicio || 'No especificado';
-        // Buscar presupuesto asociado
         let presupuesto = null;
         if (reg.id) {
             presupuesto = datosCache.presupuestos.find(p => p.contactoId === reg.id);
@@ -2531,6 +2539,7 @@ window.cerrarModal = cerrarModal;
 document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
 document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
 document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
+// Cerrar presupuesto al hacer clic fuera
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', function(e) {
         if (e.target === this) {
@@ -2543,12 +2552,6 @@ document.getElementById('saveEditBtn').addEventListener('click', window.guardarE
 
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
-
-// Inicializar estado de campos fiscales al cargar los modales
-document.addEventListener('DOMContentLoaded', function() {
-    // Si los modales se abren, se llama a initFiscales desde editarRegistro y abrirNuevoRegistro
-    // También podemos agregar un listener para cuando se abra el modal de edición
-});
 </script>
 
 <!-- ========================================================== -->
