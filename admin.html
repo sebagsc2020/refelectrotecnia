@@ -11,11 +11,6 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- ===== PWA: MANIFEST Y THEME COLOR ===== -->
-    <link rel="manifest" href="/manifest-admin.json">
-    <meta name="theme-color" content="#00A8FF">
-
     <title>Admin | REF Electrotecnia</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -25,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES (sin cambios) ===== */
+        /* ===== ESTILOS GENERALES ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -80,6 +75,7 @@
         .chart-box { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); }
         .chart-box h4 { font-size: 1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 16px; }
         .chart-box canvas { max-height: 220px; max-width: 100%; }
+        .chart-box.full-width canvas { max-height: 280px; }
         .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; padding: 0 0 12px 0; margin-bottom: 15px; }
         .table-container h4 { padding: 18px 24px 10px 24px; font-size: 1rem; font-weight: 700; color: var(--primary-dark); }
         .table-scroll { overflow-x: auto; padding: 0 16px 16px 16px; }
@@ -291,7 +287,7 @@
         /* ===== REAJUSTE DE ANCHOS EN "TODOS LOS REGISTROS" ===== */
         #tablaContainer table {
             width: 100%;
-            table-layout: fixed;
+            table-layout: fixed; /* Fuerza los anchos */
             font-size: 0.9rem;
         }
         #tablaContainer table th,
@@ -299,34 +295,52 @@
             padding: 8px 10px;
             vertical-align: middle;
             text-align: left;
-            overflow: hidden;
+            overflow: hidden; /* Evita desbordes */
             text-overflow: ellipsis;
         }
         /* Anchos porcentuales que suman 100% */
         #tablaContainer table th:nth-child(1), /* Fecha */
-        #tablaContainer table td:nth-child(1) { width: 8%; }
+        #tablaContainer table td:nth-child(1) { width: 10%; }
         #tablaContainer table th:nth-child(2), /* Nombre */
-        #tablaContainer table td:nth-child(2) { width: 12%; }
+        #tablaContainer table td:nth-child(2) { width: 15%; }
         #tablaContainer table th:nth-child(3), /* Teléfono */
-        #tablaContainer table td:nth-child(3) { width: 10%; }
+        #tablaContainer table td:nth-child(3) { width: 12%; }
         #tablaContainer table th:nth-child(4), /* Servicio */
-        #tablaContainer table td:nth-child(4) { width: 10%; }
+        #tablaContainer table td:nth-child(4) { width: 14%; }
         #tablaContainer table th:nth-child(5), /* Ubicación */
-        #tablaContainer table td:nth-child(5) { width: 5%; min-width: 35px; max-width: 50px; white-space: nowrap; text-align: center; overflow: hidden; text-overflow: ellipsis; }
-        #tablaContainer table th:nth-child(6), /* Mensaje */
-        #tablaContainer table td:nth-child(6) { width: 18%; word-break: break-word; white-space: normal; text-overflow: clip; }
+        #tablaContainer table td:nth-child(5) { 
+            width: 5%; 
+            min-width: 35px; 
+            max-width: 50px; 
+            white-space: nowrap; 
+            text-align: center; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #tablaContainer table th:nth-child(6), /* Mensaje (más espacio) */
+        #tablaContainer table td:nth-child(6) { 
+            width: 28%; 
+            word-break: break-word; 
+            white-space: normal; 
+            text-overflow: clip; /* Permite que el texto se envuelva */
+        }
         #tablaContainer table th:nth-child(7), /* Presupuesto */
-        #tablaContainer table td:nth-child(7) { width: 5%; min-width: 35px; max-width: 50px; text-align: center; white-space: nowrap; }
-        #tablaContainer table th:nth-child(8), /* Tipo Factura */
-        #tablaContainer table td:nth-child(8) { width: 7%; }
-        #tablaContainer table th:nth-child(9), /* Situación Fiscal */
-        #tablaContainer table td:nth-child(9) { width: 8%; }
-        #tablaContainer table th:nth-child(10), /* CUIT */
-        #tablaContainer table td:nth-child(10) { width: 7%; }
-        #tablaContainer table th:nth-child(11), /* Acciones */
-        #tablaContainer table td:nth-child(11) { width: 12%; min-width: 170px; white-space: nowrap; text-align: center; }
+        #tablaContainer table td:nth-child(7) { 
+            width: 6%; 
+            min-width: 35px; 
+            max-width: 60px; 
+            text-align: center; 
+            white-space: nowrap; 
+        }
+        #tablaContainer table th:nth-child(8), /* Acciones */
+        #tablaContainer table td:nth-child(8) { 
+            width: 10%; 
+            min-width: 110px; 
+            white-space: nowrap; 
+            text-align: center; 
+        }
 
-        /* ===== TABLA PRESUPUESTOS (con columna de acciones ajustada) ===== */
+        /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
             table-layout: fixed;
             width: 100%;
@@ -369,29 +383,6 @@
             .filtro-container { flex-direction: column; align-items: stretch; }
             .filtro-container select,
             .filtro-container input[type="text"] { width: 100%; min-width: unset; }
-            /* Ajustes móviles para acciones */
-            #tablaContainer table td:last-child {
-                white-space: nowrap;
-                min-width: 150px;
-            }
-            #tablaContainer table .btn-edit,
-            #tablaContainer table .btn-delete,
-            #tablaContainer table .btn-presupuesto {
-                font-size: 0.7rem;
-                padding: 3px 6px;
-                margin-right: 3px;
-            }
-            #presupuestosContainer table td:last-child {
-                white-space: nowrap;
-                min-width: 120px;
-            }
-            #presupuestosContainer table .btn-delete,
-            #presupuestosContainer table .btn-ocultar,
-            #presupuestosContainer table .btn-restaurar {
-                font-size: 0.7rem;
-                padding: 3px 6px;
-                margin-right: 3px;
-            }
         }
 
         /* ===== DISEÑO DEL PRESUPUESTO (PDF) ===== */
@@ -618,25 +609,6 @@
         .presupuesto-preview .datos-col .item .valor.email {
             word-break: break-all;
         }
-        /* Líneas adicionales para datos fiscales (se muestran solo si existen) */
-        .presupuesto-preview .datos-col .item.fiscal-item {
-            display: flex;
-            align-items: baseline;
-            padding: 2px 0;
-            font-size: 14.5px;
-        }
-        .presupuesto-preview .datos-col .item.fiscal-item .etiqueta {
-            font-weight: 600;
-            color: var(--gray-600);
-            min-width: 75px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .presupuesto-preview .datos-col .item.fiscal-item .valor {
-            font-weight: 500;
-            color: var(--gray-800);
-        }
         .presupuesto-preview .prestacion-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -814,7 +786,6 @@
             .presupuesto-preview .datos-wrapper { grid-template-columns: 1fr; border-left: none; border-top: 4px solid var(--primary-blue); }
             .presupuesto-preview .datos-col.izquierda { border-right: none; border-bottom: 1px solid var(--gray-200); }
             .presupuesto-preview .datos-col .item .etiqueta { min-width: 70px; font-size: 12px; }
-            .presupuesto-preview .datos-col .item.fiscal-item .etiqueta { min-width: 70px; font-size: 12px; }
             .presupuesto-preview .prestacion-header, .presupuesto-preview .prestacion-fila { grid-template-columns: 1fr; gap: 6px; padding: 12px 16px; }
             .presupuesto-preview .prestacion-header .importe-label { text-align: left; }
             .presupuesto-preview .prestacion-fila .servicio-importe { text-align: left; font-size: 18px; }
@@ -839,294 +810,23 @@
         .presupuesto-box .presupuesto-preview .presupuesto { border-radius: 0; box-shadow: none; border: 1px solid #E9ECEF; }
         @media (max-width: 768px) { .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; } }
 
-        /* ===== ESTILOS ADICIONALES ===== */
-        .btn-add-summary {
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-left: auto;
-        }
-        .btn-add-summary:hover {
-            background: var(--primary-cyan);
-            transform: translateY(-2px);
-        }
-        .servicios-clickable {
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .servicios-clickable:hover {
-            transform: scale(1.05);
-            background: var(--primary-cyan) !important;
-            color: white !important;
-        }
-        .servicios-modal-list {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0;
-        }
-        .servicios-modal-list li {
-            padding: 8px 12px;
-            border-bottom: 1px solid #E9ECEF;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .servicios-modal-list li:last-child {
-            border-bottom: none;
-        }
-        .servicios-modal-list .badge-service {
-            background: var(--primary-cyan);
-            color: white;
-            padding: 2px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .servicios-table th {
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--primary-dark);
-        }
-        .servicios-table td {
-            font-size: 0.9rem;
-            vertical-align: middle;
-        }
-        .servicios-table .estado-badge {
-            padding: 2px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: white;
-            display: inline-block;
-        }
-
-        /* ===== ESTILOS PARA CAMPOS FISCALES EN MODALES ===== */
-        .fiscal-group {
-            transition: opacity 0.3s, max-height 0.3s;
-            overflow: hidden;
-        }
-        .fiscal-group.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .fiscal-group.hidden {
-            display: none;
-        }
-        .fiscal-group select:disabled,
-        .fiscal-group input:disabled {
-            background: #f0f0f0;
-            cursor: not-allowed;
-        }
-
-        /* ===== BOTÓN EXCLUIR EN RESUMEN ===== */
-        .btn-excluir {
-            background: #f39c12;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-excluir:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-        .btn-excluir.excluido {
-            background: #27ae60;
-        }
-        .badge-excluido {
-            background: #e74c3c;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 6px;
-        }
-
-        /* ===== BOTÓN MOSTRAR OCULTOS (contactos) ===== */
-        .btn-mostrar-ocultos {
-            background: transparent;
-            color: var(--primary-dark);
-            border: 2px solid var(--primary-cyan);
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-left: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-mostrar-ocultos:hover {
-            background: var(--primary-cyan);
-            color: white;
-            transform: translateY(-2px);
-        }
-        .btn-mostrar-ocultos.activo {
-            background: var(--primary-cyan);
-            color: white;
-        }
-        .btn-restaurar {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-restaurar:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-        .fila-oculta {
-            opacity: 0.6;
-            background-color: #fef9e7;
-        }
-        .fila-oculta td {
-            color: #888;
-        }
-        .fila-oculta .btn-delete {
-            background: #27ae60;
-        }
-        .fila-oculta .btn-delete:hover {
-            background: #219150;
-        }
-        .badge-oculto {
-            background: #f39c12;
-            color: white;
-            padding: 1px 8px;
-            border-radius: 50px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 4px;
-        }
-
-        /* ===== INPUT DE BÚSQUEDA EN RESUMEN ===== */
-        #busquedaResumen {
-            padding: 6px 12px;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-family: var(--font);
-            font-size: 0.85rem;
-            min-width: 180px;
+        /* ===== ESTILO PARA EL GRÁFICO AL FINAL ===== */
+        .chart-final {
             background: white;
-            transition: border-color 0.2s;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
         }
-        #busquedaResumen:focus {
-            outline: none;
-            border-color: var(--primary-cyan);
-            box-shadow: 0 0 0 3px rgba(0,168,255,0.1);
-        }
-        @media (max-width: 768px) {
-            #busquedaResumen { min-width: 120px; width: 100%; }
-            .btn-add-summary { margin-top: 5px; }
-        }
-        /* Botones de presupuesto ocultar/restaurar */
-        .btn-ocultar-presupuesto {
-            background: #e67e22;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-right: 4px;
-        }
-        .btn-ocultar-presupuesto:hover {
-            background: #d35400;
-            transform: scale(1.05);
-        }
-        .btn-restaurar-presupuesto {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-right: 4px;
-        }
-        .btn-restaurar-presupuesto:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-        .fila-oculta-presupuesto {
-            opacity: 0.6;
-            background-color: #fef9e7;
-        }
-        .fila-oculta-presupuesto td {
-            color: #888;
-        }
-        .badge-oculto-presupuesto {
-            background: #f39c12;
-            color: white;
-            padding: 1px 8px;
-            border-radius: 50px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 4px;
-        }
-        .btn-mostrar-ocultos-presupuestos {
-            background: transparent;
+        .chart-final h4 {
+            font-size: 1rem;
+            font-weight: 700;
             color: var(--primary-dark);
-            border: 2px solid var(--primary-cyan);
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            margin-bottom: 16px;
         }
-        .btn-mostrar-ocultos-presupuestos:hover {
-            background: var(--primary-cyan);
-            color: white;
-            transform: translateY(-2px);
-        }
-        .btn-mostrar-ocultos-presupuestos.activo {
-            background: var(--primary-cyan);
-            color: white;
+        .chart-final canvas {
+            max-height: 280px;
+            width: 100%;
         }
     </style>
 </head>
@@ -1166,26 +866,10 @@
         <div class="chart-box"><h4><i class="fas fa-chart-line" style="color:var(--primary-cyan);"></i> Últimos 5 registros</h4><div id="ultimosRegistros" style="font-size:0.9rem; color:var(--gray-text);"><p class="loading"><i class="fas fa-spinner"></i> Cargando...</p></div></div>
     </div>
 
-    <div class="table-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
-            <h4 style="margin:0;"><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn-mostrar-ocultos" id="mostrarOcultosBtn"><i class="fas fa-eye"></i> Mostrar ocultos</button>
-                <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
-                    <i class="fas fa-plus"></i> Agregar manual
-                </button>
-            </div>
-        </div>
-        <div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div>
-    </div>
+    <div class="table-container"><h4><i class="fas fa-table" style="color:var(--primary-cyan);"></i> Todos los registros</h4><div class="table-scroll" id="tablaContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando datos...</div></div></div>
     
     <div class="table-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
-            <h4 style="margin:0;"><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn-mostrar-ocultos-presupuestos" id="mostrarOcultosPresupuestosBtn"><i class="fas fa-eye"></i> Mostrar ocultos</button>
-            </div>
-        </div>
+        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
         <div class="filtro-container">
             <label>Filtrar por estado:</label>
             <select id="filtroEstado" onchange="renderizarPresupuestos(datosCache.presupuestos)">
@@ -1201,18 +885,12 @@
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
     
-    <!-- ===== SECCIÓN RESUMEN POR CONTACTO (con búsqueda) ===== -->
-    <div class="table-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
-            <h4 style="margin:0;"><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="busquedaResumen" placeholder="Buscar cliente...">
-                <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
-                    <i class="fas fa-user-plus"></i> Agregar contacto
-                </button>
-            </div>
-        </div>
-        <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
+    <div class="table-container"><h4><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4><div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div></div>
+
+    <!-- ===== GRÁFICO DE EVOLUCIÓN MENSUAL (AL FINAL) ===== -->
+    <div class="chart-final">
+        <h4><i class="fas fa-chart-line" style="color:var(--accent-yellow);"></i> Evolución mensual (contactos vs presupuestos)</h4>
+        <canvas id="evolucionMensualChart"></canvas>
     </div>
 </div>
 
@@ -1226,7 +904,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL EDITAR REGISTRO ===== -->
+<!-- ===== MODAL EDITAR ===== -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <button class="close-modal" id="closeEditModal">&times;</button>
@@ -1250,93 +928,9 @@
         </div>
         <div class="form-group"><label>Ubicación</label><input type="text" id="editUbicacion" placeholder="Ubicación o dirección"></div>
         <div class="form-group"><label>Mensaje</label><textarea id="editMensaje" placeholder="Mensaje"></textarea></div>
-
-        <!-- CAMPOS FISCALES -->
-        <div class="form-group"><label>Tipo de Factura</label>
-            <select id="editTipoFactura" onchange="toggleFiscales('edit')">
-                <option value="">Seleccionar</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="Consumidor Final">Consumidor Final</option>
-            </select>
-        </div>
-        <div class="form-group fiscal-group" id="editSituacionFiscalWrapper"><label>Situación Fiscal</label>
-            <select id="editSituacionFiscal">
-                <option value="">Seleccionar</option>
-                <option value="Monotributista">Monotributista</option>
-                <option value="Consumidor Final">Consumidor Final</option>
-            </select>
-        </div>
-        <div class="form-group fiscal-group" id="editCuitWrapper"><label>CUIT/CUIL</label><input type="text" id="editCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric"></div>
-
         <div class="modal-actions">
             <button class="btn-cancel" id="cancelEditBtn">Cancelar</button>
             <button class="btn-save" id="saveEditBtn"><i class="fas fa-save"></i> Guardar cambios</button>
-        </div>
-    </div>
-</div>
-
-<!-- ===== MODAL NUEVO REGISTRO ===== -->
-<div class="modal-overlay" id="nuevoRegistroModal">
-    <div class="modal-box">
-        <button class="close-modal" id="closeNuevoRegistroModal">&times;</button>
-        <h3><span>📝</span> Nuevo registro</h3>
-        <div class="form-group"><label>Nombre completo *</label><input type="text" id="nuevoNombre" placeholder="Nombre completo"></div>
-        <div class="form-group"><label>Teléfono / WhatsApp *</label><input type="text" id="nuevoTelefono" placeholder="Teléfono"></div>
-        <div class="form-group"><label>Correo electrónico</label><input type="email" id="nuevoEmail" placeholder="Correo electrónico"></div>
-        <div class="form-group"><label>Servicio</label>
-            <select id="nuevoServicio">
-                <option value="">Selecciona el servicio</option>
-                <option>Instalación eléctrica</option>
-                <option>Reparación / Mantenimiento</option>
-                <option>Domótica / Automatización</option>
-                <option>Tableros / Puesta a tierra</option>
-                <option>Iluminación</option>
-                <option>Certificación / Habilitación</option>
-                <option value="emergencia">Emergencia 24/7</option>
-                <option>Otro</option>
-            </select>
-        </div>
-        <div class="form-group"><label>Ubicación</label><input type="text" id="nuevoUbicacion" placeholder="Ubicación o dirección"></div>
-        <div class="form-group"><label>Mensaje</label><textarea id="nuevoMensaje" placeholder="Mensaje"></textarea></div>
-
-        <!-- CAMPOS FISCALES -->
-        <div class="form-group"><label>Tipo de Factura</label>
-            <select id="nuevoTipoFactura" onchange="toggleFiscales('nuevo')">
-                <option value="">Seleccionar</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="Consumidor Final">Consumidor Final</option>
-            </select>
-        </div>
-        <div class="form-group fiscal-group" id="nuevoSituacionFiscalWrapper"><label>Situación Fiscal</label>
-            <select id="nuevoSituacionFiscal">
-                <option value="">Seleccionar</option>
-                <option value="Monotributista">Monotributista</option>
-                <option value="Consumidor Final">Consumidor Final</option>
-            </select>
-        </div>
-        <div class="form-group fiscal-group" id="nuevoCuitWrapper"><label>CUIT/CUIL</label><input type="text" id="nuevoCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric"></div>
-
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelNuevoBtn">Cancelar</button>
-            <button class="btn-save" id="saveNuevoBtn"><i class="fas fa-save"></i> Guardar registro</button>
-        </div>
-    </div>
-</div>
-
-<!-- ===== MODAL SERVICIOS ===== -->
-<div class="modal-overlay" id="serviciosModal">
-    <div class="modal-box" style="max-width: 600px;">
-        <button class="close-modal" id="closeServiciosModal">&times;</button>
-        <h3><span>📋</span> Servicios de <span id="serviciosClienteNombre">-</span></h3>
-        <div id="serviciosListContainer" style="margin-top: 10px;">
-            <p style="color: var(--gray-text);">Cargando...</p>
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" id="closeServiciosBtn">Cerrar</button>
         </div>
     </div>
 </div>
@@ -1357,38 +951,18 @@
             <div class="form-group full-width"><label>Materiales incluidos</label>
                 <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
             </div>
-            <!-- CAMPOS FISCALES EDITABLES EN EL PRESUPUESTO -->
-            <div class="form-group"><label>Tipo de Factura</label>
-                <select id="presupuestoTipoFactura" onchange="toggleFiscalesPresupuesto()">
-                    <option value="">Seleccionar</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="Consumidor Final">Consumidor Final</option>
-                </select>
-            </div>
-            <div class="form-group fiscal-group" id="presupuestoSituacionFiscalWrapper"><label>Situación Fiscal</label>
-                <select id="presupuestoSituacionFiscal" onchange="toggleFiscalesPresupuesto()">
-                    <option value="">Seleccionar</option>
-                    <option value="Monotributista">Monotributista</option>
-                    <option value="Consumidor Final">Consumidor Final</option>
-                </select>
-            </div>
-            <div class="form-group fiscal-group" id="presupuestoCuitWrapper"><label>CUIT/CUIL</label>
-                <input type="text" id="presupuestoCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric">
-            </div>
         </div>
 
         <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
         <div class="presupuesto-preview" id="presupuestoPreview">
             <div class="presupuesto">
                 <div class="marca-agua">
-                    <img src="/images/icon-512.png" alt="Marca de agua" />
+                    <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-512.png" alt="Marca de agua" />
                 </div>
                 <header class="header">
                     <div class="header-left">
                         <div class="logo">
-                            <img src="/images/icon-192.png" alt="REF Electrotecnia" />
+                            <img src="https://sebagsc2020.github.io/refelectrotecnia/images/icon-192.png" alt="REF Electrotecnia" />
                         </div>
                         <div class="empresa">
                             <h1>REF <span>Electrotecnia</span></h1>
@@ -1413,7 +987,6 @@
                                 <div class="item"><span class="etiqueta">Servicio:</span> <span class="valor" id="previewServicio">-</span></div>
                                 <div class="item"><span class="etiqueta">Materiales:</span> <span class="valor" id="previewMateriales">-</span></div>
                                 <div class="item"><span class="etiqueta">Validez:</span> <span class="valor" id="previewValidez">-</span></div>
-                                <div id="previewFiscalContainer"></div>
                             </div>
                             <div class="datos-col derecha">
                                 <div class="col-titulo">Información del Cliente</div>
@@ -1442,7 +1015,7 @@
                     </section>
                     <div class="totales-container">
                         <div class="totales-firma">
-                            <img class="firma-imagen" src="/images/firma.png" alt="Firma R. Figueras" />
+                            <img class="firma-imagen" src="https://sebagsc2020.github.io/refelectrotecnia/images/firma.png" alt="Firma R. Figueras" />
                             <span class="firma-texto">R. Figueras - REF Electrotecnia</span>
                             <span class="firma-digital">✓ Firmado digitalmente</span>
                         </div>
@@ -1456,19 +1029,15 @@
                     <div class="footer-documento">
                         Documento generado electrónicamente a través de https://www.refelectrotecnia.com
                     </div>
-                    <!-- ===== SECCIÓN CONDICIONES MODIFICADA ===== -->
                     <section class="condiciones">
                         <div class="seccion-titulo">
-                            <span class="icono"></span> CONDICIONES COMERCIALES, NOTAS &amp; GARANTÍA
+                            <span class="icono"></span> CONDICIONES COMERCIALES &amp; NOTAS
                             <span class="linea-aux"></span>
                         </div>
                         <ul>
                             <li id="condicionValidez">Este presupuesto tiene una validez de <span id="previewValidezDias">30</span> días (hasta el <span id="previewValidezFecha">-</span>).</li>
                             <li id="condicionMateriales">Materiales incluidos: <span id="previewCondMateriales">No</span></li>
                             <li>Para la conformidad de este presupuesto se exige el 100% del pago de los materiales (si fueran por cuenta de la empresa) + 50% de la mano de obra.</li>
-                            <!-- NUEVAS NOTAS DE GARANTÍA -->
-                            <li><strong>GARANTIA:</strong> Mano de obra 100%</li>
-                            <li><strong>GARANTIA MATERIALES:</strong> en el caso de materiales incluidos 100%</li>
                         </ul>
                     </section>
                 </div>
@@ -1519,11 +1088,10 @@ const db = getFirestore(app);
 // ============================================================
 let datosCache = { contactos: [], presupuestos: [] };
 let chartInstance = null;
+let evolucionChartInstance = null; // Para el gráfico de evolución mensual
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
 window.contactoIdActual = null;
-let mostrarOcultos = false; // Contactos
-let mostrarOcultosPresupuestos = false; // Presupuestos
 
 // ============================================================
 //  FUNCIONES AUXILIARES
@@ -1753,6 +1321,8 @@ function escucharContactos() {
         actualizarUltimos(contactos);
         renderizarTabla(contactos);
         actualizarResumenContactos(contactos);
+        // Actualizar gráfico de evolución mensual
+        actualizarEvolucionMensual(contactos, datosCache.presupuestos);
     }, (error) => {
         console.error('Error en onSnapshot contactos:', error);
         document.getElementById('tablaContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar contactos: ${error.message}</p></div>`;
@@ -1772,6 +1342,8 @@ function escucharPresupuestos() {
         renderizarTabla(datosCache.contactos);
         actualizarStats(datosCache.contactos);
         actualizarResumenContactos(datosCache.contactos);
+        // Actualizar gráfico de evolución mensual
+        actualizarEvolucionMensual(datosCache.contactos, presupuestos);
     }, (error) => {
         console.error('Error en onSnapshot presupuestos:', error);
         document.getElementById('presupuestosContainer').innerHTML = `<div class="no-data"><i class="fas fa-exclamation-circle" style="font-size:2rem;color:#e74c3c;"></i><p style="margin-top:10px;">Error al cargar presupuestos: ${error.message}</p></div>`;
@@ -1793,35 +1365,11 @@ function actualizarStats(data) {
     });
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
-
-    // === PENDIENTES: excluir contactos con 'excluido: true' ===
-    const contactosConPresupuestoActivo = new Set();
-    datosCache.presupuestos.forEach(p => {
-        if (p.contactoId) {
-            const estado = calcularEstadoPresupuesto(p);
-            if (estado !== 'vencido' && estado !== 'cancelado') {
-                contactosConPresupuestoActivo.add(p.contactoId);
-            }
-        } else {
-            const key = (p.nombre || '') + '|' + (p.telefono || '');
-            if (key !== '|') {
-                const estado = calcularEstadoPresupuesto(p);
-                if (estado !== 'vencido' && estado !== 'cancelado') {
-                    contactosConPresupuestoActivo.add(key);
-                }
-            }
-        }
-    });
-
-    const pendientes = data.filter(item => {
-        if (item.excluido === true) return false;
-        const id = item.id;
-        if (id && contactosConPresupuestoActivo.has(id)) return false;
-        const key = (item.nombre || '') + '|' + (item.telefono || '');
-        return key !== '|' && !contactosConPresupuestoActivo.has(key);
-    });
-
-    document.getElementById('pendientesPresupuesto').textContent = pendientes.length;
+    const nombresConPresupuesto = datosCache.presupuestos.map(p => p.nombre ? p.nombre.trim().toLowerCase() : '').filter(n => n !== '');
+    document.getElementById('pendientesPresupuesto').textContent = data.filter(item => {
+        const nombre = item.nombre ? item.nombre.trim().toLowerCase() : '';
+        return nombre !== '' && !nombresConPresupuesto.includes(nombre);
+    }).length;
 }
 
 function actualizarGrafico(data) {
@@ -1854,154 +1402,135 @@ function actualizarGrafico(data) {
 
 function actualizarUltimos(data) {
     const container = document.getElementById('ultimosRegistros');
-    if (data.length === 0) {
-        container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
-        return;
-    }
-    const ultimos = data.slice(0, 5);
+    if (data.length === 0) { container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>'; return; }
+    const ultimos = data.slice(-5).reverse();
     let html = '<ul style="list-style:none; padding:0; margin:0;">';
     ultimos.forEach(item => {
         const nombre = item.nombre || 'Anónimo';
         const servicio = item.servicio || 'No especificado';
         const fecha = formatearFecha(item.fecha);
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
-        html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
-            <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
-            <span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span>
-        </li>`;
+        html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;"><span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span><span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span></li>`;
     });
-    html += '</ul>';
-    container.innerHTML = html;
+    html += '</ul>'; container.innerHTML = html;
 }
 
 // ============================================================
-//  FUNCIÓN PARA MANEJAR CAMPOS FISCALES
+//  NUEVA FUNCIÓN: EVOLUCIÓN MENSUAL (CONTACTOS VS PRESUPUESTOS)
 // ============================================================
-window.toggleFiscales = function(prefix) {
-    const tipoFactura = document.getElementById(prefix + 'TipoFactura');
-    const situacionWrapper = document.getElementById(prefix + 'SituacionFiscalWrapper');
-    const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
-    const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
-    const cuitInput = document.getElementById(prefix + 'Cuit');
-
-    if (!tipoFactura || !situacionWrapper || !cuitWrapper) return;
-
-    const isConsumidorFinal = tipoFactura.value === 'Consumidor Final';
-
-    if (isConsumidorFinal) {
-        situacionWrapper.classList.add('disabled');
-        situacionSelect.disabled = true;
-        situacionSelect.value = '';
-        cuitWrapper.classList.add('hidden');
-        cuitInput.value = '';
-        cuitInput.disabled = true;
-    } else {
-        situacionWrapper.classList.remove('disabled');
-        situacionSelect.disabled = false;
-        if (situacionSelect.value !== '') {
-            cuitWrapper.classList.remove('hidden');
-            cuitInput.disabled = false;
-        } else {
-            cuitWrapper.classList.add('hidden');
-            cuitInput.value = '';
-            cuitInput.disabled = true;
-        }
+function actualizarEvolucionMensual(contactos, presupuestos) {
+    // Obtener los últimos 6 meses (desde el mes actual hacia atrás)
+    const hoy = new Date();
+    const meses = [];
+    const labels = [];
+    for (let i = 5; i >= 0; i--) {
+        const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+        const mes = fecha.getMonth();
+        const anio = fecha.getFullYear();
+        const nombreMes = fecha.toLocaleString('es-AR', { month: 'short' }).toUpperCase();
+        const label = `${nombreMes} ${anio}`;
+        labels.push(label);
+        meses.push({ mes, anio });
     }
-};
 
-window.toggleFiscalesPresupuesto = function() {
-    const tipoFactura = document.getElementById('presupuestoTipoFactura');
-    const situacionWrapper = document.getElementById('presupuestoSituacionFiscalWrapper');
-    const cuitWrapper = document.getElementById('presupuestoCuitWrapper');
-    const situacionSelect = document.getElementById('presupuestoSituacionFiscal');
-    const cuitInput = document.getElementById('presupuestoCuit');
+    // Contar contactos por mes
+    const contactosPorMes = meses.map(({ mes, anio }) => {
+        return contactos.filter(item => {
+            if (!item.fecha) return false;
+            const fecha = item.fecha.toDate ? item.fecha.toDate() : new Date(item.fecha);
+            return fecha.getMonth() === mes && fecha.getFullYear() === anio;
+        }).length;
+    });
 
-    if (!tipoFactura || !situacionWrapper || !cuitWrapper) return;
+    // Contar presupuestos por mes
+    const presupuestosPorMes = meses.map(({ mes, anio }) => {
+        return presupuestos.filter(item => {
+            if (!item.fecha) return false;
+            const fecha = item.fecha.toDate ? item.fecha.toDate() : new Date(item.fecha);
+            return fecha.getMonth() === mes && fecha.getFullYear() === anio;
+        }).length;
+    });
 
-    const isConsumidorFinal = tipoFactura.value === 'Consumidor Final';
+    const ctx = document.getElementById('evolucionMensualChart').getContext('2d');
+    if (evolucionChartInstance) evolucionChartInstance.destroy();
 
-    if (isConsumidorFinal) {
-        situacionWrapper.classList.add('disabled');
-        situacionSelect.disabled = true;
-        situacionSelect.value = '';
-        cuitWrapper.classList.add('hidden');
-        cuitInput.value = '';
-        cuitInput.disabled = true;
-    } else {
-        situacionWrapper.classList.remove('disabled');
-        situacionSelect.disabled = false;
-        if (situacionSelect.value !== '') {
-            cuitWrapper.classList.remove('hidden');
-            cuitInput.disabled = false;
-        } else {
-            cuitWrapper.classList.add('hidden');
-            cuitInput.value = '';
-            cuitInput.disabled = true;
-        }
-    }
-    actualizarVistaPrevia();
-};
-
-// Listeners para situación fiscal en modales
-document.addEventListener('DOMContentLoaded', function() {
-    ['edit', 'nuevo'].forEach(prefix => {
-        const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
-        if (situacionSelect) {
-            situacionSelect.addEventListener('change', function() {
-                const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
-                const cuitInput = document.getElementById(prefix + 'Cuit');
-                if (this.value !== '') {
-                    cuitWrapper.classList.remove('hidden');
-                    cuitInput.disabled = false;
-                } else {
-                    cuitWrapper.classList.add('hidden');
-                    cuitInput.value = '';
-                    cuitInput.disabled = true;
+    evolucionChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Contactos',
+                    data: contactosPorMes,
+                    borderColor: '#00A8FF',
+                    backgroundColor: 'rgba(0, 168, 255, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#00A8FF',
+                    pointRadius: 4,
+                },
+                {
+                    label: 'Presupuestos',
+                    data: presupuestosPorMes,
+                    borderColor: '#FFB800',
+                    backgroundColor: 'rgba(255, 184, 0, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#FFB800',
+                    pointRadius: 4,
                 }
-            });
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: { family: 'Inter', size: 12, weight: '600' },
+                        color: '#1E1E1E',
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' registros';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, font: { size: 11 } },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
         }
     });
-    const situacionPresupuesto = document.getElementById('presupuestoSituacionFiscal');
-    if (situacionPresupuesto) {
-        situacionPresupuesto.addEventListener('change', function() {
-            const cuitWrapper = document.getElementById('presupuestoCuitWrapper');
-            const cuitInput = document.getElementById('presupuestoCuit');
-            if (this.value !== '') {
-                cuitWrapper.classList.remove('hidden');
-                cuitInput.disabled = false;
-            } else {
-                cuitWrapper.classList.add('hidden');
-                cuitInput.value = '';
-                cuitInput.disabled = true;
-            }
-            actualizarVistaPrevia();
-        });
-    }
-    document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
-    document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
-});
-
-function initFiscales(prefix) {
-    toggleFiscales(prefix);
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS (con filtro de ocultos)
+//  RENDERIZAR TABLA DE CONTACTOS
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
-    let dataFiltrada = data;
-    if (!mostrarOcultos) {
-        dataFiltrada = data.filter(item => item.oculto !== true);
-    }
-    if (dataFiltrada.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros activos.</p></div>`;
+    if (data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay registros en la base de datos.</p></div>`;
         return;
     }
 
-    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto', 'Tipo Factura', 'Situación Fiscal', 'CUIT'];
+    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
     let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
-    const sorted = [...dataFiltrada].sort((a,b) => {
+    const sorted = [...data].sort((a,b) => {
         const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
         const fechaB = b.fecha ? (b.fecha.toDate ? b.fecha.toDate() : new Date(b.fecha)) : new Date(0);
         return fechaB - fechaA;
@@ -2017,19 +1546,19 @@ function renderizarTabla(data) {
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
 
-        const tipoFactura = row.tipoFactura || '';
-        const situacionFiscal = row.situacionFiscal || '';
-        const cuit = row.cuit || '';
-        const oculto = row.oculto === true;
-
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             if (p.contactoId && p.contactoId === docId) {
                 const estado = calcularEstadoPresupuesto(p);
                 return estado !== 'vencido' && estado !== 'cancelado';
             }
+            const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+            const nombreLimpio = nombre.trim().toLowerCase();
+            if (nombrePres === nombreLimpio) {
+                const estado = calcularEstadoPresupuesto(p);
+                return estado !== 'vencido' && estado !== 'cancelado';
+            }
             return false;
         });
-
         const checkHtml = tienePresupuestoActivo ? '<span class="check-presupuesto">✅</span>' : '<span class="no-presupuesto">❌</span>';
 
         let mapsHtml = '';
@@ -2045,25 +1574,19 @@ function renderizarTabla(data) {
             if (url) mapsHtml = `<a href="${url}" target="_blank" class="maps-link" title="Abrir en Google Maps"><i class="fas fa-map-marked-alt"></i></a>`;
         }
         const mensajeEscapado = mensaje.replace(/"/g, '&quot;');
-        const trClass = oculto ? 'fila-oculta' : '';
-        const badgeOculto = oculto ? '<span class="badge-oculto">Oculto</span>' : '';
-        const acciones = oculto
-            ? `<button class="btn-restaurar" onclick="restaurarRegistro('${docId}')" title="Restaurar"><i class="fas fa-undo"></i></button>`
-            : `<button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i></button>
-               <button class="btn-delete" onclick="ocultarRegistro('${docId}')" title="Ocultar"><i class="fas fa-eye-slash"></i></button>
-               <button class="btn-presupuesto" onclick="abrirPresupuesto('${docId}')" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>`;
-        html += `<tr data-id="${docId}" class="${trClass}">
+        html += `<tr data-id="${docId}">
             <td>${fecha}</td>
-            <td><strong>${nombre}</strong> ${badgeOculto}</td>
+            <td><strong>${nombre}</strong></td>
             <td>${telefono}</td>
             <td>${esEmergencia ? `<span class="badge-emergencia">⚠️ ${servicio}</span>` : servicio}</td>
             <td>${mapsHtml || '—'}</td>
             <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
             <td style="text-align:center;">${checkHtml}</td>
-            <td>${tipoFactura || '—'}</td>
-            <td>${situacionFiscal || '—'}</td>
-            <td>${cuit || '—'}</td>
-            <td style="text-align:center; white-space:nowrap;">${acciones}</td>
+            <td style="text-align:center; white-space:nowrap;">
+                <button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="eliminarRegistro('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                <button class="btn-presupuesto" onclick="abrirPresupuesto('${docId}')" title="Presupuesto"><i class="fas fa-file-invoice"></i></button>
+            </td>
         </tr>`;
     });
     html += `</tbody></table>`;
@@ -2097,22 +1620,19 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (con filtro de ocultos)
+//  RENDERIZAR PRESUPUESTOS
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
-
-    // Filtrar por oculto
-    let dataFiltrada = data;
-    if (!mostrarOcultosPresupuestos) {
-        dataFiltrada = data.filter(item => item.oculto !== true);
+    if (!data || data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
+        return;
     }
 
-    // Aplicar filtros de estado y búsqueda
     const filtroEstado = document.getElementById('filtroEstado').value;
     const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
 
-    let filtrados = dataFiltrada.filter((presupuesto) => {
+    let filtrados = data.filter((presupuesto) => {
         const estado = calcularEstadoPresupuesto(presupuesto);
         if (filtroEstado !== 'todos' && estado !== filtroEstado) return false;
         if (busqueda !== '') {
@@ -2154,7 +1674,6 @@ function renderizarPresupuestos(data) {
         const precio = row.precio ? parseFloat(row.precio) : 0;
         const fecha = formatearFecha(row.fecha);
         const estado = calcularEstadoPresupuesto(row);
-        const oculto = row.oculto === true;
 
         totalFiltrado += precio;
 
@@ -2181,26 +1700,17 @@ function renderizarPresupuestos(data) {
         estadoSelect += `</select>`;
 
         const descripcionEscapada = descripcion.replace(/"/g, '&quot;');
-        const trClass = oculto ? 'fila-oculta-presupuesto' : '';
-        const badgeOculto = oculto ? '<span class="badge-oculto-presupuesto">Oculto</span>' : '';
-
-        let accionesHtml = '';
-        if (oculto) {
-            accionesHtml = `<button class="btn-restaurar-presupuesto" onclick="restaurarPresupuesto('${docId}')" title="Restaurar"><i class="fas fa-undo"></i></button>`;
-        } else {
-            accionesHtml = `<button class="btn-ocultar-presupuesto" onclick="ocultarPresupuesto('${docId}')" title="Ocultar"><i class="fas fa-eye-slash"></i></button>`;
-        }
-        accionesHtml += `<button class="btn-delete" onclick="eliminarPresupuesto('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>`;
-
-        html += `<tr data-id="${docId}" class="${trClass}">
-            <td><strong>${nombre}</strong> ${badgeOculto}</td>
+        html += `<tr data-id="${docId}">
+            <td><strong>${nombre}</strong></td>
             <td>${servicio}</td>
             <td class="descripcion-td"><div class="descripcion-cell" title="Haz clic para expandir/colapsar">${descripcionEscapada}</div></td>
             <td>${estadoSelect}</td>
             <td>${diasHtml}</td>
             <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
             <td>${fecha}</td>
-            <td style="text-align:center; white-space:nowrap;">${accionesHtml}</td>
+            <td style="text-align:center;">
+                <button class="btn-delete" onclick="eliminarPresupuesto('${docId}')" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
+            </td>
         </tr>`;
     });
 
@@ -2225,141 +1735,7 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD: OCULTAR Y RESTAURAR (contactos)
-// ============================================================
-window.ocultarRegistro = async function(docId) {
-    const registro = datosCache.contactos.find(c => c.id === docId);
-    if (!registro) return;
-    const confirmado = await mostrarConfirmacion(`¿Ocultar el registro de "${registro.nombre || 'Anónimo'}"? El contacto seguirá apareciendo en el resumen.`);
-    if (confirmado) {
-        try {
-            await updateDoc(doc(db, 'contactos', docId), { oculto: true });
-        } catch (error) {
-            await mostrarError('Error al ocultar: ' + error.message);
-        }
-    }
-};
-
-window.restaurarRegistro = async function(docId) {
-    try {
-        await updateDoc(doc(db, 'contactos', docId), { oculto: false });
-    } catch (error) {
-        await mostrarError('Error al restaurar: ' + error.message);
-    }
-};
-
-// ============================================================
-//  ACCIONES CRUD: OCULTAR Y RESTAURAR (presupuestos)
-// ============================================================
-window.ocultarPresupuesto = async function(docId) {
-    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
-    if (!presupuesto) return;
-    const confirmado = await mostrarConfirmacion(`¿Ocultar el presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
-    if (confirmado) {
-        try {
-            await updateDoc(doc(db, 'presupuestos', docId), { oculto: true });
-        } catch (error) {
-            await mostrarError('Error al ocultar: ' + error.message);
-        }
-    }
-};
-
-window.restaurarPresupuesto = async function(docId) {
-    try {
-        await updateDoc(doc(db, 'presupuestos', docId), { oculto: false });
-    } catch (error) {
-        await mostrarError('Error al restaurar: ' + error.message);
-    }
-};
-
-window.eliminarPresupuesto = async function(docId) {
-    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
-    if (!presupuesto) return;
-    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
-    if (confirmado) {
-        try {
-            await deleteDoc(doc(db, 'presupuestos', docId));
-        } catch (error) {
-            await mostrarError('Error al eliminar: ' + error.message);
-        }
-    }
-};
-
-// ============================================================
-//  NUEVO REGISTRO MANUAL
-// ============================================================
-window.abrirNuevoRegistro = function() {
-    document.getElementById('nuevoNombre').value = '';
-    document.getElementById('nuevoTelefono').value = '';
-    document.getElementById('nuevoEmail').value = '';
-    document.getElementById('nuevoUbicacion').value = '';
-    document.getElementById('nuevoServicio').value = '';
-    document.getElementById('nuevoMensaje').value = '';
-    document.getElementById('nuevoTipoFactura').value = '';
-    document.getElementById('nuevoSituacionFiscal').value = '';
-    document.getElementById('nuevoCuit').value = '';
-    initFiscales('nuevo');
-    document.getElementById('nuevoRegistroModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-};
-
-document.getElementById('closeNuevoRegistroModal').addEventListener('click', () => cerrarModal('nuevoRegistroModal'));
-document.getElementById('cancelNuevoBtn').addEventListener('click', () => cerrarModal('nuevoRegistroModal'));
-
-document.getElementById('saveNuevoBtn').addEventListener('click', async function() {
-    const nombre = document.getElementById('nuevoNombre').value.trim();
-    const telefono = document.getElementById('nuevoTelefono').value.trim();
-    const email = document.getElementById('nuevoEmail').value.trim();
-    const servicio = document.getElementById('nuevoServicio').value;
-    const ubicacion = document.getElementById('nuevoUbicacion').value.trim();
-    const mensaje = document.getElementById('nuevoMensaje').value.trim();
-    const tipoFactura = document.getElementById('nuevoTipoFactura').value;
-    const situacionFiscal = document.getElementById('nuevoSituacionFiscal').value;
-    let cuit = document.getElementById('nuevoCuit').value.trim();
-
-    if (!nombre || !telefono) {
-        await mostrarError('El nombre y el teléfono son obligatorios.');
-        return;
-    }
-
-    const cuitWrapper = document.getElementById('nuevoCuitWrapper');
-    if (!cuitWrapper.classList.contains('hidden') && cuit !== '') {
-        if (!/^\d{11}$/.test(cuit)) {
-            await mostrarError('El CUIT debe tener exactamente 11 dígitos numéricos.');
-            return;
-        }
-    }
-
-    try {
-        await addDoc(collection(db, 'contactos'), {
-            nombre,
-            telefono,
-            email: email || '',
-            servicio: servicio || '',
-            ubicacion: ubicacion || '',
-            mensaje: mensaje || '',
-            tipoFactura: tipoFactura || '',
-            situacionFiscal: situacionFiscal || '',
-            cuit: cuit || '',
-            excluido: false,
-            oculto: false,
-            fecha: serverTimestamp()
-        });
-        cerrarModal('nuevoRegistroModal');
-        await mostrarModal({
-            tipo: 'success',
-            icon: '✅',
-            titulo: 'Registro creado',
-            mensaje: 'El registro se agregó correctamente a "Todos los registros".',
-            botones: [{ texto: 'Aceptar', clase: 'primary' }]
-        });
-    } catch (error) {
-        await mostrarError('Error al guardar: ' + error.message);
-    }
-});
-
-// ============================================================
-//  EDITAR REGISTRO
+//  ACCIONES CRUD
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2374,13 +1750,6 @@ window.editarRegistro = async function(docId) {
     document.getElementById('editServicio').value = registro.servicio || '';
     document.getElementById('editUbicacion').value = registro.ubicacion || '';
     document.getElementById('editMensaje').value = registro.mensaje || '';
-
-    document.getElementById('editTipoFactura').value = registro.tipoFactura || '';
-    document.getElementById('editSituacionFiscal').value = registro.situacionFiscal || '';
-    document.getElementById('editCuit').value = registro.cuit || '';
-
-    initFiscales('edit');
-
     document.getElementById('editModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 };
@@ -2393,14 +1762,6 @@ window.guardarEdicion = async function() {
         await mostrarError('El nombre y el teléfono son obligatorios.');
         return;
     }
-    const cuitWrapper = document.getElementById('editCuitWrapper');
-    const cuitInput = document.getElementById('editCuit');
-    if (!cuitWrapper.classList.contains('hidden') && cuitInput.value.trim() !== '') {
-        if (!/^\d{11}$/.test(cuitInput.value.trim())) {
-            await mostrarError('El CUIT debe tener exactamente 11 dígitos numéricos.');
-            return;
-        }
-    }
     try {
         await updateDoc(doc(db, 'contactos', docId), {
             nombre,
@@ -2408,14 +1769,24 @@ window.guardarEdicion = async function() {
             email: document.getElementById('editEmail').value.trim(),
             servicio: document.getElementById('editServicio').value,
             ubicacion: document.getElementById('editUbicacion').value.trim(),
-            mensaje: document.getElementById('editMensaje').value.trim(),
-            tipoFactura: document.getElementById('editTipoFactura').value || '',
-            situacionFiscal: document.getElementById('editSituacionFiscal').value || '',
-            cuit: document.getElementById('editCuit').value.trim() || ''
+            mensaje: document.getElementById('editMensaje').value.trim()
         });
         cerrarModal('editModal');
     } catch (error) {
         await mostrarError('Error al actualizar: ' + error.message);
+    }
+};
+
+window.eliminarRegistro = async function(docId) {
+    const registro = datosCache.contactos.find(c => c.id === docId);
+    if (!registro) return;
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar el registro de "${registro.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'contactos', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
     }
 };
 
@@ -2449,13 +1820,6 @@ window.abrirPresupuesto = function(docId) {
     document.getElementById('presupuestoPrecio').value = '';
     document.getElementById('presupuestoValidez').value = 30;
     document.getElementById('presupuestoMateriales').value = 'No';
-
-    document.getElementById('presupuestoTipoFactura').value = registro.tipoFactura || '';
-    document.getElementById('presupuestoSituacionFiscal').value = registro.situacionFiscal || '';
-    document.getElementById('presupuestoCuit').value = registro.cuit || '';
-
-    toggleFiscalesPresupuesto();
-
     actualizarVistaPrevia();
     document.getElementById('presupuestoModal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -2495,49 +1859,22 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
-
-    const fiscalContainer = document.getElementById('previewFiscalContainer');
-    const tipoFactura = document.getElementById('presupuestoTipoFactura').value;
-    const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value;
-    const cuit = document.getElementById('presupuestoCuit').value.trim();
-    let fiscalHtml = '';
-    if (tipoFactura) {
-        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Tipo Factura:</span> <span class="valor">${tipoFactura}</span></div>`;
-    }
-    if (situacionFiscal) {
-        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Situación Fiscal:</span> <span class="valor">${situacionFiscal}</span></div>`;
-    }
-    if (cuit) {
-        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">CUIT:</span> <span class="valor">${cuit}</span></div>`;
-    }
-    fiscalContainer.innerHTML = fiscalHtml;
 };
 
-document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
-document.getElementById('presupuestoSituacionFiscal')?.addEventListener('change', actualizarVistaPrevia);
-document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
-document.getElementById('presupuestoDescripcion').addEventListener('input', actualizarVistaPrevia);
-document.getElementById('presupuestoPrecio').addEventListener('input', actualizarVistaPrevia);
-document.getElementById('presupuestoValidez').addEventListener('input', actualizarVistaPrevia);
-document.getElementById('presupuestoMateriales').addEventListener('change', actualizarVistaPrevia);
+document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoPrecio').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoValidez').addEventListener('input', window.actualizarVistaPrevia);
+document.getElementById('presupuestoMateriales').addEventListener('change', window.actualizarVistaPrevia);
 
 window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
     const servicio = document.getElementById('previewServicio').textContent || 'No especificado';
     const descripcion = document.getElementById('presupuestoDescripcion').value.trim() || 'Sin descripción';
     const total = parseFloat(document.getElementById('presupuestoPrecio').value) || 0;
-    const precioNumero = parseFloat(total.toFixed(2));
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-    const tipoFactura = document.getElementById('presupuestoTipoFactura').value || '';
-    const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value || '';
-    const cuit = document.getElementById('presupuestoCuit').value.trim() || '';
-
-    let contactoId = window.contactoIdActual;
-    if (!contactoId || contactoId.trim() === '') {
-        contactoId = 'sin_contacto';
-    }
+    const contactoId = window.contactoIdActual || null;
 
     const btn = document.getElementById('guardarPresupuestoBtn');
     btn.disabled = true;
@@ -2545,8 +1882,7 @@ window.guardarPresupuesto = async function() {
 
     try {
         const element = document.getElementById('presupuestoPreview');
-        await new Promise(resolve => setTimeout(resolve, 500));
-
+        await new Promise(resolve => setTimeout(resolve, 300));
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
@@ -2574,26 +1910,23 @@ window.guardarPresupuesto = async function() {
             nombre,
             servicio,
             descripcion,
-            precio: precioNumero,
+            precio: total.toFixed(2),
             numero,
             validez,
             materiales,
             estado: 'encurso',
-            fecha: serverTimestamp(),
-            contactoId: contactoId,
-            tipoFactura: tipoFactura,
-            situacionFiscal: situacionFiscal,
-            cuit: cuit,
-            oculto: false
+            fecha: serverTimestamp()
         };
-
+        if (contactoId) {
+            datosPresupuesto.contactoId = contactoId;
+        }
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
 
         cerrarModal('presupuestoModal');
 
     } catch (error) {
-        console.error('❌ Error al guardar presupuesto:', error);
-        await mostrarError('Hubo un error al guardar el presupuesto. Revisa la consola para más detalles.');
+        console.error('Error al generar el PDF:', error);
+        await mostrarError('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Guardar y Descargar PDF';
@@ -2610,38 +1943,31 @@ window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
     }
 };
 
-// ============================================================
-//  FUNCIÓN AUXILIAR PARA ESCAPAR CARACTERES
-// ============================================================
-function escape(str) {
-    if (!str) return '';
-    return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-}
+window.eliminarPresupuesto = async function(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) return;
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'presupuestos', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
+    }
+};
 
 // ============================================================
-//  RESUMEN POR CONTACTO (CON BÚSQUEDA)
+//  RESUMEN POR CONTACTO
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
-    const busquedaInput = document.getElementById('busquedaResumen');
-    const busqueda = busquedaInput ? busquedaInput.value.toLowerCase().trim() : '';
-
-    let dataFiltrada = data;
-    if (busqueda !== '') {
-        dataFiltrada = data.filter(item => {
-            const nombre = (item.nombre || '').toLowerCase();
-            const telefono = (item.telefono || '').toLowerCase();
-            return nombre.includes(busqueda) || telefono.includes(busqueda);
-        });
-    }
-
-    if (dataFiltrada.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-search" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No se encontraron clientes que coincidan con la búsqueda.</p></div>`;
+    if (!data || data.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
         return;
     }
 
     const contactosMap = new Map();
-    dataFiltrada.forEach(item => {
+    data.forEach(item => {
         const nombre = item.nombre || 'Anónimo';
         const telefono = item.telefono ? String(item.telefono).trim() : '';
         if (!telefono) return;
@@ -2654,8 +1980,6 @@ function actualizarResumenContactos(data) {
             }
             contacto.email = item.email || contacto.email;
             contacto.ubicacion = item.ubicacion || contacto.ubicacion;
-            contacto.excluido = item.excluido === true;
-            contacto.id = item.id;
         } else {
             contactosMap.set(key, {
                 nombre,
@@ -2663,9 +1987,7 @@ function actualizarResumenContactos(data) {
                 email: item.email || '',
                 ubicacion: item.ubicacion || '',
                 cantidad: 1,
-                servicios: item.servicio ? [item.servicio] : [],
-                excluido: item.excluido === true,
-                id: item.id
+                servicios: item.servicio ? [item.servicio] : []
             });
         }
     });
@@ -2683,7 +2005,6 @@ function actualizarResumenContactos(data) {
         <th>Email</th>
         <th>Ubicación</th>
         <th style="text-align:center;">Servicios</th>
-        <th style="text-align:center;">Excluir</th>
         <th style="text-align:center;">Contactar</th>
     </tr></thead><tbody>`;
     contactos.forEach((contacto, index) => {
@@ -2701,7 +2022,13 @@ function actualizarResumenContactos(data) {
                 if (p.contactoId && p.contactoId === contactoId) {
                     return calcularEstadoPresupuesto(p) === 'vencido';
                 }
-                return false;
+                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
+            });
+        } else {
+            tieneVencido = datosCache.presupuestos.some(p => {
+                const nombrePres = p.nombre ? p.nombre.trim().toLowerCase() : '';
+                return nombrePres === nombreNormalizado && calcularEstadoPresupuesto(p) === 'vencido';
             });
         }
 
@@ -2711,31 +2038,15 @@ function actualizarResumenContactos(data) {
         const btnClase = tieneVencido ? 'btn-whatsapp-alerta' : 'btn-whatsapp';
         const btnTexto = tieneVencido ? 'Contactar URGENTE' : 'Contactar';
 
-        const excluidoBadge = contacto.excluido ? '<span class="badge-excluido">🚫 Excluido</span>' : '';
-
-        const docId = contacto.id;
-        const excluidoBtnClass = contacto.excluido ? 'excluido' : '';
-        const excluidoBtnText = contacto.excluido ? 'Reincorporar' : 'Excluir';
-        const excluidoBtnIcon = contacto.excluido ? 'fa-undo' : 'fa-ban';
-
         html += `<tr>
             <td>${index + 1}</td>
-            <td><strong>${contacto.nombre}</strong> ${alertaHtml} ${excluidoBadge}</td>
+            <td><strong>${contacto.nombre}</strong>${alertaHtml}</td>
             <td>${contacto.telefono}</td>
             <td>${contacto.email || '—'}</td>
             <td>${contacto.ubicacion || '—'}</td>
             <td style="text-align:center;">
-                <span class="badge servicios-clickable" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600; display:inline-block;"
-                      onclick="mostrarServicios('${escape(contacto.nombre)}', '${escape(contacto.telefono)}')"
-                      title="Haz clic para ver los servicios">
-                    ${contacto.cantidad}
-                </span>
+                <span class="badge" style="background:var(--primary-cyan); color:white; padding:2px 12px; border-radius:50px; font-weight:600;">${contacto.cantidad}</span>
                 <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
-            </td>
-            <td style="text-align:center;">
-                <button class="btn-excluir ${excluidoBtnClass}" onclick="toggleExcluirContacto('${docId}')" title="Excluir/Reincorporar de la lista de pendientes">
-                    <i class="fas ${excluidoBtnIcon}"></i> ${excluidoBtnText}
-                </button>
             </td>
             <td style="text-align:center;">
                 <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
@@ -2745,120 +2056,6 @@ function actualizarResumenContactos(data) {
     html += `</tbody></table>`;
     container.innerHTML = html;
 }
-
-// ============================================================
-//  FUNCIÓN PARA ALTERNAR EXCLUSIÓN DE CONTACTO
-// ============================================================
-window.toggleExcluirContacto = async function(docId) {
-    if (!docId) {
-        await mostrarError('No se pudo identificar el contacto.');
-        return;
-    }
-    const contacto = datosCache.contactos.find(c => c.id === docId);
-    if (!contacto) {
-        await mostrarError('Contacto no encontrado.');
-        return;
-    }
-    const nuevoEstado = !contacto.excluido;
-    try {
-        await updateDoc(doc(db, 'contactos', docId), {
-            excluido: nuevoEstado
-        });
-    } catch (error) {
-        await mostrarError('Error al cambiar estado de exclusión: ' + error.message);
-    }
-};
-
-// ============================================================
-//  MODAL DE SERVICIOS
-// ============================================================
-window.mostrarServicios = function(nombre, telefono) {
-    const modal = document.getElementById('serviciosModal');
-    const nombreSpan = document.getElementById('serviciosClienteNombre');
-    const container = document.getElementById('serviciosListContainer');
-
-    nombreSpan.textContent = nombre || 'Sin nombre';
-
-    const registros = datosCache.contactos.filter(c => 
-        (c.nombre || '').trim().toLowerCase() === (nombre || '').trim().toLowerCase() &&
-        (c.telefono || '') === (telefono || '')
-    );
-
-    if (registros.length === 0) {
-        container.innerHTML = '<p style="color: var(--gray-text);">No se encontraron registros para este contacto.</p>';
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        return;
-    }
-
-    let html = `<table class="servicios-table" style="width:100%; border-collapse:collapse; margin-top:10px;">
-        <thead>
-            <tr style="background:var(--light-bg);">
-                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Servicio</th>
-                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Estado</th>
-                <th style="text-align:left; padding:8px; border-bottom:2px solid #E9ECEF;">Fecha de cambio</th>
-            </tr>
-        </thead><tbody>`;
-
-    registros.forEach(reg => {
-        const servicio = reg.servicio || 'No especificado';
-        let presupuesto = null;
-        if (reg.id) {
-            presupuesto = datosCache.presupuestos.find(p => p.contactoId === reg.id);
-        }
-        if (!presupuesto) {
-            presupuesto = datosCache.presupuestos.find(p => 
-                (p.nombre || '').trim().toLowerCase() === (nombre || '').trim().toLowerCase() &&
-                (p.telefono || '') === (telefono || '')
-            );
-        }
-
-        let estado = 'Sin presupuesto';
-        let fecha = formatearFechaHora(reg.fecha);
-        let colorEstado = '#ccc';
-        if (presupuesto) {
-            const estadoRaw = presupuesto.estado || 'encurso';
-            const estadoMap = {
-                'aprobado': { label: 'Aprobado', color: '#2ecc71' },
-                'encurso': { label: 'En Curso', color: '#f39c12' },
-                'realizado': { label: 'Realizado', color: '#2ecc71' },
-                'vencido': { label: 'Vencido', color: '#e74c3c' },
-                'cancelado': { label: 'Cancelado', color: '#7f8c8d' }
-            };
-            const info = estadoMap[estadoRaw] || { label: estadoRaw.charAt(0).toUpperCase() + estadoRaw.slice(1), color: '#00A8FF' };
-            estado = info.label;
-            colorEstado = info.color;
-            if (presupuesto.fecha) {
-                fecha = formatearFechaHora(presupuesto.fecha);
-            }
-        }
-
-        html += `<tr>
-            <td style="padding:8px; border-bottom:1px solid #E9ECEF;">${servicio}</td>
-            <td style="padding:8px; border-bottom:1px solid #E9ECEF;">
-                <span class="estado-badge" style="background:${colorEstado};">
-                    ${estado}
-                </span>
-            </td>
-            <td style="padding:8px; border-bottom:1px solid #E9ECEF; font-size:0.85rem;">${fecha}</td>
-        </tr>`;
-    });
-
-    html += '</tbody></table>';
-    container.innerHTML = html;
-
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-};
-
-// Cerrar modal de servicios
-document.getElementById('closeServiciosModal').addEventListener('click', () => cerrarModal('serviciosModal'));
-document.getElementById('closeServiciosBtn').addEventListener('click', () => cerrarModal('serviciosModal'));
-document.getElementById('serviciosModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        cerrarModal('serviciosModal');
-    }
-});
 
 // ============================================================
 //  MODALES EXISTENTES
@@ -2884,55 +2081,6 @@ document.getElementById('saveEditBtn').addEventListener('click', window.guardarE
 
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
-
-// ============================================================
-//  BOTÓN MOSTRAR OCULTOS (contactos)
-// ============================================================
-document.getElementById('mostrarOcultosBtn').addEventListener('click', function() {
-    mostrarOcultos = !mostrarOcultos;
-    this.textContent = mostrarOcultos ? 'Ocultar ocultos' : 'Mostrar ocultos';
-    this.classList.toggle('activo', mostrarOcultos);
-    renderizarTabla(datosCache.contactos);
-});
-
-// ============================================================
-//  BOTÓN MOSTRAR OCULTOS (presupuestos)
-// ============================================================
-document.getElementById('mostrarOcultosPresupuestosBtn').addEventListener('click', function() {
-    mostrarOcultosPresupuestos = !mostrarOcultosPresupuestos;
-    this.textContent = mostrarOcultosPresupuestos ? 'Ocultar ocultos' : 'Mostrar ocultos';
-    this.classList.toggle('activo', mostrarOcultosPresupuestos);
-    renderizarPresupuestos(datosCache.presupuestos);
-});
-
-// ============================================================
-//  BÚSQUEDA EN RESUMEN
-// ============================================================
-const busquedaResumen = document.getElementById('busquedaResumen');
-if (busquedaResumen) {
-    busquedaResumen.addEventListener('input', function() {
-        actualizarResumenContactos(datosCache.contactos);
-    });
-}
-
 </script>
-
-<!-- ========================================================== -->
-<!-- REGISTRO DEL SERVICE WORKER (PWA)                          -->
-<!-- ========================================================== -->
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js')
-                .then(function(reg) {
-                    console.log('✅ Service Worker registrado correctamente:', reg);
-                })
-                .catch(function(err) {
-                    console.error('❌ Error al registrar el Service Worker:', err);
-                });
-        });
-    }
-</script>
-
 </body>
 </html>
