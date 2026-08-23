@@ -2083,7 +2083,7 @@
 
                     <!-- ===== FORMULARIO REEMPLAZADO (desde /201/form) ===== -->
                     <form class="contact-form" id="contactForm">
-                        <h4>Datos Cliente</h4>
+                        <h4>Prepare su Presupuesto</h4> <!-- Título cambiado -->
 
                         <div class="form-success" id="formSuccess">
                             <i class="fas fa-check-circle"></i>
@@ -2706,6 +2706,33 @@
         // ============================================================
         ['personal', 'servicio', 'ubicacion', 'fiscal', 'mensaje'].forEach(section => {
             updateSectionCheck(section);
+        });
+
+        // ============================================================
+        // COOKIES (para ocultar el banner)
+        // ============================================================
+        const cookieConsent = document.getElementById('cookieConsent');
+        function setCookieConsent(choice) {
+            localStorage.setItem('cookieConsent', choice);
+            cookieConsent.classList.add('hidden');
+            document.cookie = 'cookie_consent=' + choice + '; path=/; max-age=' + (60 * 60 * 24 * 365);
+            // Disparar evento para analytics si lo deseas
+            if (typeof gtag === 'function') {
+                gtag('event', 'cookies', { decision: choice === 'accepted' ? 'aceptadas' : 'rechazadas' });
+            }
+        }
+
+        // Si ya hay preferencia guardada, ocultar el banner
+        if (localStorage.getItem('cookieConsent')) {
+            cookieConsent.classList.add('hidden');
+        }
+
+        document.getElementById('acceptCookies').addEventListener('click', function() {
+            setCookieConsent('accepted');
+        });
+
+        document.getElementById('declineCookies').addEventListener('click', function() {
+            setCookieConsent('declined');
         });
 
         // ============================================================
