@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== ESTILOS GENERALES ===== */
+        /* ===== ESTILOS GENERALES (sin cambios) ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary-dark: #0A2E5C;
@@ -828,7 +828,7 @@
         .presupuesto-box .presupuesto-preview .presupuesto { border-radius: 0; box-shadow: none; border: 1px solid #E9ECEF; }
         @media (max-width: 768px) { .presupuesto-box .presupuesto-datos { grid-template-columns: 1fr; } }
 
-        /* ===== ESTILOS ADICIONALES PARA LA SECCIÓN RESUMEN ===== */
+        /* ===== ESTILOS ADICIONALES ===== */
         .btn-add-summary {
             background: var(--primary-dark);
             color: white;
@@ -880,7 +880,6 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
-        /* Tabla dentro del modal de servicios */
         .servicios-table th {
             font-size: 0.85rem;
             font-weight: 700;
@@ -917,6 +916,39 @@
         .fiscal-group input:disabled {
             background: #f0f0f0;
             cursor: not-allowed;
+        }
+
+        /* ===== BOTÓN EXCLUIR EN RESUMEN ===== */
+        .btn-excluir {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-excluir:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        .btn-excluir.excluido {
+            background: #27ae60;
+        }
+        .badge-excluido {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 6px;
         }
     </style>
 </head>
@@ -983,7 +1015,7 @@
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
     
-    <!-- ===== SECCIÓN RESUMEN POR CONTACTO (mejorada) ===== -->
+    <!-- ===== SECCIÓN RESUMEN POR CONTACTO ===== -->
     <div class="table-container">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
             <h4 style="margin:0;"><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
@@ -995,7 +1027,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PERSONALIZADO ===== -->
+<!-- ===== MODALES ===== -->
 <div class="custom-modal-overlay" id="customModal">
     <div class="custom-modal-box">
         <div class="icon" id="customModalIcon">⚠️</div>
@@ -1136,7 +1168,7 @@
             <div class="form-group full-width"><label>Materiales incluidos</label>
                 <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
             </div>
-            <!-- ===== CAMPOS FISCALES EDITABLES EN EL PRESUPUESTO ===== -->
+            <!-- CAMPOS FISCALES EDITABLES EN EL PRESUPUESTO -->
             <div class="form-group"><label>Tipo de Factura</label>
                 <select id="presupuestoTipoFactura" onchange="toggleFiscalesPresupuesto()">
                     <option value="">Seleccionar</option>
@@ -1192,7 +1224,6 @@
                                 <div class="item"><span class="etiqueta">Servicio:</span> <span class="valor" id="previewServicio">-</span></div>
                                 <div class="item"><span class="etiqueta">Materiales:</span> <span class="valor" id="previewMateriales">-</span></div>
                                 <div class="item"><span class="etiqueta">Validez:</span> <span class="valor" id="previewValidez">-</span></div>
-                                <!-- Aquí se inyectarán los datos fiscales si existen -->
                                 <div id="previewFiscalContainer"></div>
                             </div>
                             <div class="datos-col derecha">
@@ -1568,7 +1599,7 @@ function actualizarStats(data) {
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
 
-    // === CORRECCIÓN: PENDIENTES DE PRESUPUESTO ===
+    // === PENDIENTES: excluir contactos con 'excluido: true' ===
     const contactosConPresupuestoActivo = new Set();
     datosCache.presupuestos.forEach(p => {
         if (p.contactoId) {
@@ -1577,7 +1608,6 @@ function actualizarStats(data) {
                 contactosConPresupuestoActivo.add(p.contactoId);
             }
         } else {
-            // Si no tiene contactoId, usar nombre+telefono como key
             const key = (p.nombre || '') + '|' + (p.telefono || '');
             if (key !== '|') {
                 const estado = calcularEstadoPresupuesto(p);
@@ -1589,9 +1619,10 @@ function actualizarStats(data) {
     });
 
     const pendientes = data.filter(item => {
+        // Si está excluido, no cuenta
+        if (item.excluido === true) return false;
         const id = item.id;
         if (id && contactosConPresupuestoActivo.has(id)) return false;
-        // Si no tiene id, verificar por nombre+telefono
         const key = (item.nombre || '') + '|' + (item.telefono || '');
         return key !== '|' && !contactosConPresupuestoActivo.has(key);
     });
@@ -1643,7 +1674,7 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
-//  FUNCIÓN PARA MANEJAR CAMPOS FISCALES (habilitar/deshabilitar)
+//  FUNCIÓN PARA MANEJAR CAMPOS FISCALES
 // ============================================================
 window.toggleFiscales = function(prefix) {
     const tipoFactura = document.getElementById(prefix + 'TipoFactura');
@@ -1677,7 +1708,6 @@ window.toggleFiscales = function(prefix) {
     }
 };
 
-// Para el presupuesto (prefijo 'presupuesto')
 window.toggleFiscalesPresupuesto = function() {
     const tipoFactura = document.getElementById('presupuestoTipoFactura');
     const situacionWrapper = document.getElementById('presupuestoSituacionFiscalWrapper');
@@ -1708,11 +1738,10 @@ window.toggleFiscalesPresupuesto = function() {
             cuitInput.disabled = true;
         }
     }
-    // Actualizar vista previa
     actualizarVistaPrevia();
 };
 
-// Escuchar cambios en situación fiscal para mostrar/ocultar CUIT (en los modales)
+// Listeners para situación fiscal en modales
 document.addEventListener('DOMContentLoaded', function() {
     ['edit', 'nuevo'].forEach(prefix => {
         const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
@@ -1731,7 +1760,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    // Para presupuesto
     const situacionPresupuesto = document.getElementById('presupuestoSituacionFiscal');
     if (situacionPresupuesto) {
         situacionPresupuesto.addEventListener('change', function() {
@@ -1748,18 +1776,16 @@ document.addEventListener('DOMContentLoaded', function() {
             actualizarVistaPrevia();
         });
     }
-    // Escuchar cambios en tipo factura y cuit para actualizar vista previa
     document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
     document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
 });
 
-// Inicializar estado de campos fiscales
 function initFiscales(prefix) {
     toggleFiscales(prefix);
 }
 
 // ============================================================
-//  RENDERIZAR TABLA DE CONTACTOS
+//  RENDERIZAR TABLA DE CONTACTOS (sin cambios)
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
@@ -1862,7 +1888,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS
+//  RENDERIZAR PRESUPUESTOS (sin cambios)
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -1977,7 +2003,7 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD (formulario)
+//  ACCIONES CRUD (formulario) - sin cambios
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2106,6 +2132,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
             tipoFactura: tipoFactura || '',
             situacionFiscal: situacionFiscal || '',
             cuit: cuit || '',
+            excluido: false,
             fecha: serverTimestamp()
         });
         cerrarModal('nuevoRegistroModal');
@@ -2152,12 +2179,10 @@ window.abrirPresupuesto = function(docId) {
     document.getElementById('presupuestoValidez').value = 30;
     document.getElementById('presupuestoMateriales').value = 'No';
 
-    // Cargar datos fiscales del contacto en los campos del presupuesto (editables)
     document.getElementById('presupuestoTipoFactura').value = registro.tipoFactura || '';
     document.getElementById('presupuestoSituacionFiscal').value = registro.situacionFiscal || '';
     document.getElementById('presupuestoCuit').value = registro.cuit || '';
 
-    // Inicializar lógica fiscal del presupuesto
     toggleFiscalesPresupuesto();
 
     actualizarVistaPrevia();
@@ -2200,7 +2225,6 @@ window.actualizarVistaPrevia = function() {
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 
-    // --- Inyectar datos fiscales desde los campos editables del presupuesto ---
     const fiscalContainer = document.getElementById('previewFiscalContainer');
     const tipoFactura = document.getElementById('presupuestoTipoFactura').value;
     const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value;
@@ -2218,7 +2242,6 @@ window.actualizarVistaPrevia = function() {
     fiscalContainer.innerHTML = fiscalHtml;
 };
 
-// Listeners para actualizar vista previa al cambiar campos fiscales
 document.getElementById('presupuestoTipoFactura')?.addEventListener('change', actualizarVistaPrevia);
 document.getElementById('presupuestoSituacionFiscal')?.addEventListener('change', actualizarVistaPrevia);
 document.getElementById('presupuestoCuit')?.addEventListener('input', actualizarVistaPrevia);
@@ -2236,8 +2259,6 @@ window.guardarPresupuesto = async function() {
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
-
-    // Obtener datos fiscales del presupuesto (editables)
     const tipoFactura = document.getElementById('presupuestoTipoFactura').value || '';
     const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value || '';
     const cuit = document.getElementById('presupuestoCuit').value.trim() || '';
@@ -2289,7 +2310,6 @@ window.guardarPresupuesto = async function() {
             estado: 'encurso',
             fecha: serverTimestamp(),
             contactoId: contactoId,
-            // Guardar también los datos fiscales del presupuesto
             tipoFactura: tipoFactura,
             situacionFiscal: situacionFiscal,
             cuit: cuit
@@ -2340,7 +2360,7 @@ function escape(str) {
 }
 
 // ============================================================
-//  RESUMEN POR CONTACTO
+//  RESUMEN POR CONTACTO (ACTUALIZADO con botón EXCLUIR)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -2363,6 +2383,8 @@ function actualizarResumenContactos(data) {
             }
             contacto.email = item.email || contacto.email;
             contacto.ubicacion = item.ubicacion || contacto.ubicacion;
+            contacto.excluido = item.excluido === true; // true si alguno está excluido
+            contacto.id = item.id; // guardamos el id del primer contacto
         } else {
             contactosMap.set(key, {
                 nombre,
@@ -2370,7 +2392,9 @@ function actualizarResumenContactos(data) {
                 email: item.email || '',
                 ubicacion: item.ubicacion || '',
                 cantidad: 1,
-                servicios: item.servicio ? [item.servicio] : []
+                servicios: item.servicio ? [item.servicio] : [],
+                excluido: item.excluido === true,
+                id: item.id
             });
         }
     });
@@ -2388,6 +2412,7 @@ function actualizarResumenContactos(data) {
         <th>Email</th>
         <th>Ubicación</th>
         <th style="text-align:center;">Servicios</th>
+        <th style="text-align:center;">Excluir</th>
         <th style="text-align:center;">Contactar</th>
     </tr></thead><tbody>`;
     contactos.forEach((contacto, index) => {
@@ -2415,9 +2440,18 @@ function actualizarResumenContactos(data) {
         const btnClase = tieneVencido ? 'btn-whatsapp-alerta' : 'btn-whatsapp';
         const btnTexto = tieneVencido ? 'Contactar URGENTE' : 'Contactar';
 
+        // Badge excluido
+        const excluidoBadge = contacto.excluido ? '<span class="badge-excluido">🚫 Excluido</span>' : '';
+
+        // Botón para alternar exclusión (usamos el id del contacto)
+        const docId = contacto.id;
+        const excluidoBtnClass = contacto.excluido ? 'excluido' : '';
+        const excluidoBtnText = contacto.excluido ? 'Reincorporar' : 'Excluir';
+        const excluidoBtnIcon = contacto.excluido ? 'fa-undo' : 'fa-ban';
+
         html += `<tr>
             <td>${index + 1}</td>
-            <td><strong>${contacto.nombre}</strong>${alertaHtml}</td>
+            <td><strong>${contacto.nombre}</strong> ${alertaHtml} ${excluidoBadge}</td>
             <td>${contacto.telefono}</td>
             <td>${contacto.email || '—'}</td>
             <td>${contacto.ubicacion || '—'}</td>
@@ -2430,6 +2464,11 @@ function actualizarResumenContactos(data) {
                 <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
             </td>
             <td style="text-align:center;">
+                <button class="btn-excluir ${excluidoBtnClass}" onclick="toggleExcluirContacto('${docId}')" title="Excluir/Reincorporar de la lista de pendientes">
+                    <i class="fas ${excluidoBtnIcon}"></i> ${excluidoBtnText}
+                </button>
+            </td>
+            <td style="text-align:center;">
                 <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
             </td>
         </tr>`;
@@ -2438,7 +2477,33 @@ function actualizarResumenContactos(data) {
     container.innerHTML = html;
 }
 
-// ===== FUNCIÓN PARA MOSTRAR MODAL DE SERVICIOS CON TABLA =====
+// ============================================================
+//  FUNCIÓN PARA ALTERNAR EXCLUSIÓN DE CONTACTO
+// ============================================================
+window.toggleExcluirContacto = async function(docId) {
+    if (!docId) {
+        await mostrarError('No se pudo identificar el contacto.');
+        return;
+    }
+    const contacto = datosCache.contactos.find(c => c.id === docId);
+    if (!contacto) {
+        await mostrarError('Contacto no encontrado.');
+        return;
+    }
+    const nuevoEstado = !contacto.excluido;
+    try {
+        await updateDoc(doc(db, 'contactos', docId), {
+            excluido: nuevoEstado
+        });
+        // La actualización en tiempo real refrescará la tabla automáticamente
+    } catch (error) {
+        await mostrarError('Error al cambiar estado de exclusión: ' + error.message);
+    }
+};
+
+// ============================================================
+//  MODAL DE SERVICIOS (sin cambios)
+// ============================================================
 window.mostrarServicios = function(nombre, telefono) {
     const modal = document.getElementById('serviciosModal');
     const nombreSpan = document.getElementById('serviciosClienteNombre');
@@ -2539,7 +2604,6 @@ window.cerrarModal = cerrarModal;
 document.getElementById('closeEditModal').addEventListener('click', () => cerrarModal('editModal'));
 document.getElementById('cancelEditBtn').addEventListener('click', () => cerrarModal('editModal'));
 document.getElementById('closePresupuestoModal').addEventListener('click', () => cerrarModal('presupuestoModal'));
-// Cerrar presupuesto al hacer clic fuera
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', function(e) {
         if (e.target === this) {
