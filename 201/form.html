@@ -308,6 +308,18 @@
                 justify-content: center;
             }
         }
+        /* Estilo adicional para campo de 11 dígitos */
+        #cuitWrapper small {
+            display: block;
+            margin-top: 4px;
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -387,6 +399,42 @@
                             <i class="fas fa-location-dot"></i> Compartir ubicación actual
                         </button>
                         <small>Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATOS FISCALES (NUEVA SECCIÓN) -->
+            <div class="field-group" data-section="fiscal">
+                <div class="field-header" data-target="field-fiscal">
+                    <span class="title-wrapper">
+                        <i class="fas fa-file-invoice" style="margin-right:6px; color:var(--accent-yellow);"></i>Datos fiscales
+                        <span class="section-check" id="check-fiscal">✔</span>
+                    </span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                </div>
+                <div class="field-content" id="field-fiscal">
+                    <!-- Tipo de Factura -->
+                    <div style="margin-bottom:12px;">
+                        <select id="tipoFactura" name="tipoFactura">
+                            <option value="">Selecciona tipo de factura</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="Consumidor Final">Consumidor Final</option>
+                        </select>
+                    </div>
+                    <!-- Situación Fiscal -->
+                    <div style="margin-bottom:12px;" id="situacionFiscalWrapper">
+                        <select id="situacionFiscal" name="situacionFiscal">
+                            <option value="">Selecciona situación fiscal</option>
+                            <option value="Monotributista">Monotributista</option>
+                            <option value="Consumidor Final">Consumidor Final</option>
+                        </select>
+                    </div>
+                    <!-- Campo de 11 dígitos (CUIT/CUIL) -->
+                    <div style="margin-bottom:12px; display:none;" id="cuitWrapper">
+                        <input type="text" id="cuit" name="cuit" placeholder="CUIT/CUIL (11 dígitos)" maxlength="11" inputmode="numeric" pattern="\d{11}" />
+                        <small>Ingresá los 11 dígitos sin guiones ni espacios.</small>
                     </div>
                 </div>
             </div>
@@ -480,6 +528,11 @@
             } else if (sectionId === 'mensaje') {
                 const textarea = group.querySelector('#mensaje');
                 hasData = !!(textarea && textarea.value.trim() !== '');
+            } else if (sectionId === 'fiscal') {
+                const tipoFactura = group.querySelector('#tipoFactura')?.value;
+                const situacionFiscal = group.querySelector('#situacionFiscal')?.value;
+                const cuit = group.querySelector('#cuit')?.value.trim();
+                hasData = !!(tipoFactura || situacionFiscal || cuit);
             }
 
             if (hasData) {
@@ -678,6 +731,53 @@
             });
 
             // ============================================================
+            // LÓGICA DE DATOS FISCALES
+            // ============================================================
+            const tipoFactura = document.getElementById('tipoFactura');
+            const situacionFiscal = document.getElementById('situacionFiscal');
+            const cuitWrapper = document.getElementById('cuitWrapper');
+            const cuitInput = document.getElementById('cuit');
+
+            function actualizarCamposFiscales() {
+                const tipo = tipoFactura.value;
+                const isConsumidorFinal = (tipo === 'Consumidor Final');
+
+                if (isConsumidorFinal) {
+                    // Deshabilitar Situación Fiscal y ocultar CUIT
+                    situacionFiscal.disabled = true;
+                    situacionFiscal.value = ''; // limpiar selección
+                    cuitWrapper.style.display = 'none';
+                    cuitInput.value = '';
+                } else {
+                    // Habilitar Situación Fiscal
+                    situacionFiscal.disabled = false;
+                    // Si hay un valor en Situación Fiscal, mostrar CUIT
+                    if (situacionFiscal.value !== '') {
+                        cuitWrapper.style.display = 'block';
+                    } else {
+                        cuitWrapper.style.display = 'none';
+                        cuitInput.value = '';
+                    }
+                }
+                // Actualizar check de la sección fiscal
+                updateSectionCheck('fiscal');
+            }
+
+            tipoFactura.addEventListener('change', actualizarCamposFiscales);
+            situacionFiscal.addEventListener('change', function() {
+                if (this.value !== '') {
+                    cuitWrapper.style.display = 'block';
+                } else {
+                    cuitWrapper.style.display = 'none';
+                    cuitInput.value = '';
+                }
+                updateSectionCheck('fiscal');
+            });
+
+            // Inicializar estado
+            actualizarCamposFiscales();
+
+            // ============================================================
             // ENVÍO (SOLO FIRESTORE) + RESETEO
             // ============================================================
             const contactForm = document.getElementById('contactForm');
@@ -694,9 +794,24 @@
                 const mensaje = mensajeTextarea.value.trim();
                 const ubicacion = ubicacionInput.value.trim();
 
+                // Datos fiscales
+                const tipoFacturaVal = tipoFactura.value;
+                const situacionFiscalVal = situacionFiscal.value;
+                const cuitVal = cuitInput.value.trim();
+
+                // Validación básica
                 if (!nombre || !telefono) {
                     alert('Por favor, completa tu nombre y teléfono.');
                     return;
+                }
+
+                // Si el campo CUIT está visible, debe ser obligatorio y tener 11 dígitos
+                const cuitVisible = cuitWrapper.style.display !== 'none';
+                if (cuitVisible) {
+                    if (!/^\d{11}$/.test(cuitVal)) {
+                        alert('El CUIT/CUIL debe tener exactamente 11 dígitos numéricos.');
+                        return;
+                    }
                 }
 
                 const datos = {
@@ -705,7 +820,10 @@
                     email: email || '',
                     servicio: servicio || '',
                     ubicacion: ubicacion || '',
-                    mensaje: mensaje || ''
+                    mensaje: mensaje || '',
+                    tipoFactura: tipoFacturaVal || '',
+                    situacionFiscal: situacionFiscalVal || '',
+                    cuit: cuitVal || ''
                 };
 
                 submitBtn.disabled = true;
@@ -722,6 +840,8 @@
                     btnMaps.classList.add('hidden');
                     ubicacionCompartida = false;
                     document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
+                    // Restaurar estado de campos fiscales después del reset
+                    actualizarCamposFiscales();
                     document.getElementById('nombre').focus();
                 } else {
                     alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
@@ -734,7 +854,7 @@
             // ============================================================
             // INICIALIZAR: verificar datos al cargar
             // ============================================================
-            ['personal', 'servicio', 'ubicacion', 'mensaje'].forEach(section => {
+            ['personal', 'servicio', 'ubicacion', 'fiscal', 'mensaje'].forEach(section => {
                 updateSectionCheck(section);
             });
 
