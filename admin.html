@@ -326,7 +326,7 @@
         #tablaContainer table th:nth-child(11), /* Acciones */
         #tablaContainer table td:nth-child(11) { width: 12%; min-width: 170px; white-space: nowrap; text-align: center; }
 
-        /* ===== TABLA PRESUPUESTOS ===== */
+        /* ===== TABLA PRESUPUESTOS (con columna de acciones ajustada) ===== */
         #presupuestosContainer table {
             table-layout: fixed;
             width: 100%;
@@ -377,6 +377,17 @@
             #tablaContainer table .btn-edit,
             #tablaContainer table .btn-delete,
             #tablaContainer table .btn-presupuesto {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+                margin-right: 3px;
+            }
+            #presupuestosContainer table td:last-child {
+                white-space: nowrap;
+                min-width: 120px;
+            }
+            #presupuestosContainer table .btn-delete,
+            #presupuestosContainer table .btn-ocultar,
+            #presupuestosContainer table .btn-restaurar {
                 font-size: 0.7rem;
                 padding: 3px 6px;
                 margin-right: 3px;
@@ -951,7 +962,7 @@
             margin-left: 6px;
         }
 
-        /* ===== BOTÓN MOSTRAR OCULTOS ===== */
+        /* ===== BOTÓN MOSTRAR OCULTOS (contactos) ===== */
         .btn-mostrar-ocultos {
             background: transparent;
             color: var(--primary-dark);
@@ -1038,6 +1049,85 @@
             #busquedaResumen { min-width: 120px; width: 100%; }
             .btn-add-summary { margin-top: 5px; }
         }
+        /* Botones de presupuesto ocultar/restaurar */
+        .btn-ocultar-presupuesto {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 4px;
+        }
+        .btn-ocultar-presupuesto:hover {
+            background: #d35400;
+            transform: scale(1.05);
+        }
+        .btn-restaurar-presupuesto {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 4px;
+        }
+        .btn-restaurar-presupuesto:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        .fila-oculta-presupuesto {
+            opacity: 0.6;
+            background-color: #fef9e7;
+        }
+        .fila-oculta-presupuesto td {
+            color: #888;
+        }
+        .badge-oculto-presupuesto {
+            background: #f39c12;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 4px;
+        }
+        .btn-mostrar-ocultos-presupuestos {
+            background: transparent;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-cyan);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-mostrar-ocultos-presupuestos:hover {
+            background: var(--primary-cyan);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-mostrar-ocultos-presupuestos.activo {
+            background: var(--primary-cyan);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -1090,7 +1180,12 @@
     </div>
     
     <div class="table-container">
-        <h4><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
+            <h4 style="margin:0;"><i class="fas fa-file-invoice" style="color:var(--primary-cyan);"></i> Presupuestos enviados</h4>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-mostrar-ocultos-presupuestos" id="mostrarOcultosPresupuestosBtn"><i class="fas fa-eye"></i> Mostrar ocultos</button>
+            </div>
+        </div>
         <div class="filtro-container">
             <label>Filtrar por estado:</label>
             <select id="filtroEstado" onchange="renderizarPresupuestos(datosCache.presupuestos)">
@@ -1423,7 +1518,8 @@ let chartInstance = null;
 let unsubscribeContactos = null;
 let unsubscribePresupuestos = null;
 window.contactoIdActual = null;
-let mostrarOcultos = false; // Estado del botón "Mostrar ocultos"
+let mostrarOcultos = false; // Contactos
+let mostrarOcultosPresupuestos = false; // Presupuestos
 
 // ============================================================
 //  FUNCIONES AUXILIARES
@@ -1714,7 +1810,6 @@ function actualizarStats(data) {
     });
 
     const pendientes = data.filter(item => {
-        // Si está excluido, no cuenta
         if (item.excluido === true) return false;
         const id = item.id;
         if (id && contactosConPresupuestoActivo.has(id)) return false;
@@ -1759,7 +1854,6 @@ function actualizarUltimos(data) {
         container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
         return;
     }
-    // Mostramos los 5 más recientes (los primeros del array ordenado)
     const ultimos = data.slice(0, 5);
     let html = '<ul style="list-style:none; padding:0; margin:0;">';
     ultimos.forEach(item => {
@@ -1892,7 +1986,6 @@ function initFiscales(prefix) {
 // ============================================================
 function renderizarTabla(data) {
     const container = document.getElementById('tablaContainer');
-    // Filtrar según mostrarOcultos
     let dataFiltrada = data;
     if (!mostrarOcultos) {
         dataFiltrada = data.filter(item => item.oculto !== true);
@@ -2000,19 +2093,22 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (sin cambios)
+//  RENDERIZAR PRESUPUESTOS (con filtro de ocultos)
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
-    if (!data || data.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay presupuestos generados aún.</p></div>`;
-        return;
+
+    // Filtrar por oculto
+    let dataFiltrada = data;
+    if (!mostrarOcultosPresupuestos) {
+        dataFiltrada = data.filter(item => item.oculto !== true);
     }
 
+    // Aplicar filtros de estado y búsqueda
     const filtroEstado = document.getElementById('filtroEstado').value;
     const busqueda = document.getElementById('busquedaPresupuesto').value.toLowerCase().trim();
 
-    let filtrados = data.filter((presupuesto) => {
+    let filtrados = dataFiltrada.filter((presupuesto) => {
         const estado = calcularEstadoPresupuesto(presupuesto);
         if (filtroEstado !== 'todos' && estado !== filtroEstado) return false;
         if (busqueda !== '') {
@@ -2054,6 +2150,7 @@ function renderizarPresupuestos(data) {
         const precio = row.precio ? parseFloat(row.precio) : 0;
         const fecha = formatearFecha(row.fecha);
         const estado = calcularEstadoPresupuesto(row);
+        const oculto = row.oculto === true;
 
         totalFiltrado += precio;
 
@@ -2080,17 +2177,26 @@ function renderizarPresupuestos(data) {
         estadoSelect += `</select>`;
 
         const descripcionEscapada = descripcion.replace(/"/g, '&quot;');
-        html += `<tr data-id="${docId}">
-            <td><strong>${nombre}</strong></td>
+        const trClass = oculto ? 'fila-oculta-presupuesto' : '';
+        const badgeOculto = oculto ? '<span class="badge-oculto-presupuesto">Oculto</span>' : '';
+
+        let accionesHtml = '';
+        if (oculto) {
+            accionesHtml = `<button class="btn-restaurar-presupuesto" onclick="restaurarPresupuesto('${docId}')" title="Restaurar"><i class="fas fa-undo"></i></button>`;
+        } else {
+            accionesHtml = `<button class="btn-ocultar-presupuesto" onclick="ocultarPresupuesto('${docId}')" title="Ocultar"><i class="fas fa-eye-slash"></i></button>`;
+        }
+        accionesHtml += `<button class="btn-delete" onclick="eliminarPresupuesto('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>`;
+
+        html += `<tr data-id="${docId}" class="${trClass}">
+            <td><strong>${nombre}</strong> ${badgeOculto}</td>
             <td>${servicio}</td>
             <td class="descripcion-td"><div class="descripcion-cell" title="Haz clic para expandir/colapsar">${descripcionEscapada}</div></td>
             <td>${estadoSelect}</td>
             <td>${diasHtml}</td>
             <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
             <td>${fecha}</td>
-            <td style="text-align:center;">
-                <button class="btn-delete" onclick="eliminarPresupuesto('${docId}')" title="Eliminar presupuesto"><i class="fas fa-trash"></i></button>
-            </td>
+            <td style="text-align:center; white-space:nowrap;">${accionesHtml}</td>
         </tr>`;
     });
 
@@ -2115,7 +2221,7 @@ function renderizarPresupuestos(data) {
 }
 
 // ============================================================
-//  ACCIONES CRUD: OCULTAR Y RESTAURAR
+//  ACCIONES CRUD: OCULTAR Y RESTAURAR (contactos)
 // ============================================================
 window.ocultarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2124,7 +2230,6 @@ window.ocultarRegistro = async function(docId) {
     if (confirmado) {
         try {
             await updateDoc(doc(db, 'contactos', docId), { oculto: true });
-            // La actualización en tiempo real refrescará la tabla automáticamente
         } catch (error) {
             await mostrarError('Error al ocultar: ' + error.message);
         }
@@ -2139,11 +2244,45 @@ window.restaurarRegistro = async function(docId) {
     }
 };
 
-// Mantener la función eliminarRegistro para compatibilidad (pero ahora usa ocultar)
-window.eliminarRegistro = window.ocultarRegistro;
+// ============================================================
+//  ACCIONES CRUD: OCULTAR Y RESTAURAR (presupuestos)
+// ============================================================
+window.ocultarPresupuesto = async function(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) return;
+    const confirmado = await mostrarConfirmacion(`¿Ocultar el presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await updateDoc(doc(db, 'presupuestos', docId), { oculto: true });
+        } catch (error) {
+            await mostrarError('Error al ocultar: ' + error.message);
+        }
+    }
+};
+
+window.restaurarPresupuesto = async function(docId) {
+    try {
+        await updateDoc(doc(db, 'presupuestos', docId), { oculto: false });
+    } catch (error) {
+        await mostrarError('Error al restaurar: ' + error.message);
+    }
+};
+
+window.eliminarPresupuesto = async function(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) return;
+    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
+    if (confirmado) {
+        try {
+            await deleteDoc(doc(db, 'presupuestos', docId));
+        } catch (error) {
+            await mostrarError('Error al eliminar: ' + error.message);
+        }
+    }
+};
 
 // ============================================================
-//  NUEVO REGISTRO MANUAL (con oculto: false)
+//  NUEVO REGISTRO MANUAL
 // ============================================================
 window.abrirNuevoRegistro = function() {
     document.getElementById('nuevoNombre').value = '';
@@ -2216,7 +2355,7 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
 });
 
 // ============================================================
-//  EDITAR REGISTRO (sin cambios, pero se mantiene)
+//  EDITAR REGISTRO
 // ============================================================
 window.editarRegistro = async function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2277,7 +2416,7 @@ window.guardarEdicion = async function() {
 };
 
 // ============================================================
-//  PRESUPUESTOS (sin cambios relevantes, solo adaptar)
+//  PRESUPUESTOS
 // ============================================================
 window.abrirPresupuesto = function(docId) {
     const registro = datosCache.contactos.find(c => c.id === docId);
@@ -2440,7 +2579,8 @@ window.guardarPresupuesto = async function() {
             contactoId: contactoId,
             tipoFactura: tipoFactura,
             situacionFiscal: situacionFiscal,
-            cuit: cuit
+            cuit: cuit,
+            oculto: false
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
@@ -2466,19 +2606,6 @@ window.cambiarEstadoPresupuesto = async function(docId, nuevoEstado) {
     }
 };
 
-window.eliminarPresupuesto = async function(docId) {
-    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
-    if (!presupuesto) return;
-    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
-    if (confirmado) {
-        try {
-            await deleteDoc(doc(db, 'presupuestos', docId));
-        } catch (error) {
-            await mostrarError('Error al eliminar: ' + error.message);
-        }
-    }
-};
-
 // ============================================================
 //  FUNCIÓN AUXILIAR PARA ESCAPAR CARACTERES
 // ============================================================
@@ -2495,7 +2622,6 @@ function actualizarResumenContactos(data) {
     const busquedaInput = document.getElementById('busquedaResumen');
     const busqueda = busquedaInput ? busquedaInput.value.toLowerCase().trim() : '';
 
-    // Filtrar contactos si hay búsqueda
     let dataFiltrada = data;
     if (busqueda !== '') {
         dataFiltrada = data.filter(item => {
@@ -2640,7 +2766,7 @@ window.toggleExcluirContacto = async function(docId) {
 };
 
 // ============================================================
-//  MODAL DE SERVICIOS (sin cambios)
+//  MODAL DE SERVICIOS
 // ============================================================
 window.mostrarServicios = function(nombre, telefono) {
     const modal = document.getElementById('serviciosModal');
@@ -2756,7 +2882,7 @@ document.getElementById('filtroEstado').addEventListener('change', () => renderi
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
 
 // ============================================================
-//  BOTÓN MOSTRAR OCULTOS
+//  BOTÓN MOSTRAR OCULTOS (contactos)
 // ============================================================
 document.getElementById('mostrarOcultosBtn').addEventListener('click', function() {
     mostrarOcultos = !mostrarOcultos;
@@ -2766,7 +2892,17 @@ document.getElementById('mostrarOcultosBtn').addEventListener('click', function(
 });
 
 // ============================================================
-//  BÚSQUEDA EN RESUMEN (evento input)
+//  BOTÓN MOSTRAR OCULTOS (presupuestos)
+// ============================================================
+document.getElementById('mostrarOcultosPresupuestosBtn').addEventListener('click', function() {
+    mostrarOcultosPresupuestos = !mostrarOcultosPresupuestos;
+    this.textContent = mostrarOcultosPresupuestos ? 'Ocultar ocultos' : 'Mostrar ocultos';
+    this.classList.toggle('activo', mostrarOcultosPresupuestos);
+    renderizarPresupuestos(datosCache.presupuestos);
+});
+
+// ============================================================
+//  BÚSQUEDA EN RESUMEN
 // ============================================================
 const busquedaResumen = document.getElementById('busquedaResumen');
 if (busquedaResumen) {
