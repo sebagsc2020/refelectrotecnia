@@ -304,46 +304,27 @@
         }
         /* Anchos porcentuales que suman 100% */
         #tablaContainer table th:nth-child(1), /* Fecha */
-        #tablaContainer table td:nth-child(1) { width: 10%; }
+        #tablaContainer table td:nth-child(1) { width: 8%; }
         #tablaContainer table th:nth-child(2), /* Nombre */
-        #tablaContainer table td:nth-child(2) { width: 15%; }
+        #tablaContainer table td:nth-child(2) { width: 12%; }
         #tablaContainer table th:nth-child(3), /* Teléfono */
-        #tablaContainer table td:nth-child(3) { width: 12%; }
+        #tablaContainer table td:nth-child(3) { width: 10%; }
         #tablaContainer table th:nth-child(4), /* Servicio */
-        #tablaContainer table td:nth-child(4) { width: 14%; }
+        #tablaContainer table td:nth-child(4) { width: 10%; }
         #tablaContainer table th:nth-child(5), /* Ubicación */
-        #tablaContainer table td:nth-child(5) { 
-            width: 5%; 
-            min-width: 35px; 
-            max-width: 50px; 
-            white-space: nowrap; 
-            text-align: center; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #tablaContainer table th:nth-child(6), /* Mensaje (más espacio) */
-        #tablaContainer table td:nth-child(6) { 
-            width: 28%; 
-            word-break: break-word; 
-            white-space: normal; 
-            text-overflow: clip;
-        }
+        #tablaContainer table td:nth-child(5) { width: 5%; min-width: 35px; max-width: 50px; white-space: nowrap; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+        #tablaContainer table th:nth-child(6), /* Mensaje */
+        #tablaContainer table td:nth-child(6) { width: 18%; word-break: break-word; white-space: normal; text-overflow: clip; }
         #tablaContainer table th:nth-child(7), /* Presupuesto */
-        #tablaContainer table td:nth-child(7) { 
-            width: 6%; 
-            min-width: 35px; 
-            max-width: 60px; 
-            text-align: center; 
-            white-space: nowrap; 
-        }
-        /* ===== ACCIONES: más ancho para que no se corten los botones ===== */
-        #tablaContainer table th:nth-child(8), /* Acciones */
-        #tablaContainer table td:nth-child(8) { 
-            width: 12%; 
-            min-width: 170px; 
-            white-space: nowrap; 
-            text-align: center; 
-        }
+        #tablaContainer table td:nth-child(7) { width: 5%; min-width: 35px; max-width: 50px; text-align: center; white-space: nowrap; }
+        #tablaContainer table th:nth-child(8), /* Tipo Factura */
+        #tablaContainer table td:nth-child(8) { width: 7%; }
+        #tablaContainer table th:nth-child(9), /* Situación Fiscal */
+        #tablaContainer table td:nth-child(9) { width: 8%; }
+        #tablaContainer table th:nth-child(10), /* CUIT */
+        #tablaContainer table td:nth-child(10) { width: 7%; }
+        #tablaContainer table th:nth-child(11), /* Acciones */
+        #tablaContainer table td:nth-child(11) { width: 12%; min-width: 170px; white-space: nowrap; text-align: center; }
 
         /* ===== TABLA PRESUPUESTOS ===== */
         #presupuestosContainer table {
@@ -626,6 +607,25 @@
         .presupuesto-preview .datos-col .item .valor.email {
             word-break: break-all;
         }
+        /* Líneas adicionales para datos fiscales (se muestran solo si existen) */
+        .presupuesto-preview .datos-col .item.fiscal-item {
+            display: flex;
+            align-items: baseline;
+            padding: 2px 0;
+            font-size: 14.5px;
+        }
+        .presupuesto-preview .datos-col .item.fiscal-item .etiqueta {
+            font-weight: 600;
+            color: var(--gray-600);
+            min-width: 75px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .presupuesto-preview .datos-col .item.fiscal-item .valor {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
         .presupuesto-preview .prestacion-card {
             background: var(--white);
             border: 1px solid var(--gray-200);
@@ -803,6 +803,7 @@
             .presupuesto-preview .datos-wrapper { grid-template-columns: 1fr; border-left: none; border-top: 4px solid var(--primary-blue); }
             .presupuesto-preview .datos-col.izquierda { border-right: none; border-bottom: 1px solid var(--gray-200); }
             .presupuesto-preview .datos-col .item .etiqueta { min-width: 70px; font-size: 12px; }
+            .presupuesto-preview .datos-col .item.fiscal-item .etiqueta { min-width: 70px; font-size: 12px; }
             .presupuesto-preview .prestacion-header, .presupuesto-preview .prestacion-fila { grid-template-columns: 1fr; gap: 6px; padding: 12px 16px; }
             .presupuesto-preview .prestacion-header .importe-label { text-align: left; }
             .presupuesto-preview .prestacion-fila .servicio-importe { text-align: left; font-size: 18px; }
@@ -898,6 +899,24 @@
             font-weight: 600;
             color: white;
             display: inline-block;
+        }
+
+        /* ===== ESTILOS PARA CAMPOS FISCALES EN MODALES ===== */
+        .fiscal-group {
+            transition: opacity 0.3s, max-height 0.3s;
+            overflow: hidden;
+        }
+        .fiscal-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .fiscal-group.hidden {
+            display: none;
+        }
+        .fiscal-group select:disabled,
+        .fiscal-group input:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -1010,6 +1029,26 @@
         </div>
         <div class="form-group"><label>Ubicación</label><input type="text" id="editUbicacion" placeholder="Ubicación o dirección"></div>
         <div class="form-group"><label>Mensaje</label><textarea id="editMensaje" placeholder="Mensaje"></textarea></div>
+
+        <!-- CAMPOS FISCALES -->
+        <div class="form-group"><label>Tipo de Factura</label>
+            <select id="editTipoFactura" onchange="toggleFiscales('edit')">
+                <option value="">Seleccionar</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="Consumidor Final">Consumidor Final</option>
+            </select>
+        </div>
+        <div class="form-group fiscal-group" id="editSituacionFiscalWrapper"><label>Situación Fiscal</label>
+            <select id="editSituacionFiscal">
+                <option value="">Seleccionar</option>
+                <option value="Monotributista">Monotributista</option>
+                <option value="Consumidor Final">Consumidor Final</option>
+            </select>
+        </div>
+        <div class="form-group fiscal-group" id="editCuitWrapper"><label>CUIT/CUIL</label><input type="text" id="editCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric"></div>
+
         <div class="modal-actions">
             <button class="btn-cancel" id="cancelEditBtn">Cancelar</button>
             <button class="btn-save" id="saveEditBtn"><i class="fas fa-save"></i> Guardar cambios</button>
@@ -1040,6 +1079,26 @@
         </div>
         <div class="form-group"><label>Ubicación</label><input type="text" id="nuevoUbicacion" placeholder="Ubicación o dirección"></div>
         <div class="form-group"><label>Mensaje</label><textarea id="nuevoMensaje" placeholder="Mensaje"></textarea></div>
+
+        <!-- CAMPOS FISCALES -->
+        <div class="form-group"><label>Tipo de Factura</label>
+            <select id="nuevoTipoFactura" onchange="toggleFiscales('nuevo')">
+                <option value="">Seleccionar</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="Consumidor Final">Consumidor Final</option>
+            </select>
+        </div>
+        <div class="form-group fiscal-group" id="nuevoSituacionFiscalWrapper"><label>Situación Fiscal</label>
+            <select id="nuevoSituacionFiscal">
+                <option value="">Seleccionar</option>
+                <option value="Monotributista">Monotributista</option>
+                <option value="Consumidor Final">Consumidor Final</option>
+            </select>
+        </div>
+        <div class="form-group fiscal-group" id="nuevoCuitWrapper"><label>CUIT/CUIL</label><input type="text" id="nuevoCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric"></div>
+
         <div class="modal-actions">
             <button class="btn-cancel" id="cancelNuevoBtn">Cancelar</button>
             <button class="btn-save" id="saveNuevoBtn"><i class="fas fa-save"></i> Guardar registro</button>
@@ -1077,6 +1136,7 @@
             <div class="form-group full-width"><label>Materiales incluidos</label>
                 <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
             </div>
+            <!-- Datos fiscales se toman del contacto, no se editan aquí -->
         </div>
 
         <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
@@ -1113,6 +1173,8 @@
                                 <div class="item"><span class="etiqueta">Servicio:</span> <span class="valor" id="previewServicio">-</span></div>
                                 <div class="item"><span class="etiqueta">Materiales:</span> <span class="valor" id="previewMateriales">-</span></div>
                                 <div class="item"><span class="etiqueta">Validez:</span> <span class="valor" id="previewValidez">-</span></div>
+                                <!-- Aquí se inyectarán los datos fiscales si existen -->
+                                <div id="previewFiscalContainer"></div>
                             </div>
                             <div class="datos-col derecha">
                                 <div class="col-titulo">Información del Cliente</div>
@@ -1537,6 +1599,70 @@ function actualizarUltimos(data) {
 }
 
 // ============================================================
+//  FUNCIÓN PARA MANEJAR CAMPOS FISCALES (habilitar/deshabilitar)
+// ============================================================
+window.toggleFiscales = function(prefix) {
+    const tipoFactura = document.getElementById(prefix + 'TipoFactura');
+    const situacionWrapper = document.getElementById(prefix + 'SituacionFiscalWrapper');
+    const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
+    const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
+    const cuitInput = document.getElementById(prefix + 'Cuit');
+
+    if (!tipoFactura || !situacionWrapper || !cuitWrapper) return;
+
+    const isConsumidorFinal = tipoFactura.value === 'Consumidor Final';
+
+    if (isConsumidorFinal) {
+        // Deshabilitar situación fiscal y ocultar/limpiar CUIT
+        situacionWrapper.classList.add('disabled');
+        situacionSelect.disabled = true;
+        situacionSelect.value = '';
+        cuitWrapper.classList.add('hidden');
+        cuitInput.value = '';
+        cuitInput.disabled = true;
+    } else {
+        // Habilitar situación fiscal, mostrar CUIT si hay situación seleccionada
+        situacionWrapper.classList.remove('disabled');
+        situacionSelect.disabled = false;
+        // Si situación fiscal tiene valor, mostrar CUIT
+        if (situacionSelect.value !== '') {
+            cuitWrapper.classList.remove('hidden');
+            cuitInput.disabled = false;
+        } else {
+            cuitWrapper.classList.add('hidden');
+            cuitInput.value = '';
+            cuitInput.disabled = true;
+        }
+    }
+};
+
+// También escuchar cambios en situación fiscal para mostrar/ocultar CUIT
+document.addEventListener('DOMContentLoaded', function() {
+    ['edit', 'nuevo'].forEach(prefix => {
+        const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
+        if (situacionSelect) {
+            situacionSelect.addEventListener('change', function() {
+                const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
+                const cuitInput = document.getElementById(prefix + 'Cuit');
+                if (this.value !== '') {
+                    cuitWrapper.classList.remove('hidden');
+                    cuitInput.disabled = false;
+                } else {
+                    cuitWrapper.classList.add('hidden');
+                    cuitInput.value = '';
+                    cuitInput.disabled = true;
+                }
+            });
+        }
+    });
+});
+
+// Inicializar estado de campos fiscales al abrir modales
+function initFiscales(prefix) {
+    toggleFiscales(prefix);
+}
+
+// ============================================================
 //  RENDERIZAR TABLA DE CONTACTOS (formulario)
 // ============================================================
 function renderizarTabla(data) {
@@ -1546,7 +1672,8 @@ function renderizarTabla(data) {
         return;
     }
 
-    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto'];
+    // Columnas: Fecha, Nombre, Teléfono, Servicio, Ubicación, Mensaje, Presupuesto, Tipo Factura, Situación Fiscal, CUIT, Acciones
+    const columnas = ['Fecha', 'Nombre', 'Teléfono', 'Servicio', 'Ubicación', 'Mensaje', 'Presupuesto', 'Tipo Factura', 'Situación Fiscal', 'CUIT'];
     let html = `<table><thead><tr>${columnas.map(col => `<th>${col}</th>`).join('')}<th style="text-align:center;">Acciones</th></tr></thead><tbody>`;
     const sorted = [...data].sort((a,b) => {
         const fechaA = a.fecha ? (a.fecha.toDate ? a.fecha.toDate() : new Date(a.fecha)) : new Date(0);
@@ -1563,6 +1690,11 @@ function renderizarTabla(data) {
         const ubicacion = row.ubicacion || '';
         const mensaje = row.mensaje || '';
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
+
+        // Campos fiscales
+        const tipoFactura = row.tipoFactura || '';
+        const situacionFiscal = row.situacionFiscal || '';
+        const cuit = row.cuit || '';
 
         const tienePresupuestoActivo = datosCache.presupuestos.some(p => {
             if (p.contactoId && p.contactoId === docId) {
@@ -1595,6 +1727,9 @@ function renderizarTabla(data) {
             <td>${mapsHtml || '—'}</td>
             <td><div class="mensaje-cell" title="Haz clic para expandir/colapsar">${mensajeEscapado}</div></td>
             <td style="text-align:center;">${checkHtml}</td>
+            <td>${tipoFactura || '—'}</td>
+            <td>${situacionFiscal || '—'}</td>
+            <td>${cuit || '—'}</td>
             <td style="text-align:center; white-space:nowrap;">
                 <button class="btn-edit" onclick="editarRegistro('${docId}')"><i class="fas fa-edit"></i></button>
                 <button class="btn-delete" onclick="eliminarRegistro('${docId}')" title="Eliminar"><i class="fas fa-trash"></i></button>
@@ -1763,6 +1898,15 @@ window.editarRegistro = async function(docId) {
     document.getElementById('editServicio').value = registro.servicio || '';
     document.getElementById('editUbicacion').value = registro.ubicacion || '';
     document.getElementById('editMensaje').value = registro.mensaje || '';
+
+    // Cargar campos fiscales
+    document.getElementById('editTipoFactura').value = registro.tipoFactura || '';
+    document.getElementById('editSituacionFiscal').value = registro.situacionFiscal || '';
+    document.getElementById('editCuit').value = registro.cuit || '';
+
+    // Inicializar lógica fiscal
+    initFiscales('edit');
+
     document.getElementById('editModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 };
@@ -1775,6 +1919,15 @@ window.guardarEdicion = async function() {
         await mostrarError('El nombre y el teléfono son obligatorios.');
         return;
     }
+    // Validar CUIT si está visible y tiene valor
+    const cuitWrapper = document.getElementById('editCuitWrapper');
+    const cuitInput = document.getElementById('editCuit');
+    if (!cuitWrapper.classList.contains('hidden') && cuitInput.value.trim() !== '') {
+        if (!/^\d{11}$/.test(cuitInput.value.trim())) {
+            await mostrarError('El CUIT debe tener exactamente 11 dígitos numéricos.');
+            return;
+        }
+    }
     try {
         await updateDoc(doc(db, 'contactos', docId), {
             nombre,
@@ -1782,7 +1935,10 @@ window.guardarEdicion = async function() {
             email: document.getElementById('editEmail').value.trim(),
             servicio: document.getElementById('editServicio').value,
             ubicacion: document.getElementById('editUbicacion').value.trim(),
-            mensaje: document.getElementById('editMensaje').value.trim()
+            mensaje: document.getElementById('editMensaje').value.trim(),
+            tipoFactura: document.getElementById('editTipoFactura').value || '',
+            situacionFiscal: document.getElementById('editSituacionFiscal').value || '',
+            cuit: document.getElementById('editCuit').value.trim() || ''
         });
         cerrarModal('editModal');
     } catch (error) {
@@ -1813,6 +1969,10 @@ window.abrirNuevoRegistro = function() {
     document.getElementById('nuevoUbicacion').value = '';
     document.getElementById('nuevoServicio').value = '';
     document.getElementById('nuevoMensaje').value = '';
+    document.getElementById('nuevoTipoFactura').value = '';
+    document.getElementById('nuevoSituacionFiscal').value = '';
+    document.getElementById('nuevoCuit').value = '';
+    initFiscales('nuevo');
     document.getElementById('nuevoRegistroModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 };
@@ -1827,10 +1987,22 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
     const servicio = document.getElementById('nuevoServicio').value;
     const ubicacion = document.getElementById('nuevoUbicacion').value.trim();
     const mensaje = document.getElementById('nuevoMensaje').value.trim();
+    const tipoFactura = document.getElementById('nuevoTipoFactura').value;
+    const situacionFiscal = document.getElementById('nuevoSituacionFiscal').value;
+    let cuit = document.getElementById('nuevoCuit').value.trim();
 
     if (!nombre || !telefono) {
         await mostrarError('El nombre y el teléfono son obligatorios.');
         return;
+    }
+
+    // Validar CUIT si está visible y tiene valor
+    const cuitWrapper = document.getElementById('nuevoCuitWrapper');
+    if (!cuitWrapper.classList.contains('hidden') && cuit !== '') {
+        if (!/^\d{11}$/.test(cuit)) {
+            await mostrarError('El CUIT debe tener exactamente 11 dígitos numéricos.');
+            return;
+        }
     }
 
     try {
@@ -1841,6 +2013,9 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
             servicio: servicio || '',
             ubicacion: ubicacion || '',
             mensaje: mensaje || '',
+            tipoFactura: tipoFactura || '',
+            situacionFiscal: situacionFiscal || '',
+            cuit: cuit || '',
             fecha: serverTimestamp()
         });
         cerrarModal('nuevoRegistroModal');
@@ -1925,6 +2100,27 @@ window.actualizarVistaPrevia = function() {
 
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
+
+    // --- Inyectar datos fiscales si existen ---
+    const fiscalContainer = document.getElementById('previewFiscalContainer');
+    if (registro) {
+        const tipoFactura = registro.tipoFactura || '';
+        const situacionFiscal = registro.situacionFiscal || '';
+        const cuit = registro.cuit || '';
+        let fiscalHtml = '';
+        if (tipoFactura) {
+            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Tipo Factura:</span> <span class="valor">${tipoFactura}</span></div>`;
+        }
+        if (situacionFiscal) {
+            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Situación Fiscal:</span> <span class="valor">${situacionFiscal}</span></div>`;
+        }
+        if (cuit) {
+            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">CUIT:</span> <span class="valor">${cuit}</span></div>`;
+        }
+        fiscalContainer.innerHTML = fiscalHtml;
+    } else {
+        fiscalContainer.innerHTML = '';
+    }
 };
 
 document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
@@ -2253,6 +2449,12 @@ document.getElementById('saveEditBtn').addEventListener('click', window.guardarE
 
 document.getElementById('filtroEstado').addEventListener('change', () => renderizarPresupuestos(datosCache.presupuestos));
 document.getElementById('busquedaPresupuesto').addEventListener('input', () => renderizarPresupuestos(datosCache.presupuestos));
+
+// Inicializar estado de campos fiscales al cargar los modales
+document.addEventListener('DOMContentLoaded', function() {
+    // Si los modales se abren, se llama a initFiscales desde editarRegistro y abrirNuevoRegistro
+    // También podemos agregar un listener para cuando se abra el modal de edición
+});
 </script>
 
 <!-- ========================================================== -->
