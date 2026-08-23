@@ -2096,7 +2096,7 @@
 
                         <div class="form-success" id="formSuccess">
                             <i class="fas fa-check-circle"></i>
-                            <span>¡Solicitud guardada! Genera el presupuesto más tarde.</span>
+                            <span>¡Presupuesto Solicitado! En breve recibirá por Whatsapp el presupuesto en pdf! .</span>
                         </div>
 
                         <!-- PERSONAL -->
@@ -2807,7 +2807,7 @@
         actualizarCamposFiscales();
 
         // ============================================================
-        // ENVÍO DEL FORMULARIO
+        // ENVÍO DEL FORMULARIO (Firestore + WhatsApp)
         // ============================================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -2835,6 +2835,7 @@
                 }
             }
 
+            // Datos para Firestore
             const datos = {
                 nombre: nombreVal,
                 telefono: telefonoVal,
@@ -2852,6 +2853,7 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             }
 
+            // Guardar en Firestore
             const result = await guardarContactoFirestore(datos);
 
             if (result.success) {
@@ -2860,6 +2862,7 @@
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
                 }
 
+                // Resetear formulario
                 form.reset();
                 form.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
                 if (btnMaps) btnMaps.classList.add('hidden');
@@ -2870,7 +2873,7 @@
                 actualizarCamposFiscales();
                 if (nombre) nombre.focus();
 
-                // Si es el modal, cerrarlo después de guardar
+                // Cerrar modal si corresponde
                 const modal = form.closest('.modal-overlay');
                 if (modal) {
                     setTimeout(() => {
@@ -2878,6 +2881,33 @@
                         document.body.style.overflow = '';
                     }, 1500);
                 }
+
+                // ===== CONSTRUIR MENSAJE DE WHATSAPP CON TODOS LOS DATOS =====
+                let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
+                whatsappMessage += '👤 *Nombre:* ' + nombreVal + '\n';
+                whatsappMessage += '📱 *Teléfono:* ' + telefonoVal + '\n';
+                if (emailVal) whatsappMessage += '📧 *Email:* ' + emailVal + '\n';
+                if (servicioVal) {
+                    let servicioLabel = servicioVal;
+                    if (servicioVal === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
+                    whatsappMessage += '🔧 *Servicio:* ' + servicioLabel + '\n';
+                }
+                if (ubicacionVal) whatsappMessage += '📍 *Ubicación:* ' + ubicacionVal + '\n';
+                if (mensajeVal) whatsappMessage += '📝 *Mensaje:* ' + mensajeVal + '\n';
+                // Campos fiscales
+                if (tipoFacturaVal) whatsappMessage += '📄 *Tipo Factura:* ' + tipoFacturaVal + '\n';
+                if (situacionFiscalVal) whatsappMessage += '🏛️ *Situación Fiscal:* ' + situacionFiscalVal + '\n';
+                if (cuitVal) whatsappMessage += '🆔 *CUIT/CUIL:* ' + cuitVal + '\n';
+
+                const phoneNumber = '5493541528232';
+                const encodedMessage = encodeURIComponent(whatsappMessage);
+                const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
+
+                // Abrir WhatsApp después de un breve retraso
+                setTimeout(() => {
+                    window.open(waUrl, '_blank');
+                }, 800);
+
             } else {
                 alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
             }
