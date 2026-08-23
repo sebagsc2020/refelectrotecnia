@@ -1120,7 +1120,7 @@
     </div>
 </div>
 
-<!-- ===== MODAL PRESUPUESTO ===== -->
+<!-- ===== MODAL PRESUPUESTO (con campos fiscales editables) ===== -->
 <div class="modal-overlay" id="presupuestoModal">
     <div class="modal-box presupuesto-box">
         <button class="close-modal" id="closePresupuestoModal">&times;</button>
@@ -1136,7 +1136,26 @@
             <div class="form-group full-width"><label>Materiales incluidos</label>
                 <select id="presupuestoMateriales"><option value="Sí">Sí</option><option value="No" selected>No</option></select>
             </div>
-            <!-- Datos fiscales se toman del contacto, no se editan aquí -->
+            <!-- CAMPOS FISCALES EDITABLES PARA ESTE PRESUPUESTO -->
+            <div class="form-group"><label>Tipo de Factura</label>
+                <select id="presupuestoTipoFactura" onchange="toggleFiscalesPresupuesto()">
+                    <option value="">Seleccionar</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="Consumidor Final">Consumidor Final</option>
+                </select>
+            </div>
+            <div class="form-group fiscal-group" id="presupuestoSituacionFiscalWrapper"><label>Situación Fiscal</label>
+                <select id="presupuestoSituacionFiscal">
+                    <option value="">Seleccionar</option>
+                    <option value="Monotributista">Monotributista</option>
+                    <option value="Consumidor Final">Consumidor Final</option>
+                </select>
+            </div>
+            <div class="form-group fiscal-group" id="presupuestoCuitWrapper"><label>CUIT/CUIL</label>
+                <input type="text" id="presupuestoCuit" placeholder="11 dígitos" maxlength="11" inputmode="numeric">
+            </div>
         </div>
 
         <!-- VISTA PREVIA DEL PRESUPUESTO (PDF) -->
@@ -1548,11 +1567,33 @@ function actualizarStats(data) {
     });
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
-    const nombresConPresupuesto = datosCache.presupuestos.map(p => p.nombre ? p.nombre.trim().toLowerCase() : '').filter(n => n !== '');
-    document.getElementById('pendientesPresupuesto').textContent = data.filter(item => {
-        const nombre = item.nombre ? item.nombre.trim().toLowerCase() : '';
-        return nombre !== '' && !nombresConPresupuesto.includes(nombre);
+
+    // --- CORREGIDO: Contar contactos sin presupuesto activo ---
+    // Crear un Set con los identificadores de contactos que tienen presupuesto activo (no vencido ni cancelado)
+    const contactosConPresupuestoActivo = new Set();
+    datosCache.presupuestos.forEach(p => {
+        const estado = calcularEstadoPresupuesto(p);
+        if (estado !== 'vencido' && estado !== 'cancelado') {
+            if (p.contactoId) {
+                contactosConPresupuestoActivo.add(p.contactoId);
+            } else if (p.nombre && p.telefono) {
+                const key = `${p.nombre.trim().toLowerCase()}|${p.telefono.trim()}`;
+                contactosConPresupuestoActivo.add(key);
+            }
+        }
+    });
+
+    const pendientes = data.filter(item => {
+        // Si el contacto tiene id y está en el set de activos, no cuenta
+        if (item.id && contactosConPresupuestoActivo.has(item.id)) return false;
+        // Si no tiene id, usamos nombre+telefono
+        const key = `${(item.nombre || '').trim().toLowerCase()}|${(item.telefono || '').trim()}`;
+        if (contactosConPresupuestoActivo.has(key)) return false;
+        // Si no tiene presupuesto activo, es pendiente
+        return true;
     }).length;
+
+    document.getElementById('pendientesPresupuesto').textContent = pendientes;
 }
 
 function actualizarGrafico(data) {
@@ -1636,21 +1677,58 @@ window.toggleFiscales = function(prefix) {
     }
 };
 
+// Función específica para el popup de presupuesto
+window.toggleFiscalesPresupuesto = function() {
+    const tipoFactura = document.getElementById('presupuestoTipoFactura');
+    const situacionWrapper = document.getElementById('presupuestoSituacionFiscalWrapper');
+    const cuitWrapper = document.getElementById('presupuestoCuitWrapper');
+    const situacionSelect = document.getElementById('presupuestoSituacionFiscal');
+    const cuitInput = document.getElementById('presupuestoCuit');
+
+    if (!tipoFactura || !situacionWrapper || !cuitWrapper) return;
+
+    const isConsumidorFinal = tipoFactura.value === 'Consumidor Final';
+
+    if (isConsumidorFinal) {
+        situacionWrapper.classList.add('disabled');
+        situacionSelect.disabled = true;
+        situacionSelect.value = '';
+        cuitWrapper.classList.add('hidden');
+        cuitInput.value = '';
+        cuitInput.disabled = true;
+    } else {
+        situacionWrapper.classList.remove('disabled');
+        situacionSelect.disabled = false;
+        if (situacionSelect.value !== '') {
+            cuitWrapper.classList.remove('hidden');
+            cuitInput.disabled = false;
+        } else {
+            cuitWrapper.classList.add('hidden');
+            cuitInput.value = '';
+            cuitInput.disabled = true;
+        }
+    }
+};
+
 // También escuchar cambios en situación fiscal para mostrar/ocultar CUIT
 document.addEventListener('DOMContentLoaded', function() {
-    ['edit', 'nuevo'].forEach(prefix => {
+    ['edit', 'nuevo', 'presupuesto'].forEach(prefix => {
         const situacionSelect = document.getElementById(prefix + 'SituacionFiscal');
         if (situacionSelect) {
             situacionSelect.addEventListener('change', function() {
                 const cuitWrapper = document.getElementById(prefix + 'CuitWrapper');
                 const cuitInput = document.getElementById(prefix + 'Cuit');
-                if (this.value !== '') {
-                    cuitWrapper.classList.remove('hidden');
-                    cuitInput.disabled = false;
-                } else {
-                    cuitWrapper.classList.add('hidden');
-                    cuitInput.value = '';
-                    cuitInput.disabled = true;
+                const tipoFactura = document.getElementById(prefix + 'TipoFactura');
+                // Solo actuar si no es consumidor final
+                if (tipoFactura && tipoFactura.value !== 'Consumidor Final') {
+                    if (this.value !== '') {
+                        cuitWrapper.classList.remove('hidden');
+                        cuitInput.disabled = false;
+                    } else {
+                        cuitWrapper.classList.add('hidden');
+                        cuitInput.value = '';
+                        cuitInput.disabled = true;
+                    }
                 }
             });
         }
@@ -2061,6 +2139,14 @@ window.abrirPresupuesto = function(docId) {
     document.getElementById('presupuestoPrecio').value = '';
     document.getElementById('presupuestoValidez').value = 30;
     document.getElementById('presupuestoMateriales').value = 'No';
+
+    // Cargar datos fiscales del contacto como padrón
+    document.getElementById('presupuestoTipoFactura').value = registro.tipoFactura || '';
+    document.getElementById('presupuestoSituacionFiscal').value = registro.situacionFiscal || '';
+    document.getElementById('presupuestoCuit').value = registro.cuit || '';
+    // Inicializar lógica fiscal para el popup
+    toggleFiscalesPresupuesto();
+
     actualizarVistaPrevia();
     document.getElementById('presupuestoModal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -2101,32 +2187,32 @@ window.actualizarVistaPrevia = function() {
     document.getElementById('previewTotal').textContent = formatearPrecio(total);
     document.getElementById('previewSubtotal').textContent = formatearPrecio(total);
 
-    // --- Inyectar datos fiscales si existen ---
+    // --- Inyectar datos fiscales del presupuesto (editables) ---
     const fiscalContainer = document.getElementById('previewFiscalContainer');
-    if (registro) {
-        const tipoFactura = registro.tipoFactura || '';
-        const situacionFiscal = registro.situacionFiscal || '';
-        const cuit = registro.cuit || '';
-        let fiscalHtml = '';
-        if (tipoFactura) {
-            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Tipo Factura:</span> <span class="valor">${tipoFactura}</span></div>`;
-        }
-        if (situacionFiscal) {
-            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Situación Fiscal:</span> <span class="valor">${situacionFiscal}</span></div>`;
-        }
-        if (cuit) {
-            fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">CUIT:</span> <span class="valor">${cuit}</span></div>`;
-        }
-        fiscalContainer.innerHTML = fiscalHtml;
-    } else {
-        fiscalContainer.innerHTML = '';
+    const tipoFactura = document.getElementById('presupuestoTipoFactura').value;
+    const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value;
+    const cuit = document.getElementById('presupuestoCuit').value.trim();
+    let fiscalHtml = '';
+    if (tipoFactura) {
+        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Tipo Factura:</span> <span class="valor">${tipoFactura}</span></div>`;
     }
+    if (situacionFiscal) {
+        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">Situación Fiscal:</span> <span class="valor">${situacionFiscal}</span></div>`;
+    }
+    if (cuit) {
+        fiscalHtml += `<div class="item fiscal-item"><span class="etiqueta">CUIT:</span> <span class="valor">${cuit}</span></div>`;
+    }
+    fiscalContainer.innerHTML = fiscalHtml;
 };
 
 document.getElementById('presupuestoDescripcion').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoPrecio').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoValidez').addEventListener('input', window.actualizarVistaPrevia);
 document.getElementById('presupuestoMateriales').addEventListener('change', window.actualizarVistaPrevia);
+// Escuchar cambios en los campos fiscales del presupuesto
+document.getElementById('presupuestoTipoFactura').addEventListener('change', window.actualizarVistaPrevia);
+document.getElementById('presupuestoSituacionFiscal').addEventListener('change', window.actualizarVistaPrevia);
+document.getElementById('presupuestoCuit').addEventListener('input', window.actualizarVistaPrevia);
 
 window.guardarPresupuesto = async function() {
     const nombre = document.getElementById('presupuestoNombre').value || 'Sin nombre';
@@ -2137,6 +2223,11 @@ window.guardarPresupuesto = async function() {
     const numero = document.getElementById('previewNumero').textContent.replace('N° ', '');
     const validez = document.getElementById('presupuestoValidez').value || 30;
     const materiales = document.getElementById('presupuestoMateriales').value;
+
+    // Obtener datos fiscales del presupuesto
+    const tipoFactura = document.getElementById('presupuestoTipoFactura').value || '';
+    const situacionFiscal = document.getElementById('presupuestoSituacionFiscal').value || '';
+    const cuit = document.getElementById('presupuestoCuit').value.trim() || '';
 
     let contactoId = window.contactoIdActual;
     if (!contactoId || contactoId.trim() === '') {
@@ -2188,7 +2279,10 @@ window.guardarPresupuesto = async function() {
             materiales,
             estado: 'encurso',
             fecha: serverTimestamp(),
-            contactoId: contactoId
+            contactoId: contactoId,
+            tipoFactura: tipoFactura,
+            situacionFiscal: situacionFiscal,
+            cuit: cuit
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
