@@ -975,22 +975,99 @@
             color: white;
             transform: translateY(-2px);
         }
+
+        /* ===== ESTILOS DEL FORMULARIO (desde /201/form) ===== */
         .contact-form {
             background: var(--white);
-            padding: 40px;
+            padding: 32px 28px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
+            position: relative;
         }
         .contact-form h4 {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.8rem;
+            font-weight: 800;
             color: var(--primary-dark);
             margin-bottom: 20px;
         }
-        .form-group { margin-bottom: 18px; }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .field-group {
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 4px;
+        }
+        .field-group:last-of-type {
+            border-bottom: none;
+        }
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-dark);
+            transition: var(--transition);
+            user-select: none;
+        }
+        .field-header:hover {
+            color: var(--primary-cyan);
+        }
+        .field-header .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .field-header .title-wrapper .section-check {
+            color: var(--success-green);
+            font-size: 1.1rem;
+            display: none;
+        }
+        .field-header .title-wrapper .section-check.visible {
+            display: inline;
+        }
+        .field-header .title-wrapper .warning-icon {
+            color: var(--danger-red);
+            font-size: 1.1rem;
+            display: none;
+        }
+        .field-header .title-wrapper .warning-icon.visible {
+            display: inline;
+        }
+        .field-header .title-wrapper .warning-text {
+            color: var(--danger-red);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: none;
+            background: #FFEBEE;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+        .field-header .title-wrapper .warning-text.visible {
+            display: inline-block;
+        }
+        .field-header i.chevron {
+            transition: var(--transition);
+            font-size: 0.9rem;
+            color: var(--gray-text);
+        }
+        .field-group.active .field-header i.chevron {
+            transform: rotate(180deg);
+            color: var(--primary-cyan);
+        }
+        .field-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            padding: 0 4px;
+        }
+        .field-group.active .field-content {
+            max-height: 600px;
+            padding: 0 4px 16px 4px;
+        }
+        .field-content input,
+        .field-content select,
+        .field-content textarea {
             width: 100%;
             padding: 14px 18px;
             border: 2px solid #E9ECEF;
@@ -1000,20 +1077,22 @@
             transition: var(--transition);
             background: var(--light-bg);
         }
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .field-content input:focus,
+        .field-content select:focus,
+        .field-content textarea:focus {
             outline: none;
             border-color: var(--primary-cyan);
             background: white;
             box-shadow: 0 0 0 4px rgba(0, 168, 255, 0.1);
         }
-        .form-group textarea {
+        .field-content textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 100px;
             padding-right: 64px;
         }
-        .textarea-wrapper { position: relative; }
+        .textarea-wrapper {
+            position: relative;
+        }
         .btn-mic {
             position: absolute;
             right: 12px;
@@ -1032,7 +1111,9 @@
             transition: var(--transition);
             box-shadow: 0 4px 12px rgba(0, 168, 255, 0.3);
         }
-        .btn-mic:hover { background: var(--primary-dark); }
+        .btn-mic:hover {
+            background: var(--primary-dark);
+        }
         .btn-mic.listening {
             background: var(--danger-red);
             animation: pulseMic 1.2s infinite;
@@ -1048,7 +1129,9 @@
             color: var(--gray-text);
             font-size: 0.8rem;
         }
-        .mic-hint i { color: var(--danger-red); }
+        .mic-hint i {
+            color: var(--danger-red);
+        }
         .form-success {
             display: none;
             background: #E8F5E9;
@@ -1066,13 +1149,7 @@
             animation: fadeIn 0.4s ease;
         }
         .ubicacion-group {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .ubicacion-group.visible { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            display: block;
         }
         .ubicacion-wrapper {
             display: flex;
@@ -1098,6 +1175,7 @@
             align-items: center;
             gap: 10px;
             white-space: nowrap;
+            margin-top: 8px;
         }
         .btn-ubicacion:hover {
             background: var(--primary-dark);
@@ -1127,7 +1205,9 @@
             background: #2D8F47;
             transform: translateY(-2px);
         }
-        .btn-maps.hidden { display: none; }
+        .btn-maps.hidden {
+            display: none;
+        }
         .ubicacion-group small {
             display: block;
             margin-top: 6px;
@@ -1149,6 +1229,7 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
+            margin-top: 20px;
         }
         .btn-submit:hover:not(:disabled) {
             background: var(--primary-cyan);
@@ -1158,6 +1239,28 @@
         .btn-submit:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+        }
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f0f0f0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .contact-form {
+                padding: 20px 16px;
+            }
+            .ubicacion-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-maps,
+            .btn-ubicacion {
+                justify-content: center;
+            }
         }
 
         /* ===== BOTÓN FLOTANTE DE INSTAGRAM ===== */
@@ -1977,61 +2080,156 @@
                             <i class="fas fa-stethoscope"></i> ¿Emergencia? Diagnóstico rápido en 3 pasos
                         </button>
                     </div>
+
+                    <!-- ===== FORMULARIO REEMPLAZADO (desde /201/form) ===== -->
                     <form class="contact-form" id="contactForm">
-                        <h4>Completa tus datos</h4>
+                        <h4>Datos Cliente</h4>
+
                         <div class="form-success" id="formSuccess">
-                            <i class="fas fa-check-circle"></i> <span>¡Solicitud enviada! Te responderemos a la brevedad por WhatsApp.</span>
+                            <i class="fas fa-check-circle"></i>
+                            <span>¡Solicitud guardada! Genera el presupuesto mas tarde !!!.</span>
                         </div>
-                        <div class="form-group">
-                            <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" id="telefono" name="telefono" placeholder="Teléfono / WhatsApp" autocomplete="tel" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email">
-                        </div>
-                        <div class="form-group">
-                            <select id="servicio" name="servicio" autocomplete="off">
-                                <option value="">Selecciona el servicio que necesitas</option>
-                                <option>Instalación eléctrica</option>
-                                <option>Reparación / Mantenimiento</option>
-                                <option>Domótica / Automatización</option>
-                                <option>Tableros / Puesta a tierra</option>
-                                <option>Iluminación</option>
-                                <option>Certificación / Habilitación</option>
-                                <option value="emergencia">Emergencia 24/7</option>
-                                <option>Otro</option>
-                            </select>
-                        </div>
-                        <div class="form-group ubicacion-group" id="ubicacionGroup">
-                            <label style="display:block; margin-bottom:6px; font-weight:600; color:var(--primary-dark);">
-                                <i class="fas fa-map-marker-alt" style="color:var(--accent-yellow);"></i> Ubicación de la emergencia
-                            </label>
-                            <div class="ubicacion-wrapper">
-                                <input type="text" id="ubicacion" name="ubicacion" placeholder="Comparte tu ubicación o escribe la dirección" autocomplete="off">
-                                <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
-                                    <i class="fas fa-map"></i> Abrir en Maps
-                                </button>
+
+                        <!-- PERSONAL -->
+                        <div class="field-group" data-section="personal">
+                            <div class="field-header" data-target="field-personal">
+                                <span class="title-wrapper">
+                                    <i class="fas fa-user" style="margin-right:6px; color:var(--primary-cyan);"></i>Datos personales
+                                    <span class="section-check" id="check-personal">✔</span>
+                                    <i class="fas fa-exclamation-triangle warning-icon" id="warning-personal"></i>
+                                    <span class="warning-text" id="warning-text-personal">Datos inconclusos</span>
+                                </span>
+                                <i class="fas fa-chevron-down chevron"></i>
                             </div>
-                            <button type="button" class="btn-ubicacion" id="btnUbicacion">
-                                <i class="fas fa-location-dot"></i> Compartir ubicación actual
-                            </button>
-                            <small style="display:block; margin-top:6px; color:var(--gray-text); font-size:0.8rem;">
-                                Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <div class="textarea-wrapper">
-                                <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
-                                <button type="button" class="btn-mic" id="btnMic" title="Dictar por voz" aria-label="Dictar por voz">
-                                    <i class="fas fa-microphone"></i>
-                                </button>
+                            <div class="field-content" id="field-personal">
+                                <div style="margin-bottom:12px;">
+                                    <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" autocomplete="given-name" required>
+                                </div>
+                                <div style="margin-bottom:12px;">
+                                    <input type="tel" id="telefono" name="telefono" placeholder="Teléfono / WhatsApp" autocomplete="tel" required>
+                                </div>
+                                <div>
+                                    <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email">
+                                </div>
                             </div>
-                            <small class="mic-hint" id="micHint"><i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.</small>
                         </div>
-                        <button type="submit" class="btn-submit" id="submitBtn"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
+
+                        <!-- SERVICIO -->
+                        <div class="field-group" data-section="servicio">
+                            <div class="field-header" data-target="field-servicio">
+                                <span class="title-wrapper">
+                                    <i class="fas fa-tools" style="margin-right:6px; color:var(--primary-cyan);"></i>Servicio requerido
+                                    <span class="section-check" id="check-servicio">✔</span>
+                                    <i class="fas fa-exclamation-triangle warning-icon" id="warning-servicio"></i>
+                                    <span class="warning-text" id="warning-text-servicio">Datos inconclusos</span>
+                                </span>
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="field-content" id="field-servicio">
+                                <select id="servicio" name="servicio" autocomplete="off">
+                                    <option value="">Selecciona el servicio que necesitas</option>
+                                    <option>Instalación eléctrica</option>
+                                    <option>Reparación / Mantenimiento</option>
+                                    <option>Domótica / Automatización</option>
+                                    <option>Tableros / Puesta a tierra</option>
+                                    <option>Iluminación</option>
+                                    <option>Certificación / Habilitación</option>
+                                    <option value="emergencia">Emergencia 24/7</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- UBICACIÓN -->
+                        <div class="field-group" data-section="ubicacion">
+                            <div class="field-header" data-target="field-ubicacion">
+                                <span class="title-wrapper">
+                                    <i class="fas fa-map-marker-alt" style="margin-right:6px; color:var(--accent-yellow);"></i>Ubicación
+                                    <span class="section-check" id="check-ubicacion">✔</span>
+                                    <i class="fas fa-exclamation-triangle warning-icon" id="warning-ubicacion"></i>
+                                    <span class="warning-text" id="warning-text-ubicacion">Datos inconclusos</span>
+                                </span>
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="field-content" id="field-ubicacion">
+                                <div class="ubicacion-group">
+                                    <div class="ubicacion-wrapper">
+                                        <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección o coordenadas" autocomplete="off">
+                                        <button type="button" class="btn-maps hidden" id="btnMaps" title="Abrir en Google Maps">
+                                            <i class="fas fa-map"></i> Maps
+                                        </button>
+                                    </div>
+                                    <button type="button" class="btn-ubicacion" id="btnUbicacion">
+                                        <i class="fas fa-location-dot"></i> Compartir ubicación actual
+                                    </button>
+                                    <small>Al hacer clic, el navegador pedirá permiso para acceder a tu ubicación.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DATOS FISCALES -->
+                        <div class="field-group" data-section="fiscal">
+                            <div class="field-header" data-target="field-fiscal">
+                                <span class="title-wrapper">
+                                    <i class="fas fa-file-invoice" style="margin-right:6px; color:var(--accent-yellow);"></i>Datos fiscales
+                                    <span class="section-check" id="check-fiscal">✔</span>
+                                    <i class="fas fa-exclamation-triangle warning-icon" id="warning-fiscal"></i>
+                                    <span class="warning-text" id="warning-text-fiscal">Datos inconclusos</span>
+                                </span>
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="field-content" id="field-fiscal">
+                                <div style="margin-bottom:12px;">
+                                    <select id="tipoFactura" name="tipoFactura">
+                                        <option value="">Selecciona tipo de factura</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="Consumidor Final">Consumidor Final</option>
+                                    </select>
+                                </div>
+                                <div style="margin-bottom:12px;" id="situacionFiscalWrapper">
+                                    <select id="situacionFiscal" name="situacionFiscal">
+                                        <option value="">Selecciona situación fiscal</option>
+                                        <option value="Monotributista">Monotributista</option>
+                                        <option value="Consumidor Final">Consumidor Final</option>
+                                    </select>
+                                </div>
+                                <div style="margin-bottom:12px; display:none;" id="cuitWrapper">
+                                    <input type="text" id="cuit" name="cuit" placeholder="CUIT/CUIL (11 dígitos)" maxlength="11" inputmode="numeric" pattern="\d{11}">
+                                    <small>Ingresá los 11 dígitos sin guiones ni espacios.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MENSAJE -->
+                        <div class="field-group" data-section="mensaje">
+                            <div class="field-header" data-target="field-mensaje">
+                                <span class="title-wrapper">
+                                    <i class="fas fa-comment" style="margin-right:6px; color:var(--primary-cyan);"></i>Mensaje
+                                    <span class="section-check" id="check-mensaje">✔</span>
+                                    <i class="fas fa-exclamation-triangle warning-icon" id="warning-mensaje"></i>
+                                    <span class="warning-text" id="warning-text-mensaje">Datos inconclusos</span>
+                                </span>
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="field-content" id="field-mensaje">
+                                <div class="textarea-wrapper">
+                                    <textarea id="mensaje" name="mensaje" placeholder="Describe brevemente el trabajo a realizar..." autocomplete="off"></textarea>
+                                    <button type="button" class="btn-mic" id="btnMic" title="Dictar por voz" aria-label="Dictar por voz" style="display: none;">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                </div>
+                                <small class="mic-hint" id="micHint" style="display: none;"><i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <i class="fas fa-save"></i> Guardar solicitud
+                        </button>
                     </form>
+                    <!-- ===== FIN FORMULARIO REEMPLAZADO ===== -->
+
                 </div>
             </div>
         </section>
@@ -2165,368 +2363,181 @@
     }
 
     // ============================================================
-    // TODA LA LÓGICA EXISTENTE (menú, slideshow, dictado, diagnóstico, formulario, cookies, etc.)
+    // TODA LA LÓGICA DEL FORMULARIO (desde /201/form)
+    // ============================================================
+
+    // FUNCIÓN PARA OBTENER EL ESTADO DE UNA SECCIÓN
+    function getSectionStatus(sectionId) {
+        const group = document.querySelector(`.field-group[data-section="${sectionId}"]`);
+        if (!group) return 'empty';
+
+        if (sectionId === 'personal') {
+            const nombre = group.querySelector('#nombre')?.value.trim() || '';
+            const telefono = group.querySelector('#telefono')?.value.trim() || '';
+            const hasData = !!(nombre || telefono);
+            const isComplete = !!(nombre && telefono);
+            if (!hasData) return 'empty';
+            return isComplete ? 'complete' : 'incomplete';
+        }
+
+        if (sectionId === 'servicio') {
+            const select = group.querySelector('#servicio');
+            const val = select?.value || '';
+            if (val === '') return 'empty';
+            return 'complete';
+        }
+
+        if (sectionId === 'ubicacion') {
+            const input = group.querySelector('#ubicacion');
+            const val = input?.value.trim() || '';
+            if (val === '') return 'empty';
+            return 'complete';
+        }
+
+        if (sectionId === 'fiscal') {
+            const tipoFactura = group.querySelector('#tipoFactura')?.value || '';
+            const situacionFiscal = group.querySelector('#situacionFiscal')?.value || '';
+            const cuitInput = group.querySelector('#cuit');
+            const cuitVal = cuitInput?.value.trim() || '';
+            const cuitVisible = cuitInput?.style.display !== 'none';
+
+            const hasData = !!(tipoFactura || situacionFiscal || cuitVal);
+            if (!hasData) return 'empty';
+
+            if (tipoFactura === 'Consumidor Final') {
+                return 'complete';
+            }
+
+            let isComplete = false;
+            if (['A', 'B', 'C'].includes(tipoFactura) && situacionFiscal !== '') {
+                if (cuitVisible) {
+                    isComplete = /^\d{11}$/.test(cuitVal);
+                } else {
+                    isComplete = true;
+                }
+            } else if (tipoFactura === '' && situacionFiscal !== '') {
+                isComplete = false;
+            } else {
+                isComplete = false;
+            }
+
+            return isComplete ? 'complete' : 'incomplete';
+        }
+
+        if (sectionId === 'mensaje') {
+            const textarea = group.querySelector('#mensaje');
+            const val = textarea?.value.trim() || '';
+            if (val === '') return 'empty';
+            return 'complete';
+        }
+
+        return 'empty';
+    }
+
+    // FUNCIÓN PARA ACTUALIZAR EL CHECK Y ADVERTENCIA DE UNA SECCIÓN
+    function updateSectionCheck(sectionId) {
+        const group = document.querySelector(`.field-group[data-section="${sectionId}"]`);
+        if (!group) return;
+
+        const checkSpan = group.querySelector('.section-check');
+        const warningIcon = group.querySelector('.warning-icon');
+        const warningText = group.querySelector('.warning-text');
+
+        const status = getSectionStatus(sectionId);
+
+        checkSpan.classList.remove('visible');
+        warningIcon.classList.remove('visible');
+        warningText.classList.remove('visible');
+
+        if (status === 'complete') {
+            checkSpan.classList.add('visible');
+        } else if (status === 'incomplete') {
+            warningIcon.classList.add('visible');
+            warningText.classList.add('visible');
+        }
+    }
+
+    // CONFIGURAR LISTENERS PARA ACTUALIZAR VALIDACIÓN
+    function setupFieldListeners() {
+        document.querySelectorAll('.field-content input:not([type="hidden"]), .field-content textarea').forEach(field => {
+            field.addEventListener('blur', function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const section = group.dataset.section;
+                    if (section) updateSectionCheck(section);
+                }
+            });
+            field.addEventListener('input', function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const section = group.dataset.section;
+                    if (section) updateSectionCheck(section);
+                }
+            });
+        });
+
+        document.querySelectorAll('.field-content select').forEach(select => {
+            select.addEventListener('change', function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const section = group.dataset.section;
+                    if (section) updateSectionCheck(section);
+                }
+            });
+            select.addEventListener('blur', function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const section = group.dataset.section;
+                    if (section) updateSectionCheck(section);
+                }
+            });
+        });
+    }
+
+    // ============================================================
+    // LÓGICA DEL ACORDEÓN
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
+        const headers = document.querySelectorAll('.field-header');
 
-        function trackEvent(name, params) {
-            if (typeof window.gtag === 'function') {
-                window.gtag('event', name, params || {});
-            }
-        }
+        headers.forEach(header => {
+            header.addEventListener('click', function(e) {
+                const currentGroup = this.closest('.field-group');
+                const isActive = currentGroup.classList.contains('active');
 
-        // --- Menú Hamburguesa ---
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-        const overlay = document.getElementById('overlay');
-        function toggleMenu() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            overlay.classList.toggle('active');
-            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
-        }
-        function closeMenu() {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        if (hamburger) hamburger.addEventListener('click', toggleMenu);
-        if (overlay) overlay.addEventListener('click', closeMenu);
+                if (isActive) {
+                    const section = currentGroup.dataset.section;
+                    if (section) updateSectionCheck(section);
+                }
 
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    closeMenu();
-                    setTimeout(() => scrollToSection(href), 350);
+                document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+
+                if (!isActive) {
+                    currentGroup.classList.add('active');
                 }
             });
         });
 
-        document.querySelectorAll('a[href^="#"]:not(.nav-menu a)').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    e.preventDefault();
-                    scrollToSection(targetId);
-                }
-            });
-        });
+        setupFieldListeners();
 
-        function scrollToSection(selector) {
-            const el = document.querySelector(selector);
-            if (!el) return;
-            const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }
+        // ============================================================
+        // DICTADO POR VOZ (desactivado en este formulario)
+        // ============================================================
+        // El botón de micrófono está oculto (style="display: none;")
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && navMenu.classList.contains('active')) closeMenu();
-        });
-
-        // --- SLIDESHOW ---
-        const slides = document.querySelectorAll('#aboutSlideshow .slide');
-        const dotsContainer = document.getElementById('slideDots');
-        let currentSlide = 0;
-        let slideInterval = null;
-        const SLIDE_DELAY = 4500;
-
-        if (slides.length && dotsContainer) {
-            slides.forEach(function(_, i) {
-                const dot = document.createElement('button');
-                dot.type = 'button';
-                dot.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
-                dot.addEventListener('click', function() {
-                    goToSlide(i);
-                    restartSlideshow();
-                });
-                dotsContainer.appendChild(dot);
-            });
-            const dots = dotsContainer.querySelectorAll('button');
-            dots[0].classList.add('active');
-
-            function goToSlide(n) {
-                slides[currentSlide].classList.remove('active');
-                dots[currentSlide].classList.remove('active');
-                currentSlide = (n + slides.length) % slides.length;
-                slides[currentSlide].classList.add('active');
-                dots[currentSlide].classList.add('active');
-            }
-
-            function nextSlide() { goToSlide(currentSlide + 1); }
-
-            function restartSlideshow() {
-                clearInterval(slideInterval);
-                slideInterval = setInterval(nextSlide, SLIDE_DELAY);
-            }
-
-            restartSlideshow();
-
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) clearInterval(slideInterval);
-                else restartSlideshow();
-            });
-        }
-
-        // --- DICTADO POR VOZ ---
-        const mensajeTextarea = document.getElementById('mensaje');
-        const btnMic = document.getElementById('btnMic');
-        const micHint = document.getElementById('micHint');
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if (SpeechRecognition && btnMic) {
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'es-AR';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            let listening = false, shouldListen = false, baseText = '', finalTranscript = '';
-
-            recognition.onstart = function() {
-                listening = true;
-                btnMic.classList.add('listening');
-                btnMic.title = 'Detener dictado';
-                baseText = mensajeTextarea.value.replace(/\s+$/, '');
-                finalTranscript = '';
-                if (micHint) micHint.innerHTML = '<i class="fas fa-circle" style="color: var(--danger-red); border-radius:50%;"></i> Escuchando... hablá con normalidad.';
-            };
-
-            recognition.onresult = function(event) {
-                let interim = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    if (event.results[i].isFinal) finalTranscript += transcript.trim() + ' ';
-                    else interim += transcript;
-                }
-                mensajeTextarea.value = (baseText ? baseText + ' ' : '') + finalTranscript + interim;
-            };
-
-            recognition.onerror = function(event) {
-                shouldListen = false;
-                stopListening();
-                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                    alert('Permiso de micrófono denegado.');
-                }
-            };
-
-            recognition.onend = function() {
-                if (shouldListen) { try { recognition.start(); } catch (e) {} }
-                else stopListening();
-            };
-
-            btnMic.addEventListener('click', function() {
-                if (listening) {
-                    shouldListen = false;
-                    recognition.stop();
-                    stopListening();
-                } else {
-                    shouldListen = true;
-                    try { recognition.start(); } catch (e) {}
-                }
-            });
-
-            function stopListening() {
-                listening = false;
-                btnMic.classList.remove('listening');
-                btnMic.title = 'Dictar por voz';
-                if (micHint) micHint.innerHTML = '<i class="fas fa-microphone"></i> Tocá el micrófono y contanos el problema con tu voz.';
-            }
-        } else if (btnMic) {
-            btnMic.style.display = 'none';
-            if (micHint) micHint.style.display = 'none';
-        }
-
-        // --- DIAGNÓSTICO DE EMERGENCIA ---
-        const diagModal = document.getElementById('diagModal');
-        const diagBody = document.getElementById('diagBody');
-        const diagClose = document.getElementById('diagClose');
-        const diagProgressBar = document.getElementById('diagProgressBar');
-
-        const diagSteps = [
-            {
-                title: 'Paso 1 de 3',
-                q: '¿Cuál es el síntoma principal?',
-                options: [
-                    { text: '🔥 Olor a quemado, humo o chispas', score: 5, tag: 'Olor a quemado / humo / chispas' },
-                    { text: '⚡ Salta la térmica o el disyuntor y no queda luz', score: 3, tag: 'Salta térmica / disyuntor' },
-                    { text: '💡 Corte de luz en una parte de la casa', score: 2, tag: 'Corte parcial de luz' },
-                    { text: '🔌 Un toma o artefacto no funciona', score: 1, tag: 'Falla en toma / artefacto' }
-                ]
-            },
-            {
-                title: 'Paso 2 de 3',
-                q: '¿Hay personas en riesgo o equipos esenciales afectados (heladera, equipos médicos, niños o mayores)?',
-                options: [
-                    { text: 'Sí', score: 2, tag: 'Personas o equipos esenciales en riesgo' },
-                    { text: 'No', score: 0, tag: '' }
-                ]
-            },
-            {
-                title: 'Paso 3 de 3',
-                q: '¿El problema apareció después de una tormenta, corte de red o un trabajo eléctrico reciente?',
-                options: [
-                    { text: 'Sí', score: 1, tag: 'Apareció tras tormenta / corte / trabajo reciente' },
-                    { text: 'No / No sé', score: 0, tag: '' }
-                ]
-            }
-        ];
-
-        let diagScore = 0, diagTags = [], diagStepIndex = 0;
-
-        function resetDiag() {
-            diagScore = 0; diagTags = []; diagStepIndex = 0;
-        }
-
-        function openDiag() {
-            resetDiag();
-            renderDiagStep();
-            diagModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            trackEvent('abrir_diagnostico');
-        }
-
-        function closeDiag() {
-            diagModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        document.querySelectorAll('[data-diag]').forEach(btn => btn.addEventListener('click', openDiag));
-        diagClose.addEventListener('click', closeDiag);
-        diagModal.addEventListener('click', e => { if (e.target === diagModal) closeDiag(); });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && diagModal.classList.contains('active')) closeDiag();
-        });
-
-        function renderDiagStep() {
-            const step = diagSteps[diagStepIndex];
-            diagProgressBar.style.width = (diagStepIndex / diagSteps.length) * 100 + '%';
-
-            let html = '<p class="diag-step-label">' + step.title + '</p>';
-            html += '<h3 class="diag-question">' + step.q + '</h3>';
-            step.options.forEach(function(opt, i) {
-                html += '<button type="button" class="diag-option" data-opt="' + i + '">' + opt.text + '</button>';
-            });
-            diagBody.innerHTML = html;
-
-            diagBody.querySelectorAll('.diag-option').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const opt = step.options[parseInt(btn.dataset.opt, 10)];
-                    diagScore += opt.score;
-                    if (opt.tag) diagTags.push(opt.tag);
-                    diagStepIndex++;
-                    if (diagStepIndex < diagSteps.length) renderDiagStep();
-                    else renderDiagResult();
-                });
-            });
-        }
-
-        function renderDiagResult() {
-            diagProgressBar.style.width = '100%';
-
-            let nivel, icon, color, title, text;
-            if (diagScore >= 5) {
-                nivel = 'CRÍTICO'; icon = 'fa-fire'; color = 'var(--danger-red)';
-                title = '¡Situación CRÍTICA!';
-                text = 'Cortá la energía desde la llave general y no manipules la instalación ni uses agua. Necesitás atención profesional inmediata de un matriculado.';
-            } else if (diagScore >= 3) {
-                nivel = 'ALTO'; icon = 'fa-bolt'; color = 'var(--accent-orange)';
-                title = 'Urgencia ALTA';
-                text = 'Conviene resolverlo hoy mismo para evitar daños mayores. Coordinemos una visita de urgencia por WhatsApp o teléfono.';
-            } else {
-                nivel = 'MEDIO'; icon = 'fa-clock'; color = 'var(--primary-cyan)';
-                title = 'Urgencia MEDIA / programable';
-                text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
-            }
-
-            trackEvent('diagnostico_completado', { nivel: nivel });
-
-            let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
-            diagTags.forEach(t => waMsg += '• ' + t + '\n');
-            waMsg += '\n📊 Nivel estimado: ' + nivel;
-            const waUrl = 'https://wa.me/5493541528232?text=' + encodeURIComponent(waMsg);
-
-            let html = '<div class="diag-result">';
-            html += '<div class="diag-icon" style="color:' + color + ';"><i class="fas ' + icon + '"></i></div>';
-            html += '<h3>' + title + '</h3>';
-            html += '<p>' + text + '</p>';
-            html += '<div class="diag-actions">';
-
-            if (nivel === 'CRÍTICO') {
-                html += '<a class="diag-call" href="tel:+5493541528232"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
-                html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
-            } else if (nivel === 'ALTO') {
-                html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
-                html += '<button type="button" class="diag-form-btn" data-goto-form><i class="fas fa-file-signature"></i> Completar formulario</button>';
-            } else {
-                html += '<button type="button" class="diag-form-btn" data-goto-form><i class="fas fa-calculator"></i> Pedir presupuesto sin cargo</button>';
-                html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
-            }
-
-            html += '<button type="button" class="diag-restart" data-restart><i class="fas fa-rotate-left"></i> Reiniciar diagnóstico</button>';
-            html += '</div></div>';
-            diagBody.innerHTML = html;
-
-            const gotoForm = diagBody.querySelector('[data-goto-form]');
-            if (gotoForm) {
-                gotoForm.addEventListener('click', function() {
-                    closeDiag();
-                    setTimeout(function() { scrollToSection('#contacto'); }, 200);
-                });
-            }
-            diagBody.querySelector('[data-restart]').addEventListener('click', function() {
-                resetDiag();
-                renderDiagStep();
-            });
-
-            const waBtn = diagBody.querySelector('.diag-wa');
-            if (waBtn) waBtn.addEventListener('click', function() {
-                trackEvent('click_whatsapp', { origen: 'diagnostico', nivel: nivel });
-            });
-            const callBtn = diagBody.querySelector('.diag-call');
-            if (callBtn) callBtn.addEventListener('click', function() {
-                trackEvent('click_llamada', { origen: 'diagnostico', nivel: nivel });
-            });
-        }
-
-        // --- FAQs ---
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
-            const question = item.querySelector('.faq-question');
-            question.addEventListener('click', function() {
-                faqItems.forEach(other => {
-                    if (other !== item && other.classList.contains('active')) other.classList.remove('active');
-                });
-                item.classList.toggle('active');
-            });
-        });
-
-        // --- Ubicación en emergencia ---
-        const servicioSelect = document.getElementById('servicio');
-        const ubicacionGroup = document.getElementById('ubicacionGroup');
+        // ============================================================
+        // UBICACIÓN
+        // ============================================================
         const ubicacionInput = document.getElementById('ubicacion');
         const btnUbicacion = document.getElementById('btnUbicacion');
         const btnMaps = document.getElementById('btnMaps');
-
         let ubicacionCompartida = false;
-
-        servicioSelect.addEventListener('change', function() {
-            if (this.value === 'emergencia') ubicacionGroup.classList.add('visible');
-            else {
-                ubicacionGroup.classList.remove('visible');
-                ubicacionInput.value = '';
-                btnMaps.classList.add('hidden');
-                ubicacionCompartida = false;
-            }
-        });
 
         ubicacionInput.addEventListener('input', function() {
             if (ubicacionCompartida) ubicacionCompartida = false;
             if (this.value.trim().length > 0 && !ubicacionCompartida) btnMaps.classList.remove('hidden');
             else btnMaps.classList.add('hidden');
+            updateSectionCheck('ubicacion');
         });
 
         btnMaps.addEventListener('click', function() {
@@ -2562,6 +2573,7 @@
                     btnMaps.classList.add('hidden');
                     btnUbicacion.disabled = false;
                     btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
+                    updateSectionCheck('ubicacion');
                 },
                 function(error) {
                     alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
@@ -2573,7 +2585,52 @@
         });
 
         // ============================================================
-        // 🚀 FORMULARIO: ENVÍO A FIRESTORE + WHATSAPP
+        // LÓGICA DE DATOS FISCALES
+        // ============================================================
+        const tipoFactura = document.getElementById('tipoFactura');
+        const situacionFiscal = document.getElementById('situacionFiscal');
+        const cuitWrapper = document.getElementById('cuitWrapper');
+        const cuitInput = document.getElementById('cuit');
+
+        function actualizarCamposFiscales() {
+            const tipo = tipoFactura.value;
+            const isConsumidorFinal = (tipo === 'Consumidor Final');
+
+            if (isConsumidorFinal) {
+                situacionFiscal.disabled = true;
+                situacionFiscal.value = '';
+                cuitWrapper.style.display = 'none';
+                cuitInput.value = '';
+            } else {
+                situacionFiscal.disabled = false;
+                if (situacionFiscal.value !== '') {
+                    cuitWrapper.style.display = 'block';
+                } else {
+                    cuitWrapper.style.display = 'none';
+                    cuitInput.value = '';
+                }
+            }
+            updateSectionCheck('fiscal');
+        }
+
+        tipoFactura.addEventListener('change', actualizarCamposFiscales);
+        situacionFiscal.addEventListener('change', function() {
+            if (this.value !== '') {
+                cuitWrapper.style.display = 'block';
+            } else {
+                cuitWrapper.style.display = 'none';
+                cuitInput.value = '';
+            }
+            updateSectionCheck('fiscal');
+        });
+        cuitInput.addEventListener('input', function() {
+            updateSectionCheck('fiscal');
+        });
+
+        actualizarCamposFiscales();
+
+        // ============================================================
+        // ENVÍO DEL FORMULARIO (Firestore + WhatsApp)
         // ============================================================
         const contactForm = document.getElementById('contactForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -2586,29 +2643,25 @@
             const telefono = document.getElementById('telefono').value.trim();
             const email = document.getElementById('email').value.trim();
             const servicio = document.getElementById('servicio').value;
-            const mensaje = mensajeTextarea.value.trim();
+            const mensaje = document.getElementById('mensaje').value.trim();
             const ubicacion = ubicacionInput.value.trim();
+
+            const tipoFacturaVal = tipoFactura.value;
+            const situacionFiscalVal = situacionFiscal.value;
+            const cuitVal = cuitInput.value.trim();
 
             if (!nombre || !telefono) {
                 alert('Por favor, completa tu nombre y teléfono.');
                 return;
             }
 
-            let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
-            whatsappMessage += '👤 *Nombre:* ' + nombre + '\n';
-            whatsappMessage += '📱 *Teléfono:* ' + telefono + '\n';
-            if (email) whatsappMessage += '📧 *Email:* ' + email + '\n';
-            if (servicio) {
-                let servicioLabel = servicio;
-                if (servicio === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
-                whatsappMessage += '🔧 *Servicio:* ' + servicioLabel + '\n';
+            const cuitVisible = cuitWrapper.style.display !== 'none';
+            if (cuitVisible) {
+                if (!/^\d{11}$/.test(cuitVal)) {
+                    alert('El CUIT/CUIL debe tener exactamente 11 dígitos numéricos.');
+                    return;
+                }
             }
-            if (ubicacion) whatsappMessage += '📍 *Ubicación:* ' + ubicacion + '\n';
-            if (mensaje) whatsappMessage += '📝 *Mensaje:* ' + mensaje + '\n';
-
-            const phoneNumber = '5493541528232';
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-            const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
 
             const datos = {
                 nombre,
@@ -2616,262 +2669,58 @@
                 email: email || '',
                 servicio: servicio || '',
                 ubicacion: ubicacion || '',
-                mensaje: mensaje || ''
+                mensaje: mensaje || '',
+                tipoFactura: tipoFacturaVal || '',
+                situacionFiscal: situacionFiscalVal || '',
+                cuit: cuitVal || ''
             };
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
             const result = await guardarContactoFirestore(datos);
 
             if (result.success) {
-                trackEvent('generate_lead', { metodo: 'firestore', servicio: servicio || 'no_especificado' });
                 formSuccess.classList.add('visible');
                 setTimeout(() => formSuccess.classList.remove('visible'), 6000);
+
                 contactForm.reset();
+                document.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
+                btnMaps.classList.add('hidden');
+                ubicacionCompartida = false;
+                document.querySelectorAll('.section-check').forEach(el => el.classList.remove('visible'));
+                document.querySelectorAll('.warning-icon').forEach(el => el.classList.remove('visible'));
+                document.querySelectorAll('.warning-text').forEach(el => el.classList.remove('visible'));
+                actualizarCamposFiscales();
+                document.getElementById('nombre').focus();
             } else {
-                console.error('Error al guardar en Firestore:', result.error);
-                alert('Hubo un problema al guardar tu solicitud, pero igual abriremos WhatsApp para que puedas contactarnos.');
+                alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
             }
 
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Enviar por WhatsApp';
-
-            setTimeout(() => {
-                window.open(waUrl, '_blank');
-            }, 500);
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar solicitud';
         });
 
-        // --- Instagram flotante ---
-        const instaBtn = document.querySelector('.float-instagram');
-        if (instaBtn) {
-            instaBtn.addEventListener('click', function() {
-                trackEvent('click_instagram');
-            });
+        // ============================================================
+        // INICIALIZAR: verificar datos al cargar
+        // ============================================================
+        ['personal', 'servicio', 'ubicacion', 'fiscal', 'mensaje'].forEach(section => {
+            updateSectionCheck(section);
+        });
+
+        // ============================================================
+        // REGISTRO DEL SERVICE WORKER (PWA)
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ Service Worker registrado:', reg))
+                .catch(err => console.log('❌ Error al registrar Service Worker:', err));
         }
-
-        // --- Cookies ---
-        const cookieConsent = document.getElementById('cookieConsent');
-        function setCookieConsent(choice) {
-            localStorage.setItem('cookieConsent', choice);
-            cookieConsent.classList.add('hidden');
-            document.cookie = 'cookie_consent=' + choice + '; path=/; max-age=' + (60 * 60 * 24 * 365);
-        }
-        if (localStorage.getItem('cookieConsent')) cookieConsent.classList.add('hidden');
-        document.getElementById('acceptCookies').addEventListener('click', function() {
-            setCookieConsent('accepted');
-            trackEvent('cookies', { decision: 'aceptadas' });
-        });
-        document.getElementById('declineCookies').addEventListener('click', function() {
-            setCookieConsent('declined');
-            trackEvent('cookies', { decision: 'rechazadas' });
-        });
-
-        // --- Modal Legal ---
-        const modalOverlay = document.getElementById('legalModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
-        const modalClose = document.getElementById('modalClose');
-
-        const legalContent = {
-            privacidad: {
-                title: 'Política de privacidad',
-                body: `<p>En <strong>REF Electrotecnia</strong>, nos comprometemos a proteger la privacidad y seguridad de los datos personales que gestionamos a través de nuestro panel de administración. Esta política explica cómo recopilamos, usamos y protegemos la información de los usuarios y clientes que interactúan con nuestros servicios.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">1. Responsable del tratamiento</h4>
-                <p>El responsable del tratamiento de los datos personales es <strong>REF Electrotecnia</strong>, con domicilio en Córdoba, Argentina, y correo electrónico de contacto: <a href="mailto:rodriref201@gmail.com">rodriref201@gmail.com</a>.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">2. Datos que recopilamos</h4>
-                <p>A través del panel de administración, tratamos los siguientes datos personales:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li><strong>Datos de contacto:</strong> nombre completo, número de teléfono, dirección de correo electrónico, ubicación (dirección o coordenadas).</li>
-                    <li><strong>Información de solicitudes:</strong> servicio solicitado, mensaje o descripción del trabajo, historial de comunicaciones.</li>
-                    <li><strong>Presupuestos:</strong> datos del cliente, descripción del servicio, precios, fechas de validez y estado del presupuesto.</li>
-                    <li><strong>Datos de acceso al panel:</strong> dirección IP, navegador, fecha y hora de acceso, registros de actividad (con fines de auditoría y seguridad).</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">3. Finalidad del tratamiento</h4>
-                <p>Los datos recopilados se utilizan exclusivamente para:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>Gestionar y responder a las solicitudes de presupuesto y consultas de los clientes.</li>
-                    <li>Elaborar y enviar presupuestos personalizados.</li>
-                    <li>Mantener un historial de relaciones comerciales y seguimiento de trabajos realizados.</li>
-                    <li>Mejorar la calidad del servicio y la atención al cliente.</li>
-                    <li>Cumplir con obligaciones legales y fiscales aplicables.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">4. Base legal del tratamiento</h4>
-                <p>El tratamiento de sus datos se basa en:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>El <strong>consentimiento</strong> del interesado al facilitar sus datos a través del formulario de contacto.</li>
-                    <li>El <strong>interés legítimo</strong> de REF Electrotecnia para gestionar las comunicaciones y prestar los servicios solicitados.</li>
-                    <li>El <strong>cumplimiento de obligaciones legales</strong> en materia de facturación y conservación de documentos.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">5. Destinatarios de los datos</h4>
-                <p>Los datos personales son tratados por el personal autorizado de REF Electrotecnia (administradores del panel) y, en su caso, por proveedores externos que prestan servicios de infraestructura tecnológica (hosting, base de datos, etc.), siempre bajo estrictos acuerdos de confidencialidad y medidas de seguridad. No compartimos sus datos con terceros para fines de marketing ni los vendemos a ninguna empresa.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">6. Conservación de los datos</h4>
-                <p>Los datos personales se conservarán durante el tiempo necesario para cumplir con las finalidades descritas, y posteriormente se mantendrán bloqueados durante los plazos legales establecidos (por ejemplo, obligaciones fiscales y contables). Una vez prescritas dichas obligaciones, los datos serán eliminados de forma segura.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">7. Derechos de los usuarios</h4>
-                <p>Los titulares de los datos personales tienen derecho a:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li><strong>Acceder</strong> a sus datos personales.</li>
-                    <li><strong>Rectificar</strong> datos inexactos o incompletos.</li>
-                    <li><strong>Solicitar la supresión</strong> de sus datos (derecho al olvido).</li>
-                    <li><strong>Oponerse</strong> al tratamiento de sus datos por motivos legítimos.</li>
-                    <li><strong>Limitar</strong> el tratamiento en determinadas circunstancias.</li>
-                    <li><strong>Solicitar la portabilidad</strong> de sus datos (cuando sea técnicamente posible).</li>
-                </ul>
-                <p>Para ejercer estos derechos, puede enviar un correo electrónico a <a href="mailto:rodriref201@gmail.com">rodriref201@gmail.com</a> indicando su petición y adjuntando una copia de su documento de identidad.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">8. Seguridad de los datos</h4>
-                <p>REF Electrotecnia adopta medidas técnicas y organizativas adecuadas para garantizar la seguridad de los datos personales, incluyendo el acceso restringido al panel de administración mediante autenticación con credenciales, uso de conexiones cifradas (HTTPS) y almacenamiento seguro en plataformas como Firebase, que cumple con los estándares internacionales de seguridad.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">9. Actualizaciones de la política</h4>
-                <p>Esta política de privacidad puede ser actualizada periódicamente para reflejar cambios en nuestras prácticas o en la normativa aplicable. La versión vigente estará siempre disponible en el panel de administración y en nuestro sitio web.</p>
-
-                <p style="margin-top:16px;"><strong>Última actualización:</strong> agosto de 2026.</p>`
-            },
-            terminos: {
-                title: 'Términos y condiciones',
-                body: `<p><strong>Última actualización:</strong> agosto de 2026</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">1. Aceptación de los términos</h4>
-                <p>Al acceder y utilizar el sitio web de REF Electrotecnia (en adelante, "el Sitio") y sus servicios, el usuario acepta cumplir con los presentes Términos y Condiciones. Si no está de acuerdo con alguna parte de estos términos, deberá abstenerse de utilizar el Sitio y sus servicios.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">2. Descripción del servicio</h4>
-                <p>REF Electrotecnia ofrece a través de su Sitio un servicio de contacto y solicitud de presupuestos para trabajos de electricidad, instalaciones, mantenimiento, emergencias y servicios afines. Los usuarios pueden completar un formulario proporcionando sus datos personales y la descripción del trabajo requerido. Con dicha información, REF Electrotecnia elabora y envía presupuestos personalizados, ya sea por correo electrónico o por WhatsApp.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">3. Responsabilidad del usuario</h4>
-                <p>El usuario declara y garantiza que:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>La información proporcionada en el formulario de contacto es veraz, completa y actualizada.</li>
-                    <li>Es mayor de edad o cuenta con la autorización necesaria para solicitar servicios profesionales.</li>
-                    <li>Utilizará el Sitio de manera lícita y no realizará acciones que puedan dañar, sobrecargar o interferir con el funcionamiento del Sitio.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">4. Responsabilidad de REF Electrotecnia</h4>
-                <p>REF Electrotecnia se compromete a:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>Responder las solicitudes de presupuesto en un plazo razonable, según la disponibilidad operativa.</li>
-                    <li>Tratar los datos personales conforme a lo establecido en nuestra Política de Privacidad.</li>
-                    <li>Prestar los servicios profesionales con la calidad y seguridad requeridas, una vez que el presupuesto sea aceptado y formalizado.</li>
-                </ul>
-                <p>No obstante, REF Electrotecnia no se responsabiliza por:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>Retrasos o imposibilidad de respuesta debido a causas técnicas o de fuerza mayor.</li>
-                    <li>Decisiones tomadas por el usuario basadas en el presupuesto entregado; el presupuesto es una oferta no vinculante hasta su aceptación expresa por ambas partes.</li>
-                    <li>Daños indirectos o pérdidas derivadas del uso del Sitio.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">5. Propiedad intelectual</h4>
-                <p>Todo el contenido del Sitio (textos, imágenes, logotipos, diseños, software, etc.) es propiedad de REF Electrotecnia o de sus licenciantes y está protegido por las leyes de propiedad intelectual. Queda prohibida su reproducción, distribución, modificación o explotación sin autorización previa por escrito.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">6. Presupuestos y ofertas</h4>
-                <p>Los presupuestos enviados por REF Electrotecnia son ofertas comerciales válidas por el plazo indicado en cada documento. La aceptación del presupuesto por parte del cliente implica la conformidad con las condiciones detalladas en el mismo, incluyendo plazos, alcance del trabajo, precios y formas de pago. Una vez aceptado, el presupuesto se convierte en un contrato vinculante entre las partes.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">7. Enlaces a terceros</h4>
-                <p>El Sitio puede contener enlaces a sitios web de terceros (por ejemplo, Google Maps, WhatsApp, Instagram). Estos enlaces se proporcionan solo para comodidad del usuario. REF Electrotecnia no controla ni respalda el contenido de dichos sitios, y no asume responsabilidad alguna por ellos.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">8. Modificaciones de los términos</h4>
-                <p>REF Electrotecnia se reserva el derecho de actualizar estos Términos y Condiciones en cualquier momento. La versión vigente será la publicada en el Sitio. Se recomienda al usuario revisar periódicamente esta sección.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">9. Ley aplicable y jurisdicción</h4>
-                <p>Estos Términos y Condiciones se rigen por las leyes de la República Argentina. Cualquier controversia derivada del uso del Sitio o de los servicios prestados será sometida a los tribunales ordinarios de la ciudad de Córdoba, Argentina, con renuncia a cualquier otro fuero que pudiera corresponder.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">10. Contacto</h4>
-                <p>Para cualquier consulta sobre estos Términos y Condiciones, el usuario puede comunicarse con REF Electrotecnia a través del correo electrónico: <a href="mailto:rodriref201@gmail.com">rodriref201@gmail.com</a></p>`
-            },
-            aviso: {
-                title: 'Aviso legal',
-                body: `<p><strong>Última actualización:</strong> agosto de 2026</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">1. Identificación del titular</h4>
-                <p>En cumplimiento con la legislación vigente en la República Argentina, se informa que el presente sitio web es titularidad de:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li><strong>Nombre / Razón Social:</strong> REF Electrotecnia</li>
-                    <li><strong>Actividad:</strong> Servicios de electricidad, instalaciones, mantenimiento y emergencias eléctricas</li>
-                    <li><strong>Domicilio:</strong> Córdoba, Argentina</li>
-                    <li><strong>Correo electrónico de contacto:</strong> <a href="mailto:rodriref201@gmail.com">rodriref201@gmail.com</a></li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">2. Objeto del sitio web</h4>
-                <p>El sitio web de REF Electrotecnia tiene como finalidad ofrecer información sobre los servicios profesionales que prestamos, así como facilitar el contacto con clientes y la solicitud de presupuestos. El acceso y uso del sitio atribuye la condición de usuario, lo que implica la aceptación expresa de las condiciones recogidas en este aviso legal, así como en la Política de Privacidad y en los Términos y Condiciones de Uso.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">3. Condiciones de uso del sitio</h4>
-                <p>El usuario se compromete a hacer un uso adecuado del sitio, de conformidad con la ley, la moral, el orden público y las presentes condiciones. Queda prohibido:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>Utilizar el sitio para fines ilícitos o contrarios a la buena fe.</li>
-                    <li>Introducir o difundir virus informáticos o cualquier otro sistema que pueda causar daños en la red, los equipos o los sistemas del titular o de terceros.</li>
-                    <li>Intentar acceder a áreas restringidas sin autorización.</li>
-                    <li>Reproducir, copiar, distribuir o modificar los contenidos del sitio sin autorización expresa.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">4. Responsabilidad del titular</h4>
-                <p>REF Electrotecnia no garantiza la disponibilidad y continuidad del sitio web ni la ausencia de errores técnicos. En la medida permitida por la ley, no asume responsabilidad por daños o perjuicios de cualquier naturaleza que puedan derivarse del uso del sitio, incluyendo pero no limitado a:</p>
-                <ul style="padding-left:24px; margin-bottom:12px;">
-                    <li>Fallos en la conexión o disponibilidad del sitio.</li>
-                    <li>Interrupciones, demoras o errores en el acceso a los contenidos.</li>
-                    <li>La existencia de virus o programas maliciosos en los contenidos.</li>
-                    <li>El uso indebido que los usuarios puedan hacer de los contenidos.</li>
-                </ul>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">5. Propiedad intelectual e industrial</h4>
-                <p>Todos los contenidos del sitio web (textos, imágenes, logotipos, gráficos, diseño, estructura, código fuente, etc.) son propiedad de REF Electrotecnia o de sus legítimos titulares, y están protegidos por la normativa de propiedad intelectual e industrial. Queda prohibida cualquier reproducción, distribución, comunicación pública o transformación sin el consentimiento previo y por escrito del titular. El usuario se compromete a respetar dichos derechos.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">6. Enlaces a sitios de terceros</h4>
-                <p>El sitio web puede incluir enlaces a sitios de terceros (como Google Maps, WhatsApp, Instagram, etc.). Estos enlaces se ofrecen únicamente a título informativo y REF Electrotecnia no asume ningún tipo de responsabilidad sobre el contenido, la seguridad o las prácticas de privacidad de dichos sitios. El acceso a ellos se realiza bajo la exclusiva responsabilidad del usuario.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">7. Protección de datos personales</h4>
-                <p>El tratamiento de los datos personales recogidos a través del sitio se rige por lo dispuesto en nuestra Política de Privacidad, la cual está a disposición del usuario en el presente sitio web. En todo caso, el usuario puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <a href="mailto:rodriref201@gmail.com">rodriref201@gmail.com</a>.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">8. Legislación aplicable y jurisdicción</h4>
-                <p>Las presentes condiciones se rigen por la legislación argentina. Cualquier controversia que pudiera surgir en relación con el uso del sitio web o de los servicios prestados será sometida a los tribunales de la ciudad de Córdoba, Argentina, con renuncia expresa a cualquier otro fuero que pudiera corresponder.</p>
-
-                <h4 style="margin-top:16px; font-weight:700; color:var(--primary-dark);">9. Modificaciones</h4>
-                <p>REF Electrotecnia se reserva el derecho de modificar el presente aviso legal en cualquier momento, publicando los cambios en esta misma sección. Se recomienda al usuario revisar periódicamente este documento para estar informado de las condiciones vigentes.</p>`
-            }
-        };
-
-        function openModal(type) {
-            const content = legalContent[type];
-            if (!content) return;
-            modalTitle.textContent = content.title;
-            modalBody.innerHTML = content.body;
-            modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            modalClose.focus();
-        }
-
-        function closeModal() {
-            modalOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        document.querySelectorAll('[data-modal]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                openModal(this.getAttribute('data-modal'));
-            });
-        });
-
-        modalClose.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
-        });
-
-        document.getElementById('cookiePolicyLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            openModal('privacidad');
-        });
 
     }); // fin DOMContentLoaded
     </script>
 
-    <!-- ===== REGISTRO DEL SERVICE WORKER ===== -->
+    <!-- ===== REGISTRO DEL SERVICE WORKER (fallback) ===== -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
@@ -2887,64 +2736,50 @@
     <!-- ===== LÓGICA DEL BANNER DE INSTALACIÓN ===== -->
     <script>
         (function() {
-            // Si la app ya está instalada (modo standalone), no mostrar banner
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 return;
             }
-
-            // Si ya se mostró el banner antes (almacenado en localStorage), no mostrarlo
             if (localStorage.getItem('pwaBannerShown')) {
                 return;
             }
-
             let deferredPrompt = null;
             const banner = document.getElementById('installBanner');
             const installBtn = document.getElementById('installBtn');
             const closeBtn = document.getElementById('closeBanner');
 
-            // Escuchar el evento beforeinstallprompt (disparado por el navegador)
             window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();
                 deferredPrompt = e;
-                // Mostrar el banner solo si no está ya oculto por alguna razón
                 if (!localStorage.getItem('pwaBannerShown')) {
                     banner.classList.add('show');
                 }
             });
 
-            // Cuando el usuario hace clic en "Instalar"
             installBtn.addEventListener('click', async function() {
                 if (deferredPrompt) {
-                    // Mostrar el prompt nativo de instalación
                     deferredPrompt.prompt();
                     const result = await deferredPrompt.userChoice;
                     console.log('Usuario eligió:', result.outcome);
                     if (result.outcome === 'accepted') {
-                        // Si instaló, no volver a mostrar el banner
                         localStorage.setItem('pwaBannerShown', 'true');
                     }
-                    // Ocultar el banner después de la interacción
                     banner.classList.remove('show');
                     deferredPrompt = null;
                 } else {
-                    // Fallback: si no hay evento, abrir una ayuda o indicar cómo instalar manualmente
                     alert('Para instalar esta app, abre el menú del navegador y selecciona "Agregar a la pantalla de inicio".');
                 }
             });
 
-            // Cerrar el banner manualmente (y guardar que ya se mostró para no molestar)
             closeBtn.addEventListener('click', function() {
                 banner.classList.remove('show');
                 localStorage.setItem('pwaBannerShown', 'true');
             });
 
-            // También ocultar el banner si el usuario ya instaló la app (detectado por el modo standalone)
             window.addEventListener('appinstalled', function() {
                 banner.classList.remove('show');
                 localStorage.setItem('pwaBannerShown', 'true');
             });
 
-            // Exponemos el banner globalmente por si se necesita depuración
             window.__pwaBanner = { banner, deferredPrompt };
         })();
     </script>
