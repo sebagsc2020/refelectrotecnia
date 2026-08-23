@@ -1017,6 +1017,27 @@
             display: inline-block;
             margin-left: 4px;
         }
+
+        /* ===== INPUT DE BÚSQUEDA EN RESUMEN ===== */
+        #busquedaResumen {
+            padding: 6px 12px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            min-width: 180px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        #busquedaResumen:focus {
+            outline: none;
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 0 3px rgba(0,168,255,0.1);
+        }
+        @media (max-width: 768px) {
+            #busquedaResumen { min-width: 120px; width: 100%; }
+            .btn-add-summary { margin-top: 5px; }
+        }
     </style>
 </head>
 <body>
@@ -1085,13 +1106,16 @@
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
     
-    <!-- ===== SECCIÓN RESUMEN POR CONTACTO ===== -->
+    <!-- ===== SECCIÓN RESUMEN POR CONTACTO (con búsqueda) ===== -->
     <div class="table-container">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 12px 24px; border-bottom: 1px solid #E9ECEF;">
             <h4 style="margin:0;"><i class="fas fa-address-book" style="color:var(--primary-cyan);"></i> Resumen por Contacto</h4>
-            <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
-                <i class="fas fa-user-plus"></i> Agregar contacto
-            </button>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="busquedaResumen" placeholder="Buscar cliente...">
+                <button class="btn-add-summary" onclick="abrirNuevoRegistro()">
+                    <i class="fas fa-user-plus"></i> Agregar contacto
+                </button>
+            </div>
         </div>
         <div class="table-scroll" id="resumenContainer"><div class="loading"><i class="fas fa-spinner"></i> Procesando contactos...</div></div>
     </div>
@@ -1731,17 +1755,25 @@ function actualizarGrafico(data) {
 
 function actualizarUltimos(data) {
     const container = document.getElementById('ultimosRegistros');
-    if (data.length === 0) { container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>'; return; }
-    const ultimos = data.slice(-5).reverse();
+    if (data.length === 0) {
+        container.innerHTML = '<p style="color:var(--gray-text);">No hay registros aún.</p>';
+        return;
+    }
+    // Mostramos los 5 más recientes (los primeros del array ordenado)
+    const ultimos = data.slice(0, 5);
     let html = '<ul style="list-style:none; padding:0; margin:0;">';
     ultimos.forEach(item => {
         const nombre = item.nombre || 'Anónimo';
         const servicio = item.servicio || 'No especificado';
         const fecha = formatearFecha(item.fecha);
         const esEmergencia = servicio.toLowerCase().includes('emergencia');
-        html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;"><span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span><span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span></li>`;
+        html += `<li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #E9ECEF; align-items:center;">
+            <span><strong>${nombre}</strong> <span style="color:var(--gray-text); font-size:0.85rem;">${servicio}</span></span>
+            <span style="font-size:0.8rem; color:var(--gray-text);">${esEmergencia ? '<span class="badge-emergencia">⚠️</span>' : ''} ${fecha}</span>
+        </li>`;
     });
-    html += '</ul>'; container.innerHTML = html;
+    html += '</ul>';
+    container.innerHTML = html;
 }
 
 // ============================================================
@@ -2456,18 +2488,30 @@ function escape(str) {
 }
 
 // ============================================================
-//  RESUMEN POR CONTACTO (USA TODOS LOS CONTACTOS, INCLUYENDO OCULTOS)
+//  RESUMEN POR CONTACTO (CON BÚSQUEDA)
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
-    // Usamos TODOS los contactos sin filtrar por oculto
-    if (data.length === 0) {
-        container.innerHTML = `<div class="no-data"><i class="fas fa-inbox" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No hay contactos registrados.</p></div>`;
+    const busquedaInput = document.getElementById('busquedaResumen');
+    const busqueda = busquedaInput ? busquedaInput.value.toLowerCase().trim() : '';
+
+    // Filtrar contactos si hay búsqueda
+    let dataFiltrada = data;
+    if (busqueda !== '') {
+        dataFiltrada = data.filter(item => {
+            const nombre = (item.nombre || '').toLowerCase();
+            const telefono = (item.telefono || '').toLowerCase();
+            return nombre.includes(busqueda) || telefono.includes(busqueda);
+        });
+    }
+
+    if (dataFiltrada.length === 0) {
+        container.innerHTML = `<div class="no-data"><i class="fas fa-search" style="font-size:2rem;color:var(--gray-text);"></i><p style="margin-top:10px;">No se encontraron clientes que coincidan con la búsqueda.</p></div>`;
         return;
     }
 
     const contactosMap = new Map();
-    data.forEach(item => {
+    dataFiltrada.forEach(item => {
         const nombre = item.nombre || 'Anónimo';
         const telefono = item.telefono ? String(item.telefono).trim() : '';
         if (!telefono) return;
@@ -2720,6 +2764,16 @@ document.getElementById('mostrarOcultosBtn').addEventListener('click', function(
     this.classList.toggle('activo', mostrarOcultos);
     renderizarTabla(datosCache.contactos);
 });
+
+// ============================================================
+//  BÚSQUEDA EN RESUMEN (evento input)
+// ============================================================
+const busquedaResumen = document.getElementById('busquedaResumen');
+if (busquedaResumen) {
+    busquedaResumen.addEventListener('input', function() {
+        actualizarResumenContactos(datosCache.contactos);
+    });
+}
 
 </script>
 
