@@ -1143,6 +1143,7 @@
     <div class="dashboard-header">
         <h2><span>📊</span> Panel de Administración</h2>
         <div class="header-actions">
+            <button class="btn-logout" id="cambiarPassBtn" style="background:transparent; color:var(--gray-text); border:2px solid #E9ECEF; padding:10px 20px; border-radius:6px; font-weight:600; font-size:0.9rem; cursor:pointer; transition:0.3s;"><i class="fas fa-key"></i> Cambiar contraseña</button>
             <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
     </div>
@@ -1472,6 +1473,21 @@
     </div>
 </div>
 
+<!-- ===== MODAL CAMBIAR CONTRASEÑA ===== -->
+<div class="modal-overlay" id="cambiarPassModal">
+    <div class="modal-box">
+        <button class="close-modal" id="closeCambiarPassModal">&times;</button>
+        <h3><span>🔑</span> Cambiar contraseña</h3>
+        <div class="form-group"><label>Contraseña actual</label><input type="password" id="currentPassword" placeholder="Contraseña actual"></div>
+        <div class="form-group"><label>Nueva contraseña</label><input type="password" id="newPassword" placeholder="Nueva contraseña (mínimo 6 caracteres)"></div>
+        <div class="form-group"><label>Confirmar nueva contraseña</label><input type="password" id="confirmNewPassword" placeholder="Confirmar nueva contraseña"></div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelCambiarPassBtn">Cancelar</button>
+            <button class="btn-save" id="saveCambiarPassBtn"><i class="fas fa-save"></i> Cambiar contraseña</button>
+        </div>
+    </div>
+</div>
+
 <!-- ========================================================== -->
 <!-- IMPORTMAP + SCRIPT MÓDULO CON FIREBASE                    -->
 <!-- ========================================================== -->
@@ -1487,7 +1503,15 @@
 
 <script type="module">
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut,
+    reauthenticateWithCredential,
+    updatePassword,
+    EmailAuthProvider
+} from 'firebase/auth';
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 
 // Configuración de Firebase
@@ -2260,7 +2284,17 @@ window.restaurarPresupuesto = async function(docId) {
 window.eliminarPresupuesto = async function(docId) {
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
     if (!presupuesto) return;
-    const confirmado = await mostrarConfirmacion(`¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`);
+    // Popup con botones "No" y "Sí" (en lugar de Cancelar/Aceptar)
+    const confirmado = await mostrarModal({
+        tipo: 'warning',
+        icon: '⚠️',
+        titulo: 'Confirmar eliminación',
+        mensaje: `¿Estás seguro de que quieres eliminar este presupuesto de "${presupuesto.nombre || 'Anónimo'}"?`,
+        botones: [
+            { texto: 'No', clase: 'secondary', valor: false },
+            { texto: 'Sí', clase: 'danger', valor: true }
+        ]
+    });
     if (confirmado) {
         try {
             await deleteDoc(doc(db, 'presupuestos', docId));
@@ -2899,6 +2933,77 @@ if (busquedaResumen) {
         actualizarResumenContactos(datosCache.contactos);
     });
 }
+
+// ============================================================
+//  CAMBIAR CONTRASEÑA
+// ============================================================
+document.getElementById('cambiarPassBtn').addEventListener('click', function() {
+    document.getElementById('cambiarPassModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    // Limpiar campos
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmNewPassword').value = '';
+});
+
+document.getElementById('closeCambiarPassModal').addEventListener('click', () => cerrarModal('cambiarPassModal'));
+document.getElementById('cancelCambiarPassBtn').addEventListener('click', () => cerrarModal('cambiarPassModal'));
+
+document.getElementById('saveCambiarPassBtn').addEventListener('click', async function() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        await mostrarError('Todos los campos son obligatorios.');
+        return;
+    }
+    if (newPassword.length < 6) {
+        await mostrarError('La nueva contraseña debe tener al menos 6 caracteres.');
+        return;
+    }
+    if (newPassword !== confirmPassword) {
+        await mostrarError('Las contraseñas no coinciden.');
+        return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) {
+        await mostrarError('No hay usuario autenticado.');
+        return;
+    }
+
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cambiando...';
+
+    try {
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+        await updatePassword(user, newPassword);
+        await mostrarModal({
+            tipo: 'success',
+            icon: '✅',
+            titulo: 'Contraseña cambiada',
+            mensaje: 'La contraseña se ha actualizado correctamente.',
+            botones: [{ texto: 'Aceptar', clase: 'primary' }]
+        });
+        cerrarModal('cambiarPassModal');
+    } catch (error) {
+        let mensaje = 'Error al cambiar la contraseña.';
+        if (error.code === 'auth/wrong-password') {
+            mensaje = 'La contraseña actual es incorrecta.';
+        } else if (error.code === 'auth/requires-recent-login') {
+            mensaje = 'Esta operación es sensible. Por favor, cierra sesión y vuelve a iniciar sesión antes de cambiar la contraseña.';
+        } else {
+            mensaje = error.message;
+        }
+        await mostrarError(mensaje);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Cambiar contraseña';
+    }
+});
 
 </script>
 
