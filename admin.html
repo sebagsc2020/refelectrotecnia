@@ -33,7 +33,7 @@
             --light-bg: #F4F6F9;
             --gray-text: #4A4A4A;
             --shadow: 0 4px 15px rgba(0,0,0,0.08);
-            --radius: 6px; /* reducido de 12px a 6px */
+            --radius: 6px;
             --font: 'Inter', sans-serif;
         }
         body { font-family: var(--font); background: var(--light-bg); color: #1E1E1E; min-height: 100vh; }
@@ -1619,7 +1619,7 @@ function mostrarModal(opciones) {
                 b.textContent = btn.texto;
                 b.addEventListener('click', () => {
                     cerrarModalPersonalizado();
-                    resolve(btn.valor || true);
+                    resolve(btn.valor !== undefined ? btn.valor : true);
                 });
                 buttons.appendChild(b);
             });
@@ -2281,10 +2281,13 @@ window.restaurarPresupuesto = async function(docId) {
     }
 };
 
+// ============================================================
+//  ELIMINAR PRESUPUESTO CON CONFIRMACIÓN (CORREGIDO)
+// ============================================================
 window.eliminarPresupuesto = async function(docId) {
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
     if (!presupuesto) return;
-    // Popup con botones "No" y "Sí" (en lugar de Cancelar/Aceptar)
+
     const confirmado = await mostrarModal({
         tipo: 'warning',
         icon: '⚠️',
@@ -2295,7 +2298,9 @@ window.eliminarPresupuesto = async function(docId) {
             { texto: 'Sí', clase: 'danger', valor: true }
         ]
     });
-    if (confirmado) {
+
+    // Solo eliminar si la respuesta es explícitamente true
+    if (confirmado === true) {
         try {
             await deleteDoc(doc(db, 'presupuestos', docId));
         } catch (error) {
