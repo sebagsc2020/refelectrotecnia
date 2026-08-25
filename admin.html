@@ -1640,6 +1640,7 @@ async function mostrarError(mensaje) {
     });
 }
 
+// ===== FUNCIÓN MODIFICADA: botones "Sí" y "No" =====
 async function mostrarConfirmacion(mensaje) {
     const result = await mostrarModal({
         tipo: 'warning',
@@ -1647,12 +1648,13 @@ async function mostrarConfirmacion(mensaje) {
         titulo: 'Confirmar',
         mensaje: mensaje,
         botones: [
-            { texto: 'Cancelar', clase: 'secondary', valor: false },
-            { texto: 'Aceptar', clase: 'danger', valor: true }
+            { texto: 'No', clase: 'secondary', valor: false },
+            { texto: 'Sí', clase: 'danger', valor: true }
         ]
     });
     return result;
 }
+// ============================================================
 
 // ============================================================
 //  FUNCIONES DE INTERFAZ
@@ -2314,7 +2316,6 @@ window.eliminarContactoDefinitivo = async function(docId) {
     if (confirmado === true) {
         try {
             await deleteDoc(doc(db, 'contactos', docId));
-            // Opcional: también podrías eliminar los presupuestos asociados, pero no se pide explícitamente.
         } catch (error) {
             await mostrarError('Error al eliminar contacto: ' + error.message);
         }
