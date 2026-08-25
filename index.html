@@ -1315,19 +1315,19 @@
             border-radius: var(--radius);
             max-width: 700px;
             width: 100%;
-            max-height: 90vh; /* Aumentado para evitar scroll */
-            padding: 30px 28px; /* Reducido ligeramente */
+            max-height: 90vh;
+            padding: 30px 28px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            position: relative;
+            position: relative; /* ← AÑADIDO para que el botón absoluto se posicione dentro del modal */
             overflow-y: auto;
             transform: scale(0.95) translateY(20px);
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
         .modal-content::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
         .modal-overlay.active .modal-content {
             transform: scale(1) translateY(0);
@@ -1337,6 +1337,7 @@
             position: absolute;
             top: 12px;
             right: 16px;
+            z-index: 10; /* ← AÑADIDO para que esté por encima del contenido */
             background: none;
             border: none;
             font-size: 2rem;
