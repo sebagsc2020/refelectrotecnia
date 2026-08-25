@@ -923,37 +923,23 @@
             cursor: not-allowed;
         }
 
-        /* ===== BOTÓN EXCLUIR EN RESUMEN ===== */
-        .btn-excluir {
-            background: #f39c12;
+        /* ===== BOTÓN ELIMINAR DEFINITIVO EN RESUMEN ===== */
+        .btn-eliminar-contacto {
+            background: #e74c3c;
             color: white;
             border: none;
             padding: 5px 10px;
             border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
-        .btn-excluir:hover {
+        .btn-eliminar-contacto:hover {
+            background: #c0392b;
             transform: scale(1.05);
-            opacity: 0.9;
-        }
-        .btn-excluir.excluido {
-            background: #27ae60;
-        }
-        .badge-excluido {
-            background: #e74c3c;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 6px;
         }
 
         /* ===== BOTÓN MOSTRAR OCULTOS (contactos) ===== */
@@ -1809,7 +1795,7 @@ function actualizarStats(data) {
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
 
-    // === PENDIENTES: excluir contactos con 'excluido: true' ===
+    // Pendientes: contactos sin presupuesto activo (no se usa excluido)
     const contactosConPresupuestoActivo = new Set();
     datosCache.presupuestos.forEach(p => {
         if (p.contactoId) {
@@ -1829,7 +1815,6 @@ function actualizarStats(data) {
     });
 
     const pendientes = data.filter(item => {
-        if (item.excluido === true) return false;
         const id = item.id;
         if (id && contactosConPresupuestoActivo.has(id)) return false;
         const key = (item.nombre || '') + '|' + (item.telefono || '');
@@ -2282,7 +2267,7 @@ window.restaurarPresupuesto = async function(docId) {
 };
 
 // ============================================================
-//  ELIMINAR PRESUPUESTO CON CONFIRMACIÓN (CORREGIDO)
+//  ELIMINAR PRESUPUESTO CON CONFIRMACIÓN
 // ============================================================
 window.eliminarPresupuesto = async function(docId) {
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
@@ -2299,12 +2284,39 @@ window.eliminarPresupuesto = async function(docId) {
         ]
     });
 
-    // Solo eliminar si la respuesta es explícitamente true
     if (confirmado === true) {
         try {
             await deleteDoc(doc(db, 'presupuestos', docId));
         } catch (error) {
             await mostrarError('Error al eliminar: ' + error.message);
+        }
+    }
+};
+
+// ============================================================
+//  ELIMINAR CONTACTO DEFINITIVAMENTE (desde resumen)
+// ============================================================
+window.eliminarContactoDefinitivo = async function(docId) {
+    const contacto = datosCache.contactos.find(c => c.id === docId);
+    if (!contacto) return;
+
+    const confirmado = await mostrarModal({
+        tipo: 'warning',
+        icon: '⚠️',
+        titulo: 'Eliminar contacto definitivamente',
+        mensaje: `¿Estás seguro de que quieres eliminar el contacto "${contacto.nombre || 'Anónimo'}" y todos sus datos? Esta acción no se puede deshacer.`,
+        botones: [
+            { texto: 'No', clase: 'secondary', valor: false },
+            { texto: 'Sí, eliminar', clase: 'danger', valor: true }
+        ]
+    });
+
+    if (confirmado === true) {
+        try {
+            await deleteDoc(doc(db, 'contactos', docId));
+            // Opcional: también podrías eliminar los presupuestos asociados, pero no se pide explícitamente.
+        } catch (error) {
+            await mostrarError('Error al eliminar contacto: ' + error.message);
         }
     }
 };
@@ -2365,7 +2377,6 @@ document.getElementById('saveNuevoBtn').addEventListener('click', async function
             tipoFactura: tipoFactura || '',
             situacionFiscal: situacionFiscal || '',
             cuit: cuit || '',
-            excluido: false,
             oculto: false,
             fecha: serverTimestamp()
         });
@@ -2643,7 +2654,7 @@ function escape(str) {
 }
 
 // ============================================================
-//  RESUMEN POR CONTACTO (CON BÚSQUEDA)
+//  RESUMEN POR CONTACTO (CON BÚSQUEDA) - SIN COLUMNA EXCLUIR
 // ============================================================
 function actualizarResumenContactos(data) {
     const container = document.getElementById('resumenContainer');
@@ -2678,8 +2689,7 @@ function actualizarResumenContactos(data) {
             }
             contacto.email = item.email || contacto.email;
             contacto.ubicacion = item.ubicacion || contacto.ubicacion;
-            contacto.excluido = item.excluido === true;
-            contacto.id = item.id;
+            contacto.id = item.id; // mantener último id (podría ser de cualquier registro)
         } else {
             contactosMap.set(key, {
                 nombre,
@@ -2688,7 +2698,6 @@ function actualizarResumenContactos(data) {
                 ubicacion: item.ubicacion || '',
                 cantidad: 1,
                 servicios: item.servicio ? [item.servicio] : [],
-                excluido: item.excluido === true,
                 id: item.id
             });
         }
@@ -2707,8 +2716,8 @@ function actualizarResumenContactos(data) {
         <th>Email</th>
         <th>Ubicación</th>
         <th style="text-align:center;">Servicios</th>
-        <th style="text-align:center;">Excluir</th>
         <th style="text-align:center;">Contactar</th>
+        <th style="text-align:center;">Eliminar</th>
     </tr></thead><tbody>`;
     contactos.forEach((contacto, index) => {
         const telefonoLimpio = contacto.telefono.replace(/\D/g, '');
@@ -2735,16 +2744,10 @@ function actualizarResumenContactos(data) {
         const btnClase = tieneVencido ? 'btn-whatsapp-alerta' : 'btn-whatsapp';
         const btnTexto = tieneVencido ? 'Contactar URGENTE' : 'Contactar';
 
-        const excluidoBadge = contacto.excluido ? '<span class="badge-excluido">🚫 Excluido</span>' : '';
-
         const docId = contacto.id;
-        const excluidoBtnClass = contacto.excluido ? 'excluido' : '';
-        const excluidoBtnText = contacto.excluido ? 'Reincorporar' : 'Excluir';
-        const excluidoBtnIcon = contacto.excluido ? 'fa-undo' : 'fa-ban';
-
         html += `<tr>
             <td>${index + 1}</td>
-            <td><strong>${contacto.nombre}</strong> ${alertaHtml} ${excluidoBadge}</td>
+            <td><strong>${contacto.nombre}</strong> ${alertaHtml}</td>
             <td>${contacto.telefono}</td>
             <td>${contacto.email || '—'}</td>
             <td>${contacto.ubicacion || '—'}</td>
@@ -2757,41 +2760,18 @@ function actualizarResumenContactos(data) {
                 <span style="font-size:0.75rem; color:var(--gray-text); margin-left:6px; cursor:default;" title="Servicios: ${serviciosLista || 'Ninguno'}"><i class="fas fa-info-circle"></i></span>
             </td>
             <td style="text-align:center;">
-                <button class="btn-excluir ${excluidoBtnClass}" onclick="toggleExcluirContacto('${docId}')" title="Excluir/Reincorporar de la lista de pendientes">
-                    <i class="fas ${excluidoBtnIcon}"></i> ${excluidoBtnText}
-                </button>
+                <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
             </td>
             <td style="text-align:center;">
-                <a href="${whatsappUrl}" target="_blank" class="${btnClase}"><i class="fab fa-whatsapp"></i> ${btnTexto}</a>
+                <button class="btn-eliminar-contacto" onclick="eliminarContactoDefinitivo('${docId}')" title="Eliminar contacto definitivamente">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </td>
         </tr>`;
     });
     html += `</tbody></table>`;
     container.innerHTML = html;
 }
-
-// ============================================================
-//  FUNCIÓN PARA ALTERNAR EXCLUSIÓN DE CONTACTO
-// ============================================================
-window.toggleExcluirContacto = async function(docId) {
-    if (!docId) {
-        await mostrarError('No se pudo identificar el contacto.');
-        return;
-    }
-    const contacto = datosCache.contactos.find(c => c.id === docId);
-    if (!contacto) {
-        await mostrarError('Contacto no encontrado.');
-        return;
-    }
-    const nuevoEstado = !contacto.excluido;
-    try {
-        await updateDoc(doc(db, 'contactos', docId), {
-            excluido: nuevoEstado
-        });
-    } catch (error) {
-        await mostrarError('Error al cambiar estado de exclusión: ' + error.message);
-    }
-};
 
 // ============================================================
 //  MODAL DE SERVICIOS
