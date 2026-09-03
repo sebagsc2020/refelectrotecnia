@@ -5,6 +5,8 @@
 </head>
 <body>
   <button id="btn">Guardar</button>
+  <pre id="log">Esperando...</pre>
+
   <script type="importmap">
   {
     "imports": {
@@ -13,6 +15,7 @@
     }
   }
   </script>
+
   <script type="module">
     import { initializeApp } from 'firebase/app';
     import { getFirestore, collection, addDoc } from 'firebase/firestore';
@@ -23,26 +26,27 @@
       projectId: "refelectrotecnia",
       storageBucket: "refelectrotecnia.firebasestorage.app",
       messagingSenderId: "204883844019",
-      appId: "1:204883844019:web:176d2973209b0cc98fc9c6"
+      appId: "1:204883844019:web:176d2973209b0cc98fc9c6",
+      measurementId: "G-8FDNZ6GJZD"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    document.getElementById('btn').addEventListener('click', async () => {
+    document.getElementById('btn').onclick = async () => {
+      const log = document.getElementById('log');
+      log.textContent = 'Guardando...';
       try {
-        const docRef = await addDoc(collection(db, 'contactos'), {
-          nombre: 'Test',
-          telefono: '123456789',
-          fecha: new Date().toISOString()
+        const docRef = await addDoc(collection(db, 'test_contactos'), {
+          nombre: 'Test ' + Date.now(),
+          telefono: '123456789'
         });
-        console.log('✅ Guardado con ID:', docRef.id);
-        alert('✅ Guardado correctamente');
-      } catch (e) {
-        console.error('❌ Error:', e);
-        alert('❌ Error: ' + e.message);
+        log.textContent = '✅ Guardado con ID: ' + docRef.id;
+      } catch (error) {
+        log.textContent = '❌ Error: ' + error.message;
+        console.error(error);
       }
-    });
+    };
   </script>
 </body>
 </html>
