@@ -1315,19 +1315,19 @@
             border-radius: var(--radius);
             max-width: 700px;
             width: 100%;
-            max-height: 90vh;
-            padding: 30px 28px;
+            max-height: 90vh; /* Aumentado para evitar scroll */
+            padding: 30px 28px; /* Reducido ligeramente */
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow-y: auto;
             transform: scale(0.95) translateY(20px);
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
         }
         .modal-content::-webkit-scrollbar {
-            display: none;
+            display: none; /* Chrome, Safari, Opera */
         }
         .modal-overlay.active .modal-content {
             transform: scale(1) translateY(0);
@@ -1337,7 +1337,6 @@
             position: absolute;
             top: 12px;
             right: 16px;
-            z-index: 10;
             background: none;
             border: none;
             font-size: 2rem;
@@ -2097,7 +2096,7 @@
 
                         <div class="form-success" id="formSuccess">
                             <i class="fas fa-check-circle"></i>
-                            <span>¡Presupuesto Solicitado! En breve recibirá por Whatsapp el presupuesto en pdf! .</span>
+                            <span>¡Solicitud guardada! Genera el presupuesto más tarde.</span>
                         </div>
 
                         <!-- PERSONAL -->
@@ -2510,12 +2509,6 @@
     const db = getFirestore(app);
 
     async function guardarContactoFirestore(datos) {
-        // ===== LOGS DE DEPURACIÓN =====
-        console.log('📤 Datos que se intentan guardar:', datos);
-        console.log('📤 Tipo de nombre:', typeof datos.nombre, 'Valor:', datos.nombre);
-        console.log('📤 Tipo de teléfono:', typeof datos.telefono, 'Valor:', datos.telefono);
-        // ===== FIN LOGS =====
-
         try {
             const docRef = await addDoc(collection(db, 'contactos'), {
                 ...datos,
@@ -2814,23 +2807,21 @@
         actualizarCamposFiscales();
 
         // ============================================================
-        // ENVÍO DEL FORMULARIO (Firestore + WhatsApp)
+        // ENVÍO DEL FORMULARIO
         // ============================================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Obtener valores y forzarlos a string con trim
-            const nombreVal = String(nombre?.value || '').trim();
-            const telefonoVal = String(telefono?.value || '').trim();
-            const emailVal = String(email?.value || '').trim();
-            const servicioVal = String(servicio?.value || '').trim();
-            const mensajeVal = String(mensaje?.value || '').trim();
-            const ubicacionVal = String(ubicacion?.value || '').trim();
-            const tipoFacturaVal = String(tipoFactura?.value || '').trim();
-            const situacionFiscalVal = String(situacionFiscal?.value || '').trim();
-            const cuitVal = String(cuit?.value || '').trim();
+            const nombreVal = nombre?.value.trim() || '';
+            const telefonoVal = telefono?.value.trim() || '';
+            const emailVal = email?.value.trim() || '';
+            const servicioVal = servicio?.value || '';
+            const mensajeVal = mensaje?.value.trim() || '';
+            const ubicacionVal = ubicacion?.value.trim() || '';
+            const tipoFacturaVal = tipoFactura?.value || '';
+            const situacionFiscalVal = situacionFiscal?.value || '';
+            const cuitVal = cuit?.value.trim() || '';
 
-            // Validar campos obligatorios
             if (!nombreVal || !telefonoVal) {
                 alert('Por favor, completa tu nombre y teléfono.');
                 return;
@@ -2844,7 +2835,6 @@
                 }
             }
 
-            // Datos para Firestore (todos convertidos a string)
             const datos = {
                 nombre: nombreVal,
                 telefono: telefonoVal,
@@ -2857,16 +2847,11 @@
                 cuit: cuitVal
             };
 
-            // ===== LOG PREVIO AL GUARDADO =====
-            console.log('📦 Datos preparados para enviar:', datos);
-            // ===== FIN LOG =====
-
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             }
 
-            // Guardar en Firestore
             const result = await guardarContactoFirestore(datos);
 
             if (result.success) {
@@ -2875,7 +2860,6 @@
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
                 }
 
-                // Resetear formulario
                 form.reset();
                 form.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
                 if (btnMaps) btnMaps.classList.add('hidden');
@@ -2886,7 +2870,7 @@
                 actualizarCamposFiscales();
                 if (nombre) nombre.focus();
 
-                // Cerrar modal si corresponde
+                // Si es el modal, cerrarlo después de guardar
                 const modal = form.closest('.modal-overlay');
                 if (modal) {
                     setTimeout(() => {
@@ -2894,33 +2878,8 @@
                         document.body.style.overflow = '';
                     }, 1500);
                 }
-
-                // ===== CONSTRUIR MENSAJE DE WHATSAPP CON TODOS LOS DATOS =====
-                let whatsappMessage = 'Hola, solicito un presupuesto:\n\n';
-                whatsappMessage += '👤 *Nombre:* ' + nombreVal + '\n';
-                whatsappMessage += '📱 *Teléfono:* ' + telefonoVal + '\n';
-                if (emailVal) whatsappMessage += '📧 *Email:* ' + emailVal + '\n';
-                if (servicioVal) {
-                    let servicioLabel = servicioVal;
-                    if (servicioVal === 'emergencia') servicioLabel = 'Emergencia 24/7 ⚠️';
-                    whatsappMessage += '🔧 *Servicio:* ' + servicioLabel + '\n';
-                }
-                if (ubicacionVal) whatsappMessage += '📍 *Ubicación:* ' + ubicacionVal + '\n';
-                if (mensajeVal) whatsappMessage += '📝 *Mensaje:* ' + mensajeVal + '\n';
-                if (tipoFacturaVal) whatsappMessage += '📄 *Tipo Factura:* ' + tipoFacturaVal + '\n';
-                if (situacionFiscalVal) whatsappMessage += '🏛️ *Situación Fiscal:* ' + situacionFiscalVal + '\n';
-                if (cuitVal) whatsappMessage += '🆔 *CUIT/CUIL:* ' + cuitVal + '\n';
-
-                const phoneNumber = '5493518692251';
-                const encodedMessage = encodeURIComponent(whatsappMessage);
-                const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
-
-                setTimeout(() => {
-                    window.open(waUrl, '_blank');
-                }, 800);
-
             } else {
-                alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.\nError: ' + result.error);
+                alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
             }
 
             if (submitBtn) {
@@ -2937,8 +2896,10 @@
             if (section) updateSectionCheck(section);
         });
 
+        // Aplicar listeners de validación
         setupFieldListeners();
 
+        // Retornar funciones útiles (por si se necesitan desde fuera)
         return { updateSectionCheck, actualizarCamposFiscales };
     }
 
@@ -2966,6 +2927,7 @@
                 e.preventDefault();
                 formModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+                // Enfocar primer campo del modal
                 const firstInput = formModal.querySelector('input:not([type="hidden"])');
                 if (firstInput) setTimeout(() => firstInput.focus(), 300);
             });
@@ -3234,7 +3196,7 @@
             html += '<div class="diag-actions">';
 
             if (nivel === 'CRÍTICO') {
-                html += '<a class="diag-call" href="tel:+5493518692251"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
+                html += '<a class="diag-call" href="tel:+5493541528232"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
             } else if (nivel === 'ALTO') {
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
