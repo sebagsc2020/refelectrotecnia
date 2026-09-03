@@ -1318,7 +1318,7 @@
             max-height: 90vh;
             padding: 30px 28px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            position: relative; /* ← AÑADIDO para que el botón absoluto se posicione dentro del modal */
+            position: relative;
             overflow-y: auto;
             transform: scale(0.95) translateY(20px);
             transition: transform 0.3s ease, opacity 0.3s ease;
@@ -1337,7 +1337,7 @@
             position: absolute;
             top: 12px;
             right: 16px;
-            z-index: 10; /* ← AÑADIDO para que esté por encima del contenido */
+            z-index: 10;
             background: none;
             border: none;
             font-size: 2rem;
@@ -2510,6 +2510,12 @@
     const db = getFirestore(app);
 
     async function guardarContactoFirestore(datos) {
+        // ===== LOGS DE DEPURACIÓN =====
+        console.log('📤 Datos que se intentan guardar:', datos);
+        console.log('📤 Tipo de nombre:', typeof datos.nombre, 'Valor:', datos.nombre);
+        console.log('📤 Tipo de teléfono:', typeof datos.telefono, 'Valor:', datos.telefono);
+        // ===== FIN LOGS =====
+
         try {
             const docRef = await addDoc(collection(db, 'contactos'), {
                 ...datos,
@@ -2813,16 +2819,18 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const nombreVal = nombre?.value.trim() || '';
-            const telefonoVal = telefono?.value.trim() || '';
-            const emailVal = email?.value.trim() || '';
-            const servicioVal = servicio?.value || '';
-            const mensajeVal = mensaje?.value.trim() || '';
-            const ubicacionVal = ubicacion?.value.trim() || '';
-            const tipoFacturaVal = tipoFactura?.value || '';
-            const situacionFiscalVal = situacionFiscal?.value || '';
-            const cuitVal = cuit?.value.trim() || '';
+            // Obtener valores y forzarlos a string con trim
+            const nombreVal = String(nombre?.value || '').trim();
+            const telefonoVal = String(telefono?.value || '').trim();
+            const emailVal = String(email?.value || '').trim();
+            const servicioVal = String(servicio?.value || '').trim();
+            const mensajeVal = String(mensaje?.value || '').trim();
+            const ubicacionVal = String(ubicacion?.value || '').trim();
+            const tipoFacturaVal = String(tipoFactura?.value || '').trim();
+            const situacionFiscalVal = String(situacionFiscal?.value || '').trim();
+            const cuitVal = String(cuit?.value || '').trim();
 
+            // Validar campos obligatorios
             if (!nombreVal || !telefonoVal) {
                 alert('Por favor, completa tu nombre y teléfono.');
                 return;
@@ -2836,7 +2844,7 @@
                 }
             }
 
-            // Datos para Firestore
+            // Datos para Firestore (todos convertidos a string)
             const datos = {
                 nombre: nombreVal,
                 telefono: telefonoVal,
@@ -2848,6 +2856,10 @@
                 situacionFiscal: situacionFiscalVal,
                 cuit: cuitVal
             };
+
+            // ===== LOG PREVIO AL GUARDADO =====
+            console.log('📦 Datos preparados para enviar:', datos);
+            // ===== FIN LOG =====
 
             if (submitBtn) {
                 submitBtn.disabled = true;
@@ -2895,7 +2907,6 @@
                 }
                 if (ubicacionVal) whatsappMessage += '📍 *Ubicación:* ' + ubicacionVal + '\n';
                 if (mensajeVal) whatsappMessage += '📝 *Mensaje:* ' + mensajeVal + '\n';
-                // Campos fiscales
                 if (tipoFacturaVal) whatsappMessage += '📄 *Tipo Factura:* ' + tipoFacturaVal + '\n';
                 if (situacionFiscalVal) whatsappMessage += '🏛️ *Situación Fiscal:* ' + situacionFiscalVal + '\n';
                 if (cuitVal) whatsappMessage += '🆔 *CUIT/CUIL:* ' + cuitVal + '\n';
@@ -2904,13 +2915,12 @@
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 const waUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
 
-                // Abrir WhatsApp después de un breve retraso
                 setTimeout(() => {
                     window.open(waUrl, '_blank');
                 }, 800);
 
             } else {
-                alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
+                alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.\nError: ' + result.error);
             }
 
             if (submitBtn) {
@@ -2927,10 +2937,8 @@
             if (section) updateSectionCheck(section);
         });
 
-        // Aplicar listeners de validación
         setupFieldListeners();
 
-        // Retornar funciones útiles (por si se necesitan desde fuera)
         return { updateSectionCheck, actualizarCamposFiscales };
     }
 
@@ -2958,7 +2966,6 @@
                 e.preventDefault();
                 formModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                // Enfocar primer campo del modal
                 const firstInput = formModal.querySelector('input:not([type="hidden"])');
                 if (firstInput) setTimeout(() => firstInput.focus(), 300);
             });
