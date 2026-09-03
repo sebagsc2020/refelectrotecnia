@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Firestore</title>
+</head>
+<body>
+  <button id="btn">Guardar</button>
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import { initializeApp } from 'firebase/app';
+    import { getFirestore, collection, addDoc } from 'firebase/firestore';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
+      authDomain: "refelectrotecnia.firebaseapp.com",
+      projectId: "refelectrotecnia",
+      storageBucket: "refelectrotecnia.firebasestorage.app",
+      messagingSenderId: "204883844019",
+      appId: "1:204883844019:web:176d2973209b0cc98fc9c6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById('btn').addEventListener('click', async () => {
+      try {
+        const docRef = await addDoc(collection(db, 'contactos'), {
+          nombre: 'Test',
+          telefono: '123456789',
+          fecha: new Date().toISOString()
+        });
+        console.log('✅ Guardado con ID:', docRef.id);
+        alert('✅ Guardado correctamente');
+      } catch (e) {
+        console.error('❌ Error:', e);
+        alert('❌ Error: ' + e.message);
+      }
+    });
+  </script>
+</body>
+</html>
