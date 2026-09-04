@@ -43,7 +43,7 @@
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="REF Electrotecnia">
     <meta property="og:email" content="rodriref201@gmail.com">
-    <meta property="og:phone_number" content="+5493541528232">
+    <meta property="og:phone_number" content="+5493541522835">
 
     <!-- ===== TWITTER CARDS ===== -->
     <meta name="twitter:card" content="summary_large_image">
@@ -2935,7 +2935,7 @@
                     'Situación Fiscal: ' + (datos.situacionFiscal || 'No especificado') + '%0A' +
                     'CUIT: ' + (datos.cuit || 'No especificado') + '%0A' +
                     'Fecha: ' + new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Cordoba' });
-                const waUrl = 'https://wa.me/5493541528232?text=' + encodeURIComponent(waMsg);
+                const waUrl = 'https://wa.me/5493541522835?text=' + encodeURIComponent(waMsg);
 
                 // Mostrar mensaje de éxito con enlace de WhatsApp (sin botón)
                 if (formSuccess) {
@@ -3283,7 +3283,7 @@
             let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
             diagTags.forEach(t => waMsg += '• ' + t + '\n');
             waMsg += '\n📊 Nivel estimado: ' + nivel;
-            const waUrl = 'https://wa.me/5493541528232?text=' + encodeURIComponent(waMsg);
+            const waUrl = 'https://wa.me/5493541522835?text=' + encodeURIComponent(waMsg);
 
             let html = '<div class="diag-result">';
             html += '<div class="diag-icon" style="color:' + color + ';"><i class="fas ' + icon + '"></i></div>';
@@ -3292,7 +3292,7 @@
             html += '<div class="diag-actions">';
 
             if (nivel === 'CRÍTICO') {
-                html += '<a class="diag-call" href="tel:+5493541528232"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
+                html += '<a class="diag-call" href="tel:+5493541522835"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
             } else if (nivel === 'ALTO') {
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
