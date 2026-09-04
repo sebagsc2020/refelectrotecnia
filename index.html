@@ -2938,21 +2938,48 @@
             });
         }
 
-        // ===== COOKIES =====
+        // ===== COOKIES (CORREGIDO) =====
         const cookieConsent = document.getElementById('cookieConsent');
+        const acceptBtn = document.getElementById('acceptCookies');
+        const declineBtn = document.getElementById('declineCookies');
+
         function setCookieConsent(choice) {
             localStorage.setItem('cookieConsent', choice);
-            if (cookieConsent) cookieConsent.classList.add('hidden');
+            if (cookieConsent) {
+                cookieConsent.classList.add('hidden');
+                cookieConsent.style.display = 'none';
+            }
             document.cookie = 'cookie_consent=' + choice + '; path=/; max-age=' + (60 * 60 * 24 * 365);
             if (typeof gtag === 'function') {
                 gtag('event', 'cookies', { decision: choice === 'accepted' ? 'aceptadas' : 'rechazadas' });
             }
+            console.log('🍪 Preferencia de cookies guardada:', choice);
         }
-        if (localStorage.getItem('cookieConsent') && cookieConsent) {
-            cookieConsent.classList.add('hidden');
+
+        if (localStorage.getItem('cookieConsent')) {
+            if (cookieConsent) {
+                cookieConsent.classList.add('hidden');
+                cookieConsent.style.display = 'none';
+            }
+        } else {
+            if (cookieConsent) {
+                cookieConsent.classList.remove('hidden');
+                cookieConsent.style.display = 'flex';
+            }
         }
-        document.getElementById('acceptCookies')?.addEventListener('click', () => setCookieConsent('accepted'));
-        document.getElementById('declineCookies')?.addEventListener('click', () => setCookieConsent('declined'));
+
+        if (acceptBtn) {
+            acceptBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                setCookieConsent('accepted');
+            });
+        }
+        if (declineBtn) {
+            declineBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                setCookieConsent('declined');
+            });
+        }
 
         // ===== MENÚ HAMBURGUESA =====
         const hamburger = document.getElementById('hamburger');
