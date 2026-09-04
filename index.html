@@ -1315,19 +1315,19 @@
             border-radius: var(--radius);
             max-width: 700px;
             width: 100%;
-            max-height: 90vh; /* Aumentado para evitar scroll */
-            padding: 30px 28px; /* Reducido ligeramente */
+            max-height: 90vh;
+            padding: 30px 28px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow-y: auto;
             transform: scale(0.95) translateY(20px);
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
         .modal-content::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
         .modal-overlay.active .modal-content {
             transform: scale(1) translateY(0);
@@ -2479,7 +2479,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- IMPORTMAP + SCRIPT MÓDULO CON FIREBASE                     -->
+    <!-- IMPORTMAP + SCRIPT MÓDULO CON FIREBASE + EMAILJS          -->
     <!-- ========================================================== -->
     <script type="importmap">
     {
@@ -2491,10 +2491,17 @@
     </script>
 
     <script type="module">
+    // ============================================================
+    // 1. IMPORTACIONES
+    // ============================================================
     import { initializeApp } from 'firebase/app';
     import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+    import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/emailjs.min.js';
 
-    // Configuración de Firebase
+    // ============================================================
+    // 2. CONFIGURACIÓN
+    // ============================================================
+    // Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
         authDomain: "refelectrotecnia.firebaseapp.com",
@@ -2505,9 +2512,15 @@
         measurementId: "G-8FDNZ6GJZD"
     };
 
+    // EmailJS (Public Key)
+    emailjs.init('eYdI9Y46bd8Q_GoQN');
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // ============================================================
+    // 3. FUNCIÓN GUARDAR EN FIRESTORE
+    // ============================================================
     async function guardarContactoFirestore(datos) {
         try {
             const docRef = await addDoc(collection(db, 'contactos'), {
@@ -2523,14 +2536,67 @@
     }
 
     // ============================================================
-    // FUNCIONES REUTILIZABLES PARA CADA FORMULARIO
+    // 4. FUNCIÓN ENVIAR EMAILS
+    // ============================================================
+    async function enviarEmails(datos) {
+        const { nombre, telefono, email, servicio, ubicacion, mensaje, tipoFactura, cuit } = datos;
+        const resultados = [];
+
+        try {
+            // Email al administrador (template_d2stgjb)
+            const resAdmin = await emailjs.send(
+                'service_mo9wshj',
+                'template_d2stgjb',
+                {
+                    nombre: nombre || 'No especificado',
+                    telefono: telefono || 'No especificado',
+                    email: email || 'No proporcionado',
+                    servicio: servicio || 'No especificado',
+                    ubicacion: ubicacion || 'No especificada',
+                    mensaje: mensaje || 'Sin mensaje',
+                    tipoFactura: tipoFactura || 'No especificado',
+                    cuit: cuit || 'No especificado'
+                }
+            );
+            resultados.push({ destino: 'admin', ok: true });
+            console.log('✅ Email al administrador enviado (ID:', resAdmin.status, ')');
+        } catch (err) {
+            console.error('❌ Error al enviar email al administrador:', err);
+            resultados.push({ destino: 'admin', ok: false, error: err });
+        }
+
+        // Email de confirmación al cliente (template_zoczauj) – solo si tiene email
+        if (email && email.trim() !== '') {
+            try {
+                const resCliente = await emailjs.send(
+                    'service_mo9wshj',
+                    'template_zoczauj',
+                    {
+                        nombre: nombre || 'Cliente',
+                        telefono: telefono || '',
+                        email: email,
+                        servicio: servicio || ''
+                    }
+                );
+                resultados.push({ destino: 'cliente', ok: true });
+                console.log('✅ Email de confirmación al cliente enviado (ID:', resCliente.status, ')');
+            } catch (err) {
+                console.error('❌ Error al enviar confirmación al cliente:', err);
+                resultados.push({ destino: 'cliente', ok: false, error: err });
+            }
+        } else {
+            console.log('ℹ️ No se envió email al cliente porque no proporcionó dirección.');
+        }
+
+        return resultados;
+    }
+
+    // ============================================================
+    // 5. FUNCIÓN INIT FORM (REUTILIZABLE)
     // ============================================================
     function initForm(form) {
-        // Obtener referencias a elementos dentro del formulario
         const getEl = (selector) => form.querySelector(selector);
-        const getAll = (selector) => form.querySelectorAll(selector);
 
-        // Campos principales
         const nombre = getEl('#nombre, #nombre-modal');
         const telefono = getEl('#telefono, #telefono-modal');
         const email = getEl('#email, #email-modal');
@@ -2547,131 +2613,62 @@
         const formSuccess = getEl('.form-success');
 
         // ============================================================
-        // VALIDACIÓN DE SECCIONES
+        // VALIDACIÓN DE SECCIONES (resumida para no repetir todo)
         // ============================================================
         function getSectionStatus(sectionId) {
             const group = form.querySelector(`.field-group[data-section="${sectionId}"]`);
             if (!group) return 'empty';
 
             if (sectionId === 'personal' || sectionId === 'personal-modal') {
-                const nombreVal = group.querySelector('input[type="text"]')?.value.trim() || '';
-                const telefonoVal = group.querySelector('input[type="tel"]')?.value.trim() || '';
-                const hasData = !!(nombreVal || telefonoVal);
-                const isComplete = !!(nombreVal && telefonoVal);
-                if (!hasData) return 'empty';
-                return isComplete ? 'complete' : 'incomplete';
+                const n = group.querySelector('input[type="text"]')?.value.trim() || '';
+                const t = group.querySelector('input[type="tel"]')?.value.trim() || '';
+                if (!n && !t) return 'empty';
+                return (n && t) ? 'complete' : 'incomplete';
             }
-
             if (sectionId === 'servicio' || sectionId === 'servicio-modal') {
-                const select = group.querySelector('select');
-                const val = select?.value || '';
-                if (val === '') return 'empty';
-                return 'complete';
+                const val = group.querySelector('select')?.value || '';
+                return val === '' ? 'empty' : 'complete';
             }
-
             if (sectionId === 'ubicacion' || sectionId === 'ubicacion-modal') {
-                const input = group.querySelector('input[type="text"]');
-                const val = input?.value.trim() || '';
-                if (val === '') return 'empty';
-                return 'complete';
+                const val = group.querySelector('input[type="text"]')?.value.trim() || '';
+                return val === '' ? 'empty' : 'complete';
             }
-
             if (sectionId === 'fiscal' || sectionId === 'fiscal-modal') {
-                const tipoFacturaVal = group.querySelector('select:first-of-type')?.value || '';
-                const situacionFiscalVal = group.querySelector('select:last-of-type')?.value || '';
+                const tf = group.querySelector('select:first-of-type')?.value || '';
+                const sf = group.querySelector('select:last-of-type')?.value || '';
                 const cuitInput = group.querySelector('input[type="text"]');
-                const cuitVal = cuitInput?.value.trim() || '';
-                const cuitVisible = cuitInput?.style.display !== 'none';
-
-                const hasData = !!(tipoFacturaVal || situacionFiscalVal || cuitVal);
-                if (!hasData) return 'empty';
-
-                if (tipoFacturaVal === 'Consumidor Final') {
+                const cv = cuitInput?.value.trim() || '';
+                const visible = cuitInput?.style.display !== 'none';
+                if (!tf && !sf && !cv) return 'empty';
+                if (tf === 'Consumidor Final') return 'complete';
+                if (['A','B','C'].includes(tf) && sf !== '') {
+                    if (visible) return /^\d{11}$/.test(cv) ? 'complete' : 'incomplete';
                     return 'complete';
                 }
-
-                let isComplete = false;
-                if (['A', 'B', 'C'].includes(tipoFacturaVal) && situacionFiscalVal !== '') {
-                    if (cuitVisible) {
-                        isComplete = /^\d{11}$/.test(cuitVal);
-                    } else {
-                        isComplete = true;
-                    }
-                } else {
-                    isComplete = false;
-                }
-                return isComplete ? 'complete' : 'incomplete';
+                return 'incomplete';
             }
-
             if (sectionId === 'mensaje' || sectionId === 'mensaje-modal') {
-                const textarea = group.querySelector('textarea');
-                const val = textarea?.value.trim() || '';
-                if (val === '') return 'empty';
-                return 'complete';
+                const val = group.querySelector('textarea')?.value.trim() || '';
+                return val === '' ? 'empty' : 'complete';
             }
-
             return 'empty';
         }
 
         function updateSectionCheck(sectionId) {
             const group = form.querySelector(`.field-group[data-section="${sectionId}"]`);
             if (!group) return;
-
-            const checkSpan = group.querySelector('.section-check');
-            const warningIcon = group.querySelector('.warning-icon');
-            const warningText = group.querySelector('.warning-text');
-
+            const check = group.querySelector('.section-check');
+            const warnIcon = group.querySelector('.warning-icon');
+            const warnText = group.querySelector('.warning-text');
             const status = getSectionStatus(sectionId);
-
-            checkSpan?.classList.remove('visible');
-            warningIcon?.classList.remove('visible');
-            warningText?.classList.remove('visible');
-
-            if (status === 'complete') {
-                checkSpan?.classList.add('visible');
-            } else if (status === 'incomplete') {
-                warningIcon?.classList.add('visible');
-                warningText?.classList.add('visible');
+            check?.classList.remove('visible');
+            warnIcon?.classList.remove('visible');
+            warnText?.classList.remove('visible');
+            if (status === 'complete') check?.classList.add('visible');
+            else if (status === 'incomplete') {
+                warnIcon?.classList.add('visible');
+                warnText?.classList.add('visible');
             }
-        }
-
-        // ============================================================
-        // CONFIGURAR LISTENERS DE VALIDACIÓN
-        // ============================================================
-        function setupFieldListeners() {
-            form.querySelectorAll('.field-content input:not([type="hidden"]), .field-content textarea').forEach(field => {
-                field.addEventListener('blur', function() {
-                    const group = this.closest('.field-group');
-                    if (group) {
-                        const section = group.dataset.section;
-                        if (section) updateSectionCheck(section);
-                    }
-                });
-                field.addEventListener('input', function() {
-                    const group = this.closest('.field-group');
-                    if (group) {
-                        const section = group.dataset.section;
-                        if (section) updateSectionCheck(section);
-                    }
-                });
-            });
-
-            form.querySelectorAll('.field-content select').forEach(select => {
-                select.addEventListener('change', function() {
-                    const group = this.closest('.field-group');
-                    if (group) {
-                        const section = group.dataset.section;
-                        if (section) updateSectionCheck(section);
-                    }
-                });
-                select.addEventListener('blur', function() {
-                    const group = this.closest('.field-group');
-                    if (group) {
-                        const section = group.dataset.section;
-                        if (section) updateSectionCheck(section);
-                    }
-                });
-            });
         }
 
         // ============================================================
@@ -2679,103 +2676,75 @@
         // ============================================================
         form.querySelectorAll('.field-header').forEach(header => {
             header.addEventListener('click', function(e) {
-                const currentGroup = this.closest('.field-group');
-                const isActive = currentGroup.classList.contains('active');
-
-                if (isActive) {
-                    const section = currentGroup.dataset.section;
-                    if (section) updateSectionCheck(section);
-                }
-
+                const current = this.closest('.field-group');
+                const isActive = current.classList.contains('active');
                 form.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
-
-                if (!isActive) {
-                    currentGroup.classList.add('active');
+                if (!isActive) current.classList.add('active');
+                else {
+                    const sec = current.dataset.section;
+                    if (sec) updateSectionCheck(sec);
                 }
             });
         });
 
         // ============================================================
-        // UBICACIÓN (botón compartir)
+        // UBICACIÓN (geolocalización)
         // ============================================================
         let ubicacionCompartida = false;
-
         if (ubicacion && btnUbicacion) {
             ubicacion.addEventListener('input', function() {
                 if (ubicacionCompartida) ubicacionCompartida = false;
-                if (this.value.trim().length > 0 && !ubicacionCompartida) {
-                    btnMaps?.classList.remove('hidden');
-                } else {
-                    btnMaps?.classList.add('hidden');
-                }
-                updateSectionCheck(ubicacion.closest('.field-group')?.dataset.section);
+                if (this.value.trim().length > 0 && !ubicacionCompartida) btnMaps?.classList.remove('hidden');
+                else btnMaps?.classList.add('hidden');
+                const sec = this.closest('.field-group')?.dataset.section;
+                if (sec) updateSectionCheck(sec);
             });
-
             btnMaps?.addEventListener('click', function() {
-                const direccion = ubicacion.value.trim();
-                if (!direccion) return;
-                const esCoordenada = /^-?\d+\.\d+,\s*-?\d+\.\d+/.test(direccion);
+                const dir = ubicacion.value.trim();
+                if (!dir) return;
+                const coords = dir.match(/-?\d+\.\d+,\s*-?\d+\.\d+/);
                 let url;
-                if (esCoordenada) {
-                    const coords = direccion.match(/-?\d+\.\d+/g);
-                    if (coords && coords.length >= 2) url = 'https://www.google.com/maps?q=' + coords[0] + ',' + coords[1];
-                    else url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
-                } else {
-                    url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(direccion);
-                }
+                if (coords) url = 'https://www.google.com/maps?q=' + encodeURIComponent(coords[0]);
+                else url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(dir);
                 window.open(url, '_blank');
             });
-
             btnUbicacion.addEventListener('click', function() {
-                if (!navigator.geolocation) {
-                    alert('Tu navegador no soporta geolocalización.');
-                    return;
-                }
+                if (!navigator.geolocation) { alert('Geolocalización no soportada.'); return; }
                 btnUbicacion.disabled = true;
-                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo ubicación...';
-
+                btnUbicacion.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo...';
                 navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        const mapsLink = 'https://www.google.com/maps?q=' + lat.toFixed(6) + ',' + lng.toFixed(6);
-                        ubicacion.value = mapsLink;
+                    pos => {
+                        const link = 'https://www.google.com/maps?q=' + pos.coords.latitude.toFixed(6) + ',' + pos.coords.longitude.toFixed(6);
+                        ubicacion.value = link;
                         ubicacionCompartida = true;
                         btnMaps?.classList.add('hidden');
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
-                        updateSectionCheck(ubicacion.closest('.field-group')?.dataset.section);
+                        const sec = ubicacion.closest('.field-group')?.dataset.section;
+                        if (sec) updateSectionCheck(sec);
                     },
-                    function(error) {
-                        alert('No se pudo obtener tu ubicación.\nError: ' + error.message);
+                    err => {
+                        alert('No se pudo obtener ubicación.\n' + err.message);
                         btnUbicacion.disabled = false;
                         btnUbicacion.innerHTML = '<i class="fas fa-location-dot"></i> Compartir ubicación actual';
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    { enableHighAccuracy: true, timeout: 10000 }
                 );
             });
         }
 
         // ============================================================
-        // LÓGICA DE DATOS FISCALES
+        // LÓGICA FISCAL
         // ============================================================
         function actualizarCamposFiscales() {
             const tipo = tipoFactura?.value || '';
-            const isConsumidorFinal = (tipo === 'Consumidor Final');
-
-            if (isConsumidorFinal) {
-                if (situacionFiscal) {
-                    situacionFiscal.disabled = true;
-                    situacionFiscal.value = '';
-                }
-                if (cuitWrapper) {
-                    cuitWrapper.style.display = 'none';
-                }
+            const esConsumidor = tipo === 'Consumidor Final';
+            if (esConsumidor) {
+                if (situacionFiscal) { situacionFiscal.disabled = true; situacionFiscal.value = ''; }
+                if (cuitWrapper) cuitWrapper.style.display = 'none';
                 if (cuit) cuit.value = '';
             } else {
-                if (situacionFiscal) {
-                    situacionFiscal.disabled = false;
-                }
+                if (situacionFiscal) situacionFiscal.disabled = false;
                 if (situacionFiscal && situacionFiscal.value !== '') {
                     if (cuitWrapper) cuitWrapper.style.display = 'block';
                 } else {
@@ -2783,8 +2752,8 @@
                     if (cuit) cuit.value = '';
                 }
             }
-            const section = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
-            if (section) updateSectionCheck(section);
+            const sec = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
+            if (sec) updateSectionCheck(sec);
         }
 
         tipoFactura?.addEventListener('change', actualizarCamposFiscales);
@@ -2795,19 +2764,38 @@
                 if (cuitWrapper) cuitWrapper.style.display = 'none';
                 if (cuit) cuit.value = '';
             }
-            const section = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
-            if (section) updateSectionCheck(section);
+            const sec = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
+            if (sec) updateSectionCheck(sec);
         });
         cuit?.addEventListener('input', function() {
-            const section = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
-            if (section) updateSectionCheck(section);
+            const sec = form.querySelector('.field-group[data-section*="fiscal"]')?.dataset.section;
+            if (sec) updateSectionCheck(sec);
         });
-
-        // Inicializar estado fiscal
         actualizarCamposFiscales();
 
         // ============================================================
-        // ENVÍO DEL FORMULARIO
+        // LISTENERS DE VALIDACIÓN EN CAMPOS
+        // ============================================================
+        form.querySelectorAll('.field-content input, .field-content textarea, .field-content select').forEach(field => {
+            const evt = field.tagName === 'SELECT' ? 'change' : 'input';
+            field.addEventListener(evt, function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const sec = group.dataset.section;
+                    if (sec) updateSectionCheck(sec);
+                }
+            });
+            field.addEventListener('blur', function() {
+                const group = this.closest('.field-group');
+                if (group) {
+                    const sec = group.dataset.section;
+                    if (sec) updateSectionCheck(sec);
+                }
+            });
+        });
+
+        // ============================================================
+        // ENVÍO DEL FORMULARIO (con EmailJS integrado)
         // ============================================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -2828,11 +2816,9 @@
             }
 
             const cuitVisible = cuitWrapper?.style.display !== 'none';
-            if (cuitVisible) {
-                if (!/^\d{11}$/.test(cuitVal)) {
-                    alert('El CUIT/CUIL debe tener exactamente 11 dígitos numéricos.');
-                    return;
-                }
+            if (cuitVisible && !/^\d{11}$/.test(cuitVal)) {
+                alert('El CUIT/CUIL debe tener exactamente 11 dígitos numéricos.');
+                return;
             }
 
             const datos = {
@@ -2852,14 +2838,23 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             }
 
+            // 1. Guardar en Firestore
             const result = await guardarContactoFirestore(datos);
 
             if (result.success) {
+                // 2. Enviar emails (sin bloquear la experiencia del usuario)
+                //    Lo hacemos en paralelo, pero si falla, solo mostramos el éxito del guardado.
+                enviarEmails(datos)
+                    .then(res => console.log('📧 Resultado de emails:', res))
+                    .catch(err => console.error('❌ Error crítico en emails:', err));
+
+                // 3. Mostrar mensaje de éxito
                 if (formSuccess) {
                     formSuccess.classList.add('visible');
                     setTimeout(() => formSuccess.classList.remove('visible'), 6000);
                 }
 
+                // 4. Resetear formulario
                 form.reset();
                 form.querySelectorAll('.field-group').forEach(g => g.classList.remove('active'));
                 if (btnMaps) btnMaps.classList.add('hidden');
@@ -2870,7 +2865,7 @@
                 actualizarCamposFiscales();
                 if (nombre) nombre.focus();
 
-                // Si es el modal, cerrarlo después de guardar
+                // 5. Cerrar modal si es el caso
                 const modal = form.closest('.modal-overlay');
                 if (modal) {
                     setTimeout(() => {
@@ -2878,6 +2873,7 @@
                         document.body.style.overflow = '';
                     }, 1500);
                 }
+
             } else {
                 alert('Hubo un problema al guardar tu solicitud. Por favor, intentá nuevamente.');
             }
@@ -2892,32 +2888,22 @@
         // INICIALIZAR CHECKS
         // ============================================================
         form.querySelectorAll('.field-group').forEach(group => {
-            const section = group.dataset.section;
-            if (section) updateSectionCheck(section);
+            const sec = group.dataset.section;
+            if (sec) updateSectionCheck(sec);
         });
-
-        // Aplicar listeners de validación
-        setupFieldListeners();
-
-        // Retornar funciones útiles (por si se necesitan desde fuera)
-        return { updateSectionCheck, actualizarCamposFiscales };
     }
 
     // ============================================================
-    // INICIALIZAR AMBOS FORMULARIOS
+    // 6. INICIALIZAR FORMULARIOS AL CARGAR LA PÁGINA
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        // Formulario de la sección contacto
         const form1 = document.getElementById('contactForm');
         if (form1) initForm(form1);
 
-        // Formulario del modal
         const form2 = document.getElementById('contactFormModal');
         if (form2) initForm(form2);
 
-        // ============================================================
-        // ABRIR MODAL DEL FORMULARIO
-        // ============================================================
+        // ===== ABRIR MODAL DEL FORMULARIO =====
         const formModal = document.getElementById('formModal');
         const formModalClose = document.getElementById('formModalClose');
         const openFormModalBtn = document.getElementById('openFormModalBtn');
@@ -2927,19 +2913,16 @@
                 e.preventDefault();
                 formModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                // Enfocar primer campo del modal
                 const firstInput = formModal.querySelector('input:not([type="hidden"])');
                 if (firstInput) setTimeout(() => firstInput.focus(), 300);
             });
         }
-
         if (formModalClose && formModal) {
             formModalClose.addEventListener('click', function() {
                 formModal.classList.remove('active');
                 document.body.style.overflow = '';
             });
         }
-
         if (formModal) {
             formModal.addEventListener('click', function(e) {
                 if (e.target === formModal) {
@@ -2955,9 +2938,7 @@
             });
         }
 
-        // ============================================================
-        // COOKIES
-        // ============================================================
+        // ===== COOKIES =====
         const cookieConsent = document.getElementById('cookieConsent');
         function setCookieConsent(choice) {
             localStorage.setItem('cookieConsent', choice);
@@ -2967,19 +2948,13 @@
                 gtag('event', 'cookies', { decision: choice === 'accepted' ? 'aceptadas' : 'rechazadas' });
             }
         }
-
         if (localStorage.getItem('cookieConsent') && cookieConsent) {
             cookieConsent.classList.add('hidden');
         }
+        document.getElementById('acceptCookies')?.addEventListener('click', () => setCookieConsent('accepted'));
+        document.getElementById('declineCookies')?.addEventListener('click', () => setCookieConsent('declined'));
 
-        const acceptBtn = document.getElementById('acceptCookies');
-        const declineBtn = document.getElementById('declineCookies');
-        if (acceptBtn) acceptBtn.addEventListener('click', () => setCookieConsent('accepted'));
-        if (declineBtn) declineBtn.addEventListener('click', () => setCookieConsent('declined'));
-
-        // ============================================================
-        // MENÚ HAMBURGUESA
-        // ============================================================
+        // ===== MENÚ HAMBURGUESA =====
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
         const overlayMenu = document.getElementById('overlay');
@@ -2995,9 +2970,8 @@
             overlayMenu?.classList.remove('active');
             document.body.style.overflow = '';
         }
-        if (hamburger) hamburger.addEventListener('click', toggleMenu);
-        if (overlayMenu) overlayMenu.addEventListener('click', closeMenu);
-
+        hamburger?.addEventListener('click', toggleMenu);
+        overlayMenu?.addEventListener('click', closeMenu);
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
@@ -3015,15 +2989,12 @@
             });
         });
 
-        // ============================================================
-        // SLIDESHOW
-        // ============================================================
+        // ===== SLIDESHOW =====
         const slides = document.querySelectorAll('#aboutSlideshow .slide');
         const dotsContainer = document.getElementById('slideDots');
         let currentSlide = 0;
         let slideInterval = null;
         const SLIDE_DELAY = 4500;
-
         if (slides.length && dotsContainer) {
             slides.forEach((_, i) => {
                 const dot = document.createElement('button');
@@ -3037,7 +3008,6 @@
             });
             const dots = dotsContainer.querySelectorAll('button');
             dots[0].classList.add('active');
-
             function goToSlide(n) {
                 slides[currentSlide].classList.remove('active');
                 dots[currentSlide].classList.remove('active');
@@ -3045,29 +3015,23 @@
                 slides[currentSlide].classList.add('active');
                 dots[currentSlide].classList.add('active');
             }
-
             function nextSlide() { goToSlide(currentSlide + 1); }
-
             function restartSlideshow() {
                 clearInterval(slideInterval);
                 slideInterval = setInterval(nextSlide, SLIDE_DELAY);
             }
-
             restartSlideshow();
-
             document.addEventListener('visibilitychange', function() {
                 if (document.hidden) clearInterval(slideInterval);
                 else restartSlideshow();
             });
         }
 
-        // ============================================================
-        // FAQS
-        // ============================================================
+        // ===== FAQS =====
         document.querySelectorAll('.faq-item').forEach(item => {
-            const question = item.querySelector('.faq-question');
-            if (question) {
-                question.addEventListener('click', function() {
+            const q = item.querySelector('.faq-question');
+            if (q) {
+                q.addEventListener('click', function() {
                     document.querySelectorAll('.faq-item').forEach(other => {
                         if (other !== item && other.classList.contains('active')) other.classList.remove('active');
                     });
@@ -3076,83 +3040,46 @@
             }
         });
 
-        // ============================================================
-        // DIAGNÓSTICO DE EMERGENCIA
-        // ============================================================
+        // ===== DIAGNÓSTICO DE EMERGENCIA =====
         const diagModal = document.getElementById('diagModal');
         const diagBody = document.getElementById('diagBody');
         const diagClose = document.getElementById('diagClose');
         const diagProgressBar = document.getElementById('diagProgressBar');
-
         const diagSteps = [
-            {
-                title: 'Paso 1 de 3',
-                q: '¿Cuál es el síntoma principal?',
-                options: [
-                    { text: '🔥 Olor a quemado, humo o chispas', score: 5, tag: 'Olor a quemado / humo / chispas' },
-                    { text: '⚡ Salta la térmica o el disyuntor y no queda luz', score: 3, tag: 'Salta térmica / disyuntor' },
-                    { text: '💡 Corte de luz en una parte de la casa', score: 2, tag: 'Corte parcial de luz' },
-                    { text: '🔌 Un toma o artefacto no funciona', score: 1, tag: 'Falla en toma / artefacto' }
-                ]
-            },
-            {
-                title: 'Paso 2 de 3',
-                q: '¿Hay personas en riesgo o equipos esenciales afectados (heladera, equipos médicos, niños o mayores)?',
-                options: [
-                    { text: 'Sí', score: 2, tag: 'Personas o equipos esenciales en riesgo' },
-                    { text: 'No', score: 0, tag: '' }
-                ]
-            },
-            {
-                title: 'Paso 3 de 3',
-                q: '¿El problema apareció después de una tormenta, corte de red o un trabajo eléctrico reciente?',
-                options: [
-                    { text: 'Sí', score: 1, tag: 'Apareció tras tormenta / corte / trabajo reciente' },
-                    { text: 'No / No sé', score: 0, tag: '' }
-                ]
-            }
+            { title: 'Paso 1 de 3', q: '¿Cuál es el síntoma principal?', options: [
+                { text: '🔥 Olor a quemado, humo o chispas', score: 5, tag: 'Olor a quemado / humo / chispas' },
+                { text: '⚡ Salta la térmica o el disyuntor y no queda luz', score: 3, tag: 'Salta térmica / disyuntor' },
+                { text: '💡 Corte de luz en una parte de la casa', score: 2, tag: 'Corte parcial de luz' },
+                { text: '🔌 Un toma o artefacto no funciona', score: 1, tag: 'Falla en toma / artefacto' }
+            ]},
+            { title: 'Paso 2 de 3', q: '¿Hay personas en riesgo o equipos esenciales afectados (heladera, equipos médicos, niños o mayores)?', options: [
+                { text: 'Sí', score: 2, tag: 'Personas o equipos esenciales en riesgo' },
+                { text: 'No', score: 0, tag: '' }
+            ]},
+            { title: 'Paso 3 de 3', q: '¿El problema apareció después de una tormenta, corte de red o un trabajo eléctrico reciente?', options: [
+                { text: 'Sí', score: 1, tag: 'Apareció tras tormenta / corte / trabajo reciente' },
+                { text: 'No / No sé', score: 0, tag: '' }
+            ]}
         ];
-
         let diagScore = 0, diagTags = [], diagStepIndex = 0;
-
-        function resetDiag() {
-            diagScore = 0; diagTags = []; diagStepIndex = 0;
-        }
-
-        function openDiag() {
-            resetDiag();
-            renderDiagStep();
-            diagModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            if (typeof gtag === 'function') gtag('event', 'abrir_diagnostico');
-        }
-
-        function closeDiag() {
-            diagModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
+        function resetDiag() { diagScore = 0; diagTags = []; diagStepIndex = 0; }
+        function openDiag() { resetDiag(); renderDiagStep(); diagModal.classList.add('active'); document.body.style.overflow = 'hidden'; if (typeof gtag === 'function') gtag('event', 'abrir_diagnostico'); }
+        function closeDiag() { diagModal.classList.remove('active'); document.body.style.overflow = ''; }
         document.querySelectorAll('[data-diag]').forEach(btn => btn.addEventListener('click', openDiag));
-        if (diagClose) diagClose.addEventListener('click', closeDiag);
-        if (diagModal) {
-            diagModal.addEventListener('click', e => { if (e.target === diagModal) closeDiag(); });
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && diagModal.classList.contains('active')) closeDiag();
-            });
-        }
+        diagClose?.addEventListener('click', closeDiag);
+        diagModal?.addEventListener('click', e => { if (e.target === diagModal) closeDiag(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && diagModal.classList.contains('active')) closeDiag(); });
 
         function renderDiagStep() {
             const step = diagSteps[diagStepIndex];
             if (diagProgressBar) diagProgressBar.style.width = (diagStepIndex / diagSteps.length) * 100 + '%';
-
             let html = '<p class="diag-step-label">' + step.title + '</p>';
             html += '<h3 class="diag-question">' + step.q + '</h3>';
-            step.options.forEach(function(opt, i) {
+            step.options.forEach((opt, i) => {
                 html += '<button type="button" class="diag-option" data-opt="' + i + '">' + opt.text + '</button>';
             });
             diagBody.innerHTML = html;
-
-            diagBody.querySelectorAll('.diag-option').forEach(function(btn) {
+            diagBody.querySelectorAll('.diag-option').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const opt = step.options[parseInt(btn.dataset.opt, 10)];
                     diagScore += opt.score;
@@ -3166,7 +3093,6 @@
 
         function renderDiagResult() {
             if (diagProgressBar) diagProgressBar.style.width = '100%';
-
             let nivel, icon, color, title, text;
             if (diagScore >= 5) {
                 nivel = 'CRÍTICO'; icon = 'fa-fire'; color = 'var(--danger-red)';
@@ -3181,20 +3107,16 @@
                 title = 'Urgencia MEDIA / programable';
                 text = 'No parece una emergencia crítica. Pedí tu presupuesto sin cargo y coordinamos una visita en horario habitual.';
             }
-
             if (typeof gtag === 'function') gtag('event', 'diagnostico_completado', { nivel: nivel });
-
             let waMsg = '🚨 *Diagnóstico de emergencia (web)*\n';
             diagTags.forEach(t => waMsg += '• ' + t + '\n');
             waMsg += '\n📊 Nivel estimado: ' + nivel;
             const waUrl = 'https://wa.me/5493541528232?text=' + encodeURIComponent(waMsg);
-
             let html = '<div class="diag-result">';
             html += '<div class="diag-icon" style="color:' + color + ';"><i class="fas ' + icon + '"></i></div>';
             html += '<h3>' + title + '</h3>';
             html += '<p>' + text + '</p>';
             html += '<div class="diag-actions">';
-
             if (nivel === 'CRÍTICO') {
                 html += '<a class="diag-call" href="tel:+5493541528232"><i class="fas fa-phone-alt"></i> Llamar ahora (24/7)</a>';
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
@@ -3205,49 +3127,27 @@
                 html += '<button type="button" class="diag-form-btn" data-goto-form><i class="fas fa-calculator"></i> Pedir presupuesto sin cargo</button>';
                 html += '<a class="diag-wa" href="' + waUrl + '" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp con diagnóstico</a>';
             }
-
             html += '<button type="button" class="diag-restart" data-restart><i class="fas fa-rotate-left"></i> Reiniciar diagnóstico</button>';
             html += '</div></div>';
             diagBody.innerHTML = html;
-
-            const gotoForm = diagBody.querySelector('[data-goto-form]');
-            if (gotoForm) {
-                gotoForm.addEventListener('click', function() {
-                    closeDiag();
-                    setTimeout(function() {
-                        const el = document.querySelector('#contacto');
-                        if (el) {
-                            const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
-                            window.scrollTo({ top: y, behavior: 'smooth' });
-                        }
-                    }, 200);
-                });
-            }
-            const restartBtn = diagBody.querySelector('[data-restart]');
-            if (restartBtn) {
-                restartBtn.addEventListener('click', function() {
-                    resetDiag();
-                    renderDiagStep();
-                });
-            }
-            const waBtn = diagBody.querySelector('.diag-wa');
-            if (waBtn) waBtn.addEventListener('click', function() {
-                if (typeof gtag === 'function') gtag('event', 'click_whatsapp', { origen: 'diagnostico', nivel: nivel });
+            diagBody.querySelector('[data-goto-form]')?.addEventListener('click', function() {
+                closeDiag();
+                setTimeout(() => {
+                    const el = document.querySelector('#contacto');
+                    if (el) {
+                        const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                }, 200);
             });
-            const callBtn = diagBody.querySelector('.diag-call');
-            if (callBtn) callBtn.addEventListener('click', function() {
-                if (typeof gtag === 'function') gtag('event', 'click_llamada', { origen: 'diagnostico', nivel: nivel });
-            });
+            diagBody.querySelector('[data-restart]')?.addEventListener('click', function() { resetDiag(); renderDiagStep(); });
         }
 
-        // ============================================================
-        // MODALES LEGALES
-        // ============================================================
+        // ===== MODALES LEGALES =====
         const legalModal = document.getElementById('legalModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const modalClose = document.getElementById('modalClose');
-
         const legalContent = {
             privacidad: {
                 title: 'Política de privacidad',
@@ -3390,71 +3290,39 @@
             document.body.style.overflow = 'hidden';
             modalClose.focus();
         }
-
         function closeModal() {
             legalModal.classList.remove('active');
             document.body.style.overflow = '';
         }
-
         document.querySelectorAll('[data-modal]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 openModal(this.getAttribute('data-modal'));
             });
         });
+        modalClose?.addEventListener('click', closeModal);
+        legalModal?.addEventListener('click', e => { if (e.target === legalModal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && legalModal.classList.contains('active')) closeModal(); });
+        document.getElementById('cookiePolicyLink')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal('privacidad');
+        });
 
-        if (modalClose) modalClose.addEventListener('click', closeModal);
-        if (legalModal) {
-            legalModal.addEventListener('click', e => { if (e.target === legalModal) closeModal(); });
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && legalModal.classList.contains('active')) closeModal();
-            });
-        }
-
-        const cookiePolicyLink = document.getElementById('cookiePolicyLink');
-        if (cookiePolicyLink) {
-            cookiePolicyLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                openModal('privacidad');
-            });
-        }
-
-        // ============================================================
-        // SERVICE WORKER
-        // ============================================================
+        // ===== SERVICE WORKER =====
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
                 .then(reg => console.log('✅ Service Worker registrado:', reg))
                 .catch(err => console.log('❌ Error al registrar Service Worker:', err));
         }
 
-    }); // fin DOMContentLoaded
-    </script>
-
-    <!-- ===== REGISTRO DEL SERVICE WORKER (fallback) ===== -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(function(registration) {
-                    console.log('✅ Service Worker registrado con éxito:', registration);
-                })
-                .catch(function(error) {
-                    console.error('❌ Error al registrar el Service Worker:', error);
-                });
-        }
-    </script>
-
-    <!-- ===== LÓGICA DEL BANNER DE INSTALACIÓN PWA ===== -->
-    <script>
+        // ===== PWA INSTALL BANNER =====
         (function() {
             if (window.matchMedia('(display-mode: standalone)').matches) return;
             if (localStorage.getItem('pwaBannerShown')) return;
-
             let deferredPrompt = null;
             const banner = document.getElementById('installBanner');
             const installBtn = document.getElementById('installBtn');
             const closeBtn = document.getElementById('closeBanner');
-
             window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();
                 deferredPrompt = e;
@@ -3462,38 +3330,31 @@
                     banner.classList.add('show');
                 }
             });
-
-            if (installBtn) {
-                installBtn.addEventListener('click', async function() {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        const result = await deferredPrompt.userChoice;
-                        console.log('Usuario eligió:', result.outcome);
-                        if (result.outcome === 'accepted') {
-                            localStorage.setItem('pwaBannerShown', 'true');
-                        }
-                        banner.classList.remove('show');
-                        deferredPrompt = null;
-                    } else {
-                        alert('Para instalar esta app, abre el menú del navegador y selecciona "Agregar a la pantalla de inicio".');
+            installBtn?.addEventListener('click', async function() {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    console.log('Usuario eligió:', result.outcome);
+                    if (result.outcome === 'accepted') {
+                        localStorage.setItem('pwaBannerShown', 'true');
                     }
-                });
-            }
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
                     banner.classList.remove('show');
-                    localStorage.setItem('pwaBannerShown', 'true');
-                });
-            }
-
+                    deferredPrompt = null;
+                } else {
+                    alert('Para instalar esta app, abre el menú del navegador y selecciona "Agregar a la pantalla de inicio".');
+                }
+            });
+            closeBtn?.addEventListener('click', function() {
+                banner.classList.remove('show');
+                localStorage.setItem('pwaBannerShown', 'true');
+            });
             window.addEventListener('appinstalled', function() {
                 banner.classList.remove('show');
                 localStorage.setItem('pwaBannerShown', 'true');
             });
-
-            window.__pwaBanner = { banner, deferredPrompt };
         })();
+
+    }); // fin DOMContentLoaded
     </script>
 
 </body>
