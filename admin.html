@@ -293,6 +293,7 @@
             width: 100%;
             table-layout: fixed;
             font-size: 0.9rem;
+            min-width: 800px; /* <-- Forzar scroll horizontal */
         }
         #tablaContainer table th,
         #tablaContainer table td {
@@ -3047,7 +3048,7 @@ document.getElementById('saveCambiarPassBtn').addEventListener('click', async fu
 });
 
 // ============================================================
-//  FUNCIONES PARA GESTIÓN DE ANTICIPOS
+//  FUNCIONES PARA GESTIÓN DE ANTICIPOS (con actualización inmediata)
 // ============================================================
 
 // Abrir modal de anticipos
@@ -3112,7 +3113,7 @@ function renderizarAdelantos(docId) {
     document.getElementById('anticipoItems').innerHTML = html;
 }
 
-// Agregar adelanto
+// Agregar adelanto y actualizar inmediatamente
 window.agregarAdelanto = async function() {
     const docId = document.getElementById('anticipoDocId').value;
     const fecha = document.getElementById('anticipoFecha').value;
@@ -3146,14 +3147,15 @@ window.agregarAdelanto = async function() {
 
     try {
         await updateDoc(doc(db, 'presupuestos', docId), { adelantos: nuevosAdelantos });
-        // El snapshot actualizará automáticamente
+        // Actualización inmediata en el modal
+        renderizarAdelantos(docId);
         document.getElementById('anticipoMonto').value = '';
     } catch (error) {
         await mostrarError('Error al agregar adelanto: ' + error.message);
     }
 };
 
-// Eliminar adelanto
+// Eliminar adelanto y actualizar inmediatamente
 window.eliminarAdelanto = async function(docId, index) {
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
     if (!presupuesto) return;
@@ -3167,6 +3169,8 @@ window.eliminarAdelanto = async function(docId, index) {
     const nuevosAdelantos = adelantos.filter((_, i) => i !== index);
     try {
         await updateDoc(doc(db, 'presupuestos', docId), { adelantos: nuevosAdelantos });
+        // Actualización inmediata en el modal
+        renderizarAdelantos(docId);
     } catch (error) {
         await mostrarError('Error al eliminar adelanto: ' + error.message);
     }
