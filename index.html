@@ -25,7 +25,7 @@
     <link rel="sitemap" type="application/xml" href="https://www.refelectrotecnia.com/sitemap.xml">
     <link rel="alternate" hreflang="es" href="https://www.refelectrotecnia.com/">
 
-    <!-- ===== PWA: MANIFEST (específico para index) ===== -->
+    <!-- ===== PWA: MANIFEST ===== -->
     <link rel="manifest" href="/manifest-index.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -69,6 +69,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- ===== EMAILJS (CDN) ===== -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
+    </script>
 
     <!-- ============================================================== -->
     <!-- ===== SCHEMA.ORG: ORGANIZATION ===== -->
@@ -156,7 +160,7 @@
     }
     </script>
 
-    <!-- ===== SCHEMA.ORG: WEBPAGE (con speakable y mainEntity) ===== -->
+    <!-- ===== SCHEMA.ORG: WEBPAGE ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -186,7 +190,7 @@
     }
     </script>
 
-    <!-- ===== SCHEMA.ORG: FAQPage (con @id para enlazar) ===== -->
+    <!-- ===== SCHEMA.ORG: FAQPage ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -1315,20 +1319,18 @@
             border-radius: var(--radius);
             max-width: 700px;
             width: 100%;
-            max-height: 90vh; /* Aumentado para evitar scroll */
-            padding: 30px 28px; /* Reducido ligeramente */
+            max-height: 90vh;
+            padding: 30px 28px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow-y: auto;
             transform: scale(0.95) translateY(20px);
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        .modal-content::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
-        }
+        .modal-content::-webkit-scrollbar { display: none; }
         .modal-overlay.active .modal-content {
             transform: scale(1) translateY(0);
             opacity: 1;
@@ -1501,6 +1503,7 @@
             color: var(--gray-text);
             line-height: 1.5;
             margin: 0;
+            padding-right: 30px;
         }
         .cookie-consent p a {
             color: var(--primary-cyan);
@@ -1544,6 +1547,23 @@
         .cookie-consent .btn-cookie-decline:hover {
             background: #F1F3F5;
             border-color: #CED4DA;
+        }
+        .cookie-consent .btn-close-cookie {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: var(--transition);
+            line-height: 1;
+        }
+        .cookie-consent .btn-close-cookie:hover {
+            color: var(--primary-dark);
+            transform: rotate(90deg);
         }
 
         /* ===== FOOTER ===== */
@@ -2415,8 +2435,9 @@
         </div>
     </div>
 
-    <!-- ===== COOKIE CONSENT ===== -->
+    <!-- ===== COOKIE CONSENT (con botón de cierre) ===== -->
     <div class="cookie-consent" id="cookieConsent">
+        <button class="btn-close-cookie" id="closeCookie" aria-label="Cerrar aviso de cookies">✕</button>
         <p><i class="fas fa-cookie-bite" style="color: var(--accent-yellow); margin-right: 8px;"></i>Utilizamos cookies propias y de terceros para mejorar tu experiencia en nuestro sitio web. <a href="#" id="cookiePolicyLink">Política de cookies</a></p>
         <div class="cookie-buttons">
             <button class="btn-cookie-accept" id="acceptCookies">Aceptar</button>
@@ -2479,7 +2500,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- IMPORTMAP + SCRIPT MÓDULO CON FIREBASE                     -->
+    <!-- IMPORTMAP + SCRIPT MÓDULO CON FIREBASE Y EMAILJS           -->
     <!-- ========================================================== -->
     <script type="importmap">
     {
@@ -2494,7 +2515,7 @@
     import { initializeApp } from 'firebase/app';
     import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-    // Configuración de Firebase
+    // ===== CONFIGURACIÓN DE FIREBASE =====
     const firebaseConfig = {
         apiKey: "AIzaSyA5TiqIPtlIE-PFAFyGMH1qqSlGPbXbINw",
         authDomain: "refelectrotecnia.firebaseapp.com",
@@ -2508,16 +2529,46 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // ===== CONFIGURACIÓN DE EMAILJS =====
+    const EMAILJS_PUBLIC_KEY = 'eYdI9Y46bd8Q_GoQN';
+    const EMAILJS_SERVICE_ID  = 'service_mo9wshj';   // <--- REEMPLAZA con tu Service ID
+    const EMAILJS_TEMPLATE_ID = 'template_d2stgjb';
+
+    // Inicializar EmailJS
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    // ============================================================
+    // FUNCIÓN PARA GUARDAR EN FIRESTORE Y ENVIAR CORREO
+    // ============================================================
     async function guardarContactoFirestore(datos) {
         try {
+            // 1. Guardar en Firestore
             const docRef = await addDoc(collection(db, 'contactos'), {
                 ...datos,
                 fecha: serverTimestamp()
             });
             console.log('✅ Contacto guardado en Firestore con ID:', docRef.id);
+
+            // 2. Enviar correo con EmailJS
+            const templateParams = {
+                nombre: datos.nombre,
+                telefono: datos.telefono,
+                email: datos.email || 'No especificado',
+                servicio: datos.servicio || 'No especificado',
+                ubicacion: datos.ubicacion || 'No especificado',
+                mensaje: datos.mensaje || 'Sin mensaje adicional',
+                tipoFactura: datos.tipoFactura || 'No especificado',
+                situacionFiscal: datos.situacionFiscal || 'No especificado',
+                cuit: datos.cuit || 'No especificado',
+                fecha: new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Cordoba' })
+            };
+
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+            console.log('✅ Correo enviado a rodriref201@gmail.com');
+
             return { success: true };
         } catch (error) {
-            console.error('❌ Error al guardar en Firestore:', error);
+            console.error('❌ Error al guardar o enviar correo:', error);
             return { success: false, error: error.message };
         }
     }
@@ -2526,11 +2577,9 @@
     // FUNCIONES REUTILIZABLES PARA CADA FORMULARIO
     // ============================================================
     function initForm(form) {
-        // Obtener referencias a elementos dentro del formulario
         const getEl = (selector) => form.querySelector(selector);
         const getAll = (selector) => form.querySelectorAll(selector);
 
-        // Campos principales
         const nombre = getEl('#nombre, #nombre-modal');
         const telefono = getEl('#telefono, #telefono-modal');
         const email = getEl('#email, #email-modal');
@@ -2803,11 +2852,10 @@
             if (section) updateSectionCheck(section);
         });
 
-        // Inicializar estado fiscal
         actualizarCamposFiscales();
 
         // ============================================================
-        // ENVÍO DEL FORMULARIO
+        // ENVÍO DEL FORMULARIO (con guardado + correo)
         // ============================================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -2896,10 +2944,8 @@
             if (section) updateSectionCheck(section);
         });
 
-        // Aplicar listeners de validación
         setupFieldListeners();
 
-        // Retornar funciones útiles (por si se necesitan desde fuera)
         return { updateSectionCheck, actualizarCamposFiscales };
     }
 
@@ -2907,11 +2953,9 @@
     // INICIALIZAR AMBOS FORMULARIOS
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        // Formulario de la sección contacto
         const form1 = document.getElementById('contactForm');
         if (form1) initForm(form1);
 
-        // Formulario del modal
         const form2 = document.getElementById('contactFormModal');
         if (form2) initForm(form2);
 
@@ -2927,7 +2971,6 @@
                 e.preventDefault();
                 formModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                // Enfocar primer campo del modal
                 const firstInput = formModal.querySelector('input:not([type="hidden"])');
                 if (firstInput) setTimeout(() => firstInput.focus(), 300);
             });
@@ -2956,9 +2999,11 @@
         }
 
         // ============================================================
-        // COOKIES
+        // COOKIES (con botón de cierre ✕)
         // ============================================================
         const cookieConsent = document.getElementById('cookieConsent');
+        const closeCookieBtn = document.getElementById('closeCookie');
+
         function setCookieConsent(choice) {
             localStorage.setItem('cookieConsent', choice);
             if (cookieConsent) cookieConsent.classList.add('hidden');
@@ -2968,14 +3013,27 @@
             }
         }
 
+        // Si ya existe preferencia, ocultar banner
         if (localStorage.getItem('cookieConsent') && cookieConsent) {
             cookieConsent.classList.add('hidden');
         }
 
         const acceptBtn = document.getElementById('acceptCookies');
         const declineBtn = document.getElementById('declineCookies');
+
         if (acceptBtn) acceptBtn.addEventListener('click', () => setCookieConsent('accepted'));
         if (declineBtn) declineBtn.addEventListener('click', () => setCookieConsent('declined'));
+
+        // Cerrar manualmente (✕)
+        if (closeCookieBtn && cookieConsent) {
+            closeCookieBtn.addEventListener('click', function() {
+                localStorage.setItem('cookieConsent', 'closed');
+                cookieConsent.classList.add('hidden');
+                if (typeof gtag === 'function') {
+                    gtag('event', 'cookies', { decision: 'cerrado_manual' });
+                }
+            });
+        }
 
         // ============================================================
         // MENÚ HAMBURGUESA
