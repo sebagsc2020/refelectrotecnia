@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>REF-Electrotecnia | Electricista Matriculado en Córdoba – 24/7</title>
+    <title>REF Electrotecnia | Electricista Matriculado en Córdoba – 24/7</title>
 
     <!-- ===== SEO BÁSICO ===== -->
     <meta name="description" content="REF Electrotecnia: Electricista matriculado en Córdoba con +20 años. Instalaciones, reparaciones, domótica, emergencias 24/7, certificaciones y presupuesto sin cargo. Matrícula 5617/1.">
@@ -1147,11 +1147,36 @@
             margin-bottom: 16px;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .form-success.visible {
             display: flex;
             animation: fadeIn 0.4s ease;
         }
+        /* ===== Botón WhatsApp en el éxito ===== */
+        .btn-whatsapp-success {
+            background: #25D366;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            border: none;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        .btn-whatsapp-success:hover {
+            background: #1DA851;
+            transform: translateY(-2px);
+            color: white;
+        }
+
         .ubicacion-group {
             display: block;
         }
@@ -1263,6 +1288,15 @@
             }
             .btn-maps,
             .btn-ubicacion {
+                justify-content: center;
+            }
+            .form-success {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .btn-whatsapp-success {
+                margin-left: 0;
                 justify-content: center;
             }
         }
@@ -2531,7 +2565,7 @@
 
     // ===== CONFIGURACIÓN DE EMAILJS =====
     const EMAILJS_PUBLIC_KEY = 'eYdI9Y46bd8Q_GoQN';
-    const EMAILJS_SERVICE_ID  = 'service_mo9wshj';   // <--- REEMPLAZA con tu Service ID
+    const EMAILJS_SERVICE_ID  = 'TU_SERVICE_ID';   // <--- REEMPLAZA con tu Service ID
     const EMAILJS_TEMPLATE_ID = 'template_d2stgjb';
 
     // Inicializar EmailJS
@@ -2855,7 +2889,7 @@
         actualizarCamposFiscales();
 
         // ============================================================
-        // ENVÍO DEL FORMULARIO (con guardado + correo)
+        // ENVÍO DEL FORMULARIO (con guardado + correo + WhatsApp)
         // ============================================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -2903,9 +2937,27 @@
             const result = await guardarContactoFirestore(datos);
 
             if (result.success) {
+                // --- Construir mensaje de WhatsApp con los datos del formulario ---
+                const waMsg = '📩 *Nuevo contacto desde REF Electrotecnia*%0A' +
+                    'Nombre: ' + datos.nombre + '%0A' +
+                    'Teléfono: ' + datos.telefono + '%0A' +
+                    'Email: ' + (datos.email || 'No especificado') + '%0A' +
+                    'Servicio: ' + (datos.servicio || 'No especificado') + '%0A' +
+                    'Ubicación: ' + (datos.ubicacion || 'No especificado') + '%0A' +
+                    'Mensaje: ' + (datos.mensaje || 'Sin mensaje') + '%0A' +
+                    'Tipo Factura: ' + (datos.tipoFactura || 'No especificado') + '%0A' +
+                    'Situación Fiscal: ' + (datos.situacionFiscal || 'No especificado') + '%0A' +
+                    'CUIT: ' + (datos.cuit || 'No especificado') + '%0A' +
+                    'Fecha: ' + new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Cordoba' });
+                const waUrl = 'https://wa.me/5493541528232?text=' + encodeURIComponent(waMsg);
+
+                // Mostrar mensaje de éxito con el botón de WhatsApp
                 if (formSuccess) {
+                    formSuccess.innerHTML = '<i class="fas fa-check-circle"></i> ' +
+                        '<span>¡Solicitud guardada y correo enviado!</span>' +
+                        ' <a href="' + waUrl + '" target="_blank" class="btn-whatsapp-success"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</a>';
                     formSuccess.classList.add('visible');
-                    setTimeout(() => formSuccess.classList.remove('visible'), 6000);
+                    setTimeout(() => formSuccess.classList.remove('visible'), 15000);
                 }
 
                 form.reset();
@@ -3013,7 +3065,6 @@
             }
         }
 
-        // Si ya existe preferencia, ocultar banner
         if (localStorage.getItem('cookieConsent') && cookieConsent) {
             cookieConsent.classList.add('hidden');
         }
@@ -3024,7 +3075,6 @@
         if (acceptBtn) acceptBtn.addEventListener('click', () => setCookieConsent('accepted'));
         if (declineBtn) declineBtn.addEventListener('click', () => setCookieConsent('declined'));
 
-        // Cerrar manualmente (✕)
         if (closeCookieBtn && cookieConsent) {
             closeCookieBtn.addEventListener('click', function() {
                 localStorage.setItem('cookieConsent', 'closed');
