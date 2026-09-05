@@ -3176,7 +3176,7 @@ window.eliminarAdelanto = async function(docId, index) {
     }
 };
 
-// Exportar PDF de anticipos
+// Exportar PDF de anticipos con el mismo diseño que el presupuesto
 window.exportarAnticipoPDF = async function() {
     const docId = document.getElementById('anticipoDocId').value;
     const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
@@ -3194,77 +3194,181 @@ window.exportarAnticipoPDF = async function() {
     const diferencia = precio - totalAdelantado;
     const porcentaje = precio > 0 ? Math.round((totalAdelantado / precio) * 100) : 0;
 
-    // Crear un elemento temporal para el PDF
+    // Número de presupuesto y fecha actual
+    const numeroPresupuesto = presupuesto.numero || 'N/A';
+    const fechaEmision = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    // Crear un div temporal con el mismo diseño que el presupuesto
     const tempDiv = document.createElement('div');
     tempDiv.style.position = 'absolute';
     tempDiv.style.left = '-9999px';
     tempDiv.style.top = '0';
-    tempDiv.style.width = '700px';
+    tempDiv.style.width = '920px';
     tempDiv.style.background = 'white';
-    tempDiv.style.padding = '30px';
+    tempDiv.style.padding = '0';
     tempDiv.style.fontFamily = 'Inter, sans-serif';
+    tempDiv.className = 'presupuesto-preview';
+
     tempDiv.innerHTML = `
-        <h1 style="color:#0A2E5C; border-bottom:3px solid #00A8FF; padding-bottom:10px;">Historial de Anticipos</h1>
-        <p><strong>Cliente:</strong> ${nombre}</p>
-        <p><strong>Teléfono:</strong> ${telefono}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Presupuesto total:</strong> ${formatearPrecio(precio)}</p>
-        <hr>
-        <h3>Adelantos registrados</h3>
-        <table style="width:100%; border-collapse:collapse; margin:15px 0;">
-            <thead>
-                <tr style="background:#f1f5f9;">
-                    <th style="padding:10px; text-align:left; border:1px solid #e2e8f0;">Fecha</th>
-                    <th style="padding:10px; text-align:right; border:1px solid #e2e8f0;">Monto</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${adelantos.map(a => `
-                    <tr>
-                        <td style="padding:8px; border:1px solid #e2e8f0;">${a.fecha || ''}</td>
-                        <td style="padding:8px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(a.monto)}</td>
-                    </tr>
-                `).join('')}
-                ${adelantos.length === 0 ? '<tr><td colspan="2" style="padding:8px; text-align:center; border:1px solid #e2e8f0;">No hay adelantos</td></tr>' : ''}
-            </tbody>
-            <tfoot>
-                <tr style="background:#f8fafc; font-weight:700;">
-                    <td style="padding:10px; border:1px solid #e2e8f0;">Total adelantado</td>
-                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(totalAdelantado)}</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border:1px solid #e2e8f0;">Diferencia a pagar</td>
-                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(diferencia)}</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border:1px solid #e2e8f0;">Porcentaje pagado</td>
-                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${porcentaje}%</td>
-                </tr>
-            </tfoot>
-        </table>
-        <p style="margin-top:20px; font-size:12px; color:#64748b; text-align:center;">
-            Documento generado el ${new Date().toLocaleString('es-AR')}
-        </p>
+        <div class="presupuesto">
+            <!-- MARCA DE AGUA -->
+            <div class="marca-agua">
+                <img src="/images/icon-512.png" alt="Marca de agua" />
+            </div>
+
+            <!-- ENCABEZADO -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="logo">
+                        <img src="/images/icon-192.png" alt="REF Electrotecnia" />
+                    </div>
+                    <div class="empresa">
+                        <h1>REF <span>Electrotecnia</span></h1>
+                        <div class="subtitulo">Soluciones pensadas.</div>
+                    </div>
+                </div>
+                <div class="badge-presupuesto">
+                    <span class="numero">HISTORIAL DE ANTICIPOS</span>
+                    <span class="numero-presupuesto">Presupuesto N° ${numeroPresupuesto}</span>
+                    <span class="fecha">Emisión: ${fechaEmision}</span>
+                </div>
+            </header>
+
+            <!-- CUERPO -->
+            <div class="cuerpo">
+                <!-- SECCIÓN DATOS DEL SERVICIO Y CLIENTE -->
+                <section class="seccion">
+                    <div class="seccion-titulo" style="margin-bottom:12px;">
+                        <span class="icono"></span> DATOS DEL CLIENTE Y PRESUPUESTO
+                        <span class="linea-aux"></span>
+                    </div>
+                    <div class="datos-wrapper">
+                        <div class="datos-col izquierda">
+                            <div class="col-titulo">Detalles del Presupuesto</div>
+                            <div class="item"><span class="etiqueta">Servicio:</span> <span class="valor">${presupuesto.servicio || '-'}</span></div>
+                            <div class="item"><span class="etiqueta">Total:</span> <span class="valor">${formatearPrecio(precio)}</span></div>
+                            <div class="item"><span class="etiqueta">Estado:</span> <span class="valor">${presupuesto.estado || 'En curso'}</span></div>
+                            ${presupuesto.tipoFactura ? `<div class="item fiscal-item"><span class="etiqueta">Tipo Factura:</span> <span class="valor">${presupuesto.tipoFactura}</span></div>` : ''}
+                            ${presupuesto.situacionFiscal ? `<div class="item fiscal-item"><span class="etiqueta">Situación Fiscal:</span> <span class="valor">${presupuesto.situacionFiscal}</span></div>` : ''}
+                            ${presupuesto.cuit ? `<div class="item fiscal-item"><span class="etiqueta">CUIT:</span> <span class="valor">${presupuesto.cuit}</span></div>` : ''}
+                        </div>
+                        <div class="datos-col derecha">
+                            <div class="col-titulo">Información del Cliente</div>
+                            <div class="item"><span class="etiqueta">Cliente:</span> <span class="valor">${nombre}</span></div>
+                            <div class="item"><span class="etiqueta">Teléfono:</span> <span class="valor">${telefono}</span></div>
+                            <div class="item"><span class="etiqueta">Email:</span> <span class="valor email">${email}</span></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN DETALLE DE ANTICIPOS -->
+                <section class="seccion seccion-prestacion">
+                    <div class="seccion-titulo">
+                        <span class="icono"></span> ADELANTOS REGISTRADOS
+                        <span class="linea-aux"></span>
+                    </div>
+                    <div class="prestacion-card" style="padding: 0; overflow: hidden;">
+                        <div class="prestacion-header">
+                            <span>FECHA</span>
+                            <span class="importe-label">MONTO</span>
+                        </div>
+                        ${adelantos.length === 0 ? `
+                            <div style="padding: 20px 24px; text-align: center; color: var(--gray-text);">
+                                No hay adelantos registrados.
+                            </div>
+                        ` : `
+                            ${adelantos.map(a => `
+                                <div class="prestacion-fila" style="grid-template-columns: 2fr 1fr; padding: 12px 24px; border-bottom: 1px dashed #e2e8f0;">
+                                    <span style="font-size: 15px; font-weight: 500; color: var(--gray-800);">${a.fecha || ''}</span>
+                                    <span style="text-align: right; font-size: 18px; font-weight: 700; color: var(--primary-blue);">${formatearPrecio(a.monto)}</span>
+                                </div>
+                            `).join('')}
+                        `}
+                    </div>
+                </section>
+
+                <!-- TOTALES Y FIRMA -->
+                <div class="totales-container">
+                    <div class="totales-firma">
+                        <img class="firma-imagen" src="/images/firma.png" alt="Firma R. Figueras" />
+                        <span class="firma-texto">R. Figueras - REF Electrotecnia</span>
+                        <span class="firma-digital">✓ Firmado digitalmente</span>
+                    </div>
+                    <div class="totales-list" style="width: 100%; max-width: 380px;">
+                        <div class="linea" style="display: flex; justify-content: space-between; width: 100%; font-size: 16px; font-weight: 600; color: var(--gray-800);">
+                            <span>Total adelantado</span>
+                            <span>${formatearPrecio(totalAdelantado)}</span>
+                        </div>
+                        <div class="linea" style="display: flex; justify-content: space-between; width: 100%; font-size: 16px; font-weight: 600; color: var(--gray-800);">
+                            <span>Diferencia a pagar</span>
+                            <span>${formatearPrecio(diferencia)}</span>
+                        </div>
+                        <div class="linea" style="display: flex; justify-content: space-between; width: 100%; font-size: 16px; font-weight: 600; color: var(--gray-800);">
+                            <span>Porcentaje pagado</span>
+                            <span>${porcentaje}%</span>
+                        </div>
+                        <div class="linea total-final" style="width: 100%; border-top: 2px solid var(--primary-dark); padding-top: 10px; margin-top: 4px; font-size: 20px; font-weight: 800; color: var(--primary-dark); display: flex; justify-content: space-between;">
+                            <span class="label-total">Total presupuesto</span>
+                            <span class="valor-total">${formatearPrecio(precio)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIE DE PÁGINA -->
+                <div class="footer-documento">
+                    Documento generado electrónicamente a través de https://www.refelectrotecnia.com
+                </div>
+
+                <!-- CONDICIONES -->
+                <section class="condiciones">
+                    <div class="seccion-titulo">
+                        <span class="icono"></span> NOTAS SOBRE ANTICIPOS
+                        <span class="linea-aux"></span>
+                    </div>
+                    <ul>
+                        <li>Este documento refleja el historial de pagos anticipados para el presupuesto N° ${numeroPresupuesto}.</li>
+                        <li>Los adelantos se descuentan del total final del presupuesto.</li>
+                        <li>El saldo restante deberá abonarse según lo acordado.</li>
+                        <li>Para cualquier consulta, comunicarse con REF Electrotecnia.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
     `;
 
     document.body.appendChild(tempDiv);
 
     try {
+        // Esperar un breve momento para que los estilos se apliquen
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         const canvas = await html2canvas(tempDiv, {
             scale: 2,
             useCORS: true,
+            allowTaint: true,
             backgroundColor: '#ffffff',
-            logging: false
+            logging: false,
+            width: tempDiv.scrollWidth,
+            height: tempDiv.scrollHeight
         });
-        const imgData = canvas.toDataURL('image/png');
+
+        if (canvas.width === 0 || canvas.height === 0) throw new Error('El canvas generado está vacío.');
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Anticipos_${nombre}_${new Date().toISOString().slice(0,10)}.pdf`);
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const scale = Math.min(pdfWidth / canvas.width, pdfHeight / canvas.height);
+        const imgWidth = canvas.width * scale;
+        const imgHeight = canvas.height * scale;
+        const xOffset = (pdfWidth - imgWidth) / 2;
+        pdf.addImage(imgData, 'JPEG', xOffset, 0, imgWidth, imgHeight);
+        const filename = `Anticipos_${nombre}_${new Date().toISOString().slice(0,10)}.pdf`;
+        pdf.save(filename);
+
     } catch (error) {
-        console.error(error);
+        console.error('Error al generar PDF de anticipos:', error);
         await mostrarError('Error al generar el PDF: ' + error.message);
     } finally {
         document.body.removeChild(tempDiv);
