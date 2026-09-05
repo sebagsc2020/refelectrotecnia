@@ -293,6 +293,7 @@
             width: 100%;
             table-layout: fixed;
             font-size: 0.9rem;
+            min-width: 800px; /* <-- Forzar scroll horizontal */
         }
         #tablaContainer table th,
         #tablaContainer table td {
@@ -335,18 +336,33 @@
         #presupuestosContainer table th:nth-child(2),
         #presupuestosContainer table td:nth-child(2) { width: 12%; }
         #presupuestosContainer table th:nth-child(3),
-        #presupuestosContainer table td:nth-child(3) { width: 22%; max-width: 150px; word-wrap: break-word; white-space: pre-wrap; }
+        #presupuestosContainer table td:nth-child(3) { width: 18%; max-width: 150px; word-wrap: break-word; white-space: pre-wrap; }
         #presupuestosContainer table th:nth-child(4),
-        #presupuestosContainer table td:nth-child(4) { width: 12%; }
+        #presupuestosContainer table td:nth-child(4) { width: 10%; }
         #presupuestosContainer table th:nth-child(5),
-        #presupuestosContainer table td:nth-child(5) { width: 14%; }
+        #presupuestosContainer table td:nth-child(5) { width: 12%; }
         #presupuestosContainer table th:nth-child(6),
         #presupuestosContainer table td:nth-child(6) { width: 10%; }
         #presupuestosContainer table th:nth-child(7),
         #presupuestosContainer table td:nth-child(7) { width: 10%; }
         #presupuestosContainer table th:nth-child(8),
         #presupuestosContainer table td:nth-child(8) { width: 8%; min-width: 65px; text-align: center; white-space: normal; word-break: keep-all; }
+        #presupuestosContainer table th:nth-child(9),
+        #presupuestosContainer table td:nth-child(9) { width: 9%; min-width: 65px; text-align: center; } /* Columna Anticipo */
+        #presupuestosContainer table th:nth-child(10),
+        #presupuestosContainer table td:nth-child(10) { width: 10%; min-width: 120px; text-align: center; } /* Acciones */
+
         .estado-select { max-width: 100%; min-width: 80px; font-size: 0.75rem; padding: 3px 6px; }
+        .porcentaje-anticipo {
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            transition: 0.2s;
+        }
+        .porcentaje-anticipo:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
 
         @media (max-width: 600px) {
             #presupuestosContainer table { display: table; table-layout: auto; font-size: 0.8rem; min-width: 700px; width: auto; }
@@ -1459,6 +1475,39 @@
     </div>
 </div>
 
+<!-- ===== MODAL ANTICIPOS (NUEVO) ===== -->
+<div class="modal-overlay" id="anticipoModal">
+    <div class="modal-box" style="max-width: 600px;">
+        <button class="close-modal" id="closeAnticipoModal">&times;</button>
+        <h3><span>💰</span> Gestión de Anticipos</h3>
+        <input type="hidden" id="anticipoDocId">
+        <div id="anticipoClienteInfo" style="margin-bottom:15px; background:var(--light-bg); padding:12px; border-radius:var(--radius);">
+            <p><strong>Cliente:</strong> <span id="anticipoNombre">-</span></p>
+            <p><strong>Teléfono:</strong> <span id="anticipoTelefono">-</span></p>
+            <p><strong>Email:</strong> <span id="anticipoEmail">-</span></p>
+            <p><strong>Presupuesto total:</strong> <span id="anticipoTotalPresupuesto">$ 0</span></p>
+        </div>
+        <div id="anticipoLista" style="margin-bottom:15px;">
+            <p style="font-weight:600; color:var(--primary-dark);">Adelantos registrados:</p>
+            <div id="anticipoItems" style="max-height:200px; overflow-y:auto;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group"><label>Fecha del adelanto</label><input type="date" id="anticipoFecha"></div>
+            <div class="form-group"><label>Monto ($)</label><input type="number" id="anticipoMonto" placeholder="0" step="0.01"></div>
+        </div>
+        <button class="btn-save" id="btnAgregarAdelanto" style="width:100%; margin-bottom:15px;"><i class="fas fa-plus"></i> Agregar adelanto</button>
+        <div style="background:var(--light-bg); padding:12px; border-radius:var(--radius); margin-bottom:15px;">
+            <p><strong>Total adelantado:</strong> <span id="anticipoTotalAdelantado">$ 0</span></p>
+            <p><strong>Diferencia a pagar:</strong> <span id="anticipoDiferencia">$ 0</span></p>
+            <p><strong>Porcentaje pagado:</strong> <span id="anticipoPorcentaje">0%</span></p>
+        </div>
+        <div class="modal-actions" style="justify-content:space-between;">
+            <button class="btn-cancel" id="closeAnticipoBtn">Cerrar</button>
+            <button class="btn-save" id="btnExportarAnticipo"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+        </div>
+    </div>
+</div>
+
 <!-- ===== MODAL CAMBIAR CONTRASEÑA ===== -->
 <div class="modal-overlay" id="cambiarPassModal">
     <div class="modal-box">
@@ -1640,7 +1689,6 @@ async function mostrarError(mensaje) {
     });
 }
 
-// ===== FUNCIÓN MODIFICADA: botones "Sí" y "No" =====
 async function mostrarConfirmacion(mensaje) {
     const result = await mostrarModal({
         tipo: 'warning',
@@ -1797,7 +1845,7 @@ function actualizarStats(data) {
     document.getElementById('contactosMes').textContent = contactosMes.length;
     document.getElementById('emergencias').textContent = data.filter(item => item.servicio && item.servicio.toLowerCase().includes('emergencia')).length;
 
-    // Pendientes: contactos sin presupuesto activo (no se usa excluido)
+    // Pendientes: contactos sin presupuesto activo
     const contactosConPresupuestoActivo = new Set();
     datosCache.presupuestos.forEach(p => {
         if (p.contactoId) {
@@ -2095,7 +2143,7 @@ function actualizarIndicadorDesbordamiento(elemento) {
 }
 
 // ============================================================
-//  RENDERIZAR PRESUPUESTOS (con filtro de ocultos)
+//  RENDERIZAR PRESUPUESTOS (con filtro de ocultos y columna Anticipo)
 // ============================================================
 function renderizarPresupuestos(data) {
     const container = document.getElementById('presupuestosContainer');
@@ -2139,6 +2187,7 @@ function renderizarPresupuestos(data) {
         <th>Vencimiento</th>
         <th>Precio</th>
         <th>Fecha envío</th>
+        <th style="text-align:center;">Anticipo</th>
         <th style="text-align:center;">Acciones</th>
     </tr></thead><tbody>`;
 
@@ -2153,6 +2202,12 @@ function renderizarPresupuestos(data) {
         const oculto = row.oculto === true;
 
         totalFiltrado += precio;
+
+        // Calcular anticipo
+        const adelantos = row.adelantos || [];
+        const totalAdelantado = adelantos.reduce((sum, a) => sum + (parseFloat(a.monto) || 0), 0);
+        const porcentaje = precio > 0 ? Math.round((totalAdelantado / precio) * 100) : 0;
+        const porcentajeHtml = `<span class="porcentaje-anticipo" onclick="abrirAnticipo('${docId}')" style="cursor:pointer; font-weight:700; color:var(--primary-cyan);">${porcentaje}%</span>`;
 
         let diasHtml = '';
         const dias = calcularDiasRestantes(row);
@@ -2196,6 +2251,7 @@ function renderizarPresupuestos(data) {
             <td>${diasHtml}</td>
             <td style="font-weight:600; color:var(--primary-dark);">${formatearPrecio(precio)}</td>
             <td>${fecha}</td>
+            <td style="text-align:center;">${porcentajeHtml}</td>
             <td style="text-align:center; white-space:nowrap;">${accionesHtml}</td>
         </tr>`;
     });
@@ -2203,7 +2259,7 @@ function renderizarPresupuestos(data) {
     html += `</tbody><tfoot><tr>
         <td colspan="5" style="text-align:right; font-weight:700;">TOTAL ${filtroEstado !== 'todos' ? '(' + filtroEstado.toUpperCase() + ')' : ''}:</td>
         <td style="font-weight:700; color:var(--primary-dark); font-size:1rem;">${formatearPrecio(totalFiltrado)}</td>
-        <td colspan="2"></td>
+        <td colspan="3"></td>
     </tr></tfoot></table>`;
     container.innerHTML = html;
 
@@ -2620,7 +2676,8 @@ window.guardarPresupuesto = async function() {
             tipoFactura: tipoFactura,
             situacionFiscal: situacionFiscal,
             cuit: cuit,
-            oculto: false
+            oculto: false,
+            adelantos: [] // Inicializamos el array de adelantos
         };
 
         await addDoc(collection(db, 'presupuestos'), datosPresupuesto);
@@ -2690,7 +2747,7 @@ function actualizarResumenContactos(data) {
             }
             contacto.email = item.email || contacto.email;
             contacto.ubicacion = item.ubicacion || contacto.ubicacion;
-            contacto.id = item.id; // mantener último id (podría ser de cualquier registro)
+            contacto.id = item.id;
         } else {
             contactosMap.set(key, {
                 nombre,
@@ -2926,7 +2983,6 @@ if (busquedaResumen) {
 document.getElementById('cambiarPassBtn').addEventListener('click', function() {
     document.getElementById('cambiarPassModal').classList.add('active');
     document.body.style.overflow = 'hidden';
-    // Limpiar campos
     document.getElementById('currentPassword').value = '';
     document.getElementById('newPassword').value = '';
     document.getElementById('confirmNewPassword').value = '';
@@ -2990,6 +3046,239 @@ document.getElementById('saveCambiarPassBtn').addEventListener('click', async fu
         btn.innerHTML = '<i class="fas fa-save"></i> Cambiar contraseña';
     }
 });
+
+// ============================================================
+//  FUNCIONES PARA GESTIÓN DE ANTICIPOS (con actualización inmediata)
+// ============================================================
+
+// Abrir modal de anticipos
+window.abrirAnticipo = async function(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) {
+        await mostrarError('Presupuesto no encontrado.');
+        return;
+    }
+
+    document.getElementById('anticipoDocId').value = docId;
+    document.getElementById('anticipoNombre').textContent = presupuesto.nombre || '-';
+    document.getElementById('anticipoTelefono').textContent = presupuesto.telefono || '-';
+    document.getElementById('anticipoEmail').textContent = presupuesto.email || '-';
+    const precio = presupuesto.precio || 0;
+    document.getElementById('anticipoTotalPresupuesto').textContent = formatearPrecio(precio);
+
+    // Establecer fecha por defecto
+    const hoy = new Date().toISOString().slice(0,10);
+    document.getElementById('anticipoFecha').value = hoy;
+    document.getElementById('anticipoMonto').value = '';
+
+    renderizarAdelantos(docId);
+
+    document.getElementById('anticipoModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+// Renderizar lista de adelantos
+function renderizarAdelantos(docId) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) {
+        document.getElementById('anticipoItems').innerHTML = '<p>Sin adelantos</p>';
+        return;
+    }
+
+    const adelantos = presupuesto.adelantos || [];
+    const precio = presupuesto.precio || 0;
+    const totalAdelantado = adelantos.reduce((sum, a) => sum + (parseFloat(a.monto) || 0), 0);
+    const diferencia = precio - totalAdelantado;
+    const porcentaje = precio > 0 ? Math.round((totalAdelantado / precio) * 100) : 0;
+
+    document.getElementById('anticipoTotalAdelantado').textContent = formatearPrecio(totalAdelantado);
+    document.getElementById('anticipoDiferencia').textContent = formatearPrecio(diferencia);
+    document.getElementById('anticipoPorcentaje').textContent = porcentaje + '%';
+
+    if (adelantos.length === 0) {
+        document.getElementById('anticipoItems').innerHTML = '<p style="color:var(--gray-text);">No hay adelantos registrados.</p>';
+        return;
+    }
+
+    let html = '<ul style="list-style:none; padding:0; margin:0;">';
+    adelantos.forEach((a, index) => {
+        const fecha = a.fecha || '';
+        const monto = parseFloat(a.monto) || 0;
+        html += `<li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #E9ECEF;">
+            <span><strong>${fecha}</strong> - ${formatearPrecio(monto)}</span>
+            <button class="btn-delete" onclick="eliminarAdelanto('${docId}', ${index})" style="padding:4px 8px; font-size:0.75rem;"><i class="fas fa-trash"></i></button>
+        </li>`;
+    });
+    html += '</ul>';
+    document.getElementById('anticipoItems').innerHTML = html;
+}
+
+// Agregar adelanto y actualizar inmediatamente
+window.agregarAdelanto = async function() {
+    const docId = document.getElementById('anticipoDocId').value;
+    const fecha = document.getElementById('anticipoFecha').value;
+    const monto = parseFloat(document.getElementById('anticipoMonto').value);
+
+    if (!fecha) {
+        await mostrarError('Debes seleccionar una fecha.');
+        return;
+    }
+    if (isNaN(monto) || monto <= 0) {
+        await mostrarError('Ingresa un monto válido mayor a 0.');
+        return;
+    }
+
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) {
+        await mostrarError('Presupuesto no encontrado.');
+        return;
+    }
+
+    const adelantos = presupuesto.adelantos || [];
+    const totalAdelantado = adelantos.reduce((sum, a) => sum + (parseFloat(a.monto) || 0), 0);
+    const precio = presupuesto.precio || 0;
+    if (totalAdelantado + monto > precio) {
+        await mostrarError('El total adelantado no puede superar el monto del presupuesto.');
+        return;
+    }
+
+    const nuevoAdelanto = { fecha, monto };
+    const nuevosAdelantos = [...adelantos, nuevoAdelanto];
+
+    try {
+        await updateDoc(doc(db, 'presupuestos', docId), { adelantos: nuevosAdelantos });
+        // Actualización inmediata en el modal
+        renderizarAdelantos(docId);
+        document.getElementById('anticipoMonto').value = '';
+    } catch (error) {
+        await mostrarError('Error al agregar adelanto: ' + error.message);
+    }
+};
+
+// Eliminar adelanto y actualizar inmediatamente
+window.eliminarAdelanto = async function(docId, index) {
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) return;
+
+    const adelantos = presupuesto.adelantos || [];
+    if (index < 0 || index >= adelantos.length) return;
+
+    const confirmado = await mostrarConfirmacion('¿Eliminar este adelanto?');
+    if (!confirmado) return;
+
+    const nuevosAdelantos = adelantos.filter((_, i) => i !== index);
+    try {
+        await updateDoc(doc(db, 'presupuestos', docId), { adelantos: nuevosAdelantos });
+        // Actualización inmediata en el modal
+        renderizarAdelantos(docId);
+    } catch (error) {
+        await mostrarError('Error al eliminar adelanto: ' + error.message);
+    }
+};
+
+// Exportar PDF de anticipos
+window.exportarAnticipoPDF = async function() {
+    const docId = document.getElementById('anticipoDocId').value;
+    const presupuesto = datosCache.presupuestos.find(p => p.id === docId);
+    if (!presupuesto) {
+        await mostrarError('Presupuesto no encontrado.');
+        return;
+    }
+
+    const nombre = presupuesto.nombre || '-';
+    const telefono = presupuesto.telefono || '-';
+    const email = presupuesto.email || '-';
+    const precio = presupuesto.precio || 0;
+    const adelantos = presupuesto.adelantos || [];
+    const totalAdelantado = adelantos.reduce((sum, a) => sum + (parseFloat(a.monto) || 0), 0);
+    const diferencia = precio - totalAdelantado;
+    const porcentaje = precio > 0 ? Math.round((totalAdelantado / precio) * 100) : 0;
+
+    // Crear un elemento temporal para el PDF
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '700px';
+    tempDiv.style.background = 'white';
+    tempDiv.style.padding = '30px';
+    tempDiv.style.fontFamily = 'Inter, sans-serif';
+    tempDiv.innerHTML = `
+        <h1 style="color:#0A2E5C; border-bottom:3px solid #00A8FF; padding-bottom:10px;">Historial de Anticipos</h1>
+        <p><strong>Cliente:</strong> ${nombre}</p>
+        <p><strong>Teléfono:</strong> ${telefono}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Presupuesto total:</strong> ${formatearPrecio(precio)}</p>
+        <hr>
+        <h3>Adelantos registrados</h3>
+        <table style="width:100%; border-collapse:collapse; margin:15px 0;">
+            <thead>
+                <tr style="background:#f1f5f9;">
+                    <th style="padding:10px; text-align:left; border:1px solid #e2e8f0;">Fecha</th>
+                    <th style="padding:10px; text-align:right; border:1px solid #e2e8f0;">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${adelantos.map(a => `
+                    <tr>
+                        <td style="padding:8px; border:1px solid #e2e8f0;">${a.fecha || ''}</td>
+                        <td style="padding:8px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(a.monto)}</td>
+                    </tr>
+                `).join('')}
+                ${adelantos.length === 0 ? '<tr><td colspan="2" style="padding:8px; text-align:center; border:1px solid #e2e8f0;">No hay adelantos</td></tr>' : ''}
+            </tbody>
+            <tfoot>
+                <tr style="background:#f8fafc; font-weight:700;">
+                    <td style="padding:10px; border:1px solid #e2e8f0;">Total adelantado</td>
+                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(totalAdelantado)}</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #e2e8f0;">Diferencia a pagar</td>
+                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${formatearPrecio(diferencia)}</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #e2e8f0;">Porcentaje pagado</td>
+                    <td style="padding:10px; text-align:right; border:1px solid #e2e8f0;">${porcentaje}%</td>
+                </tr>
+            </tfoot>
+        </table>
+        <p style="margin-top:20px; font-size:12px; color:#64748b; text-align:center;">
+            Documento generado el ${new Date().toLocaleString('es-AR')}
+        </p>
+    `;
+
+    document.body.appendChild(tempDiv);
+
+    try {
+        const canvas = await html2canvas(tempDiv, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false
+        });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Anticipos_${nombre}_${new Date().toISOString().slice(0,10)}.pdf`);
+    } catch (error) {
+        console.error(error);
+        await mostrarError('Error al generar el PDF: ' + error.message);
+    } finally {
+        document.body.removeChild(tempDiv);
+    }
+};
+
+// Listeners para el modal de anticipos
+document.getElementById('closeAnticipoModal').addEventListener('click', () => cerrarModal('anticipoModal'));
+document.getElementById('closeAnticipoBtn').addEventListener('click', () => cerrarModal('anticipoModal'));
+document.getElementById('anticipoModal').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal('anticipoModal');
+});
+document.getElementById('btnAgregarAdelanto').addEventListener('click', window.agregarAdelanto);
+document.getElementById('btnExportarAnticipo').addEventListener('click', window.exportarAnticipoPDF);
 
 </script>
 
