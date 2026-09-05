@@ -1192,7 +1192,7 @@
                 <option value="vencido">Vencido</option>
                 <option value="cancelado">Cancelado</option>
             </select>
-            <input type="text" id="busquedaPresupuesto" placeholder="Buscar por nombre o servicio" oninput="renderizarPresupuestos(datosCache.presupuestos)">
+            <input type="text" id="busquedaPresupuesto" placeholder="Buscar por nombre, servicio o número de presupuesto" oninput="renderizarPresupuestos(datosCache.presupuestos)">
         </div>
         <div class="table-scroll" id="presupuestosContainer"><div class="loading"><i class="fas fa-spinner"></i> Cargando presupuestos...</div></div>
     </div>
@@ -2162,7 +2162,8 @@ function renderizarPresupuestos(data) {
         if (busqueda !== '') {
             const nombre = (presupuesto.nombre || '').toLowerCase();
             const servicio = (presupuesto.servicio || '').toLowerCase();
-            if (!nombre.includes(busqueda) && !servicio.includes(busqueda)) return false;
+            const numero = (presupuesto.numero || '').toLowerCase();
+            if (!nombre.includes(busqueda) && !servicio.includes(busqueda) && !numero.includes(busqueda)) return false;
         }
         return true;
     });
